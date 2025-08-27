@@ -12,156 +12,75 @@ import Botao from '@components/Botao';
 import BotaoGrupo from '@components/BotaoGrupo';
 import DropdownItens from '@components/DropdownItens';
 import CampoTexto from '@components/CampoTexto';
+import DataTableCredenciais from '@components/DataTableCredenciais';
+import Loading from '@components/Loading';
+import ModalDetalhesCredencial from '@components/ModalDetalhesCredencial';
 
-const MetadadosContainer = styled.div`
-  padding: 32px;
-  max-width: 1600px;
-  margin: 0 auto;
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-  min-height: 100vh;
-  width: 100%;
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
+const ConteudoFrame = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
 `;
 
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 32px;
-  padding: 24px;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e9ecef;
+const ContainerSemRegistro = styled.div`
+    display: flex;
+    padding: 96px 12px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    width: 100%;
+    text-align: center;
+    & p {
+        margin: 0 auto;
+    }
+
+    & h6 {
+        width: 60%;
+    }
 `;
 
-const HeaderLeft = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+const AlertaAviso = styled.div`
+    background: #fffbeb;
+    color: #664d03;
+    border-left: 4px solid #ffc107;
+    border-radius: 4px;
+    padding: 16px;
+    font-size: 14px;
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 `;
 
-const Title = styled.h1`
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--neutro-900);
-  margin: 0;
+const AlertaInfo = styled.div`
+    background: #e3f2fd;
+    color: #1976d2;
+    border-left: 4px solid #1976d2;
+    border-radius: 4px;
+    padding: 16px;
+    font-size: 14px;
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 `;
 
-const Subtitle = styled.p`
-  font-size: 16px;
-  color: #6c757d;
-  margin: 0;
-  font-weight: 500;
+const AlertaOAuth = styled.div`
+    background: #f3e5f5;
+    color: #6f42c1;
+    border-left: 4px solid #6f42c1;
+    border-radius: 4px;
+    padding: 16px;
+    font-size: 14px;
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 `;
 
-const DropdownContainer = styled.div`
-  padding: 24px 0px 0px 0px;
-`;
 
-const DropdownLabel = styled.label`
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  font-size: 14px;
-  color: #495057;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-`;
-
-const TableContainer = styled.div`
-  border: 1px solid #e9ecef;
-  border-radius: 16px;
-  overflow: hidden;
-  background: white;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  margin-bottom: 24px;
-  width: 100%;
-`;
-
-const TableHeader = styled.div`
-  display: grid;
-  grid-template-columns: 3fr 1fr;
-  background: var(--primaria);
-  border-bottom: 1px solid #e9ecef;
-`;
-
-const SectionHeader = styled.div`
-  padding: 20px 24px;
-  width: 100%;
-  font-weight: 700;
-  color: white;
-  text-align: center;
-  border-right: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 16px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  
-  &:last-child {
-    border-right: none;
-  }
-`;
-
-const TableBody = styled.div`
-  display: grid;
-  grid-template-columns: 3fr 1fr;
-`;
-
-const SectionBody = styled.div`
-  border-right: 1px solid #dee2e6;
-  width: 100%;
-  &:last-child {
-    border-right: none;
-  }
-`;
-
-const Row = styled.div`
-  display: grid;
-  grid-template-columns: ${props => props.columns};
-  gap: 12px;
-  padding: 16px;
-  border-bottom: 1px solid #f8f9fa;
-  align-items: center;
-  transition: all 0.2s ease;
-  
-  &:last-child {
-    border-bottom: none;
-  }
-  
-  &:hover {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  }
-  
-  &:nth-child(even) {
-    background: #fafbfc;
-  }
-`;
-
-const Input = styled(InputText)`
-  width: 100%;
-  border: 2px solid #e9ecef;
-  border-radius: 8px;
-  padding: 12px 16px;
-  font-size: 14px;
-  transition: all 0.2s ease;
-  background: white;
-  
-  &:focus {
-    border-color: #2e7d32;
-    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
-    outline: none;
-  }
-  
-  &:hover {
-    border-color: #2e7d32;
-  }
-`;
 
 
 
@@ -171,6 +90,19 @@ function Credenciais() {
   const [loading, setLoading] = useState(false);
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
   const [credencialToDelete, setCredencialToDelete] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedCredencialForDetails, setSelectedCredencialForDetails] = useState(null);
+  
+  // Estados para o DataTable
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [first, setFirst] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortField, setSortField] = useState('');
+  const [sortOrder, setSortOrder] = useState('');
+  const [filters, setFilters] = useState({});
 
   // Estados para o modal de criação de credenciais
   const [showCreateCredentialModal, setShowCreateCredentialModal] = useState(false);
@@ -198,67 +130,149 @@ function Credenciais() {
   const toast = React.useRef();
 
   // Carregar lista de credenciais
-  useEffect(() => {
-    const carregarCredenciais = async () => {
+  const loadData = async (currentPage = 1, currentPageSize = 10, search = '', sort = '', currentFilters = {}) => {
+    try {
+      setLoading(true);
+      
+      // Buscar tipos de autenticação
       try {
-        setLoading(true);
-        
-        // Buscar credenciais externas
-        const responseCredenciais = await http.get('/integracao-tenant/credenciais-externas/');
-        console.log('Resposta do endpoint credenciais-externas:', responseCredenciais);
-        
-        // Se temos credenciais, buscar os campos de cada uma
-        if (responseCredenciais && Array.isArray(responseCredenciais)) {
-          const credenciaisComCampos = [];
-          
-          for (const credencial of responseCredenciais) {
-            try {
-              // Buscar campos para cada credencial usando o ID
-              const responseCampos = await http.get(`/integracao-tenant/credenciais-externas-campos/?credencial=${credencial.id}`);
-              console.log(`Campos para credencial ${credencial.id}:`, responseCampos);
-              
-              // Adicionar campos_adicionais à credencial
-              const credencialComCampos = {
-                ...credencial,
-                campos_adicionais: responseCampos || []
-              };
-              
-              credenciaisComCampos.push(credencialComCampos);
-            } catch (camposError) {
-              console.warn(`Erro ao buscar campos para credencial ${credencial.id}:`, camposError);
-              // Adicionar credencial sem campos se der erro
-              credenciaisComCampos.push({
-                ...credencial,
-                campos_adicionais: []
-              });
-            }
-          }
-          
-          console.log('Credenciais com campos:', credenciaisComCampos);
-          setCredenciais(credenciaisComCampos);
-          
-          // Selecionar automaticamente a primeira credencial se houver
-          if (credenciaisComCampos.length > 0 && !selectedCredencial) {
-            setSelectedCredencial(credenciaisComCampos[0]);
-          }
-        } else {
-          setCredenciais([]);
-        }
+        const responseTiposAuth = await http.get('/integracao-tenant/credenciais-externas/tipos-autenticacao/');
+        console.log('Resposta do endpoint tipos-autenticacao:', responseTiposAuth);
       } catch (error) {
-        console.error('Erro ao carregar credenciais:', error);
-        toast.current.show({
-          severity: 'error',
-          summary: 'Erro',
-          detail: 'Erro ao carregar lista de credenciais',
-          life: 3000
-        });
-      } finally {
-        setLoading(false);
+        console.warn('Erro ao buscar tipos de autenticação:', error);
       }
-    };
+      
+      // Construir URL com parâmetros
+      let url = `/integracao-tenant/credenciais-externas/?page=${currentPage}&page_size=${currentPageSize}`;
+      
+      if (search) {
+        url += `&search=${encodeURIComponent(search)}`;
+      }
+      
+      if (sort) {
+        url += `&ordering=${sort}`;
+      }
+      
+      // Buscar credenciais externas
+      const responseCredenciais = await http.get(url);
+      console.log('Resposta do endpoint credenciais-externas:', responseCredenciais);
+      
+      // Se temos credenciais, buscar os campos de cada uma
+      if (responseCredenciais && responseCredenciais.results && Array.isArray(responseCredenciais.results)) {
+        const credenciaisComCampos = [];
+        
+        for (const credencial of responseCredenciais.results) {
+          try {
+            // Buscar campos para cada credencial usando o ID
+            const responseCampos = await http.get(`/integracao-tenant/credenciais-externas-campos/?credencial=${credencial.id}`);
+            console.log(`Campos para credencial ${credencial.id}:`, responseCampos);
+            
+            // Adicionar campos_adicionais à credencial
+            const credencialComCampos = {
+              ...credencial,
+              campos_adicionais: responseCampos || []
+            };
+            
+            credenciaisComCampos.push(credencialComCampos);
+          } catch (camposError) {
+            console.warn(`Erro ao buscar campos para credencial ${credencial.id}:`, camposError);
+            // Adicionar credencial sem campos se der erro
+            credenciaisComCampos.push({
+              ...credencial,
+              campos_adicionais: []
+            });
+          }
+        }
+        
+        console.log('Credenciais com campos:', credenciaisComCampos);
+        setCredenciais(credenciaisComCampos);
+        setTotalRecords(responseCredenciais.count || 0);
+        setTotalPages(responseCredenciais.total_pages || 0);
+        
+        // Selecionar automaticamente a primeira credencial se houver
+        if (credenciaisComCampos.length > 0 && !selectedCredencial) {
+          setSelectedCredencial(credenciaisComCampos[0]);
+        }
+      } else {
+        setCredenciais([]);
+        setTotalRecords(0);
+        setTotalPages(0);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar credenciais:', error);
+      toast.current.show({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Erro ao carregar lista de credenciais',
+        life: 3000
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    carregarCredenciais();
+  useEffect(() => {
+    loadData(page, pageSize, searchTerm, getSortParam(), filters);
   }, []);
+
+  // Funções para o DataTable
+  const onPage = (event) => {
+    const newPage = event.page + 1;
+    const newPageSize = event.rows;
+    
+    setFirst(event.first);
+    setPage(newPage);
+    setPageSize(newPageSize);
+    
+    loadData(newPage, newPageSize, searchTerm, getSortParam(), filters);
+  };
+
+  const onSearch = (search) => {
+    setSearchTerm(search);
+    setPage(1);
+    setFirst(0);
+    loadData(1, pageSize, search, getSortParam(), filters);
+  };
+
+  const getSortParam = () => {
+    if (!sortField) return '';
+    return `${sortOrder === 'desc' ? '-' : ''}${sortField}`;
+  };
+
+  const onSort = ({ field, order }) => {
+    setSortField(field);
+    setSortOrder(order);
+    loadData(page, pageSize, searchTerm, `${order === 'desc' ? '-' : ''}${field}`, filters);
+  };
+  
+  const onFilter = (event) => {
+    console.log("Filtro aplicado:", event.filters);
+    const newFilters = { ...event.filters };
+    setFilters(newFilters);
+    setPage(1);
+    setFirst(0);
+    loadData(1, pageSize, searchTerm, getSortParam(), newFilters);
+  };
+
+  const handleEdit = (credencial) => {
+    // TODO: Implementar edição
+    console.log('Editar credencial:', credencial);
+  };
+
+  const handleDelete = (credencial) => {
+    setCredencialToDelete(credencial);
+    setShowDeleteConfirmModal(true);
+  };
+
+  const handleViewDetails = (credencial) => {
+    setSelectedCredencialForDetails(credencial);
+    setShowDetailsModal(true);
+  };
+
+  const handleCloseDetails = () => {
+    setShowDetailsModal(false);
+    setSelectedCredencialForDetails(null);
+  };
 
 
 
@@ -493,45 +507,7 @@ function Credenciais() {
       setShowCreateCredentialModal(false);
       
       // Recarregar credenciais
-      const carregarCredenciais = async () => {
-        try {
-          const responseCredenciais = await http.get('/integracao-tenant/credenciais-externas/');
-          
-          if (responseCredenciais && Array.isArray(responseCredenciais)) {
-            const credenciaisComCampos = [];
-            
-            for (const credencial of responseCredenciais) {
-              try {
-                const responseCampos = await http.get(`/integracao-tenant/credenciais-externas-campos/?credencial=${credencial.id}`);
-                
-                const credencialComCampos = {
-                  ...credencial,
-                  campos_adicionais: responseCampos || []
-                };
-                
-                credenciaisComCampos.push(credencialComCampos);
-              } catch (camposError) {
-                credenciaisComCampos.push({
-                  ...credencial,
-                  campos_adicionais: []
-                });
-              }
-            }
-            
-            const credenciaisFormatadas = credenciaisComCampos.map(credencial => ({
-              label: credencial.nome_sistema,
-              value: credencial.id,
-              dados: credencial
-            }));
-            
-            setRegras(credenciaisFormatadas);
-          }
-        } catch (error) {
-          console.error('Erro ao recarregar credenciais:', error);
-        }
-      };
-
-      carregarCredenciais();
+      loadData(page, pageSize, searchTerm, getSortParam(), filters);
 
     } catch (error) {
       console.error('Erro ao criar credencial:', error);
@@ -585,27 +561,7 @@ function Credenciais() {
       });
 
       // Recarregar lista de credenciais
-      const responseCredenciais = await http.get('/integracao-tenant/credenciais-externas/');
-      if (responseCredenciais && Array.isArray(responseCredenciais)) {
-        const credenciaisComCampos = [];
-        
-        for (const credencial of responseCredenciais) {
-          try {
-            const responseCampos = await http.get(`/integracao-tenant/credenciais-externas-campos/?credencial=${credencial.id}`);
-            credenciaisComCampos.push({
-              ...credencial,
-              campos_adicionais: responseCampos || []
-            });
-          } catch (camposError) {
-            credenciaisComCampos.push({
-              ...credencial,
-              campos_adicionais: []
-            });
-          }
-        }
-        
-        setCredenciais(credenciaisComCampos);
-      }
+      loadData(page, pageSize, searchTerm, getSortParam(), filters);
 
       // Limpar seleção
       setSelectedCredencial(null);
@@ -634,259 +590,44 @@ function Credenciais() {
 
 
   return (
-    <MetadadosContainer>
+    <>
       <Toast ref={toast} />
+      <Loading opened={loading} />
       
-      <Header>
-        <HeaderLeft>
-          <Title>Credenciais</Title>
-          <Subtitle>Gerencie as credenciais externas do sistema</Subtitle>
-        </HeaderLeft>
-        
-        <BotaoGrupo>
-          <Botao 
-            size="medium" 
-            aoClicar={iniciarCriacaoCredencial}
-            style={{
-              background: 'linear-gradient(135deg, #fd7e14 0%, #e55a00 100%)',
-              border: 'none',
-              color: 'white',
-              boxShadow: '0 2px 8px rgba(253, 126, 20, 0.3)'
-            }}
-          >
-            <GrAddCircle size={14} /> Nova Credencial
-          </Botao>
-        </BotaoGrupo>
-      </Header>
-
-      {/* Lista de Credenciais */}
-      <div style={{ display: 'grid', gap: '24px' }}>
-        {loading ? (
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: '60px 20px',
-            background: 'white',
-            borderRadius: '16px',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-            border: '1px solid #e9ecef'
-          }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{
-                width: '48px',
-                height: '48px',
-                border: '4px solid #f3f3f3',
-                borderTop: '4px solid var(--primaria)',
-                borderRadius: '50%',
-                animation: 'spin 1s linear infinite',
-                margin: '0 auto 16px'
-              }}></div>
-              <p style={{ color: '#6c757d', margin: 0 }}>Carregando credenciais...</p>
-            </div>
-          </div>
-        ) : (
-          <div style={{ display: 'grid', gap: '16px' }}>
-            {credenciais.map((credencial) => (
-              <div
-                key={credencial.id}
-                onClick={() => setSelectedCredencial(credencial)}
-                style={{
-                  background: 'white',
-                  borderRadius: '16px',
-                  padding: '24px',
-                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-                  border: '1px solid #e9ecef',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  position: 'relative',
-                  ...(selectedCredencial?.id === credencial.id && {
-                    borderColor: 'var(--primaria)',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)'
-                  })
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.15)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = selectedCredencial?.id === credencial.id 
-                    ? '0 8px 32px rgba(0, 0, 0, 0.15)' 
-                    : '0 4px 20px rgba(0, 0, 0, 0.08)';
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                      <h3 style={{ 
-                        fontSize: '20px', 
-                        fontWeight: '700', 
-                        color: '#495057',
-                        margin: 0
-                      }}>
-                        {credencial.nome_sistema}
-                      </h3>
-                      <span style={{
-                        padding: '4px 12px',
-                        borderRadius: '20px',
-                        fontSize: '12px',
-                        fontWeight: '600',
-                        background: credencial.ativo ? '#d4edda' : '#f8d7da',
-                        color: credencial.ativo ? '#155724' : '#721c24'
-                      }}>
-                        {credencial.ativo ? 'Ativo' : 'Inativo'}
-                      </span>
-                      <span style={{
-                        padding: '4px 12px',
-                        borderRadius: '20px',
-                        fontSize: '12px',
-                        fontWeight: '600',
-                        background: '#e3f2fd',
-                        color: '#1976d2'
-                      }}>
-                        {credencial.tipo_autenticacao_display}
-                      </span>
-                    </div>
-                    
-                    {credencial.descricao && (
-                      <p style={{
-                        fontSize: '14px',
-                        color: '#6c757d',
-                        margin: '0 0 12px 0',
-                        lineHeight: '1.5'
-                      }}>
-                        {credencial.descricao}
-                      </p>
-                    )}
-                    
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                      <div>
-                        <label style={{ 
-                          fontSize: '11px', 
-                          fontWeight: '600', 
-                          color: '#6c757d',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.5px',
-                          marginBottom: '4px',
-                          display: 'block'
-                        }}>
-                          URL do Endpoint
-                        </label>
-                        <div style={{
-                          fontSize: '13px',
-                          color: '#495057',
-                          fontFamily: 'monospace',
-                          wordBreak: 'break-all'
-                        }}>
-                          {credencial.url_endpoint}
-                        </div>
-                      </div>
-                      
-                      <div>
-                        <label style={{ 
-                          fontSize: '11px', 
-                          fontWeight: '600', 
-                          color: '#6c757d',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.5px',
-                          marginBottom: '4px',
-                          display: 'block'
-                        }}>
-                          Status da Conexão
-                        </label>
-                        <div style={{
-                          fontSize: '13px',
-                          color: '#856404',
-                          fontWeight: '500'
-                        }}>
-                          {credencial.status_conexao}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div style={{ display: 'flex', gap: '8px', marginLeft: '16px' }}>
-                    <Botao 
-                      size="small" 
-                      aoClicar={(e) => {
-                        e.stopPropagation();
-                        // TODO: Implementar edição
-                      }}
-                    >
-                      <FaEdit size={12} /> Editar
-                    </Botao>
-                    <Botao 
-                      size="small" 
-                      estilo="danger"
-                      aoClicar={(e) => {
-                        e.stopPropagation();
-                        setCredencialToDelete(credencial);
-                        setShowDeleteConfirmModal(true);
-                      }}
-                    >
-                      <FaTrash size={12} fill="#fff"/> Excluir
-                    </Botao>
-                  </div>
-                </div>
-                
-                {credencial.campos_adicionais && credencial.campos_adicionais.length > 0 && (
-                  <div style={{ 
-                    marginTop: '16px', 
-                    paddingTop: '16px', 
-                    borderTop: '1px solid #f1f3f4' 
-                  }}>
-                    <label style={{ 
-                      fontSize: '11px', 
-                      fontWeight: '600', 
-                      color: '#6c757d',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px',
-                      marginBottom: '8px',
-                      display: 'block'
-                    }}>
-                      Campos Adicionais ({credencial.campos_adicionais.length})
-                    </label>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                      {credencial.campos_adicionais.slice(0, 3).map((campo) => (
-                        <span key={campo.id} style={{
-                          padding: '4px 8px',
-                          borderRadius: '12px',
-                          fontSize: '11px',
-                          fontWeight: '500',
-                          background: '#f8f9fa',
-                          color: '#495057',
-                          border: '1px solid #e9ecef'
-                        }}>
-                          {campo.chave}
-                        </span>
-                      ))}
-                      {credencial.campos_adicionais.length > 3 && (
-                        <span style={{
-                          padding: '4px 8px',
-                          borderRadius: '12px',
-                          fontSize: '11px',
-                          fontWeight: '500',
-                          background: '#e3f2fd',
-                          color: '#1976d2'
-                        }}>
-                          +{credencial.campos_adicionais.length - 3} mais
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                                 )}
-               </div>
-             ))}
-           </div>
-         )}
-       </div>
-
-
-
-
-
-
+      {
+        !loading && credenciais && credenciais.length > 0 ?
+        <ConteudoFrame>
+          <DataTableCredenciais 
+            credenciais={credenciais} 
+            paginator={true} 
+            rows={pageSize} 
+            totalRecords={totalRecords} 
+            totalPages={totalPages}
+            first={first} 
+            onPage={onPage}
+            onSearch={onSearch}
+            onSort={onSort}
+            sortField={sortField}
+            sortOrder={sortOrder}
+            onFilter={onFilter}
+            filters={filters}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onViewDetails={handleViewDetails}
+            onNewCredential={iniciarCriacaoCredencial}
+          />
+        </ConteudoFrame>
+        :
+        !loading && (
+          <ContainerSemRegistro>
+            <section>
+              <img src="/src/assets/Management.svg" alt="Management" />
+              <h6>Não há credenciais registradas</h6>
+              <p>Aqui você verá todas as credenciais externas registradas.</p>
+            </section>
+          </ContainerSemRegistro>
+        )
+      }
 
       {/* Modal de Confirmação de Exclusão */}
       <Dialog
@@ -894,7 +635,7 @@ function Credenciais() {
         visible={showDeleteConfirmModal}
         onHide={() => {
           setShowDeleteConfirmModal(false);
-          setRegraToDelete(null);
+          setCredencialToDelete(null);
         }}
         style={{ width: '500px' }}
         modal
@@ -998,7 +739,7 @@ function Credenciais() {
             size="small"
             aoClicar={() => {
               setShowDeleteConfirmModal(false);
-              setRegraToDelete(null);
+              setCredencialToDelete(null);
             }}
             style={{
               background: 'linear-gradient(135deg, #6c757d 0%, #5a6268 100%)',
@@ -1033,7 +774,6 @@ function Credenciais() {
             fontWeight: '600',
             color: '#495057'
           }}>
-            <FaShieldAlt size={24} color="var(--primaria)" />
             Adicionar Credencial Externa
           </div>
         }
@@ -1046,21 +786,14 @@ function Credenciais() {
         footer={
           <div style={{ 
             display: 'flex', 
-            justifyContent: 'space-between', 
+            justifyContent: 'end', 
             alignItems: 'center',
             padding: '16px 0'
           }}>
-            <div style={{ fontSize: '14px', color: '#6c757d' }}>
-              {activeTab === 0 && 'Informações Básicas'}
-              {activeTab === 1 && 'Configuração de Conexão'}
-              {activeTab === 2 && 'Credenciais'}
-              {activeTab === 3 && 'OAuth 2.0'}
-              {activeTab === 4 && 'Configurações Avançadas'}
-              {activeTab === 5 && 'Campos Adicionais'}
-            </div>
+            
             <div style={{ display: 'flex', gap: '12px' }}>
               <Botao
-                size="small"
+                size="medium"
                 aoClicar={() => setShowCreateCredentialModal(false)}
                 style={{
                   background: 'linear-gradient(135deg, #6c757d 0%, #5a6268 100%)',
@@ -1072,7 +805,7 @@ function Credenciais() {
               </Botao>
               {activeTab < 5 ? (
                 <Botao
-                  size="small"
+                  size="medium"
                   aoClicar={() => setActiveTab(activeTab + 1)}
                   style={{
                     background: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
@@ -1084,7 +817,7 @@ function Credenciais() {
                 </Botao>
               ) : (
                 <Botao
-                  size="small"
+                  size="medium"
                   aoClicar={saveNewCredential}
                   loading={savingCredential}
                   style={{
@@ -1093,7 +826,7 @@ function Credenciais() {
                     color: 'white'
                   }}
                 >
-                  <FaSave /> Salvar Credencial
+                  <FaSave /> Salvar
                 </Botao>
               )}
             </div>
@@ -1104,45 +837,71 @@ function Credenciais() {
           {/* Abas */}
           <div style={{ 
             display: 'flex', 
-            borderBottom: '2px solid #e9ecef',
+            alignItems: 'center',
             marginBottom: '24px',
-            background: '#f8f9fa',
-            borderRadius: '8px 8px 0 0'
+            padding: '0 20px'
           }}>
             {[
-              { icon: FaInfo, label: 'Informações Básicas', color: '#17a2b8' },
-              { icon: FaGlobe, label: 'Configuração de Conexão', color: '#28a745' },
-              { icon: FaKey, label: 'Credenciais', color: '#ffc107' },
-              { icon: FaShieldAlt, label: 'OAuth 2.0', color: '#6f42c1' },
-              { icon: FaCog, label: 'Configurações Avançadas', color: '#6c757d' },
-              { icon: FaPlus, label: 'Campos Adicionais', color: '#fd7e14' }
+              { icon: FaInfo, label: 'Informações Básicas' },
+              { icon: FaGlobe, label: 'Configuração de Conexão' },
+              { icon: FaKey, label: 'Credenciais' },
+              { icon: FaShieldAlt, label: 'OAuth 2.0' },
+              { icon: FaCog, label: 'Configurações Avançadas' },
+              { icon: FaPlus, label: 'Campos Adicionais' }
             ].map((tab, index) => (
-              <div
-                key={index}
-                onClick={() => setActiveTab(index)}
-                style={{
-                  flex: 1,
-                  padding: '16px',
-                  textAlign: 'center',
-                  cursor: 'pointer',
-                  borderBottom: `3px solid ${activeTab === index ? tab.color : 'transparent'}`,
-                  background: activeTab === index ? 'white' : 'transparent',
-                  transition: 'all 0.3s ease',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '8px'
-                }}
-              >
-                <tab.icon size={20} color={activeTab === index ? tab.color : '#6c757d'} />
-                <span style={{
-                  fontSize: '12px',
-                  fontWeight: activeTab === index ? '600' : '500',
-                  color: activeTab === index ? tab.color : '#6c757d'
-                }}>
-                  {tab.label}
-                </span>
-              </div>
+              <React.Fragment key={index}>
+                <div
+                  onClick={() => setActiveTab(index)}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    flex: 1
+                  }}
+                >
+                  {/* Círculo com ícone */}
+                  <div style={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    background: activeTab === index ? 'var(--primaria)' : '#ffffff',
+                    border: `2px solid ${activeTab === index ? 'var(--primaria)' : '#e9ecef'}`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '8px',
+                    transition: 'all 0.3s ease'
+                  }}>
+                    <tab.icon 
+                      size={18} 
+                    />
+                  </div>
+                  
+                  {/* Label */}
+                  <span style={{
+                    fontSize: '11px',
+                    fontWeight: activeTab === index ? '600' : '500',
+                    textAlign: 'center',
+                    lineHeight: '1.2'
+                  }}>
+                    {tab.label}
+                  </span>
+                </div>
+                
+                {/* Linha conectora */}
+                {index < 5 && (
+                  <div style={{
+                    flex: '0 0 20px',
+                    height: '2px',
+                    background: activeTab > index ? 'var(--primaria)' : '#e9ecef',
+                    margin: '0 8px',
+                    marginTop: '20px',
+                    transition: 'all 0.3s ease'
+                  }} />
+                )}
+              </React.Fragment>
             ))}
           </div>
 
@@ -1195,7 +954,7 @@ function Credenciais() {
                       label="Escolher Arquivo"
                       icon="pi pi-upload"
                       className="p-button-outlined"
-                      style={{ fontSize: '14px' }}
+                      style={{ fontSize: '14px', gap: '8px' }}
                     />
                     <span style={{ color: '#6c757d', fontSize: '14px' }}>
                       Nenhum arquivo escolhido
@@ -1265,29 +1024,12 @@ function Credenciais() {
             {/* Aba 3: Credenciais */}
             {activeTab === 2 && (
               <div style={{ display: 'grid', gap: '24px' }}>
-                <div style={{
-                  background: '#e3f2fd',
-                  border: '1px solid #bbdefb',
-                  borderRadius: '8px',
-                  padding: '16px',
-                  marginBottom: '16px'
-                }}>
-                  <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '8px',
-                    marginBottom: '8px'
-                  }}>
-                    <FaInfo color="#1976d2" size={16} />
-                    <span style={{ 
-                      fontWeight: '600', 
-                      color: '#1976d2',
-                      fontSize: '14px'
-                    }}>
-                      Preencha apenas os campos necessários para o tipo de autenticação selecionado
-                    </span>
-                  </div>
-                </div>
+                <AlertaInfo>
+                  <FaInfo size={20} style={{ color: '#1976d2', flexShrink: 0 }}/>
+                  <span>
+                    Preencha apenas os campos necessários para o tipo de autenticação selecionado
+                  </span>
+                </AlertaInfo>
 
                 {newCredential.tipo_autenticacao === 'basic' && (
                   <>
@@ -1345,29 +1087,12 @@ function Credenciais() {
             {/* Aba 4: OAuth 2.0 */}
             {activeTab === 3 && newCredential.tipo_autenticacao === 'oauth' && (
               <div style={{ display: 'grid', gap: '24px' }}>
-                <div style={{
-                  background: '#f3e5f5',
-                  border: '1px solid #e1bee7',
-                  borderRadius: '8px',
-                  padding: '16px',
-                  marginBottom: '16px'
-                }}>
-                  <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '8px',
-                    marginBottom: '8px'
-                  }}>
-                    <FaShieldAlt color="#6f42c1" size={16} />
-                    <span style={{ 
-                      fontWeight: '600', 
-                      color: '#6f42c1',
-                      fontSize: '14px'
-                    }}>
-                      Campos específicos para autenticação OAuth 2.0
-                    </span>
-                  </div>
-                </div>
+                <AlertaOAuth>
+                  <FaShieldAlt size={20} style={{ color: '#6f42c1', flexShrink: 0 }}/>
+                  <span>
+                    Campos específicos para autenticação OAuth 2.0
+                  </span>
+                </AlertaOAuth>
 
                 <CampoTexto
                   label="Client ID"
@@ -1439,29 +1164,12 @@ function Credenciais() {
             {/* Aba 6: Campos Adicionais */}
             {activeTab === 5 && (
               <div style={{ display: 'grid', gap: '24px' }}>
-                <div style={{
-                  background: '#fff3cd',
-                  border: '1px solid #ffeaa7',
-                  borderRadius: '8px',
-                  padding: '16px',
-                  marginBottom: '16px'
-                }}>
-                  <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '8px',
-                    marginBottom: '8px'
-                  }}>
-                    <FaPlus color="#856404" size={16} />
-                    <span style={{ 
-                      fontWeight: '600', 
-                      color: '#856404',
-                      fontSize: '14px'
-                    }}>
-                      CAMPOS ADICIONAIS DE CREDENCIAIS
-                    </span>
-                  </div>
-                </div>
+                <AlertaAviso>
+                  <FaPlus size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
+                  <span>
+                    <strong>CAMPOS ADICIONAIS DE CREDENCIAIS</strong>
+                  </span>
+                </AlertaAviso>
 
                 {additionalFields.length === 0 ? (
                   <div style={{
@@ -1592,7 +1300,16 @@ function Credenciais() {
           </div>
         </div>
       </Dialog>
-    </MetadadosContainer>
+
+      {/* Modal de Detalhes da Credencial */}
+      <ModalDetalhesCredencial
+        credencial={selectedCredencialForDetails}
+        visible={showDetailsModal}
+        onHide={handleCloseDetails}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+    </>
   );
 }
 
