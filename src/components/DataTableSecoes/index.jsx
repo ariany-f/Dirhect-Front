@@ -14,6 +14,7 @@ import { Toast } from 'primereact/toast';
 import { InputSwitch } from 'primereact/inputswitch';
 import http from '@http';
 import { ArmazenadorToken } from '@utils';
+import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -46,6 +47,7 @@ function DataTableSecoes({
     const [selectedSecao, setSelectedSecao] = useState(null);
     const navegar = useNavigate();
     const toast = useRef(null);
+    const { metadadosDeveSerExibido } = useMetadadosPermission();
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && secoes) {
@@ -252,8 +254,10 @@ function DataTableSecoes({
                 <Column field="nome" header="Nome" sortable style={{ width: '15%' }}></Column>
                 <Column body={representativeFilialTemplate} field="departamento.filial.nome" sortField="filial" header="Filial" sortable style={{ width: '15%' }}></Column>
                 <Column body={representativeDepartamentoTemplate} field="departamento.nome" sortField="departamento" header="Departamento" sortable style={{ width: '15%' }}></Column>
-                <Column field="descricao" header="Descrição" sortable style={{ width: '15%' }}></Column>
-                <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
+                <Column field="descricao" header="Descrição" sortable style={{ width: metadadosDeveSerExibido ? '15%' : '30%' }}></Column>
+                {metadadosDeveSerExibido && (
+                    <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
+                )}
                 <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
             </DataTable>
         </>

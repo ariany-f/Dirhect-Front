@@ -220,12 +220,19 @@ function BarraLateral({ $sidebarOpened }) {
                     .catch(error => console.log('Erro ao buscar grupos:', error));
             }
 
-            // Buscar parâmetros de menus
-            http.get('parametros/por-assunto/?assunto=MENUS')
-                .then(response => {
-                    setParametrosMenus(response.parametros || {});
-                })
-                .catch(error => console.log('Erro ao buscar parâmetros de menus:', error));
+            // Buscar parâmetros de menus apenas se não existir no localStorage
+            const parametrosExistentes = ArmazenadorToken.ParametrosMenus;
+            if (Object.keys(parametrosExistentes).length === 0) {
+                http.get('parametros/por-assunto/?assunto=MENUS')
+                    .then(response => {
+                        const parametros = response.parametros || {};
+                        setParametrosMenus(parametros);
+                        ArmazenadorToken.definirParametrosMenus(parametros);
+                    })
+                    .catch(error => console.log('Erro ao buscar parâmetros de menus:', error));
+            } else {
+                setParametrosMenus(parametrosExistentes);
+            }
         }
     }, [usuario]);
 

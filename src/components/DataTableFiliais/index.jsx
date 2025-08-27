@@ -14,6 +14,7 @@ import { Tooltip } from 'primereact/tooltip';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { InputSwitch } from 'primereact/inputswitch';
 import { ArmazenadorToken } from '@utils';
+import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
 
 function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows, totalRecords, first, onPage, totalPages, onSearch, selected = null, setSelected = () => { }, onUpdate, sortField, sortOrder, onSort }) {
 
@@ -22,6 +23,7 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
     const [selectedFiliais, setSelectedFiliais] = useState([]);
+    const { metadadosDeveSerExibido } = useMetadadosPermission();
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && filiais) {
@@ -259,10 +261,12 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
-                <Column field="nome" header="Filial" sortable style={{ width: '20%' }}></Column>
+                <Column field="nome" header="Filial" sortable style={{ width: metadadosDeveSerExibido ? '20%' : '35%' }}></Column>
                 <Column field="cidade" header="Cidade" sortable style={{ width: '15%' }}></Column>
-                <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" sortable style={{ width: '20%' }}></Column>
-                <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
+                <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" sortable style={{ width: metadadosDeveSerExibido ? '20%' : '35%' }}></Column>
+                {metadadosDeveSerExibido && (
+                    <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
+                )}
                 <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
             </DataTable>
             <ModalEditarFilial aoSalvar={editarFilial} filial={selectedFilial} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />

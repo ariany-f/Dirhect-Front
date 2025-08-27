@@ -18,6 +18,7 @@ import { Toast } from 'primereact/toast';
 import { InputSwitch } from 'primereact/inputswitch';
 import http from '@http';
 import { ArmazenadorToken } from '@utils';
+import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -39,6 +40,7 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
     const [selectedCargos, setSelectedCargos] = useState([]);
     const navegar = useNavigate()
     const toast = useRef(null);
+    const { metadadosDeveSerExibido } = useMetadadosPermission();
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && cargos) {
@@ -222,9 +224,11 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
                 }
                 <Column field="id" header="Id" sortable style={{ width: '10%' }}></Column>
                 <Column field="id_origem" header="Código" sortable style={{ width: '10%' }}></Column>
-                <Column field="nome" header="Nome" sortable style={{ width: '25%' }}></Column>
-                <Column field="descricao" header="Descrição" sortable style={{ width: '25%' }}></Column>
-                <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
+                <Column field="nome" header="Nome" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
+                <Column field="descricao" header="Descrição" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
+                {metadadosDeveSerExibido && (
+                    <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
+                )}
                 <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
             </DataTable>
         </>

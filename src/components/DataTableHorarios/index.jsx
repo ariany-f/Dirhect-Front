@@ -18,6 +18,7 @@ import { Toast } from 'primereact/toast';
 import { InputSwitch } from 'primereact/inputswitch';
 import http from '@http';
 import { ArmazenadorToken } from '@utils';
+import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -50,6 +51,7 @@ function DataTableHorarios({
     const [selectedHorario, setSelectedHorario] = useState(null);
     const navegar = useNavigate();
     const toast = useRef(null);
+    const { metadadosDeveSerExibido } = useMetadadosPermission();
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && horarios) {
@@ -239,9 +241,11 @@ function DataTableHorarios({
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
                 <Column field="id_origem" header="Código" sortable style={{ width: '15%' }}></Column>
-                <Column field="descricao" header="Descrição" sortable style={{ width: '50%' }}></Column>
+                <Column field="descricao" header="Descrição" sortable style={{ width: metadadosDeveSerExibido ? '50%' : '65%' }}></Column>
                 <Column field="jornada" header="Jornada" sortable style={{ width: '10%' }}></Column>
-                <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
+                {metadadosDeveSerExibido && (
+                    <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
+                )}
                 <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
             </DataTable>
         </>

@@ -13,6 +13,7 @@ import { Toast } from 'primereact/toast';
 import { InputSwitch } from 'primereact/inputswitch';
 import http from '@http';
 import { ArmazenadorToken } from '@utils';
+import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -45,6 +46,7 @@ function DataTableCentrosCusto({
     const [selectedCentro, setSelectedCentro] = useState(null);
     const navegar = useNavigate();
     const toast = useRef(null);
+    const { metadadosDeveSerExibido } = useMetadadosPermission();
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && centros_custo) {
@@ -241,9 +243,11 @@ function DataTableCentrosCusto({
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
                 <Column field="cc_origem" header="Código" sortable style={{ width: '15%' }}></Column>
-                <Column field="nome" header="Nome" sortable style={{ width: '30%' }}></Column>
+                <Column field="nome" header="Nome" sortable style={{ width: metadadosDeveSerExibido ? '30%' : '45%' }}></Column>
                 <Column body={representativeCCPaiTemplate} field="cc_pai.nome" sortField="centro_custo_pai" header="Centro de Custo Pai" sortable style={{ width: '20%' }}></Column>
-                <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
+                {metadadosDeveSerExibido && (
+                    <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
+                )}
                 <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
             </DataTable>
         </>

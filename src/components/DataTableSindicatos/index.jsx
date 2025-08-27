@@ -15,6 +15,7 @@ import { Tooltip } from 'primereact/tooltip';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { InputSwitch } from 'primereact/inputswitch';
 import { ArmazenadorToken } from '@utils';
+import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -46,6 +47,7 @@ function DataTableSindicatos({
     const [selectedSindicato, setSelectedSindicato] = useState(null);
     const navegar = useNavigate();
     const toast = useRef(null);
+    const { metadadosDeveSerExibido } = useMetadadosPermission();
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && sindicatos) {
@@ -246,9 +248,11 @@ function DataTableSindicatos({
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
-                <Column field="descricao" header="Nome" sortable style={{ width: '30%' }}></Column>
-                <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" sortable style={{ width: '30%' }}></Column>
-                <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '20%' }}></Column>
+                <Column field="descricao" header="Nome" sortable style={{ width: metadadosDeveSerExibido ? '30%' : '40%' }}></Column>
+                <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" sortable style={{ width: metadadosDeveSerExibido ? '30%' : '40%' }}></Column>
+                {metadadosDeveSerExibido && (
+                    <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '20%' }}></Column>
+                )}
                 <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
             </DataTable>
         </>

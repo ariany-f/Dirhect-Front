@@ -22,6 +22,7 @@ const USER_TYPE = 'tipo'
 const USER_GROUPS = 'groups'
 const USER_PERMISSIONS = 'group_permissions'
 const USER_PROFILE = 'profile'
+const MENUS_PARAMETERS = 'menus_parameters'
 const TENANTS_CACHE = 'tenants_cache'
 const COMPANIES_CACHE = 'companies_cache'
 const DOMAINS_CACHE = 'domains_cache'
@@ -43,6 +44,20 @@ export class ArmazenadorToken {
     }
     static get UserPermissions() {
         return JSON.parse(localStorage.getItem(USER_PERMISSIONS))
+    }
+    static definirParametrosMenus(parametros) {
+        localStorage.setItem(MENUS_PARAMETERS, JSON.stringify(parametros))
+    }
+    static get ParametrosMenus() {
+        try {
+            return JSON.parse(localStorage.getItem(MENUS_PARAMETERS)) || {}
+        } catch (error) {
+            console.error('Erro ao recuperar parâmetros de menus:', error)
+            return {}
+        }
+    }
+    static removerParametrosMenus() {
+        localStorage.removeItem(MENUS_PARAMETERS)
     }
     static definirProfile(profile) {
         localStorage.setItem(USER_PROFILE, profile)
@@ -288,6 +303,8 @@ export class ArmazenadorToken {
         localStorage.removeItem(USER_PUBLIC_ID)
         localStorage.removeItem(USER_TYPE)
         localStorage.removeItem(USER_PROFILE)
+        // Remover parâmetros de menu
+        this.removerParametrosMenus()
         // Limpar dados de empresa
         this.removerCompany()
         this.limparEmpresas()
@@ -414,6 +431,65 @@ export class ArmazenadorToken {
             }
             return false;
         } catch (e) {
+            return false;
+        }
+    }
+
+    static metadadosDeveSerExibido() {
+        try {
+            const parametrosMenus = this.ParametrosMenus;
+            const userType = localStorage.getItem(USER_TYPE);
+            
+            if (!userType || !parametrosMenus) return false;
+
+            // Função para normalizar texto (remover acentos e caracteres especiais)
+            const normalizarTexto = (texto) => {
+                return texto
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '') // Remove acentos
+                    .replace(/[^a-zA-Z0-9\s]/g, '') // Remove caracteres especiais
+                    .replace(/\s+/g, '_') // Substitui espaços por underscore
+                    .toUpperCase();
+            };
+
+            const menuNameTranslated = normalizarTexto('Metadados');
+            const perfilMenu = `${userType.toUpperCase()}_${menuNameTranslated}`;
+            const todosMenu = `TODOS_${menuNameTranslated}`;
+            
+            // Função para buscar parâmetro de forma case-insensitive
+            const buscarParametro = (chave) => {
+                // Primeiro tenta a chave exata
+                if (parametrosMenus[chave] !== undefined) {
+                    return parametrosMenus[chave];
+                }
+                
+                // Depois tenta case-insensitive
+                const chaveLower = chave.toLowerCase();
+                for (const [key, value] of Object.entries(parametrosMenus)) {
+                    if (key.toLowerCase() === chaveLower) {
+                        return value;
+                    }
+                }
+                
+                return undefined;
+            };
+            
+            // Verifica se existe parâmetro específico para o perfil
+            const perfilValue = buscarParametro(perfilMenu);
+            if (perfilValue !== undefined) {
+                return perfilValue === 'true' || perfilValue === '1';
+            }
+            
+            // Verifica se existe parâmetro para todos os perfis
+            const todosValue = buscarParametro(todosMenu);
+            if (todosValue !== undefined) {
+                return todosValue === 'true' || todosValue === '1';
+            }
+            
+            // Se não há parâmetro específico, não permite (comportamento padrão)
+            return false;
+        } catch (error) {
+            console.error('Erro ao verificar permissão de metadados:', error);
             return false;
         }
     }
