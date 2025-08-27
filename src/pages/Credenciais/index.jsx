@@ -127,20 +127,25 @@ function Credenciais() {
   const [additionalFields, setAdditionalFields] = useState([]);
   const [savingCredential, setSavingCredential] = useState(false);
   const [editingCredential, setEditingCredential] = useState(null);
+  const [tiposAuthLoaded, setTiposAuthLoaded] = useState(false);
 
   const toast = React.useRef();
 
   // Carregar lista de credenciais
   const loadData = async (currentPage = 1, currentPageSize = 10, search = '', sort = '', currentFilters = {}) => {
+    console.log('🔄 loadData sendo chamado:', { currentPage, currentPageSize, search, sort, currentFilters });
     try {
       setLoading(true);
       
-      // Buscar tipos de autenticação
-      try {
-        const responseTiposAuth = await http.get('/integracao-tenant/credenciais-externas/tipos-autenticacao/');
-        console.log('Resposta do endpoint tipos-autenticacao:', responseTiposAuth);
-      } catch (error) {
-        console.warn('Erro ao buscar tipos de autenticação:', error);
+      // Buscar tipos de autenticação apenas na primeira carga
+      if (!tiposAuthLoaded) {
+        try {
+          const responseTiposAuth = await http.get('/integracao-tenant/credenciais-externas/tipos-autenticacao/');
+          console.log('Resposta do endpoint tipos-autenticacao:', responseTiposAuth);
+          setTiposAuthLoaded(true);
+        } catch (error) {
+          console.warn('Erro ao buscar tipos de autenticação:', error);
+        }
       }
       
       // Construir URL com parâmetros
@@ -229,6 +234,7 @@ function Credenciais() {
   };
 
   const onSearch = (search) => {
+    console.log('🔍 Busca sendo executada:', search);
     setSearchTerm(search);
     setPage(1);
     setFirst(0);
