@@ -851,7 +851,6 @@ function Credenciais() {
             fontWeight: '600',
             color: '#495057'
           }}>
-            <FaShieldAlt size={24} color="var(--primaria)" />
             {editingCredential ? 'Editar Credencial Externa' : 'Adicionar Credencial Externa'}
           </div>
         }
@@ -910,7 +909,7 @@ function Credenciais() {
                     color: 'white'
                   }}
                 >
-                  <FaSave /> {editingCredential ? 'Atualizar' : 'Salvar'}
+                  <FaSave size={editingCredential ? 26 : 16}/> {editingCredential ? 'Atualizar' : 'Salvar'}
                 </Botao>
               )}
             </div>
