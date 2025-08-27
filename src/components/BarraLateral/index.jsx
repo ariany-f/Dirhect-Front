@@ -10,7 +10,7 @@ import "./BarraLateral.css"
 import { Link, useLocation } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
-import { FaBuilding, FaBusAlt, FaUmbrellaBeach, FaUserTimes } from "react-icons/fa"
+import { FaBuilding, FaBusAlt, FaInfo, FaKey, FaUmbrellaBeach, FaUserTimes } from "react-icons/fa"
 import { FaUserGroup } from "react-icons/fa6"
 import { FaBars } from "react-icons/fa"
 import { BreadCrumb } from "primereact/breadcrumb"
@@ -426,6 +426,22 @@ function BarraLateral({ $sidebarOpened }) {
             itemTitulo: 'Ciclos de Pagamento',
             permission: 'view_folha',
         },
+        {
+            id: 20,
+            url: '/credenciais',
+            pageTitulo: t('external_credentials'),
+            icone: <FaKey size={20} className="icon" />,
+            itemTitulo: t('external_credentials'),
+            permission: 'view_credenciaisexternas',
+        },
+        {
+            id: 21,
+            url: '/metadados',
+            pageTitulo: 'Metadados',
+            icone: <FaInfo size={20} className="icon" />,
+            itemTitulo: 'Metadados',
+            permission: 'view_parametros',
+        }
     ];
 
     // Adicionar permissões de acordo com o grupo do usuário GAMBIARRA
@@ -525,6 +541,8 @@ function BarraLateral({ $sidebarOpened }) {
       'Movimentação',
       t('processes'),
       t('activities'),
+      t('external_credentials'),
+      'Metadados',
       'Lançtos de Folha'
     ];
 
