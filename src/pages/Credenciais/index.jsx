@@ -85,7 +85,7 @@ const AlertaOAuth = styled.div`
 
 
 function Credenciais() {
-  const [credenciais, setCredenciais] = useState([]);
+  const [credenciais, setCredenciais] = useState(null);
   const [selectedCredencial, setSelectedCredencial] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
@@ -133,7 +133,6 @@ function Credenciais() {
 
   // Carregar lista de credenciais
   const loadData = async (currentPage = 1, currentPageSize = 10, search = '', sort = '', currentFilters = {}) => {
-    console.log('🔄 loadData sendo chamado:', { currentPage, currentPageSize, search, sort, currentFilters });
     try {
       setLoading(true);
       
@@ -161,36 +160,39 @@ function Credenciais() {
       
       // Buscar credenciais externas
       const responseCredenciais = await http.get(url);
-      console.log('Resposta do endpoint credenciais-externas:', responseCredenciais);
       
       // Se temos credenciais, buscar os campos de cada uma
       if (responseCredenciais && responseCredenciais.results && Array.isArray(responseCredenciais.results)) {
         const credenciaisComCampos = [];
         
-        for (const credencial of responseCredenciais.results) {
+        // Buscar campos para todas as credenciais de uma vez
+        const camposPromises = responseCredenciais.results.map(async (credencial) => {
           try {
-            // Buscar campos para cada credencial usando o ID
             const responseCampos = await http.get(`/integracao-tenant/credenciais-externas-campos/?credencial=${credencial.id}`);
-            console.log(`Campos para credencial ${credencial.id}:`, responseCampos);
-            
-            // Adicionar campos_adicionais à credencial
-            const credencialComCampos = {
-              ...credencial,
-              campos_adicionais: responseCampos || []
+            return {
+              credencialId: credencial.id,
+              campos: responseCampos || []
             };
-            
-            credenciaisComCampos.push(credencialComCampos);
           } catch (camposError) {
             console.warn(`Erro ao buscar campos para credencial ${credencial.id}:`, camposError);
-            // Adicionar credencial sem campos se der erro
-            credenciaisComCampos.push({
-              ...credencial,
-              campos_adicionais: []
-            });
+            return {
+              credencialId: credencial.id,
+              campos: []
+            };
           }
-        }
+        });
         
-        console.log('Credenciais com campos:', credenciaisComCampos);
+        const camposResults = await Promise.all(camposPromises);
+        
+        // Mapear credenciais com seus campos
+        responseCredenciais.results.forEach(credencial => {
+          const camposResult = camposResults.find(cr => cr.credencialId === credencial.id);
+          credenciaisComCampos.push({
+            ...credencial,
+            campos_adicionais: camposResult ? camposResult.campos : []
+          });
+        });
+        
         setCredenciais(credenciaisComCampos);
         setTotalRecords(responseCredenciais.count || 0);
         setTotalPages(responseCredenciais.total_pages || 0);
@@ -234,7 +236,6 @@ function Credenciais() {
   };
 
   const onSearch = (search) => {
-    console.log('🔍 Busca sendo executada:', search);
     setSearchTerm(search);
     setPage(1);
     setFirst(0);
@@ -678,7 +679,7 @@ function Credenciais() {
       <Loading opened={loading} />
       
       {
-        !loading && credenciais && credenciais.length > 0 ?
+        credenciais ?
         <ConteudoFrame>
           <DataTableCredenciais 
             credenciais={credenciais} 
@@ -701,15 +702,13 @@ function Credenciais() {
           />
         </ConteudoFrame>
         :
-        !loading && (
-          <ContainerSemRegistro>
-            <section>
-              <img src="/src/assets/Management.svg" alt="Management" />
-              <h6>Não há credenciais registradas</h6>
-              <p>Aqui você verá todas as credenciais externas registradas.</p>
-            </section>
-          </ContainerSemRegistro>
-        )
+        <ContainerSemRegistro>
+          <section>
+            <img src="/src/assets/Management.svg" alt="Management" />
+            <h6>Não há credenciais registradas</h6>
+            <p>Aqui você verá todas as credenciais externas registradas.</p>
+          </section>
+        </ContainerSemRegistro>
       }
 
       {/* Modal de Confirmação de Exclusão */}

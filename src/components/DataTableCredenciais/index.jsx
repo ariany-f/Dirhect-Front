@@ -9,7 +9,7 @@ import Texto from '@components/Texto';
 import BotaoGrupo from '@components/BotaoGrupo';
 import Botao from '@components/Botao';
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import { Tag } from 'primereact/tag';
 import { FaTrash, FaEdit, FaShieldAlt, FaGlobe, FaKey, FaUser, FaCog, FaFileExcel } from 'react-icons/fa';
@@ -58,35 +58,14 @@ function DataTableCredenciais({ credenciais, paginator, rows, totalRecords, firs
     const [key, setKey] = useState(0);
     const [exportingExcel, setExportingExcel] = useState(false);
     const toast = useRef(null);
-    const searchTimeoutRef = useRef(null);
 
     const navegar = useNavigate()
     const {usuario} = useSessaoUsuarioContext()
 
     const onGlobalFilterChange = (value) => {
-        console.log('🔍 Campo de busca alterado:', value);
         setGlobalFilterValue(value);
-        
-        // Limpar timeout anterior
-        if (searchTimeoutRef.current) {
-            clearTimeout(searchTimeoutRef.current);
-        }
-        
-        // Definir novo timeout para busca com debounce de 500ms
-        searchTimeoutRef.current = setTimeout(() => {
-            console.log('🔍 Executando busca após debounce:', value);
-            onSearch(value);
-        }, 500);
+        onSearch(value);
     };
-
-    // Limpar timeout quando o componente for desmontado
-    useEffect(() => {
-        return () => {
-            if (searchTimeoutRef.current) {
-                clearTimeout(searchTimeoutRef.current);
-            }
-        };
-    }, []);
 
     const exportarExcel = async () => {
         setExportingExcel(true);

@@ -315,7 +315,6 @@ function ModalDetalhesCredencial({ credencial, visible, onHide, onEdit, onDelete
                     fontWeight: '600',
                     color: '#495057'
                 }}>
-                    <FaShieldAlt size={24} color="var(--primaria)" />
                     Detalhes da Credencial
                 </div>
             }
