@@ -126,6 +126,7 @@ function Credenciais() {
   });
   const [additionalFields, setAdditionalFields] = useState([]);
   const [savingCredential, setSavingCredential] = useState(false);
+  const [editingCredential, setEditingCredential] = useState(null);
 
   const toast = React.useRef();
 
@@ -255,8 +256,45 @@ function Credenciais() {
   };
 
   const handleEdit = (credencial) => {
-    // TODO: Implementar edição
-    console.log('Editar credencial:', credencial);
+    // Definir que estamos editando
+    setEditingCredential(credencial);
+    
+    // Preencher o modal com os dados da credencial selecionada
+    setNewCredential({
+      nome_sistema: credencial.nome_sistema || '',
+      descricao: credencial.descricao || '',
+      logo: credencial.logo || null,
+      url_endpoint: credencial.url_endpoint || '',
+      tipo_autenticacao: credencial.tipo_autenticacao || 'api_key',
+      usuario: credencial.usuario || '',
+      senha: credencial.senha || '',
+      api_key: credencial.api_key || '',
+      bearer_token: credencial.bearer_token || '',
+      client_id: credencial.client_id || '',
+      client_secret: credencial.client_secret || '',
+      timeout: credencial.timeout || 30,
+      headers_adicionais: credencial.headers_adicionais ? JSON.stringify(credencial.headers_adicionais, null, 2) : '{}',
+      ativo: credencial.ativo !== undefined ? credencial.ativo : true,
+      observacoes: credencial.observacoes || ''
+    });
+
+    // Preencher campos adicionais se existirem
+    if (credencial.campos_adicionais && credencial.campos_adicionais.length > 0) {
+      setAdditionalFields(credencial.campos_adicionais.map(campo => ({
+        id: campo.id || Date.now(),
+        chave: campo.chave || '',
+        valor: campo.valor || '',
+        tipo_campo: campo.tipo_campo || 'texto',
+        obrigatório: campo.obrigatório || false,
+        sensivel: campo.sensivel || false
+      })));
+    } else {
+      setAdditionalFields([]);
+    }
+
+    // Abrir modal na primeira aba
+    setActiveTab(0);
+    setShowCreateCredentialModal(true);
   };
 
   const handleDelete = (credencial) => {
@@ -306,6 +344,9 @@ function Credenciais() {
 
   // Iniciar criação de nova credencial
   const iniciarCriacaoCredencial = () => {
+    // Limpar estado de edição
+    setEditingCredential(null);
+    
     setShowCreateCredentialModal(true);
     setActiveTab(0);
     setNewCredential({
@@ -423,7 +464,7 @@ function Credenciais() {
     return errors;
   };
 
-  // Salvar nova credencial
+    // Salvar nova credencial ou atualizar existente
   const saveNewCredential = async () => {
     const errors = validateCredential();
     
@@ -479,42 +520,78 @@ function Credenciais() {
         // Se não for JSON válido, ignorar
       }
 
-      // Criar credencial
-      const response = await http.post('/integracao-tenant/credenciais-externas/', credentialData);
+      let response;
       
-      // Se há campos adicionais, criá-los
-      if (additionalFields.length > 0) {
-        for (const field of additionalFields) {
-          await http.post('/integracao-tenant/credenciais-externas-campos/', {
-            credencial: response.id,
-            chave: field.chave,
-            valor: field.valor,
-            tipo_campo: field.tipo_campo,
-            obrigatório: field.obrigatório,
-            sensivel: field.sensivel
-          });
+      if (editingCredential) {
+        // Atualizar credencial existente
+        response = await http.put(`/integracao-tenant/credenciais-externas/${editingCredential.id}/`, credentialData);
+        
+        // Excluir campos adicionais existentes
+        if (editingCredential.campos_adicionais && editingCredential.campos_adicionais.length > 0) {
+          for (const campo of editingCredential.campos_adicionais) {
+            await http.delete(`/integracao-tenant/credenciais-externas-campos/${campo.id}/`);
+          }
         }
+        
+        // Criar novos campos adicionais
+        if (additionalFields.length > 0) {
+          for (const field of additionalFields) {
+            await http.post('/integracao-tenant/credenciais-externas-campos/', {
+              credencial: editingCredential.id,
+              chave: field.chave,
+              valor: field.valor,
+              tipo_campo: field.tipo_campo,
+              obrigatório: field.obrigatório,
+              sensivel: field.sensivel
+            });
+          }
+        }
+        
+        toast.current.show({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'Credencial atualizada com sucesso!',
+          life: 3000
+        });
+      } else {
+        // Criar nova credencial
+        response = await http.post('/integracao-tenant/credenciais-externas/', credentialData);
+        
+        // Se há campos adicionais, criá-los
+        if (additionalFields.length > 0) {
+          for (const field of additionalFields) {
+            await http.post('/integracao-tenant/credenciais-externas-campos/', {
+              credencial: response.id,
+              chave: field.chave,
+              valor: field.valor,
+              tipo_campo: field.tipo_campo,
+              obrigatório: field.obrigatório,
+              sensivel: field.sensivel
+            });
+          }
+        }
+        
+        toast.current.show({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'Credencial criada com sucesso!',
+          life: 3000
+        });
       }
-
-      toast.current.show({
-        severity: 'success',
-        summary: 'Sucesso',
-        detail: 'Credencial criada com sucesso!',
-        life: 3000
-      });
 
       // Fechar modal e recarregar lista
       setShowCreateCredentialModal(false);
+      setEditingCredential(null);
       
       // Recarregar credenciais
       loadData(page, pageSize, searchTerm, getSortParam(), filters);
 
     } catch (error) {
-      console.error('Erro ao criar credencial:', error);
+      console.error('Erro ao salvar credencial:', error);
       toast.current.show({
         severity: 'error',
         summary: 'Erro',
-        detail: 'Erro ao criar credencial',
+        detail: editingCredential ? 'Erro ao atualizar credencial' : 'Erro ao criar credencial',
         life: 3000
       });
     } finally {
@@ -774,11 +851,15 @@ function Credenciais() {
             fontWeight: '600',
             color: '#495057'
           }}>
-            Adicionar Credencial Externa
+            <FaShieldAlt size={24} color="var(--primaria)" />
+            {editingCredential ? 'Editar Credencial Externa' : 'Adicionar Credencial Externa'}
           </div>
         }
         visible={showCreateCredentialModal}
-        onHide={() => setShowCreateCredentialModal(false)}
+        onHide={() => {
+          setShowCreateCredentialModal(false);
+          setEditingCredential(null);
+        }}
         style={{ width: '90vw', maxWidth: '1200px' }}
         modal
         closeOnEscape
@@ -794,7 +875,10 @@ function Credenciais() {
             <div style={{ display: 'flex', gap: '12px' }}>
               <Botao
                 size="medium"
-                aoClicar={() => setShowCreateCredentialModal(false)}
+                aoClicar={() => {
+                  setShowCreateCredentialModal(false);
+                  setEditingCredential(null);
+                }}
                 style={{
                   background: 'linear-gradient(135deg, #6c757d 0%, #5a6268 100%)',
                   border: 'none',
@@ -826,7 +910,7 @@ function Credenciais() {
                     color: 'white'
                   }}
                 >
-                  <FaSave /> Salvar
+                  <FaSave /> {editingCredential ? 'Atualizar' : 'Salvar'}
                 </Botao>
               )}
             </div>
@@ -1306,7 +1390,10 @@ function Credenciais() {
         credencial={selectedCredencialForDetails}
         visible={showDetailsModal}
         onHide={handleCloseDetails}
-        onEdit={handleEdit}
+        onEdit={(credencial) => {
+          handleCloseDetails();
+          handleEdit(credencial);
+        }}
         onDelete={handleDelete}
       />
     </>
