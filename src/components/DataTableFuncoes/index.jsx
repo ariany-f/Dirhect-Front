@@ -40,6 +40,7 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
     const [selectedFuncaos, setSelectedFuncaos] = useState([]);
     const navegar = useNavigate()
     const toast = useRef(null);
+    const [integracaoStates, setIntegracaoStates] = useState({});
     const { metadadosDeveSerExibido } = useMetadadosPermission();
 
     useEffect(() => {
@@ -155,6 +156,12 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
     };
 
     const atualizarIntegracao = (id, integracao) => {
+        // Atualizar o estado local imediatamente para feedback visual
+        setIntegracaoStates(prev => ({
+            ...prev,
+            [id]: integracao
+        }));
+        
         http.put(`funcao/${id}/`, { integracao })
             .then(() => {
                 toast.current.show({
@@ -169,6 +176,12 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
                 }
             })
             .catch(error => {
+                // Reverter o estado em caso de erro
+                setIntegracaoStates(prev => ({
+                    ...prev,
+                    [id]: !integracao
+                }));
+                
                 toast.current.show({
                     severity: 'error',
                     summary: 'Erro',
@@ -180,11 +193,16 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
     };
 
     const representativeIntegracaoTemplate = (rowData) => {
+        // Usar o estado local se disponível, senão usar o valor original
+        const integracaoValue = integracaoStates[rowData.id] !== undefined 
+            ? integracaoStates[rowData.id] 
+            : (rowData.integracao || false);
+            
         return (
             <InputSwitch
-                checked={rowData.integracao || false}
+                checked={integracaoValue}
                 onChange={(e) => atualizarIntegracao(rowData.id, e.value)}
-                tooltip={rowData.integracao ? 'Integração ativa' : 'Integração inativa'}
+                tooltip={integracaoValue ? 'Integração ativa' : 'Integração inativa'}
                 tooltipOptions={{ position: 'top' }}
             />
         );

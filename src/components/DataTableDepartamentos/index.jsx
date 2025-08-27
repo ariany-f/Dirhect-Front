@@ -46,6 +46,7 @@ function DataTableDepartamentos({
     const [selectedDepartamento, setSelectedDepartamento] = useState(null);
     const navegar = useNavigate()
     const toast = useRef(null);
+    const [integracaoStates, setIntegracaoStates] = useState({});
     const { metadadosDeveSerExibido } = useMetadadosPermission();
 
     useEffect(() => {
@@ -136,6 +137,12 @@ function DataTableDepartamentos({
     };
 
     const atualizarIntegracao = (id, integracao) => {
+        // Atualizar o estado local imediatamente para feedback visual
+        setIntegracaoStates(prev => ({
+            ...prev,
+            [id]: integracao
+        }));
+        
         http.put(`departamento/${id}/`, { integracao })
             .then(() => {
                 toast.current.show({
@@ -150,6 +157,12 @@ function DataTableDepartamentos({
                 }
             })
             .catch(error => {
+                // Reverter o estado em caso de erro
+                setIntegracaoStates(prev => ({
+                    ...prev,
+                    [id]: !integracao
+                }));
+                
                 toast.current.show({
                     severity: 'error',
                     summary: 'Erro',
@@ -161,11 +174,16 @@ function DataTableDepartamentos({
     };
 
     const representativeIntegracaoTemplate = (rowData) => {
+        // Usar o estado local se disponível, senão usar o valor original
+        const integracaoValue = integracaoStates[rowData.id] !== undefined 
+            ? integracaoStates[rowData.id] 
+            : (rowData.integracao || false);
+            
         return (
             <InputSwitch
-                checked={rowData.integracao || false}
+                checked={integracaoValue}
                 onChange={(e) => atualizarIntegracao(rowData.id, e.value)}
-                tooltip={rowData.integracao ? 'Integração ativa' : 'Integração inativa'}
+                tooltip={integracaoValue ? 'Integração ativa' : 'Integração inativa'}
                 tooltipOptions={{ position: 'top' }}
             />
         );

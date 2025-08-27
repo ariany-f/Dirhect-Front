@@ -23,6 +23,7 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
     const [selectedFiliais, setSelectedFiliais] = useState([]);
+    const [integracaoStates, setIntegracaoStates] = useState({});
     const { metadadosDeveSerExibido } = useMetadadosPermission();
 
     useEffect(() => {
@@ -157,6 +158,18 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
     };
 
     const atualizarIntegracao = (id, integracao) => {
+        console.log('atualizarIntegracao called:', id, integracao);
+        // Atualizar o estado local imediatamente para feedback visual
+        setIntegracaoStates(prev => {
+            console.log('Previous state:', prev);
+            const newState = {
+                ...prev,
+                [id]: integracao
+            };
+            console.log('New state:', newState);
+            return newState;
+        });
+        
         http.put(`filial/${id}/`, { integracao })
             .then(() => {
                 toast.current.show({
@@ -171,6 +184,12 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                 }
             })
             .catch(error => {
+                // Reverter o estado em caso de erro
+                setIntegracaoStates(prev => ({
+                    ...prev,
+                    [id]: !integracao
+                }));
+                
                 toast.current.show({
                     severity: 'error',
                     summary: 'Erro',
@@ -182,11 +201,21 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
     };
 
     const representativeIntegracaoTemplate = (rowData) => {
+        // Usar o estado local se disponível, senão usar o valor original
+        const integracaoValue = integracaoStates[rowData.id] !== undefined 
+            ? integracaoStates[rowData.id] 
+            : (rowData.integracao || false);
+        
+        console.log('Template render:', rowData.id, 'integracaoStates:', integracaoStates, 'rowData.integracao:', rowData.integracao, 'integracaoValue:', integracaoValue);
+            
         return (
             <InputSwitch
-                checked={rowData.integracao || false}
-                onChange={(e) => atualizarIntegracao(rowData.id, e.value)}
-                tooltip={rowData.integracao ? 'Integração ativa' : 'Integração inativa'}
+                checked={integracaoValue}
+                onChange={(e) => {
+                    console.log('Switch clicked:', rowData.id, e.value);
+                    atualizarIntegracao(rowData.id, e.value);
+                }}
+                tooltip={integracaoValue ? 'Integração ativa' : 'Integração inativa'}
                 tooltipOptions={{ position: 'top' }}
             />
         );
@@ -241,6 +270,7 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                 </div>
             }
             <DataTable 
+                key={JSON.stringify(integracaoStates)}
                 value={filiais} 
                 emptyMessage="Não foram encontradas filiais" 
                 selection={selected ? selectedFiliais : selectedFilial} 

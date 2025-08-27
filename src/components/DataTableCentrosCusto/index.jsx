@@ -46,6 +46,7 @@ function DataTableCentrosCusto({
     const [selectedCentro, setSelectedCentro] = useState(null);
     const navegar = useNavigate();
     const toast = useRef(null);
+    const [integracaoStates, setIntegracaoStates] = useState({});
     const { metadadosDeveSerExibido } = useMetadadosPermission();
 
     useEffect(() => {
@@ -131,6 +132,12 @@ function DataTableCentrosCusto({
     };
 
     const atualizarIntegracao = (id, integracao) => {
+        // Atualizar o estado local imediatamente para feedback visual
+        setIntegracaoStates(prev => ({
+            ...prev,
+            [id]: integracao
+        }));
+        
         http.put(`centro_custo/${id}/`, { integracao })
             .then(() => {
                 toast.current.show({
@@ -145,6 +152,12 @@ function DataTableCentrosCusto({
                 }
             })
             .catch(error => {
+                // Reverter o estado em caso de erro
+                setIntegracaoStates(prev => ({
+                    ...prev,
+                    [id]: !integracao
+                }));
+                
                 toast.current.show({
                     severity: 'error',
                     summary: 'Erro',
@@ -156,11 +169,21 @@ function DataTableCentrosCusto({
     };
 
     const representativeIntegracaoTemplate = (rowData) => {
+        // Usar o estado local se disponível, senão usar o valor original
+        const integracaoValue = integracaoStates[rowData.id] !== undefined 
+            ? integracaoStates[rowData.id] 
+            : (rowData.integracao || false);
+        
+        console.log('CentrosCusto Template render:', rowData.id, 'integracaoStates:', integracaoStates, 'rowData.integracao:', rowData.integracao, 'integracaoValue:', integracaoValue);
+            
         return (
             <InputSwitch
-                checked={rowData.integracao || false}
-                onChange={(e) => atualizarIntegracao(rowData.id, e.value)}
-                tooltip={rowData.integracao ? 'Integração ativa' : 'Integração inativa'}
+                checked={integracaoValue}
+                onChange={(e) => {
+                    console.log('CentrosCusto Switch clicked:', rowData.id, e.value);
+                    atualizarIntegracao(rowData.id, e.value);
+                }}
+                tooltip={integracaoValue ? 'Integração ativa' : 'Integração inativa'}
                 tooltipOptions={{ position: 'top' }}
             />
         );
@@ -222,6 +245,7 @@ function DataTableCentrosCusto({
                 </div>
             }
             <DataTable 
+                key={JSON.stringify(integracaoStates)}
                 value={centros_custo} 
                 emptyMessage="Não foram encontrados centros de custo" 
                 selection={selected ? selectedCentros : selectedCentro} 
