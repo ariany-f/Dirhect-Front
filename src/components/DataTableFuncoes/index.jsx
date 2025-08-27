@@ -257,6 +257,7 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
                 </div>
             }
             <DataTable 
+                key={JSON.stringify(integracaoStates)}
                 value={funcoes} 
                 emptyMessage="Não foram encontrados funcoes" 
                 selection={selected ? selectedFuncaos : selectedFuncao} 

@@ -245,6 +245,7 @@ function DataTableDepartamentos({
                 </div>
             }
             <DataTable 
+                key={JSON.stringify(integracaoStates)}
                 value={departamentos} 
                 emptyMessage="Não foram encontrados departamentos" 
                 selection={selected ? selectedDepartamentos : selectedDepartamento} 

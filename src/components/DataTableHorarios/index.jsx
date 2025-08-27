@@ -238,6 +238,7 @@ function DataTableHorarios({
                 </div>
             }
             <DataTable 
+                key={JSON.stringify(integracaoStates)}
                 value={horarios} 
                 emptyMessage="Não foram encontrados horários" 
                 selection={selected ? selectedHorarios : selectedHorario} 

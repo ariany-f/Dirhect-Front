@@ -248,6 +248,7 @@ function DataTableSecoes({
                 </div>
             }
             <DataTable 
+                key={JSON.stringify(integracaoStates)}
                 value={secoes} 
                 emptyMessage="Não foram encontradas seções" 
                 selection={selected ? selectedSecoes : selectedSecao} 

@@ -246,6 +246,7 @@ function DataTableSindicatos({
                 </div>
             }
             <DataTable 
+                key={JSON.stringify(integracaoStates)}
                 value={sindicatos} 
                 emptyMessage="Não foram encontrados sindicatos" 
                 selection={selected ? selectedSindicatos : selectedSindicato} 
