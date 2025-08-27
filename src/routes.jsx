@@ -194,6 +194,7 @@ import MeusDadosEmpresa from './pages/MeusDados/empresa'
 import usePageMetadata from '@hooks/usePageMetadata';
 import ColaboradorEstabilidade from './pages/Colaboradores/Detalhes/estabilidade'
 import Metadados from './pages/Metadados'
+import Credenciais from './pages/Credenciais'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
@@ -324,6 +325,7 @@ function AppRouter() {
               </Route>
             
               <Route path="metadados" element={<Metadados />} />
+              <Route path="credenciais" element={<Credenciais />} />
 
               <Route path="estrutura" element={<EstruturaOrganizacional />} >
                 <Route index element={<FiliaisLista />} />
