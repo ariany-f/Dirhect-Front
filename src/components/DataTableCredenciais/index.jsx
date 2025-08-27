@@ -39,9 +39,9 @@ const StatusTag = styled(Tag)`
 const TipoAutenticacaoTag = styled(Tag)`
     color: var(--white) !important;
     background-color: ${props => props.tipo === 'api_key' ? '#28a745' :
-                        props.tipo === 'basic' ? '#007bff' :
-                        props.tipo === 'bearer' ? '#6f42c1' :
-                        props.tipo === 'oauth' ? '#fd7e14' :
+                        props.tipo === 'basic' ? '#1a73e8' :
+                        props.tipo === 'bearer' ? '#ffa000' :
+                        props.tipo === 'oauth' ? '#dc3545' :
                         '#6c757d'} !important;
     font-size: 13px !important;
     padding: 4px 12px !important;
@@ -131,15 +131,15 @@ function DataTableCredenciais({ credenciais, paginator, rows, totalRecords, firs
                         borderRadius: '50%',
                         background: `linear-gradient(135deg, ${
                             rowData.tipo_autenticacao === 'api_key' ? '#28a745' :
-                            rowData.tipo_autenticacao === 'basic' ? '#007bff' :
-                            rowData.tipo_autenticacao === 'bearer' ? '#6f42c1' :
-                            rowData.tipo_autenticacao === 'oauth' ? '#fd7e14' :
+                            rowData.tipo_autenticacao === 'basic' ? '#1a73e8' :
+                            rowData.tipo_autenticacao === 'bearer' ? '#ffa000' :
+                            rowData.tipo_autenticacao === 'oauth' ? '#dc3545' :
                             '#6c757d'
                         } 0%, ${
                             rowData.tipo_autenticacao === 'api_key' ? '#20c997' :
-                            rowData.tipo_autenticacao === 'basic' ? '#0056b3' :
-                            rowData.tipo_autenticacao === 'bearer' ? '#5a2d91' :
-                            rowData.tipo_autenticacao === 'oauth' ? '#e55a00' :
+                            rowData.tipo_autenticacao === 'basic' ? '#1565c0' :
+                            rowData.tipo_autenticacao === 'bearer' ? '#f57c00' :
+                            rowData.tipo_autenticacao === 'oauth' ? '#c62828' :
                             '#5a6268'
                         } 100%)`,
                         display: 'flex',

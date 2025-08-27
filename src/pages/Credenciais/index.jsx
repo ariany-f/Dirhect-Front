@@ -55,9 +55,9 @@ const AlertaAviso = styled.div`
 `;
 
 const AlertaInfo = styled.div`
-    background: #e3f2fd;
-    color: #1976d2;
-    border-left: 4px solid #1976d2;
+    background: #e8f0fe;
+    color: #1a73e8;
+    border-left: 4px solid #1a73e8;
     border-radius: 4px;
     padding: 16px;
     font-size: 14px;
@@ -68,9 +68,9 @@ const AlertaInfo = styled.div`
 `;
 
 const AlertaOAuth = styled.div`
-    background: #f3e5f5;
-    color: #6f42c1;
-    border-left: 4px solid #6f42c1;
+    background: #fff5f5;
+    color: #dc3545;
+    border-left: 4px solid #dc3545;
     border-radius: 4px;
     padding: 16px;
     font-size: 14px;
@@ -1025,7 +1025,7 @@ function Credenciais() {
             {activeTab === 2 && (
               <div style={{ display: 'grid', gap: '24px' }}>
                 <AlertaInfo>
-                  <FaInfo size={20} style={{ color: '#1976d2', flexShrink: 0 }}/>
+                  <FaInfo size={20} style={{ color: '#1a73e8', flexShrink: 0 }}/>
                   <span>
                     Preencha apenas os campos necessários para o tipo de autenticação selecionado
                   </span>
@@ -1088,7 +1088,7 @@ function Credenciais() {
             {activeTab === 3 && newCredential.tipo_autenticacao === 'oauth' && (
               <div style={{ display: 'grid', gap: '24px' }}>
                 <AlertaOAuth>
-                  <FaShieldAlt size={20} style={{ color: '#6f42c1', flexShrink: 0 }}/>
+                  <FaShieldAlt size={20} style={{ color: '#dc3545', flexShrink: 0 }}/>
                   <span>
                     Campos específicos para autenticação OAuth 2.0
                   </span>

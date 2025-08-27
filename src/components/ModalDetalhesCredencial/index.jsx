@@ -21,9 +21,9 @@ const StatusTag = styled(Tag)`
 const TipoAutenticacaoTag = styled(Tag)`
     color: var(--white) !important;
     background-color: ${props => props.tipo === 'api_key' ? '#28a745' :
-                        props.tipo === 'basic' ? '#007bff' :
-                        props.tipo === 'bearer' ? '#6f42c1' :
-                        props.tipo === 'oauth' ? '#fd7e14' :
+                        props.tipo === 'basic' ? '#1a73e8' :
+                        props.tipo === 'bearer' ? '#ffa000' :
+                        props.tipo === 'oauth' ? '#dc3545' :
                         '#6c757d'} !important;
     font-size: 13px !important;
     padding: 4px 12px !important;
@@ -76,9 +76,9 @@ const CredentialIcon = styled.div`
     height: 48px;
     border-radius: 50%;
     background: ${props => props.tipo === 'api_key' ? 'linear-gradient(135deg, #28a745 0%, #20c997 100%)' :
-                  props.tipo === 'basic' ? 'linear-gradient(135deg, #007bff 0%, #0056b3 100%)' :
-                  props.tipo === 'bearer' ? 'linear-gradient(135deg, #6f42c1 0%, #5a2d91 100%)' :
-                  props.tipo === 'oauth' ? 'linear-gradient(135deg, #fd7e14 0%, #e55a00 100%)' :
+                  props.tipo === 'basic' ? 'linear-gradient(135deg, #1a73e8 0%, #1565c0 100%)' :
+                  props.tipo === 'bearer' ? 'linear-gradient(135deg, #ffa000 0%, #f57c00 100%)' :
+                  props.tipo === 'oauth' ? 'linear-gradient(135deg, #dc3545 0%, #c62828 100%)' :
                   'linear-gradient(135deg, #6c757d 0%, #5a6268 100%)'};
     display: flex;
     align-items: center;
