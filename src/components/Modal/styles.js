@@ -112,9 +112,10 @@ export const OverlayRight = styled.div`
     left: 0;
     z-index: 1001;
     opacity: ${props => props.$opened ? 1 : 0};
-    transition: visibility 0.5s ease-in-out;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     visibility: ${props => props.$opened ? 'visible' : 'hidden'};
     pointer-events: ${props => props.$opened ? 'all' : 'none'};
+    backdrop-filter: ${props => props.$opened ? 'blur(4px)' : 'blur(0px)'};
 `;
 
 export const DialogEstilizadoRight = styled.dialog`
@@ -132,8 +133,13 @@ export const DialogEstilizadoRight = styled.dialog`
         : '100vw'};
     height: 94vh;
     padding: 24px;
-    transition: left 0.3s ease-in-out;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     background: white;
+    transform: ${({ $opened }) => $opened ? 'translateX(0)' : 'translateX(100%)'};
+    opacity: ${({ $opened }) => $opened ? 1 : 0};
+    box-shadow: ${({ $opened }) => $opened 
+        ? '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)' 
+        : 'none'};
     
     & button.close {
         position: absolute;
