@@ -13,6 +13,7 @@ import styled from 'styled-components';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Tooltip } from 'primereact/tooltip';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { InputSwitch } from 'primereact/inputswitch';
 import { ArmazenadorToken } from '@utils';
 
 const NumeroColaboradores = styled.p`
@@ -133,6 +134,42 @@ function DataTableSindicatos({
         });
     };
 
+    const atualizarIntegracao = (id, integracao) => {
+        http.put(`sindicato/${id}/`, { integracao })
+            .then(() => {
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: 'Integração atualizada com sucesso',
+                    life: 3000
+                });
+                
+                if (onUpdate) {
+                    onUpdate();
+                }
+            })
+            .catch(error => {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Erro ao atualizar integração',
+                    life: 3000
+                });
+                console.error('Erro ao atualizar integração:', error);
+            });
+    };
+
+    const representativeIntegracaoTemplate = (rowData) => {
+        return (
+            <InputSwitch
+                checked={rowData.integracao || false}
+                onChange={(e) => atualizarIntegracao(rowData.id, e.value)}
+                tooltip={rowData.integracao ? 'Integração ativa' : 'Integração inativa'}
+                tooltipOptions={{ position: 'top' }}
+            />
+        );
+    };
+
     const representativeActionsTemplate = (rowData) => {
         return (
             <div style={{ 
@@ -209,8 +246,9 @@ function DataTableSindicatos({
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
-                <Column field="descricao" header="Nome" sortable style={{ width: '40%' }}></Column>
-                <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" sortable style={{ width: '40%' }}></Column>
+                <Column field="descricao" header="Nome" sortable style={{ width: '30%' }}></Column>
+                <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" sortable style={{ width: '30%' }}></Column>
+                <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '20%' }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
             </DataTable>
         </>

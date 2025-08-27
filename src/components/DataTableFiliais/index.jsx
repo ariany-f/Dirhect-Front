@@ -12,6 +12,7 @@ import ModalEditarFilial from '../ModalEditarFilial';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Tooltip } from 'primereact/tooltip';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { InputSwitch } from 'primereact/inputswitch';
 import { ArmazenadorToken } from '@utils';
 
 function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows, totalRecords, first, onPage, totalPages, onSearch, selected = null, setSelected = () => { }, onUpdate, sortField, sortOrder, onSort }) {
@@ -153,6 +154,42 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
         });
     };
 
+    const atualizarIntegracao = (id, integracao) => {
+        http.put(`filial/${id}/`, { integracao })
+            .then(() => {
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: 'Integração atualizada com sucesso',
+                    life: 3000
+                });
+                
+                if (onUpdate) {
+                    onUpdate();
+                }
+            })
+            .catch(error => {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Erro ao atualizar integração',
+                    life: 3000
+                });
+                console.error('Erro ao atualizar integração:', error);
+            });
+    };
+
+    const representativeIntegracaoTemplate = (rowData) => {
+        return (
+            <InputSwitch
+                checked={rowData.integracao || false}
+                onChange={(e) => atualizarIntegracao(rowData.id, e.value)}
+                tooltip={rowData.integracao ? 'Integração ativa' : 'Integração inativa'}
+                tooltipOptions={{ position: 'top' }}
+            />
+        );
+    };
+
     const representativeActionsTemplate = (rowData) => {
         return (
             <div style={{ 
@@ -222,9 +259,10 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
-                <Column field="nome" header="Filial" sortable style={{ width: '25%' }}></Column>
+                <Column field="nome" header="Filial" sortable style={{ width: '20%' }}></Column>
                 <Column field="cidade" header="Cidade" sortable style={{ width: '15%' }}></Column>
-                <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" sortable style={{ width: '25%' }}></Column>
+                <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" sortable style={{ width: '20%' }}></Column>
+                <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
             </DataTable>
             <ModalEditarFilial aoSalvar={editarFilial} filial={selectedFilial} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />

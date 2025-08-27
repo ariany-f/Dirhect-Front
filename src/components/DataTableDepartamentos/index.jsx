@@ -10,6 +10,7 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Tooltip } from 'primereact/tooltip';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
+import { InputSwitch } from 'primereact/inputswitch';
 import http from '@http';
 import { ArmazenadorToken } from '@utils';
 
@@ -132,6 +133,42 @@ function DataTableDepartamentos({
         });
     };
 
+    const atualizarIntegracao = (id, integracao) => {
+        http.put(`departamento/${id}/`, { integracao })
+            .then(() => {
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: 'Integração atualizada com sucesso',
+                    life: 3000
+                });
+                
+                if (onUpdate) {
+                    onUpdate();
+                }
+            })
+            .catch(error => {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Erro ao atualizar integração',
+                    life: 3000
+                });
+                console.error('Erro ao atualizar integração:', error);
+            });
+    };
+
+    const representativeIntegracaoTemplate = (rowData) => {
+        return (
+            <InputSwitch
+                checked={rowData.integracao || false}
+                onChange={(e) => atualizarIntegracao(rowData.id, e.value)}
+                tooltip={rowData.integracao ? 'Integração ativa' : 'Integração inativa'}
+                tooltipOptions={{ position: 'top' }}
+            />
+        );
+    };
+
     const representativeActionsTemplate = (rowData) => {
         return (
             <div style={{ 
@@ -209,9 +246,10 @@ function DataTableDepartamentos({
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
                 <Column field="id_origem" header="Código" sortable style={{ width: '15%' }}></Column>
-                <Column field="nome" header="Nome" sortable style={{ width: '30%' }}></Column>
+                <Column field="nome" header="Nome" sortable style={{ width: '25%' }}></Column>
                 <Column body={representativeFilialTemplate} field="filial.nome" header="Filial" style={{ width: '20%' }}></Column>
-                <Column field="descricao" header="Descrição" sortable style={{ width: '25%' }}></Column>
+                <Column field="descricao" header="Descrição" sortable style={{ width: '20%' }}></Column>
+                <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
             </DataTable>
         </>
