@@ -178,6 +178,17 @@ const EmptyState = styled.div`
     font-style: italic;
 `;
 
+const TwoColumnLayout = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 24px;
+`;
+
+const SingleColumnLayout = styled.div`
+    margin-top: 24px;
+`;
+
 function ModalDetalhesCredencial({ credencial, visible, onHide, onEdit, onDelete }) {
     const [showSensitiveData, setShowSensitiveData] = React.useState({});
 
@@ -320,11 +331,57 @@ function ModalDetalhesCredencial({ credencial, visible, onHide, onEdit, onDelete
             }
             visible={visible}
             onHide={onHide}
-            style={{ width: '90vw', maxWidth: '1000px' }}
+            style={{ width: '95vw', maxWidth: '1400px' }}
             modal
             closeOnEscape
             closable
-            footer={<></>}
+            footer={
+                <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    padding: '16px 0'
+                }}>
+                    <div style={{ color: '#6c757d', fontSize: '14px' }}>
+                        ID: {credencial.id}
+                    </div>
+                    <div style={{ display: 'flex', gap: '12px' }}>
+                        <Botao
+                            size="medium"
+                            aoClicar={onHide}
+                            style={{
+                                background: 'linear-gradient(135deg, #6c757d 0%, #5a6268 100%)',
+                                border: 'none',
+                                color: 'white'
+                            }}
+                        >
+                            Fechar
+                        </Botao>
+                        <Botao
+                            size="medium"
+                            aoClicar={() => onEdit(credencial)}
+                            style={{
+                                background: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
+                                border: 'none',
+                                color: 'white'
+                            }}
+                        >
+                            Editar
+                        </Botao>
+                        <Botao
+                            size="medium"
+                            aoClicar={() => onDelete(credencial)}
+                            style={{
+                                background: 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)',
+                                border: 'none',
+                                color: 'white'
+                            }}
+                        >
+                            Excluir
+                        </Botao>
+                    </div>
+                </div>
+            }
         >
             <div style={{ padding: '0' }}>
                 {/* Header com informações principais */}
@@ -348,165 +405,176 @@ function ModalDetalhesCredencial({ credencial, visible, onHide, onEdit, onDelete
                     </HeaderText>
                 </HeaderInfo>
 
-                {/* Informações Básicas */}
-                <DetailSection>
-                    <SectionTitle>
-                        <FaInfo size={16} />
-                        Informações Básicas
-                    </SectionTitle>
-                    
-                    <DetailRow>
-                        <DetailLabel>Nome do Sistema</DetailLabel>
-                        <DetailValue>{credencial.nome_sistema}</DetailValue>
-                    </DetailRow>
-                    
-                    <DetailRow>
-                        <DetailLabel>Descrição</DetailLabel>
-                        <DetailValue>{credencial.descricao || 'Não informada'}</DetailValue>
-                    </DetailRow>
-                    
-                    <DetailRow>
-                        <DetailLabel>Status</DetailLabel>
-                        <DetailValue>
-                            <StatusTag 
-                                value={credencial.ativo ? 'Ativo' : 'Inativo'} 
-                                severity={credencial.ativo ? "success" : "danger"}
-                            />
-                        </DetailValue>
-                    </DetailRow>
-                    
-                    <DetailRow>
-                        <DetailLabel>Tipo de Autenticação</DetailLabel>
-                        <DetailValue>
-                            <TipoAutenticacaoTag 
-                                value={credencial.tipo_autenticacao_display || credencial.tipo_autenticacao}
-                                tipo={credencial.tipo_autenticacao}
-                            />
-                        </DetailValue>
-                    </DetailRow>
-                </DetailSection>
-
-                {/* Configuração de Conexão */}
-                <DetailSection>
-                    <SectionTitle>
-                        <FaLink size={16} />
-                        Configuração de Conexão
-                    </SectionTitle>
-                    
-                    <DetailRow>
-                        <DetailLabel>URL do Endpoint</DetailLabel>
-                        <DetailValue style={{ fontFamily: 'monospace' }}>
-                            {credencial.url_endpoint}
-                        </DetailValue>
-                    </DetailRow>
-                    
-                    <DetailRow>
-                        <DetailLabel>Timeout</DetailLabel>
-                        <DetailValue>{credencial.timeout || 30} segundos</DetailValue>
-                    </DetailRow>
-                    
-                    <DetailRow>
-                        <DetailLabel>Status da Conexão</DetailLabel>
-                        <DetailValue style={{ 
-                            color: credencial.status_conexao === 'Conectado' ? '#28a745' : 
-                                   credencial.status_conexao === 'Erro' ? '#dc3545' : '#ffc107'
-                        }}>
-                            {credencial.status_conexao || 'Desconhecido'}
-                        </DetailValue>
-                    </DetailRow>
-                </DetailSection>
-
-                {/* Credenciais de Autenticação */}
-                <DetailSection>
-                    <SectionTitle>
-                        <FaKey size={16} />
-                        Credenciais de Autenticação
-                    </SectionTitle>
-                    
-                    {credencial.tipo_autenticacao === 'basic' && (
-                        <>
+                {/* Layout em duas colunas */}
+                <TwoColumnLayout>
+                    {/* Coluna Esquerda */}
+                    <div>
+                        {/* Informações Básicas */}
+                        <DetailSection>
+                            <SectionTitle>
+                                <FaInfo size={16} />
+                                Informações Básicas
+                            </SectionTitle>
+                            
                             <DetailRow>
-                                <DetailLabel>Usuário</DetailLabel>
-                                <DetailValue>{credencial.usuario || 'Não informado'}</DetailValue>
+                                <DetailLabel>Nome do Sistema</DetailLabel>
+                                <DetailValue>{credencial.nome_sistema}</DetailValue>
                             </DetailRow>
+                            
                             <DetailRow>
-                                <DetailLabel>Senha</DetailLabel>
+                                <DetailLabel>Descrição</DetailLabel>
+                                <DetailValue>{credencial.descricao || 'Não informada'}</DetailValue>
+                            </DetailRow>
+                            
+                            <DetailRow>
+                                <DetailLabel>Status</DetailLabel>
                                 <DetailValue>
-                                    {renderSensitiveValue(credencial.senha, 'senha', 'Senha')}
+                                    <StatusTag 
+                                        value={credencial.ativo ? 'Ativo' : 'Inativo'} 
+                                        severity={credencial.ativo ? "success" : "danger"}
+                                    />
                                 </DetailValue>
                             </DetailRow>
-                        </>
-                    )}
-                    
-                    {credencial.tipo_autenticacao === 'api_key' && (
-                        <DetailRow>
-                            <DetailLabel>API Key</DetailLabel>
-                            <DetailValue>
-                                {renderSensitiveValue(credencial.api_key, 'api_key', 'API Key')}
-                            </DetailValue>
-                        </DetailRow>
-                    )}
-                    
-                    {credencial.tipo_autenticacao === 'bearer' && (
-                        <DetailRow>
-                            <DetailLabel>Bearer Token</DetailLabel>
-                            <DetailValue>
-                                {renderSensitiveValue(credencial.bearer_token, 'bearer_token', 'Bearer Token')}
-                            </DetailValue>
-                        </DetailRow>
-                    )}
-                    
-                    {credencial.tipo_autenticacao === 'oauth' && (
-                        <>
+                            
                             <DetailRow>
-                                <DetailLabel>Client ID</DetailLabel>
-                                <DetailValue>{credencial.client_id || 'Não informado'}</DetailValue>
-                            </DetailRow>
-                            <DetailRow>
-                                <DetailLabel>Client Secret</DetailLabel>
+                                <DetailLabel>Tipo de Autenticação</DetailLabel>
                                 <DetailValue>
-                                    {renderSensitiveValue(credencial.client_secret, 'client_secret', 'Client Secret')}
+                                    <TipoAutenticacaoTag 
+                                        value={credencial.tipo_autenticacao_display || credencial.tipo_autenticacao}
+                                        tipo={credencial.tipo_autenticacao}
+                                    />
                                 </DetailValue>
                             </DetailRow>
-                        </>
-                    )}
-                </DetailSection>
+                        </DetailSection>
 
-                {/* Headers Adicionais */}
-                <DetailSection>
-                    <SectionTitle>
-                        <FaGlobe size={16} />
-                        Headers Adicionais
-                    </SectionTitle>
-                    {renderHeadersAdicionais()}
-                </DetailSection>
+                        {/* Configuração de Conexão */}
+                        <DetailSection>
+                            <SectionTitle>
+                                <FaLink size={16} />
+                                Configuração de Conexão
+                            </SectionTitle>
+                            
+                            <DetailRow>
+                                <DetailLabel>URL do Endpoint</DetailLabel>
+                                <DetailValue style={{ fontFamily: 'monospace' }}>
+                                    {credencial.url_endpoint}
+                                </DetailValue>
+                            </DetailRow>
+                            
+                            <DetailRow>
+                                <DetailLabel>Timeout</DetailLabel>
+                                <DetailValue>{credencial.timeout || 30} segundos</DetailValue>
+                            </DetailRow>
+                            
+                            <DetailRow>
+                                <DetailLabel>Status da Conexão</DetailLabel>
+                                <DetailValue style={{ 
+                                    color: credencial.status_conexao === 'Conectado' ? '#28a745' : 
+                                           credencial.status_conexao === 'Erro' ? '#dc3545' : '#ffc107'
+                                }}>
+                                    {credencial.status_conexao || 'Desconhecido'}
+                                </DetailValue>
+                            </DetailRow>
+                        </DetailSection>
 
-                {/* Campos Adicionais */}
-                <DetailSection>
-                    <SectionTitle>
-                        <FaCog size={16} />
-                        Campos Adicionais ({credencial.campos_adicionais?.length || 0})
-                    </SectionTitle>
-                    {renderCamposAdicionais()}
-                </DetailSection>
+                        {/* Credenciais de Autenticação */}
+                        <DetailSection>
+                            <SectionTitle>
+                                <FaKey size={16} />
+                                Credenciais de Autenticação
+                            </SectionTitle>
+                            
+                            {credencial.tipo_autenticacao === 'basic' && (
+                                <>
+                                    <DetailRow>
+                                        <DetailLabel>Usuário</DetailLabel>
+                                        <DetailValue>{credencial.usuario || 'Não informado'}</DetailValue>
+                                    </DetailRow>
+                                    <DetailRow>
+                                        <DetailLabel>Senha</DetailLabel>
+                                        <DetailValue>
+                                            {renderSensitiveValue(credencial.senha, 'senha', 'Senha')}
+                                        </DetailValue>
+                                    </DetailRow>
+                                </>
+                            )}
+                            
+                            {credencial.tipo_autenticacao === 'api_key' && (
+                                <DetailRow>
+                                    <DetailLabel>API Key</DetailLabel>
+                                    <DetailValue>
+                                        {renderSensitiveValue(credencial.api_key, 'api_key', 'API Key')}
+                                    </DetailValue>
+                                </DetailRow>
+                            )}
+                            
+                            {credencial.tipo_autenticacao === 'bearer' && (
+                                <DetailRow>
+                                    <DetailLabel>Bearer Token</DetailLabel>
+                                    <DetailValue>
+                                        {renderSensitiveValue(credencial.bearer_token, 'bearer_token', 'Bearer Token')}
+                                    </DetailValue>
+                                </DetailRow>
+                            )}
+                            
+                            {credencial.tipo_autenticacao === 'oauth' && (
+                                <>
+                                    <DetailRow>
+                                        <DetailLabel>Client ID</DetailLabel>
+                                        <DetailValue>{credencial.client_id || 'Não informado'}</DetailValue>
+                                    </DetailRow>
+                                    <DetailRow>
+                                        <DetailLabel>Client Secret</DetailLabel>
+                                        <DetailValue>
+                                            {renderSensitiveValue(credencial.client_secret, 'client_secret', 'Client Secret')}
+                                        </DetailValue>
+                                    </DetailRow>
+                                </>
+                            )}
+                        </DetailSection>
+                    </div>
 
-                {/* Observações */}
+                    {/* Coluna Direita */}
+                    <div>
+                        {/* Headers Adicionais */}
+                        <DetailSection>
+                            <SectionTitle>
+                                <FaGlobe size={16} />
+                                Headers Adicionais
+                            </SectionTitle>
+                            {renderHeadersAdicionais()}
+                        </DetailSection>
+
+                        {/* Campos Adicionais */}
+                        <DetailSection>
+                            <SectionTitle>
+                                <FaCog size={16} />
+                                Campos Adicionais ({credencial.campos_adicionais?.length || 0})
+                            </SectionTitle>
+                            {renderCamposAdicionais()}
+                        </DetailSection>
+                    </div>
+                </TwoColumnLayout>
+
+                {/* Observações - Largura total */}
                 {credencial.observacoes && (
-                    <DetailSection>
-                        <SectionTitle>
-                            <FaInfo size={16} />
-                            Observações
-                        </SectionTitle>
-                        <div style={{ 
-                            background: '#fff3cd', 
-                            border: '1px solid #ffeaa7', 
-                            borderRadius: '8px', 
-                            padding: '16px',
-                            color: '#856404'
-                        }}>
-                            {credencial.observacoes}
-                        </div>
-                    </DetailSection>
+                    <SingleColumnLayout>
+                        <DetailSection>
+                            <SectionTitle>
+                                <FaInfo size={16} />
+                                Observações
+                            </SectionTitle>
+                            <div style={{ 
+                                background: '#fff3cd', 
+                                border: '1px solid #ffeaa7', 
+                                borderRadius: '8px', 
+                                padding: '16px',
+                                color: '#856404'
+                            }}>
+                                {credencial.observacoes}
+                            </div>
+                        </DetailSection>
+                    </SingleColumnLayout>
                 )}
             </div>
         </Dialog>
