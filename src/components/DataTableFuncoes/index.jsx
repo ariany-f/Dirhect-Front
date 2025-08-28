@@ -110,19 +110,47 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
 
     const representativeDetalhesTemplate = (rowData) => {
         if(rowData?.descricao) {
-            // Garante que o texto não passe de 100 caracteres
-            const descricaoLimitada = rowData?.descricao.length > 100 
-                ? rowData?.descricao.substring(0, 170) + "..." 
-                : rowData?.descricao;
+            const [showFullDescription, setShowFullDescription] = useState(false);
+            const maxLength = 100;
+            const isLongText = rowData.descricao.length > maxLength;
+            
+            const displayText = showFullDescription || !isLongText 
+                ? rowData.descricao 
+                : rowData.descricao.substring(0, maxLength) + "...";
         
             return (
-                <p style={{
-                    width: '100%',  // Define uma largura fixa
-                    wordWrap: 'break-word', // Permite quebra de linha
-                    overflow: 'hidden' // Garante que o conteúdo fique dentro do limite
+                <div style={{
+                    width: '100%',
+                    wordWrap: 'break-word',
+                    overflow: 'hidden'
                 }}>
-                    {descricaoLimitada}
-                </p>
+                    <p style={{
+                        margin: 0,
+                        marginBottom: isLongText ? '8px' : 0,
+                        lineHeight: '1.4'
+                    }}>
+                        {displayText}
+                    </p>
+                    {isLongText && (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setShowFullDescription(!showFullDescription);
+                            }}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                color: 'var(--primaria)',
+                                cursor: 'pointer',
+                                fontSize: '12px',
+                                padding: '2px 0',
+                                textDecoration: 'underline'
+                            }}
+                        >
+                            {showFullDescription ? 'Ver menos' : 'Ver mais'}
+                        </button>
+                    )}
+                </div>
             );
         }
         else {
@@ -479,7 +507,7 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
                 <Column field="id" header="Id" sortable style={{ width: '10%' }}></Column>
                 <Column field="id_origem" header="Código" sortable style={{ width: '10%' }}></Column>
                 <Column field="nome" header="Nome" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
-                <Column field="descricao" header="Descrição" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
+                <Column body={representativeDetalhesTemplate} header="Descrição" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
                 {(metadadosDeveSerExibido || bulkIntegrationMode) && (
                     <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
                 )}
