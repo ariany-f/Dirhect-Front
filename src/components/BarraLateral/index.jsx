@@ -10,7 +10,7 @@ import "./BarraLateral.css"
 import { Link, useLocation } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
-import { FaBuilding, FaBusAlt, FaInfo, FaKey, FaUmbrellaBeach, FaUserTimes } from "react-icons/fa"
+import { FaBuilding, FaBusAlt, FaClock, FaInfo, FaKey, FaUmbrellaBeach, FaUserTimes } from "react-icons/fa"
 import { FaUserGroup } from "react-icons/fa6"
 import { FaBars } from "react-icons/fa"
 import { BreadCrumb } from "primereact/breadcrumb"
@@ -463,6 +463,14 @@ function BarraLateral({ $sidebarOpened }) {
             pageTitulo: 'Metadados',
             icone: <FaInfo size={20} className="icon" />,
             itemTitulo: 'Metadados',
+            permission: 'view_parametros',
+        },
+        {
+            id: 22,
+            url: '/agendamentos',
+            pageTitulo: 'Agendamentos',
+            icone: <FaClock size={20} className="icon" />,
+            itemTitulo: 'Agendamentos',
             permission: 'view_parametros',
         }
     ];
