@@ -221,7 +221,6 @@ function BarraLateral({ $sidebarOpened }) {
             }
 
             if(usuario.tipo != 'Acesso Base') {
-
                 http.get(`permissao_grupo/?format=json&name=Acesso Base`)
                 .then(response => {
                     // Buscar o grupo "Acesso Base" da resposta
