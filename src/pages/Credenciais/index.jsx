@@ -704,8 +704,8 @@ function Credenciais() {
         </ConteudoFrame>
         :
         <ContainerSemRegistro>
-          <section>
-            <img src={Management} alt="Management" />
+          <section style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+            <img src={Management} />
             <h6>Não há credenciais registradas</h6>
             <p>Aqui você verá todas as credenciais externas registradas.</p>
           </section>
