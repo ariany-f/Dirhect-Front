@@ -428,7 +428,6 @@ function DataTableCentrosCusto({ centrosCusto, showSearch = true, paginator = tr
                 filters={filters}
                 filterDisplay="row"
                 globalFilterFields={['nome', 'descricao']}
-                onFilter={onFilter}
                 rows={rows}
                 totalRecords={totalRecords}
                 first={first}
