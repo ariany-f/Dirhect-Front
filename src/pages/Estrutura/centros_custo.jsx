@@ -168,29 +168,19 @@ function CentrosCustoLista() {
                 }
             </BotaoGrupo>
             
-            {centros_custo && centros_custo.length > 0 ?
-                <DataTableCentrosCusto 
-                    centros_custo={centros_custo}
-                    paginator={true}
-                    rows={pageSize}
-                    totalRecords={totalRecords}
-                    totalPages={totalPages}
-                    first={first}
-                    onPage={onPage}
-                    onSearch={onSearch}
-                    sortField={sortField}
-                    sortOrder={sortOrder}
-                    onSort={onSort}
-                />
-                :
-                <ContainerSemRegistro>
-                    <section className={styles.container}>
-                        <img src={Management} alt="Sem centros de custo" />
-                        <h6>Não há centros de custo registrados</h6>
-                        <p>Aqui você verá todos os centros de custo registrados.</p>
-                    </section>
-                </ContainerSemRegistro>
-            }
+            <DataTableCentrosCusto 
+                centros_custo={centros_custo}
+                paginator={true}
+                rows={pageSize}
+                totalRecords={totalRecords}
+                totalPages={totalPages}
+                first={first}
+                onPage={onPage}
+                onSearch={onSearch}
+                sortField={sortField}
+                sortOrder={sortOrder}
+                onSort={onSort}
+            />
         </ConteudoFrame>
         <ModalAdicionarCentroCusto 
             aoSalvar={adicionarCentroCusto} 
