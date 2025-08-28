@@ -100,6 +100,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
         setCompanies,
         setSessionCompany,
         setCompanyDomain,
+        setUser,
         setCompanySymbol,
         setCompanyLogo
     } = useSessaoUsuarioContext()
@@ -207,6 +208,9 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                 comp[0].tenant?.simbolo || '',
                 comp[0].tenant?.logo || ''
             )
+
+            console.log('usuario tem que mudar lá', usuario)
+            setUser(usuario);
         }
 
          // Verifica se a URL atual termina com um ID numérico

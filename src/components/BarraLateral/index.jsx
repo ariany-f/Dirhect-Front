@@ -220,19 +220,33 @@ function BarraLateral({ $sidebarOpened }) {
                     .catch(error => console.log('Erro ao buscar grupos:', error));
             }
 
+            http.get(`permissao_grupo/?format=json&name=Acesso Base`)
+            .then(response => {
+                 // Buscar o grupo "Acesso Base" da resposta
+                 if (response && response[0].permissions) {
+                     // Para cada grupo existente, adicionar as permissões do Acesso Base
+                     const gruposComAcessoBase = grupos.map(grupo => ({
+                         ...grupo,
+                         permissions: [
+                             ...grupo.permissions,
+                             ...response[0].permissions
+                         ]
+                     }));
+                     ArmazenadorToken.definirPermissoes(gruposComAcessoBase);
+                     setGrupos(gruposComAcessoBase);
+                 }
+            })
+            .catch(error => console.log('Erro ao buscar grupos:', error));
+
             // Buscar parâmetros de menus apenas se não existir no localStorage
-            const parametrosExistentes = ArmazenadorToken.ParametrosMenus;
-            if (Object.keys(parametrosExistentes).length === 0) {
-                http.get('parametros/por-assunto/?assunto=MENUS')
-                    .then(response => {
-                        const parametros = response.parametros || {};
-                        setParametrosMenus(parametros);
-                        ArmazenadorToken.definirParametrosMenus(parametros);
-                    })
-                    .catch(error => console.log('Erro ao buscar parâmetros de menus:', error));
-            } else {
-                setParametrosMenus(parametrosExistentes);
-            }
+            http.get('parametros/por-assunto/?assunto=MENUS')
+                .then(response => {
+                    const parametros = response.parametros || {};
+                    setParametrosMenus(parametros);
+                    ArmazenadorToken.definirParametrosMenus(parametros);
+                })
+                .catch(error => console.log('Erro ao buscar parâmetros de menus:', error));
+           
         }
     }, [usuario]);
 
@@ -475,6 +489,7 @@ function BarraLateral({ $sidebarOpened }) {
 
     // Função para verificar se um menu deve ser exibido baseado nos parâmetros
     const menuDeveSerExibido = (menu) => {
+       
         // Traduz o nome do menu usando i18n e normaliza
         const menuNameTranslated = normalizarTexto(t(menu.itemTitulo.toLowerCase()));
         
@@ -507,7 +522,7 @@ function BarraLateral({ $sidebarOpened }) {
             
             return undefined;
         };
-        
+       
         // Verifica se existe parâmetro específico para o perfil (original, singular e plural)
         const perfilValue = buscarParametro(perfilMenu) || buscarParametro(perfilMenuSingular) || buscarParametro(perfilMenuPlural);
         if (perfilValue !== undefined) {

@@ -81,6 +81,7 @@ export const SessaoUsuarioContext = createContext({
     gerarBearer: () => null,
     solicitarCodigoRecuperacaoSenha: () => null,
     redefinirSenha: () => null,
+    setUser: () => null,
     setTipo: () => null
 })
 
@@ -146,6 +147,16 @@ export const SessaoUsuarioProvider = ({ children }) => {
             }
         })
     }
+
+    const setUser = (usuario) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                usuario
+            }
+        })
+    }
+
     const setRecuperacaoUuid = (uid) => {
         setRecuperacaoSenha(estadoAnterior => {
             return {
@@ -554,7 +565,8 @@ export const SessaoUsuarioProvider = ({ children }) => {
         solicitarCodigoRecuperacaoSenha,
         redefinirSenha,
         setTipo,
-        setGroups
+        setGroups,
+        setUser
     }
 
     const value = {
