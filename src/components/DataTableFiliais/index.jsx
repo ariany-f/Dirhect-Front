@@ -12,7 +12,7 @@ import ModalEditarFilial from '../ModalEditarFilial';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Tooltip } from 'primereact/tooltip';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import { InputSwitch } from 'primereact/inputswitch';
+import SwitchInput from '@components/SwitchInput';
 import { ArmazenadorToken } from '@utils';
 import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
 
@@ -209,14 +209,12 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
         console.log('Template render:', rowData.id, 'integracaoStates:', integracaoStates, 'rowData.integracao:', rowData.integracao, 'integracaoValue:', integracaoValue);
             
         return (
-            <InputSwitch
+            <SwitchInput
                 checked={integracaoValue}
-                onChange={(e) => {
-                    console.log('Switch clicked:', rowData.id, e.value);
-                    atualizarIntegracao(rowData.id, e.value);
+                onChange={(value) => {
+                    console.log('Switch clicked:', rowData.id, value);
+                    atualizarIntegracao(rowData.id, value);
                 }}
-                tooltip={integracaoValue ? 'Integração ativa' : 'Integração inativa'}
-                tooltipOptions={{ position: 'top' }}
             />
         );
     };

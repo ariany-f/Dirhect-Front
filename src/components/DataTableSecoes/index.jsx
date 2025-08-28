@@ -11,7 +11,7 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Tooltip } from 'primereact/tooltip';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
-import { InputSwitch } from 'primereact/inputswitch';
+import SwitchInput from '@components/SwitchInput';
 import http from '@http';
 import { ArmazenadorToken } from '@utils';
 import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
@@ -183,11 +183,9 @@ function DataTableSecoes({
             : (rowData.integracao || false);
             
         return (
-            <InputSwitch
+            <SwitchInput
                 checked={integracaoValue}
-                onChange={(e) => atualizarIntegracao(rowData.id, e.value)}
-                tooltip={integracaoValue ? 'Integração ativa' : 'Integração inativa'}
-                tooltipOptions={{ position: 'top' }}
+                onChange={(value) => atualizarIntegracao(rowData.id, value)}
             />
         );
     };
