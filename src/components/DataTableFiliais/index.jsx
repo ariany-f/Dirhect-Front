@@ -29,6 +29,12 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
     const [bulkIntegrationMode, setBulkIntegrationMode] = useState(false);
     const [selectedForIntegration, setSelectedForIntegration] = useState([]);
     const [universalIntegrationValue, setUniversalIntegrationValue] = useState(false);
+    const [filters, setFilters] = useState({
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        nome: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        descricao: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        integracao: { value: null, matchMode: FilterMatchMode.EQUALS }
+    });
     const { metadadosDeveSerExibido } = useMetadadosPermission();
 
     useEffect(() => {
@@ -419,6 +425,12 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
         }
     };
 
+    const onFilter = (event) => {
+        console.log("Filtro aplicado:", event.filters);
+        const newFilters = { ...event.filters };
+        setFilters(newFilters);
+    };
+
     return (
         <>
             <Toast ref={toast} />
@@ -513,6 +525,7 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                 selectionMode={bulkIntegrationMode ? "checkbox" : (selected ? "checkbox" : "single")} 
                 paginator={pagination} 
                 lazy
+                dataKey="id"
                 rows={rows} 
                 totalRecords={totalRecords} 
                 first={first} 
