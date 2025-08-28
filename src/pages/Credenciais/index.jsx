@@ -8,6 +8,7 @@ import { FaPlus, FaSave, FaTrash, FaPlusCircle, FaSearch, FaEdit, FaKey, FaUser,
 import { GrAddCircle } from 'react-icons/gr';
 import http from '@http';
 import styled from 'styled-components';
+import Management from '@assets/Management.svg'
 import Botao from '@components/Botao';
 import BotaoGrupo from '@components/BotaoGrupo';
 import DropdownItens from '@components/DropdownItens';
@@ -704,7 +705,7 @@ function Credenciais() {
         :
         <ContainerSemRegistro>
           <section>
-            <img src="/src/assets/Management.svg" alt="Management" />
+            <img src={Management} alt="Management" />
             <h6>Não há credenciais registradas</h6>
             <p>Aqui você verá todas as credenciais externas registradas.</p>
           </section>
