@@ -16,6 +16,8 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import SwitchInput from '@components/SwitchInput';
 import { ArmazenadorToken } from '@utils';
 import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
+import Botao from '@components/Botao';
+import { FaCheck, FaTimes, FaEdit, FaTimes as FaCancel } from 'react-icons/fa';
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -42,12 +44,22 @@ function DataTableSindicatos({
     sortOrder,
     onSort
 }) {
+   
+    const[selectedSindicato, setSelectedSindicato] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
+    const [filters, setFilters] = useState({
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        nome: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        descricao: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        integracao: { value: null, matchMode: FilterMatchMode.EQUALS }
+    });
     const [selectedSindicatos, setSelectedSindicatos] = useState([]);
-    const [selectedSindicato, setSelectedSindicato] = useState(null);
-    const navegar = useNavigate();
+    const navigate = useNavigate();
     const toast = useRef(null);
     const [integracaoStates, setIntegracaoStates] = useState({});
+    const [bulkIntegrationMode, setBulkIntegrationMode] = useState(false);
+    const [selectedForIntegration, setSelectedForIntegration] = useState([]);
+    const [universalIntegrationValue, setUniversalIntegrationValue] = useState(false);
     const { metadadosDeveSerExibido } = useMetadadosPermission();
 
     useEffect(() => {
@@ -66,22 +78,10 @@ function DataTableSindicatos({
 
     function verDetalhes(value) {
         setSelectedSindicato(value.id);
-        // navegar(`/estrutura/sindicato/detalhes/${value.id}`);
+        // navigate(`/estrutura/sindicato/detalhes/${value.id}`);
     }
 
-    function formataCNPJ(cnpj) {
-        cnpj = cnpj.replace(/[^\d]/g, "");
-        return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
-    }
-
-    const representativeCNPJTemplate = (rowData) => {
-        if(rowData?.cnpj) {
-            return formataCNPJ(rowData.cnpj);
-        }
-        return "---";
-    };
-
-    function handleSelectChange(e) {
+    const handleSelectChange = (e) => {
         if (selected) {
             let selectedValue = e.value;
             let newSelection = [...selectedSindicatos];
@@ -90,8 +90,9 @@ function DataTableSindicatos({
                 setSelectedSindicatos(selectedValue);
                 setSelected(selectedValue.map(sindicato => sindicato.id));
             } else {
-                if (newSelection.some(sindicato => sindicato.id === selectedValue.id)) {
-                    newSelection = newSelection.filter(sindicato => sindicato.id !== selectedValue.id);
+                const existingIndex = newSelection.findIndex(item => item.id === selectedValue.id);
+                if (existingIndex >= 0) {
+                    newSelection.splice(existingIndex, 1);
                 } else {
                     newSelection.push(selectedValue);
                 }
@@ -102,76 +103,124 @@ function DataTableSindicatos({
             setSelectedSindicato(e.value);
             verDetalhes(e.value);
         }
-    }
-
-    const excluirSindicato = (id) => {
-        confirmDialog({
-            message: 'Tem certeza que deseja excluir este sindicato?',
-            header: 'Deletar',
-            icon: 'pi pi-info-circle',
-            accept: () => {
-                http.delete(`/sindicato/${id}/?format=json`)
-                .then(() => {
-                    toast.current.show({
-                        severity: 'success',
-                        summary: 'Sucesso',
-                        detail: 'Sindicato excluído com sucesso',
-                        life: 3000
-                    });
-                    
-                    if (onUpdate) {
-                        onUpdate();
-                    }
-                })
-                .catch(error => {
-                    toast.current.show({
-                        severity: 'error',
-                        summary: 'Erro',
-                        detail: 'Não foi possível excluir o sindicato',
-                        life: 3000
-                    });
-                    console.error('Erro ao excluir sindicato:', error);
-                });
-            },
-            reject: () => {}
-        });
     };
 
-    const atualizarIntegracao = (id, integracao) => {
-        // Atualizar o estado local imediatamente para feedback visual
-        setIntegracaoStates(prev => ({
-            ...prev,
-            [id]: integracao
-        }));
-        
-        http.put(`sindicato/${id}/`, { integracao })
-            .then(() => {
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Sucesso',
-                    detail: 'Integração atualizada com sucesso',
-                    life: 3000
-                });
-                
-                if (onUpdate) {
-                    onUpdate();
-                }
-            })
-            .catch(error => {
-                // Reverter o estado em caso de erro
-                setIntegracaoStates(prev => ({
-                    ...prev,
-                    [id]: !integracao
-                }));
-                
-                toast.current.show({
-                    severity: 'error',
-                    summary: 'Erro',
-                    detail: 'Erro ao atualizar integração',
-                    life: 3000
-                });
-                console.error('Erro ao atualizar integração:', error);
+    const atualizarIntegracao = async (sindicatoId, novoValor) => {
+        try {
+            // Atualizar estado local imediatamente
+            setIntegracaoStates(prev => ({
+                ...prev,
+                [sindicatoId]: novoValor
+            }));
+
+            // Fazer requisição para o backend
+            await http.put(`sindicato/${sindicatoId}/`, { integracao: novoValor });
+
+            toast.current.show({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: `Integração ${novoValor ? 'ativada' : 'desativada'} com sucesso`,
+                life: 3000
             });
+
+            if (onUpdate) {
+                onUpdate();
+            }
+        } catch (error) {
+            // Reverter estado em caso de erro
+            setIntegracaoStates(prev => ({
+                ...prev,
+                [sindicatoId]: !novoValor
+            }));
+
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Erro ao atualizar integração',
+                life: 3000
+            });
+            console.error('Erro ao atualizar integração:', error);
+        }
+    };
+
+    // Função para lidar com seleção para integração
+    const handleIntegrationSelectionChange = (e) => {
+        setSelectedForIntegration(e.value);
+    };
+
+    // Função para editar sindicato
+    const editarSindicato = (sindicato) => {
+        // Aqui você pode implementar a lógica de edição
+        console.log('Editar sindicato:', sindicato);
+    };
+
+    // Função para cancelar modo de edição em massa
+    const cancelarEdicaoMassa = () => {
+        setBulkIntegrationMode(false);
+        setSelectedForIntegration([]);
+        setUniversalIntegrationValue(false);
+    };
+
+    // Função para aplicar integração universal
+    const aplicarIntegracaoUniversal = async () => {
+        if (!selectedForIntegration || selectedForIntegration.length === 0) {
+            toast.current.show({
+                severity: 'warn',
+                summary: 'Atenção',
+                detail: 'Selecione pelo menos um sindicato para alterar a integração',
+                life: 3000
+            });
+            return;
+        }
+
+        try {
+            // Atualizar estado local imediatamente
+            const newStates = {};
+            selectedForIntegration.forEach(sindicato => {
+                newStates[sindicato.id] = universalIntegrationValue;
+            });
+            setIntegracaoStates(prev => ({ ...prev, ...newStates }));
+
+            // Fazer requisições em paralelo
+            const promises = selectedForIntegration.map(sindicato => 
+                http.put(`sindicato/${sindicato.id}/`, { integracao: universalIntegrationValue })
+            );
+
+            await Promise.all(promises);
+
+            toast.current.show({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: `${selectedForIntegration.length} sindicatos tiveram a integração ${universalIntegrationValue ? 'ativada' : 'desativada'} com sucesso`,
+                life: 3000
+            });
+
+            if (onUpdate) {
+                onUpdate();
+            }
+
+            // Limpar seleção após aplicar
+            setSelectedForIntegration([]);
+            setUniversalIntegrationValue(false);
+
+        } catch (error) {
+            // Reverter estado em caso de erro
+            setIntegracaoStates(prev => {
+                const revertedStates = { ...prev };
+                selectedForIntegration.forEach(sindicato => {
+                    revertedStates[sindicato.id] = !universalIntegrationValue;
+                });
+                return revertedStates;
+            });
+
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Erro ao atualizar integração em massa',
+                life: 3000
+            });
+            console.error('Erro ao atualizar integração em massa:', error);
+        }
     };
 
     const representativeIntegracaoTemplate = (rowData) => {
@@ -179,12 +228,21 @@ function DataTableSindicatos({
         const integracaoValue = integracaoStates[rowData.id] !== undefined 
             ? integracaoStates[rowData.id] 
             : (rowData.integracao || false);
+        
+        console.log('Template render:', rowData.id, 'integracaoStates:', integracaoStates, 'rowData.integracao:', rowData.integracao, 'integracaoValue:', integracaoValue);
             
         return (
-            <SwitchInput
-                checked={integracaoValue}
-                onChange={(value) => atualizarIntegracao(rowData.id, value)}
-            />
+            <div style={{ 
+                display: 'flex', 
+                alignItems: 'center',
+                gap: '8px'
+            }}>
+                <SwitchInput
+                    checked={integracaoValue}
+                    onChange={(value) => atualizarIntegracao(rowData.id, value)}
+                    disabled={bulkIntegrationMode}
+                />
+            </div>
         );
     };
 
@@ -192,85 +250,193 @@ function DataTableSindicatos({
         return (
             <div style={{ 
                 display: 'flex', 
-                gap: '8px',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px'
+            }}>
+                <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
+                <RiDeleteBin6Line 
+                    className="delete" 
+                    data-pr-tooltip="Excluir Sindicato" 
+                    size={16} 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        confirmDialog({
+                            message: `Tem certeza que deseja excluir o sindicato "${rowData.nome}"?`,
+                            header: 'Confirmar Exclusão',
+                            icon: 'pi pi-exclamation-triangle',
+                            accept: () => {
+                                // Implementar lógica de exclusão
+                                console.log('Excluir sindicato:', rowData);
+                            }
+                        });
+                    }}
+                    style={{
+                        cursor: 'pointer',
+                        color: '#dc3545'
+                    }}
+                />
+            </div>
+        );
+    };
+
+    const representativeEditTemplate = (rowData) => {
+        return (
+            <div style={{ 
+                display: 'flex', 
                 alignItems: 'center',
                 justifyContent: 'center'
             }}>
-                <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
-                {ArmazenadorToken.hasPermission('delete_sindicato') && (
-                    <RiDeleteBin6Line 
-                        className="delete" 
-                        data-pr-tooltip="Excluir Sindicato" 
-                        size={16} 
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            excluirSindicato(rowData.id);
-                        }}
-                        style={{
-                            cursor: 'pointer',
-                            color: 'var(--error)'
-                        }}
-                    />
-                )}
+                <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
+                <FaEdit 
+                    className="edit" 
+                    data-pr-tooltip="Editar Sindicato" 
+                    size={16} 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        editarSindicato(rowData);
+                    }}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--primaria)'
+                    }}
+                />
             </div>
         );
     };
 
     const handleSort = (event) => {
         if (onSort) {
-            onSort({
-                field: event.sortField,
-                order: event.sortOrder === 1 ? 'asc' : 'desc'
-            });
+            onSort(event);
         }
+    };
+
+    const onFilter = (event) => {
+        console.log("Filtro aplicado:", event.filters);
+        const newFilters = { ...event.filters };
+        setFilters(newFilters);
     };
 
     return (
         <>
             <Toast ref={toast} />
             <ConfirmDialog  />
-            {showSearch && 
-                <div className="flex justify-content-end">
+            
+            <div style={{ display: 'flex', justifyContent: showSearch ? 'space-between' : 'end', alignItems: 'center', marginBottom: '16px' }}>
+                {showSearch && 
                     <span className="p-input-icon-left">
-                        <CampoTexto 
-                            width={'320px'} 
-                            valor={globalFilterValue} 
-                            setValor={onGlobalFilterChange} 
-                            type="search" 
-                            label="" 
-                            placeholder="Buscar sindicatos" 
-                        />
+                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar sindicato" />
                     </span>
+                }
+                <div style={{
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '12px', 
+                        marginBottom: '16px',
+                        padding: '12px',
+                        minWidth: '500px',
+                        borderRadius: '8px'
+                }}>
+                    {metadadosDeveSerExibido && !bulkIntegrationMode && sindicatos && sindicatos.length > 0 && (
+                        <Botao
+                            size="small"
+                            aoClicar={() => setBulkIntegrationMode(true)}
+                            style={{
+                                background: 'linear-gradient(135deg, #007bff 0%, #0056b3 100%)',
+                                border: 'none',
+                                color: 'white'
+                            }}
+                        >
+                            <FaEdit /> Editar vários
+                        </Botao>
+                    )}
+                    {/* Controles de integração em massa */}
+                    {metadadosDeveSerExibido && bulkIntegrationMode && (
+                        <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <Botao
+                                size="small"
+                                aoClicar={cancelarEdicaoMassa}
+                                style={{
+                                    background: 'linear-gradient(135deg, #6c757d 0%, #5a6268 100%)',
+                                    border: 'none',
+                                    color: 'white'
+                                }}
+                            >
+                                <FaCancel /> Cancelar
+                            </Botao>
+                            
+                            <div style={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: '8px' 
+                            }}>
+                                <span style={{ 
+                                    fontSize: '14px', 
+                                    fontWeight: '500',
+                                    color: '#495057'
+                                }}>
+                                    Integração:
+                                </span>
+                                <SwitchInput
+                                    checked={universalIntegrationValue}
+                                    onChange={setUniversalIntegrationValue}
+                                />
+                            </div>
+                            
+                            <Botao
+                                size="small"
+                                aoClicar={aplicarIntegracaoUniversal}
+                                disabled={selectedForIntegration.length === 0}
+                                style={{
+                                    background: selectedForIntegration.length > 0 
+                                        ? 'linear-gradient(135deg, #28a745 0%, #20c997 100%)' 
+                                        : 'linear-gradient(135deg, #6c757d 0%, #5a6268 100%)',
+                                    border: 'none',
+                                    color: 'white',
+                                    opacity: selectedForIntegration.length === 0 ? 0.5 : 1
+                                }}
+                            >
+                                <FaCheck /> Aplicar ({selectedForIntegration.length})
+                            </Botao>
+                        </div>
+                    )}
                 </div>
-            }
+            </div>
             <DataTable 
-                key={JSON.stringify(integracaoStates)}
+                key={`${JSON.stringify(integracaoStates)}-${bulkIntegrationMode}`}
                 value={sindicatos} 
                 emptyMessage="Não foram encontrados sindicatos" 
-                selection={selected ? selectedSindicatos : selectedSindicato} 
-                onSelectionChange={handleSelectChange} 
-                selectionMode={selected ? "checkbox" : "single"} 
+                selection={bulkIntegrationMode ? selectedForIntegration : (selected ? selectedSindicatos : selectedSindicato)} 
+                onSelectionChange={bulkIntegrationMode ? handleIntegrationSelectionChange : handleSelectChange} 
+                selectionMode={bulkIntegrationMode ? "checkbox" : (selected ? "checkbox" : "single")} 
                 paginator={pagination} 
                 lazy
-                rows={rows} 
-                totalRecords={totalRecords} 
-                first={first} 
+                dataKey="id"
+                filters={filters}
+                filterDisplay="row"
+                globalFilterFields={['nome', 'descricao']}
+                rows={rows}
+                totalRecords={totalRecords}
+                first={first}
                 onPage={onPage}
                 sortField={sortField}
-                sortOrder={sortOrder === 'desc' ? -1 : 1}
-                onSort={handleSort}
+                sortOrder={sortOrder}
+                onSort={onSort}
                 removableSort
                 tableStyle={{ minWidth: '68vw' }}
             >
-                {selected &&
+                {bulkIntegrationMode && (
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
-                }
-                <Column field="descricao" header="Nome" sortable style={{ width: metadadosDeveSerExibido ? '30%' : '40%' }}></Column>
-                <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" sortable style={{ width: metadadosDeveSerExibido ? '30%' : '40%' }}></Column>
-                {metadadosDeveSerExibido && (
-                    <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '20%' }}></Column>
                 )}
-                <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
+                <Column field="id" header="Id" sortable style={{ width: '10%' }}></Column>
+                <Column field="id_origem" header="Código" sortable style={{ width: '10%' }}></Column>
+                <Column field="nome" header="Nome" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
+                <Column field="descricao" header="Descrição" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
+                {(metadadosDeveSerExibido || bulkIntegrationMode) && (
+                    <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
+                )}
+                <Column body={representativeEditTemplate} header="Editar" style={{ width: '8%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '8%' }}></Column>
             </DataTable>
         </>
     );

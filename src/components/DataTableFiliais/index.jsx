@@ -437,11 +437,9 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                         marginBottom: '16px',
                         padding: '12px',
                         minWidth: '500px',
-                        background: '#f8f9fa',
-                        borderRadius: '8px',
-                        border: '1px solid #e9ecef'
+                        borderRadius: '8px'
                 }}>
-                    {metadadosDeveSerExibido && !bulkIntegrationMode && filiais.length > 0 && (
+                    {metadadosDeveSerExibido && !bulkIntegrationMode && filiais && filiais.length > 0 && (
                         <Botao
                             size="small"
                             aoClicar={() => setBulkIntegrationMode(true)}
