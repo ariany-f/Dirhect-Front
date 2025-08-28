@@ -220,23 +220,26 @@ function BarraLateral({ $sidebarOpened }) {
                     .catch(error => console.log('Erro ao buscar grupos:', error));
             }
 
-            http.get(`permissao_grupo/?format=json&name=Acesso Base`)
-            .then(response => {
-                 // Buscar o grupo "Acesso Base" da resposta
-                 if (response && response[0].permissions) {
-                     // Para cada grupo existente, adicionar as permissões do Acesso Base
-                     const gruposComAcessoBase = grupos.map(grupo => ({
-                         ...grupo,
-                         permissions: [
-                             ...grupo.permissions,
-                             ...response[0].permissions
-                         ]
-                     }));
-                     ArmazenadorToken.definirPermissoes(gruposComAcessoBase);
-                     setGrupos(gruposComAcessoBase);
-                 }
-            })
-            .catch(error => console.log('Erro ao buscar grupos:', error));
+            if(usuario.tipo != 'Acesso Base') {
+
+                http.get(`permissao_grupo/?format=json&name=Acesso Base`)
+                .then(response => {
+                    // Buscar o grupo "Acesso Base" da resposta
+                    if (response && response[0].permissions) {
+                        // Para cada grupo existente, adicionar as permissões do Acesso Base
+                        const gruposComAcessoBase = grupos.map(grupo => ({
+                            ...grupo,
+                            permissions: [
+                                ...grupo.permissions,
+                                ...response[0].permissions
+                            ]
+                        }));
+                        ArmazenadorToken.definirPermissoes(gruposComAcessoBase);
+                        setGrupos(gruposComAcessoBase);
+                    }
+                })
+                .catch(error => console.log('Erro ao buscar grupos:', error));
+            }
 
             // Buscar parâmetros de menus apenas se não existir no localStorage
             http.get('parametros/por-assunto/?assunto=MENUS')
