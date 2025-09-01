@@ -903,7 +903,7 @@ function DataTableAtividades({
                 <Column 
                     body={representativePrazoTemplate} 
                     field="agendado_para" 
-                    header="Data Agendada" 
+                    header="Executar Até" 
                     style={{ width: '12%' }}
                 ></Column>
                 <Column
