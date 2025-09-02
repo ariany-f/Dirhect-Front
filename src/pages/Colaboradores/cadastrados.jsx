@@ -57,8 +57,10 @@ function ColaboradoresCadastrados() {
             url += `&search=${search}`;
         }
         
-        const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '';
-        url += orderParam;
+        // Melhorar o tratamento da ordenação
+        if (sort && sort !== '') {
+            url += `&ordering=${encodeURIComponent(sort)}`;
+        }
     
         console.log('🔍 currentFilters:', currentFilters);
 
@@ -66,6 +68,7 @@ function ColaboradoresCadastrados() {
         if (situacaoFilter) {
             url += `&tipo_situacao=${encodeURIComponent(situacaoFilter)}`;
         }
+
 
         http.get(url)
             .then(response => {
@@ -92,8 +95,10 @@ function ColaboradoresCadastrados() {
                 console.error("Erro ao buscar situações:", error);
             }
         };
+        
         fetchSituacoes();
-        loadData(page, pageSize, searchTerm, getSortParam(), filters);
+        // Carregar dados iniciais sem ordenação
+        loadData(1, 10, '', '', {});
     }, []);
      
     const onPage = (event) => {
@@ -104,34 +109,46 @@ function ColaboradoresCadastrados() {
         setPage(newPage);
         setPageSize(newPageSize);
         
-        loadData(newPage, newPageSize, searchTerm, getSortParam(), filters);
+        // Usar os novos valores diretamente para evitar problemas de estado
+        const currentSort = sortField ? `${sortOrder === 'desc' ? '-' : ''}${sortField}` : '';
+        loadData(newPage, newPageSize, searchTerm, currentSort, filters);
     };
 
     const onSearch = (search) => {
         setSearchTerm(search);
         setPage(1);
         setFirst(0);
-        loadData(1, pageSize, search, getSortParam(), filters);
+        
+        // Usar os estados atuais para ordenação
+        const currentSort = sortField ? `${sortOrder === 'desc' ? '-' : ''}${sortField}` : '';
+        loadData(1, pageSize, search, currentSort, filters);
     };
 
     const getSortParam = () => {
-        if (!sortField) return '';
-        return `${sortOrder === 'desc' ? '-' : ''}${sortField}`;
+        if (!sortField || sortField === '') {
+            return '';
+        }
+        
+        const sortParam = `${sortOrder === 'desc' ? '-' : ''}${sortField}`;
+        return sortParam;
     };
 
     const onSort = ({ field, order }) => {
         setSortField(field);
         setSortOrder(order);
-        loadData(page, pageSize, searchTerm, `${order === 'desc' ? '-' : ''}${field}`, filters);
+        // Usar getSortParam() para manter consistência
+        loadData(page, pageSize, searchTerm, getSortParam(), filters);
     };
     
     const onFilter = (event) => {
-        console.log("Filtro aplicado:", event.filters);
         const newFilters = { ...event.filters };
         setFilters(newFilters);
         setPage(1);
         setFirst(0);
-        loadData(1, pageSize, searchTerm, getSortParam(), newFilters);
+        
+        // Usar os estados atuais para ordenação
+        const currentSort = sortField ? `${sortOrder === 'desc' ? '-' : ''}${sortField}` : '';
+        loadData(1, pageSize, searchTerm, currentSort, newFilters);
     };
 
     return (

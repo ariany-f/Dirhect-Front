@@ -20,7 +20,8 @@ import http from '@http';
 import { ArmazenadorToken } from '@utils';
 import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
 import Botao from '@components/Botao';
-import { FaCheck, FaTimes, FaEdit, FaTimes as FaCancel } from 'react-icons/fa';
+import { FaCheck, FaTimes, FaEdit, FaTimes as FaCancel, FaUsers } from 'react-icons/fa';
+import ModalListaColaboradoresPorEstrutura from '../ModalListaColaboradoresPorEstrutura';
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -36,6 +37,8 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
    
     const[selectedCargo, setSelectedCargo] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
+    const [modalColaboradoresOpened, setModalColaboradoresOpened] = useState(false);
+    const [selectedCargoColaboradores, setSelectedCargoColaboradores] = useState({});
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         nome: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -174,6 +177,12 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
         console.log('Editar cargo:', cargo);
     };
 
+    // Função para abrir modal de colaboradores
+    const abrirModalColaboradores = (cargo) => {
+        setSelectedCargoColaboradores(cargo);
+        setModalColaboradoresOpened(true);
+    };
+
     // Função para cancelar modo de edição em massa
     const cancelarEdicaoMassa = () => {
         setBulkIntegrationMode(false);
@@ -274,6 +283,22 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
                 alignItems: 'center',
                 justifyContent: 'center'
             }}>
+                <Tooltip target=".colaboradores" mouseTrack mouseTrackLeft={10} />
+                {ArmazenadorToken.hasPermission('view_funcionario') && (
+                    <FaUsers 
+                        className="colaboradores" 
+                        data-pr-tooltip="Ver Colaboradores" 
+                        size={16} 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            abrirModalColaboradores(rowData);
+                        }}
+                        style={{
+                            cursor: 'pointer',
+                            color: 'var(--success)'
+                        }}
+                    />
+                )}
                 <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
                 {ArmazenadorToken.hasPermission('delete_cargo') && (
                     <RiDeleteBin6Line 
@@ -431,7 +456,7 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
                 first={first}
                 onPage={onPage}
                 sortField={sortField}
-                sortOrder={sortOrder === 'desc' ? -1 : 1}
+                sortOrder={sortOrder === 'desc' ? -1 : (sortOrder === 'asc' ? 1 : 0)}
                 onSort={handleSort}
                 removableSort
                 tableStyle={{ minWidth: '68vw' }}
@@ -447,8 +472,16 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
                     <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
                 )}
                 <Column body={representativeEditTemplate} header="Editar" style={{ width: '8%' }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: '8%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '12%' }}></Column>
             </DataTable>
+            <ModalListaColaboradoresPorEstrutura 
+                visible={modalColaboradoresOpened}
+                onHide={() => setModalColaboradoresOpened(false)}
+                tipoEstrutura="cargo"
+                estruturaId={selectedCargoColaboradores.id}
+                estruturaNome={selectedCargoColaboradores.nome}
+                estruturaTipo="Cargo"
+            />
         </>
     )
 }

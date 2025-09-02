@@ -1,0 +1,199 @@
+.modal-colaboradores .p-dialog {
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-colaboradores .p-dialog-header {
+    border-radius: 8px 8px 0 0;
+    color: white;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-colaboradores .p-dialog-content {
+    border-radius: 0 0 8px 0;
+    padding: 24px;
+    background: #ffffff;
+}
+
+.modal-colaboradores .p-dialog-footer {
+    border-radius: 0 0 8px 8px;
+    background: #f8f9fa;
+    padding: 16px 24px;
+    border-top: 1px solid #e9ecef;
+}
+
+/* Estilização do DataTable */
+.modal-colaboradores .p-datatable {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-colaboradores .p-datatable .p-datatable-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    padding: 16px;
+}
+
+.modal-colaboradores .p-datatable .p-datatable-thead > tr > th {
+    background: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+    color: #495057;
+    font-weight: 600;
+    padding: 16px 12px;
+}
+
+.modal-colaboradores .p-datatable .p-datatable-tbody > tr > td {
+    padding: 16px 12px;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.modal-colaboradores .p-datatable .p-datatable-tbody > tr:hover {
+    background: #f8f9fa;
+}
+
+/* Estilização do Paginador */
+.modal-colaboradores .p-paginator {
+    background: #ffffff;
+    border-top: 1px solid #e9ecef;
+    padding: 16px;
+}
+
+.modal-colaboradores .p-paginator .p-paginator-pages .p-paginator-page {
+    border-radius: 6px;
+    margin: 0 2px;
+    min-width: 36px;
+    height: 36px;
+    border: 1px solid #dee2e6;
+    background: #ffffff;
+    color: #6c757d;
+    transition: all 0.2s ease;
+}
+
+.modal-colaboradores .p-paginator .p-paginator-pages .p-paginator-page:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+    color: #495057;
+}
+
+.modal-colaboradores .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    background: var(--primaria);
+    border-color: var(--primaria);
+    color: white;
+}
+
+.modal-colaboradores .p-paginator .p-paginator-first,
+.modal-colaboradores .p-paginator .p-paginator-prev,
+.modal-colaboradores .p-paginator .p-paginator-next,
+.modal-colaboradores .p-paginator .p-paginator-last {
+    border-radius: 6px;
+    margin: 0 2px;
+    min-width: 36px;
+    height: 36px;
+    border: 1px solid #dee2e6;
+    background: #ffffff;
+    color: #6c757d;
+    transition: all 0.2s ease;
+}
+
+.modal-colaboradores .p-paginator .p-paginator-first:hover,
+.modal-colaboradores .p-paginator .p-paginator-prev:hover,
+.modal-colaboradores .p-paginator .p-paginator-next:hover,
+.modal-colaboradores .p-paginator .p-paginator-last:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+    color: #495057;
+}
+
+.modal-colaboradores .p-paginator .p-paginator-first:disabled,
+.modal-colaboradores .p-paginator .p-paginator-prev:disabled,
+.modal-colaboradores .p-paginator .p-paginator-next:disabled,
+.modal-colaboradores .p-paginator .p-paginator-last:disabled {
+    background: #f8f9fa;
+    border-color: #e9ecef;
+    color: #adb5bd;
+    cursor: not-allowed;
+}
+
+/* Estilização dos campos de input */
+.modal-colaboradores .p-inputtext {
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    padding: 8px 12px;
+    transition: border-color 0.2s ease;
+}
+
+.modal-colaboradores .p-inputtext:focus {
+    border-color: var(--primaria);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+/* Estilização dos templates customizados */
+.colaborador-nome {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.colaborador-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e9ecef;
+}
+
+.colaborador-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.colaborador-nome-texto {
+    font-weight: 600;
+    color: #495057;
+    font-size: 14px;
+}
+
+.colaborador-chapa {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.situacao-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+    min-width: 60px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .modal-colaboradores .p-dialog {
+        width: 95vw !important;
+        margin: 10px;
+    }
+    
+    .modal-colaboradores .p-dialog-header {
+        padding: 16px;
+    }
+    
+    .modal-colaboradores .p-dialog-content {
+        padding: 16px;
+    }
+    
+    .modal-colaboradores .p-dialog-footer {
+        padding: 12px 16px;
+    }
+    
+    .modal-colaboradores .p-datatable .p-datatable-thead > tr > th,
+    .modal-colaboradores .p-datatable .p-datatable-tbody > tr > td {
+        padding: 12px 8px;
+        font-size: 13px;
+    }
+} 

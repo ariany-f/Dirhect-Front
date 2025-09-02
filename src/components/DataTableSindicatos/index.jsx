@@ -17,7 +17,8 @@ import SwitchInput from '@components/SwitchInput';
 import { ArmazenadorToken } from '@utils';
 import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
 import Botao from '@components/Botao';
-import { FaCheck, FaTimes, FaEdit, FaTimes as FaCancel } from 'react-icons/fa';
+import { FaCheck, FaTimes, FaEdit, FaTimes as FaCancel, FaUsers } from 'react-icons/fa';
+import ModalListaColaboradoresPorEstrutura from '../ModalListaColaboradoresPorEstrutura';
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -47,6 +48,8 @@ function DataTableSindicatos({
    
     const[selectedSindicato, setSelectedSindicato] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
+    const [modalColaboradoresOpened, setModalColaboradoresOpened] = useState(false);
+    const [selectedSindicatoColaboradores, setSelectedSindicatoColaboradores] = useState({});
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         nome: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -154,6 +157,12 @@ function DataTableSindicatos({
         console.log('Editar sindicato:', sindicato);
     };
 
+    // Função para abrir modal de colaboradores
+    const abrirModalColaboradores = (sindicato) => {
+        setSelectedSindicatoColaboradores(sindicato);
+        setModalColaboradoresOpened(true);
+    };
+
     // Função para cancelar modo de edição em massa
     const cancelarEdicaoMassa = () => {
         setBulkIntegrationMode(false);
@@ -254,6 +263,22 @@ function DataTableSindicatos({
                 justifyContent: 'center',
                 gap: '8px'
             }}>
+                <Tooltip target=".colaboradores" mouseTrack mouseTrackLeft={10} />
+                {ArmazenadorToken.hasPermission('view_funcionario') && (
+                    <FaUsers 
+                        className="colaboradores" 
+                        data-pr-tooltip="Ver Colaboradores" 
+                        size={16} 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            abrirModalColaboradores(rowData);
+                        }}
+                        style={{
+                            cursor: 'pointer',
+                            color: 'var(--success)'
+                        }}
+                    />
+                )}
                 <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
                 <RiDeleteBin6Line 
                     className="delete" 
@@ -420,7 +445,7 @@ function DataTableSindicatos({
                 first={first}
                 onPage={onPage}
                 sortField={sortField}
-                sortOrder={sortOrder}
+                sortOrder={sortOrder === 'desc' ? -1 : (sortOrder === 'asc' ? 1 : 0)}
                 onSort={onSort}
                 removableSort
                 tableStyle={{ minWidth: '68vw' }}
@@ -436,8 +461,16 @@ function DataTableSindicatos({
                     <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
                 )}
                 <Column body={representativeEditTemplate} header="Editar" style={{ width: '8%' }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: '8%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '12%' }}></Column>
             </DataTable>
+            <ModalListaColaboradoresPorEstrutura 
+                visible={modalColaboradoresOpened}
+                onHide={() => setModalColaboradoresOpened(false)}
+                tipoEstrutura="sindicato"
+                estruturaId={selectedSindicatoColaboradores.id}
+                estruturaNome={selectedSindicatoColaboradores.nome}
+                estruturaTipo="Sindicato"
+            />
         </>
     );
 }

@@ -9,6 +9,7 @@ import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import ModalEditarFilial from '../ModalEditarFilial';
+import ModalListaColaboradoresPorEstrutura from '../ModalListaColaboradoresPorEstrutura';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Tooltip } from 'primereact/tooltip';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
@@ -16,13 +17,15 @@ import SwitchInput from '@components/SwitchInput';
 import { ArmazenadorToken } from '@utils';
 import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
 import Botao from '@components/Botao';
-import { FaCheck, FaTimes, FaEdit, FaTimes as FaCancel } from 'react-icons/fa';
+import { FaCheck, FaTimes, FaEdit, FaTimes as FaCancel, FaUsers } from 'react-icons/fa';
 
 function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows, totalRecords, first, onPage, totalPages, onSearch, selected = null, setSelected = () => { }, onUpdate, sortField, sortOrder, onSort }) {
 
     const[selectedFilial, setSelectedFilial] = useState({})
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [modalOpened, setModalOpened] = useState(false)
+    const [modalColaboradoresOpened, setModalColaboradoresOpened] = useState(false)
+    const [selectedFilialColaboradores, setSelectedFilialColaboradores] = useState({})
     const toast = useRef(null)
     const [selectedFiliais, setSelectedFiliais] = useState([]);
     const [integracaoStates, setIntegracaoStates] = useState({});
@@ -294,6 +297,12 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
         setModalOpened(true);
     };
 
+    // Função para abrir modal de colaboradores
+    const abrirModalColaboradores = (filial) => {
+        setSelectedFilialColaboradores(filial);
+        setModalColaboradoresOpened(true);
+    };
+
     // Função para cancelar modo de edição em massa
     const cancelarEdicaoMassa = () => {
         setBulkIntegrationMode(false);
@@ -371,6 +380,22 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                 alignItems: 'center',
                 justifyContent: 'center'
             }}>
+                <Tooltip target=".colaboradores" mouseTrack mouseTrackLeft={10} />
+                {ArmazenadorToken.hasPermission('view_funcionario') && (
+                    <FaUsers 
+                        className="colaboradores" 
+                        data-pr-tooltip="Ver Colaboradores" 
+                        size={16} 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            abrirModalColaboradores(rowData);
+                        }}
+                        style={{
+                            cursor: 'pointer',
+                            color: 'var(--success)'
+                        }}
+                    />
+                )}
                 <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
                 {ArmazenadorToken.hasPermission('delete_filial') && (
                     <RiDeleteBin6Line 
@@ -546,9 +571,17 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                     <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
                 )}
                 <Column body={representativeEditTemplate} header="Editar" style={{ width: '8%' }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: '8%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '12%' }}></Column>
             </DataTable>
             <ModalEditarFilial aoSalvar={editarFilial} filial={selectedFilial} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+            <ModalListaColaboradoresPorEstrutura 
+                visible={modalColaboradoresOpened}
+                onHide={() => setModalColaboradoresOpened(false)}
+                tipoEstrutura="filial"
+                estruturaId={selectedFilialColaboradores.id}
+                estruturaNome={selectedFilialColaboradores.nome}
+                estruturaTipo="Filial"
+            />
         </>
     )
 }

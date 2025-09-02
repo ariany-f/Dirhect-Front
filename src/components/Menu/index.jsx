@@ -177,9 +177,9 @@ function Menu({ opened = false, aoFechar }){
         };
     }, []);
 
-    function Sair() {
+    async function Sair() {
         if(opened) {
-            submeterLogout().then(() => {
+            await submeterLogout().then(() => {
                 aoFechar()
                 navegar('/login')
             }).catch(() => {

@@ -15,7 +15,8 @@ import http from '@http';
 import { ArmazenadorToken } from '@utils';
 import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
 import Botao from '@components/Botao';
-import { FaCheck, FaTimes, FaEdit, FaTimes as FaCancel } from 'react-icons/fa';
+import { FaCheck, FaTimes, FaEdit, FaTimes as FaCancel, FaUsers } from 'react-icons/fa';
+import ModalListaColaboradoresPorEstrutura from '../ModalListaColaboradoresPorEstrutura';
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -27,10 +28,12 @@ const NumeroColaboradores = styled.p`
     line-height: 20px; /* 142.857% */
 `
 
-function DataTableCentrosCusto({ centrosCusto, showSearch = true, paginator = true, rows = 10, totalRecords, totalPages, first, onPage, onSearch, selected = null, setSelected = () => { }, onUpdate, sortField, sortOrder, onSort }) {
+function DataTableCentrosCusto({ centros_custo, showSearch = true, pagination = true, rows = 10, totalRecords, totalPages, first, onPage, onSearch, selected = null, setSelected = () => { }, onUpdate, sortField, sortOrder, onSort }) {
    
     const[selectedCentroCusto, setSelectedCentroCusto] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
+    const [modalColaboradoresOpened, setModalColaboradoresOpened] = useState(false);
+    const [selectedCentroCustoColaboradores, setSelectedCentroCustoColaboradores] = useState({});
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         nome: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -47,13 +50,13 @@ function DataTableCentrosCusto({ centrosCusto, showSearch = true, paginator = tr
     const { metadadosDeveSerExibido } = useMetadadosPermission();
 
     useEffect(() => {
-        if (selected && Array.isArray(selected) && selected.length > 0 && centrosCusto) {
-            const centrosSelecionados = centrosCusto.filter(centro => selected.includes(centro.id));
+        if (selected && Array.isArray(selected) && selected.length > 0 && centros_custo) {
+            const centrosSelecionados = centros_custo.filter(centro => selected.includes(centro.id));
             setSelectedCentrosCusto(centrosSelecionados);
         } else {
             setSelectedCentrosCusto([]);
         }
-    }, [selected, centrosCusto]);
+    }, [selected, centros_custo]);
 
     const onGlobalFilterChange = (value) => {
         setGlobalFilterValue(value);
@@ -176,6 +179,12 @@ function DataTableCentrosCusto({ centrosCusto, showSearch = true, paginator = tr
         console.log('Editar centro de custo:', centroCusto);
     };
 
+    // Função para abrir modal de colaboradores
+    const abrirModalColaboradores = (centroCusto) => {
+        setSelectedCentroCustoColaboradores(centroCusto);
+        setModalColaboradoresOpened(true);
+    };
+
     // Função para cancelar modo de edição em massa
     const cancelarEdicaoMassa = () => {
         setBulkIntegrationMode(false);
@@ -276,6 +285,22 @@ function DataTableCentrosCusto({ centrosCusto, showSearch = true, paginator = tr
                 alignItems: 'center',
                 justifyContent: 'center'
             }}>
+                <Tooltip target=".colaboradores" mouseTrack mouseTrackLeft={10} />
+                {ArmazenadorToken.hasPermission('view_funcionario') && (
+                    <FaUsers 
+                        className="colaboradores" 
+                        data-pr-tooltip="Ver Colaboradores" 
+                        size={16} 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            abrirModalColaboradores(rowData);
+                        }}
+                        style={{
+                            cursor: 'pointer',
+                            color: 'var(--success)'
+                        }}
+                    />
+                )}
                 <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
                 {ArmazenadorToken.hasPermission('delete_centrocusto') && (
                     <RiDeleteBin6Line 
@@ -350,7 +375,7 @@ function DataTableCentrosCusto({ centrosCusto, showSearch = true, paginator = tr
                         minWidth: '500px',
                         borderRadius: '8px'
                 }}>
-                    {metadadosDeveSerExibido && !bulkIntegrationMode && centrosCusto && centrosCusto.length > 0 && (
+                    {metadadosDeveSerExibido && !bulkIntegrationMode && centros_custo && centros_custo.length > 0 && (
                         <Botao
                             size="small"
                             aoClicar={() => setBulkIntegrationMode(true)}
@@ -417,39 +442,47 @@ function DataTableCentrosCusto({ centrosCusto, showSearch = true, paginator = tr
             </div>
             <DataTable 
                 key={`${JSON.stringify(integracaoStates)}-${bulkIntegrationMode}`}
-                value={centrosCusto} 
+                value={centros_custo} 
                 emptyMessage="Não foram encontrados centros de custo" 
                 selection={bulkIntegrationMode ? selectedForIntegration : (selected ? selectedCentrosCusto : selectedCentroCusto)} 
                 onSelectionChange={bulkIntegrationMode ? handleIntegrationSelectionChange : handleSelectChange} 
                 selectionMode={bulkIntegrationMode ? "checkbox" : (selected ? "checkbox" : "single")} 
-                paginator={paginator} 
+                paginator={pagination} 
                 lazy
                 dataKey="id"
-                filters={filters}
-                filterDisplay="row"
-                globalFilterFields={['nome', 'descricao']}
                 rows={rows}
                 totalRecords={totalRecords}
                 first={first}
-                onPage={onPage}
+                onPage={(event) => {
+                    console.log('🔍 DataTableCentrosCusto - onPage chamado:', event);
+                    onPage(event);
+                }}
                 sortField={sortField}
-                sortOrder={sortOrder}
-                onSort={onSort}
+                sortOrder={sortOrder === 'desc' ? -1 : (sortOrder === 'asc' ? 1 : 0)}
+                onSort={handleSort}
                 tableStyle={{ minWidth: '68vw' }}
             >
                 {bulkIntegrationMode && (
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 )}
                 <Column field="id" header="Id" sortable style={{ width: '10%' }}></Column>
-                <Column field="id_origem" header="Código" sortable style={{ width: '10%' }}></Column>
+                <Column field="cc_origem" header="Código" sortable style={{ width: '10%' }}></Column>
                 <Column field="nome" header="Nome" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
                 <Column field="descricao" header="Descrição" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
                 {(metadadosDeveSerExibido || bulkIntegrationMode) && (
                     <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
                 )}
                 <Column body={representativeEditTemplate} header="Editar" style={{ width: '8%' }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: '8%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '12%' }}></Column>
             </DataTable>
+            <ModalListaColaboradoresPorEstrutura 
+                visible={modalColaboradoresOpened}
+                onHide={() => setModalColaboradoresOpened(false)}
+                tipoEstrutura="centro_custo"
+                estruturaId={selectedCentroCustoColaboradores.id}
+                estruturaNome={selectedCentroCustoColaboradores.nome}
+                estruturaTipo="Centro de Custo"
+            />
         </>
     );
 }

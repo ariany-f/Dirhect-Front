@@ -207,7 +207,7 @@ function BarraLateral({ $sidebarOpened }) {
     }, [])
     
     useEffect(() => {
-        if(usuario.tipo) {
+        if(usuario.tipo && usuarioEstaLogado) {
             // Se já existe no ArmazenadorToken, usa ele
             if (ArmazenadorToken.UserPermissions && Array.isArray(ArmazenadorToken.UserPermissions) && ArmazenadorToken.UserPermissions.length > 0) {
                 setGrupos(ArmazenadorToken.UserPermissions);

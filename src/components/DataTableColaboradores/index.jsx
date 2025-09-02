@@ -488,6 +488,18 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         return <SituacaoFilterContent options={options} situacoesUnicas={situacoesUnicas} />;
     };
 
+    const handleSort = (event) => {
+        
+        if (onSort) {
+            onSort({
+                field: event.sortField,
+                order: event.sortOrder === 1 ? 'asc' : 'desc'
+            });
+        } else {
+            console.log('🔍 onSort não está definido');
+        }
+    };
+
     return (
         <>
             <Toast ref={toast} />
@@ -533,16 +545,16 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 lazy
                 rows={rows} 
                 totalRecords={totalRecords} 
-                globalfilterfields={['funcionario_pessoa_fisica.nome', 'chapa', 'filial']}
+                globalfilterfields={['funcionario_pessoa_fisica.nome', 'chapa', 'filial_nome']}
                 first={first} 
                 onPage={onPage} 
-                onSort={onSort}
+                onSort={handleSort}
                 removableSort 
                 tableStyle={{ minWidth: '68vw' }}
                 showGridlines
                 stripedRows
                 sortField={sortField}
-                sortOrder={sortOrder === 'desc' ? -1 : 1}
+                sortOrder={sortOrder === 'desc' ? -1 : (sortOrder === 'asc' ? 1 : 0)}
                 footerColumnGroup={
                     <ColumnGroup>
                         <Row>
@@ -565,7 +577,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                     filterElement={filialFilterTemplate} 
                     showFilterMenu={false} 
                 />
-                <Column body={representativeFuncaoTemplate} filter showFilterMenu={false} field="id_funcao" sortable sortField="id_funcao_id" header="Função" style={{ width: '22%' }}></Column>
+                <Column body={representativeFuncaoTemplate} filter showFilterMenu={false} field="id_funcao" sortField="id_funcao_id" header="Função" style={{ width: '22%' }}></Column>
                 <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Admissão" style={{ width: '8%' }}></Column>
                 {/* <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Nascimento" style={{ width: '8%' }}></Column> */}
                 <Column body={representativeNumeroDependentesTemplate} field="dependentes.length" header="Dep." style={{ width: '5%' }}></Column>

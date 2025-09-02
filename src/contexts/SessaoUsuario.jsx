@@ -1,7 +1,7 @@
 import http from '@http';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArmazenadorToken } from '../utils';
+import { ArmazenadorToken } from '@utils';
 import { PrimeReactProvider } from 'primereact/api';
 import { addLocale, locale } from 'primereact/api';
 import { I18nextProvider } from 'react-i18next';
@@ -521,11 +521,13 @@ export const SessaoUsuarioProvider = ({ children }) => {
         return http.post('token/blacklist/', data)
             .then((response) => {
                 ArmazenadorToken.removerToken()
+                setUsuarioEstaLogado(false)
                 return response
             })
             .catch(erro => {
                 // Mesmo se der erro, remove o token localmente
                 ArmazenadorToken.removerToken()
+                setUsuarioEstaLogado(false)
                 return erro
             })
     }

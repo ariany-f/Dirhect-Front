@@ -55,10 +55,14 @@ function CentrosCustoLista() {
 
     const loadData = (currentPage, currentPageSize, search = '', sort = '', order = '') => {
         setLoading(true)
+       
         const orderParam = (sort && order) ? `&ordering=${order === 'desc' ? '-' : ''}${sort}` : '';
-        http.get(`centro_custo/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`)
+        const url = `centro_custo/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`;
+        
+        
+        http.get(url)
             .then(response => {
-                console.log(response)
+                
                 setCentrosCusto(response.results)
                 setTotalRecords(response.count)
                 setTotalPages(response.total_pages)
@@ -72,8 +76,15 @@ function CentrosCustoLista() {
     }
 
     useEffect(() => {
+       
         loadData(page, pageSize, searchTerm, sortField, sortOrder)
-    }, [modalOpened])
+    }, []) // Executar apenas na montagem inicial
+
+    useEffect(() => {
+        if (!modalOpened) {
+            loadData(page, pageSize, searchTerm, sortField, sortOrder)
+        }
+    }, [modalOpened]) // Recarregar quando modal for fechado
 
     const onPage = (event) => {
         const newPage = event.page + 1
@@ -170,7 +181,8 @@ function CentrosCustoLista() {
             
             <DataTableCentrosCusto 
                 centros_custo={centros_custo}
-                paginator={true}
+                showSearch={true}
+                pagination={true}
                 rows={pageSize}
                 totalRecords={totalRecords}
                 totalPages={totalPages}
@@ -180,6 +192,7 @@ function CentrosCustoLista() {
                 sortField={sortField}
                 sortOrder={sortOrder}
                 onSort={onSort}
+                onUpdate={() => loadData(page, pageSize, searchTerm, sortField, sortOrder)}
             />
         </ConteudoFrame>
         <ModalAdicionarCentroCusto 

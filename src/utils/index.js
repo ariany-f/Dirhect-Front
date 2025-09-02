@@ -286,35 +286,63 @@ export class ArmazenadorToken {
     }
 
     static removerToken() {
-        localStorage.removeItem(ACCESS_TOKEN)
-        localStorage.removeItem(MFA_REQUIRED)
-        localStorage.removeItem(EXPIRATION)
-        localStorage.removeItem(PERMISSIONS)
-        localStorage.removeItem(USER_GROUPS)
-        localStorage.removeItem(USER_PERMISSIONS)
-        localStorage.removeItem(REFRESH_TOKEN)
-        localStorage.removeItem(TEMP_TOKEN)
-        localStorage.removeItem(ADMISSAO_TOKEN)
-        localStorage.removeItem(ADMISSAO_SECURITY_TOKEN)
-        localStorage.removeItem(USER_NAME)
-        localStorage.removeItem(IS_ADMIN)
-        localStorage.removeItem(USER_FIRST_NAME)
-        localStorage.removeItem(USER_LAST_NAME)
-        localStorage.removeItem(USER_FOTO_PERFIL)
-        localStorage.removeItem(USER_EMAIL)
-        localStorage.removeItem(USER_CPF)
-        localStorage.removeItem(USER_PUBLIC_ID)
-        localStorage.removeItem(USER_TYPE)
-        localStorage.removeItem(USER_PROFILE)
-        // Remover parâmetros de menu
-        this.removerParametrosMenus()
-        // Limpar dados de empresa
-        this.removerCompany()
-        this.limparEmpresas()
-        // Limpar cache
-        this.limparCache()
-        
-        return true;
+        try {
+            // Remover tokens
+            localStorage.removeItem(ACCESS_TOKEN)
+            localStorage.removeItem(MFA_REQUIRED)
+            localStorage.removeItem(EXPIRATION)
+            localStorage.removeItem(PERMISSIONS)
+            localStorage.removeItem(USER_GROUPS)
+            localStorage.removeItem(USER_PERMISSIONS)
+            localStorage.removeItem(REFRESH_TOKEN)
+            localStorage.removeItem(TEMP_TOKEN)
+            localStorage.removeItem(ADMISSAO_TOKEN)
+            localStorage.removeItem(ADMISSAO_SECURITY_TOKEN)
+            
+            // Remover dados do usuário
+            localStorage.removeItem(USER_NAME)
+            localStorage.removeItem(IS_ADMIN)
+            localStorage.removeItem(USER_FIRST_NAME)
+            localStorage.removeItem(USER_LAST_NAME)
+            localStorage.removeItem(USER_FOTO_PERFIL)
+            localStorage.removeItem(USER_EMAIL)
+            localStorage.removeItem(USER_CPF)
+            localStorage.removeItem(USER_PUBLIC_ID)
+            localStorage.removeItem(USER_TYPE)
+            localStorage.removeItem(USER_PROFILE)
+            
+            // Remover parâmetros de menu
+            this.removerParametrosMenus()
+            
+            // Limpar dados de empresa
+            this.removerCompany()
+            this.limparEmpresas()
+            
+            // Limpar cache
+            this.limparCache()
+            
+            // Verificar se todos os itens foram removidos
+            const itemsToCheck = [
+                ACCESS_TOKEN, MFA_REQUIRED, EXPIRATION, PERMISSIONS, USER_GROUPS, 
+                USER_PERMISSIONS, REFRESH_TOKEN, TEMP_TOKEN, ADMISSAO_TOKEN, 
+                ADMISSAO_SECURITY_TOKEN, USER_NAME, IS_ADMIN, USER_FIRST_NAME, 
+                USER_LAST_NAME, USER_FOTO_PERFIL, USER_EMAIL, USER_CPF, 
+                USER_PUBLIC_ID, USER_TYPE, USER_PROFILE
+            ];
+            
+            // Verificar se algum item ainda existe
+            for (const item of itemsToCheck) {
+                if (localStorage.getItem(item) !== null) {
+                    console.warn(`Item ${item} não foi removido completamente`);
+                    return false;
+                }
+            }
+            
+            return true;
+        } catch (error) {
+            console.error('Erro ao remover token:', error);
+            return false;
+        }
     }
     static get AccessToken() {
         try {
