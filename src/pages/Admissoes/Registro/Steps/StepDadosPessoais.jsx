@@ -528,6 +528,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, paises = [], modoLe
             <DropdownItens
                 name="nacionalidade"
                 label="Nacionalidade"
+                required={true}
                 valor={getValorSelecionadoFromCandidato('nacionalidade', paises)}
                 setValor={(valor) => setCampo('nacionalidade', valor.code)}
                 options={paises}

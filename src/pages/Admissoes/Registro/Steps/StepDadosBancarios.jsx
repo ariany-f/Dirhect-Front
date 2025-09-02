@@ -343,6 +343,8 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
                         <BotaoSemBorda aoClicar={() => {
                             setAdicionandoAgencia(false);
                             setCampo('agencia_nova', '');
+                            // Limpa o filtro de agência quando cancela
+                            setFiltroAgencia('');
                         }}>
                             Cancelar
                         </BotaoSemBorda>
@@ -355,6 +357,8 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
                         valor={candidato?.agencia ? (agencias.find(a => a.code === candidato.agencia) || null) : null}
                         setValor={valor => {
                             setCampo('agencia', valor.code);
+                            // Limpa agencia_nova quando seleciona uma agência existente
+                            setCampo('agencia_nova', '');
                             removerErroCampo('agencia', valor);
                         }}
                         options={agencias}
@@ -381,6 +385,10 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
                                     aoClicar={() => {
                                         setAdicionandoAgencia(true);
                                         setCampo('agencia', ''); // Limpa a seleção da agência existente
+                                        // Transfere o valor do filtro para agencia_nova
+                                        if (filtroAgencia) {
+                                            setCampo('agencia_nova', filtroAgencia);
+                                        }
                                     }}
                                     style={{ marginTop: '10px', width: '100%' }}
                                 >
@@ -394,6 +402,10 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
                                 onClick={() => {
                                     setAdicionandoAgencia(true);
                                     setCampo('agencia', '');
+                                    // Transfere o valor do filtro para agencia_nova
+                                    if (filtroAgencia) {
+                                        setCampo('agencia_nova', filtroAgencia);
+                                    }
                                 }}
                             >
                                 <span style={{ marginRight: '8px', fontWeight: 'bold' }}>+</span>
