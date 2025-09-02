@@ -178,7 +178,7 @@ function FeriasListagem() {
             const fimAnoPassado = new Date(anoAtual - 1, 11, 31); // 31/12 do ano passado
             fimAnoPassado.setMonth(fimAnoPassado.getMonth() + 11); // + 11 meses
             url += `&fimperaquis_lte=${fimAnoPassado.toISOString().split('T')[0]}`
-            url += `&fimperaquis_gte=${new Date(currentYear - 1, 0, 1).toISOString().split('T')[0]}`
+            url += `&fimperaquis_gte=${new Date(currentYear, 0, 1).toISOString().split('T')[0]}`
         }
         // Se estiver na aba lista, adiciona parâmetros de paginação
         else if (tab === 'lista') {

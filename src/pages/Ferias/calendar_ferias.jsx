@@ -431,6 +431,8 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
         // Normaliza dados da API de férias
         const colaboradoresMap = {};
         colaboradores.forEach(item => {
+            console.log('🔍 Debug - Processando item da API:', item);
+            
             // Agora usa funcionario_id diretamente
             const funcionarioId = item.funcionario_id;
             if (!funcionarioId) {
@@ -443,7 +445,8 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                     id: funcionarioId,
                     nome: item.funcionario_nome || 'Colaborador',
                     gestor: item.gestor || '', 
-                    ausencias: []
+                    ausencias: [],
+                    funcionario_marcado_demissao: item.funcionario_marcado_demissao || false
                 };
             }
             
@@ -525,15 +528,20 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
     // Para usar dados fake em demonstrações, mude para: const allColabs = [...colabsReais, ...colabsFake];
     // Para usar apenas dados reais: const allColabs = colabsReais;
     const allColabs = colabsReais;
+    
+    // Debug: verificar se o objeto está sendo processado
+    console.log('🔍 Debug - Colaboradores normalizados:', colabsReais);
+    console.log('🔍 Debug - Ano selecionado:', anoSelecionado);
+    console.log('🔍 Debug - Período do calendário:', { startDate, endDate });
 
-    // Definir período do calendário: 1 ano atrás até 1 ano à frente do ano atual
+    // Definir período do calendário: 1 ano atrás até 2 anos à frente do ano atual
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
     const minDate = new Date(currentYear - 1, 0, 1); // 01/01 do ano anterior
-    const maxDate = new Date(currentYear + 1, 11, 31); // 31/12 do ano seguinte
+    const maxDate = new Date(currentYear + 2, 11, 31); // 31/12 de 2 anos à frente
 
-    // Lista de anos disponíveis (ano anterior, atual e próximo)
-    const anosDisponiveis = [currentYear - 1, currentYear, currentYear + 1];
+    // Lista de anos disponíveis (ano anterior, atual e próximos 2 anos)
+    const anosDisponiveis = [currentYear - 1, currentYear, currentYear + 1, currentYear + 2];
 
     // Estado do ano selecionado (padrão: ano atual)
     const [anoSelecionado, setAnoSelecionado] = useState(currentYear);
@@ -678,7 +686,30 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
             <Tooltip target=".event-bar" />
             <FixedHeader>
                 <ViewToggleBar>
-                    <div></div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: '14px', fontWeight: '500', color: '#333' }}>Ano:</span>
+                            <DropdownItens
+                                valor={anosDisponiveis.find(ano => ano === anoSelecionado)}
+                                setValor={(e) => setAnoSelecionado(e.value)}
+                                options={anosDisponiveis.map(ano => ({ label: ano.toString(), value: ano }))}
+                                placeholder="Selecione o ano"
+                                name="ano"
+                                $height="40px"
+                                $margin="0"
+                                optionLabel="label"
+                            />
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: '14px', fontWeight: '500', color: '#333' }}>Colaborador:</span>
+                            <CampoTexto
+                                valor={filtroColaborador}
+                                setValor={setFiltroColaborador}
+                                placeholder="Filtrar por nome..."
+                                style={{ width: '200px' }}
+                            />
+                        </div>
+                    </div>
                     <ViewToggleSwitch>
                         <ViewToggleOption
                             active={visualizacao === 'mensal'}
@@ -833,19 +864,27 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                     // Ordena os registros: primeiro os que não têm dt_inicio/dt_fim (férias a requisitar), depois os que têm
                                     const registrosOrdenados = colab.ausencias
                                         .filter(aus => {
+                                            // Debug: verificar cada ausência
+                                            console.log('🔍 Debug - Verificando ausência:', aus);
+                                            
                                             // Só mostra eventos que têm pelo menos um dia dentro do range do calendário
                                             if (aus.data_inicio && aus.data_fim) {
                                                 const eventStart = parseDateAsLocal(aus.data_inicio);
                                                 const eventEnd = parseDateAsLocal(aus.data_fim);
-                                                return eventEnd >= startDate && eventStart <= endDate;
+                                                const isInRange = eventEnd >= startDate && eventStart <= endDate;
+                                                console.log('🔍 Debug - Evento com datas:', { eventStart, eventEnd, startDate, endDate, isInRange });
+                                                return isInRange;
                                             }
                                             // Se não tem dt_inicio e dt_fim, verifica fimperaquis
                                             if (aus.fimperaquis) {
                                                 const fimPeriodo = parseDateAsLocal(aus.fimperaquis);
                                                 const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
                                                 const limiteSolicitacao = new Date(fimPeriodo.getFullYear(), fimPeriodo.getMonth() + 11, fimPeriodo.getDate()); // 11 meses após o fim
-                                                return limiteSolicitacao >= startDate && inicioPeriodo <= endDate;
+                                                const isInRange = limiteSolicitacao >= startDate && inicioPeriodo <= endDate;
+                                                console.log('🔍 Debug - Evento com fimperaquis:', { fimPeriodo, inicioPeriodo, limiteSolicitacao, startDate, endDate, isInRange });
+                                                return isInRange;
                                             }
+                                            console.log('🔍 Debug - Ausência sem datas válidas, filtrada');
                                             return false;
                                         })
                                         .sort((a, b) => {
@@ -867,14 +906,27 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                         console.log(aus)
                                         // Se não tem dt_inicio e dt_fim, mas tem fimperaquis, verifica se pode solicitar ou se está perdido
                                         if (!aus.data_inicio && !aus.data_fim && aus.fimperaquis) {
+                                            console.log('🔍 Debug - Verificando férias a solicitar para:', colab.nome, {
+                                                funcionario_marcado_demissao: colab.funcionario_marcado_demissao,
+                                                funcionario_situacao_padrao: aus.funcionario_situacao_padrao
+                                            });
+                                            
                                             // NOVA REGRA: não exibe "a solicitar" se funcionario_marcado_demissao ou tipo_situacao Demitido
-                                            if (colab.funcionario_marcado_demissao === true || aus.funcionario_situacao_padrao === true) return null;
+                                            if (colab.funcionario_marcado_demissao === true || aus.funcionario_situacao_padrao === true) {
+                                                console.log('🔍 Debug - Colaborador filtrado por demissão/situação:', colab.nome);
+                                                return null;
+                                            }
                                             const fimPeriodo = parseDateAsLocal(aus.fimperaquis);
                                             const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
                                             const limiteSolicitacao = new Date(fimPeriodo.getFullYear(), fimPeriodo.getMonth() + 11, fimPeriodo.getDate()); // 11 meses após o fim
                                             
                                             // Verifica se o período está perdido usando o campo da API
                                             const isPerdido = aus.periodo_perdido === true;
+                                            console.log('🔍 Debug - Verificando período perdido:', {
+                                                periodo_perdido: aus.periodo_perdido,
+                                                isPerdido,
+                                                fimperaquis: aus.fimperaquis
+                                            });
                                             
                                             const { startPercent, widthPercent } = getBarPosition(inicioPeriodo, limiteSolicitacao, startDate, totalDays);
                                             
