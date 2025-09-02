@@ -188,6 +188,7 @@ function BarraLateral({ $sidebarOpened }) {
 
     const [grupos, setGrupos] = useState([]);
     const [parametrosMenus, setParametrosMenus] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
 
     const [whiteLabel, setWhiteLabel] = useState(false)
 
@@ -211,46 +212,61 @@ function BarraLateral({ $sidebarOpened }) {
             // Se já existe no ArmazenadorToken, usa ele
             if (ArmazenadorToken.UserPermissions && Array.isArray(ArmazenadorToken.UserPermissions) && ArmazenadorToken.UserPermissions.length > 0) {
                 setGrupos(ArmazenadorToken.UserPermissions);
-            } else {
-                http.get(`permissao_grupo/?format=json&name=${usuario.tipo}`)
+                // Buscar parâmetros de menus apenas se não existir no localStorage
+                http.get('parametros/por-assunto/?assunto=MENUS')
                     .then(response => {
-                        setGrupos(response);
-                        ArmazenadorToken.definirPermissoes(response);
+                        const parametros = response.parametros || {};
+                        setParametrosMenus(parametros);
+                        ArmazenadorToken.definirParametrosMenus(parametros);
+                        setIsLoading(false); // Só define como false quando tudo estiver carregado
                     })
-                    .catch(error => console.log('Erro ao buscar grupos:', error));
-            }
-
-            if(usuario.tipo != 'Acesso Base') {
-                http.get(`permissao_grupo/?format=json&name=Acesso Base`)
-                .then(response => {
-                    // Buscar o grupo "Acesso Base" da resposta
-                    if (response && response[0] && response[0].permissions) {
-                        // Para cada grupo existente, adicionar as permissões do Acesso Base
-                        const gruposComAcessoBase = grupos.map(grupo => ({
-                            ...grupo,
-                            permissions: [
-                                ...grupo.permissions,
-                                ...response[0].permissions
-                            ]
-                        }));
-                        ArmazenadorToken.definirPermissoes(gruposComAcessoBase);
-                        setGrupos(gruposComAcessoBase);
-                    }
-                })
-                .catch(error => console.log('Erro ao buscar grupos:', error));
-            }
-
-            // Buscar parâmetros de menus apenas se não existir no localStorage
-            http.get('parametros/por-assunto/?assunto=MENUS')
-                .then(response => {
-                    const parametros = response.parametros || {};
+                    .catch(error => {
+                        console.log('Erro ao buscar parâmetros de menus:', error);
+                        setIsLoading(false); // Define como false mesmo com erro
+                    });
+            } else {
+                // Buscar grupos e parâmetros em paralelo
+                Promise.all([
+                    http.get(`permissao_grupo/?format=json&name=${usuario.tipo}`),
+                    http.get('parametros/por-assunto/?assunto=MENUS')
+                ]).then(([gruposResponse, parametrosResponse]) => {
+                    setGrupos(gruposResponse);
+                    ArmazenadorToken.definirPermissoes(gruposResponse);
+                    
+                    const parametros = parametrosResponse.parametros || {};
                     setParametrosMenus(parametros);
                     ArmazenadorToken.definirParametrosMenus(parametros);
-                })
-                .catch(error => console.log('Erro ao buscar parâmetros de menus:', error));
-           
+                    
+                    // Se não for Acesso Base, buscar permissões adicionais
+                    if(usuario.tipo != 'Acesso Base') {
+                        return http.get(`permissao_grupo/?format=json&name=Acesso Base`);
+                    }
+                    return null;
+                }).then(acessoBaseResponse => {
+                    if (acessoBaseResponse && acessoBaseResponse[0] && acessoBaseResponse[0].permissions) {
+                        // Para cada grupo existente, adicionar as permissões do Acesso Base
+                        setGrupos(prevGrupos => {
+                            const gruposComAcessoBase = prevGrupos.map(grupo => ({
+                                ...grupo,
+                                permissions: [
+                                    ...grupo.permissions,
+                                    ...acessoBaseResponse[0].permissions
+                            ]
+                            }));
+                            ArmazenadorToken.definirPermissoes(gruposComAcessoBase);
+                            return gruposComAcessoBase;
+                        });
+                    }
+                    setIsLoading(false); // Só define como false quando tudo estiver carregado
+                }).catch(error => {
+                    console.log('Erro ao buscar dados:', error);
+                    setIsLoading(false); // Define como false mesmo com erro
+                });
+            }
+        } else {
+            setIsLoading(false); // Se não há usuário, define como false
         }
-    }, [usuario]);
+    }, [usuario, usuarioEstaLogado]);
 
     useEffect(() => {
 
@@ -703,7 +719,8 @@ function BarraLateral({ $sidebarOpened }) {
                         )}
                         <ListaEstilizada>
                             <div className="links" style={{ height: (whiteLabel ? '90%' : '100%') }}>
-                                {menusOrdenados.map((item) => (
+                                {/* Sempre mostra o menu Home */}
+                                {alwaysVisible.map((item) => (
                                     <StyledLink 
                                         key={item.id} 
                                         className="link p-ripple" 
@@ -716,7 +733,44 @@ function BarraLateral({ $sidebarOpened }) {
                                         <Ripple />
                                     </StyledLink>
                                 ))}
-                            </div>
+                                
+                                {/* Mostra loading ou outros menus baseado no estado */}
+                                {isLoading ? (
+                                    <div style={{ 
+                                        display: 'flex', 
+                                        justifyContent: 'center', 
+                                        alignItems: 'center', 
+                                        height: '100px',
+                                        color: 'var(--white)',
+                                        opacity: 0.7
+                                    }}>
+                                        <div style={{ 
+                                            width: '20px', 
+                                            height: '20px', 
+                                            border: '2px solid rgba(255,255,255,0.3)', 
+                                            borderTop: '2px solid var(--white)', 
+                                            borderRadius: '50%', 
+                                            animation: 'spin 1s linear infinite' 
+                                        }}></div>
+                                        <span style={{ marginLeft: '10px' }}>Carregando...</span>
+                                    </div>
+                                ) : (
+                                    // Só mostra outros menus quando não estiver carregando
+                                    menusOrdenados.filter(menu => menu.itemTitulo !== t('home')).map((item) => (
+                                        <StyledLink 
+                                            key={item.id} 
+                                            className="link p-ripple" 
+                                            to={item.url}
+                                            onClick={() => window.innerWidth <= 760 && setBarraLateralOpened(false)}>
+                                            <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
+                                                {item.icone}
+                                                {item.itemTitulo}
+                                            </ItemNavegacao>
+                                            <Ripple />
+                                        </StyledLink>
+                                    ))
+                                )}
+                                </div>
                             {whiteLabel && (
                               <img 
                                 style={{ 
