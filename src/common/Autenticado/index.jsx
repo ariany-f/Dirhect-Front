@@ -124,6 +124,28 @@ function Autenticado() {
         setLogo('')
     }, [])
 
+    // Escutar mudanças de logo para atualizar automaticamente (mesma mecânica das cores)
+    useEffect(() => {
+        const handleLogoChange = (event) => {
+            const logoUrl = event.detail.logoUrl;
+            console.log('🔄 Logo alterada no Autenticado:', logoUrl);
+            if (logoUrl) {
+                setLogo(logoUrl);
+                console.log('✅ Logo atualizada no Autenticado');
+            } else {
+                setLogo('');
+                console.log('✅ Logo removida no Autenticado');
+            }
+        };
+
+        // Escutar evento automático disparado pelo BrandColors
+        window.addEventListener('logoChanged', handleLogoChange);
+
+        return () => {
+            window.removeEventListener('logoChanged', handleLogoChange);
+        };
+    }, []);
+
     useEffect(() => { 
         if((!tenants) && ((!empresas) || empresas.length == 0))
         {
@@ -415,7 +437,6 @@ function Autenticado() {
                 http.get('parametros/por-assunto/?assunto=LAYOUT')
                 .then(response => {
                     if (response && response.parametros) {
-                        console.log('🔄 Parâmetros de layout encontrados:', response.parametros);
                         // Salvar e aplicar as cores do layout
                         BrandColors.setLayoutData(response.parametros);
                     }

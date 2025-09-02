@@ -281,6 +281,28 @@ function BarraLateral({ $sidebarOpened }) {
         }
     }, [usuario.tipo]);
 
+    // Escutar mudanças de logo para atualizar automaticamente (mesma mecânica das cores)
+    useEffect(() => {
+        const handleLogoChange = (event) => {
+            const logoUrl = event.detail.logoUrl;
+            console.log('🔄 Logo alterada na BarraLateral:', logoUrl);
+            if (logoUrl) {
+                setImage(true);
+                console.log('✅ Logo definida como visível na BarraLateral');
+            } else {
+                setImage(false);
+                console.log('✅ Logo definida como invisível na BarraLateral');
+            }
+        };
+
+        // Escutar evento automático disparado pelo BrandColors
+        window.addEventListener('logoChanged', handleLogoChange);
+
+        return () => {
+            window.removeEventListener('logoChanged', handleLogoChange);
+        };
+    }, []);
+
     useEffect(() => {
         const pathSegments = location.pathname.split('/').filter(Boolean)
         const newBreadCrumbItems = pathSegments.map((segment, index) => ({

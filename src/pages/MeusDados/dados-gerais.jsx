@@ -1076,7 +1076,7 @@ function MeusDadosDadosGerais() {
             {!mostrarCamposSenha && (
                 <BotaoSemBorda aoClicar={() => setMostrarCamposSenha(true)}>
                     <RiEditBoxFill size={18} />
-                    <span className={styles.link}>Alterar</span>
+                    <Link to="#" className={styles.link}>Alterar</Link>
                 </BotaoSemBorda>
             )}
 

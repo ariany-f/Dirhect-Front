@@ -154,6 +154,40 @@ export class BrandColors {
       }
     }
 
+    // Aplicar logo da marca dinamicamente (para mudanças em runtime)
+    static applyBrandLogo() {
+      // Verificar se o DOM está pronto
+      if (typeof document === 'undefined') {
+        return;
+      }
+
+      const logoUrl = this.getBrandLogo();
+      
+      // Disparar evento customizado para notificar componentes sobre mudança de logo
+      if (typeof window !== 'undefined') {
+        console.log('📡 Disparando evento logoChanged com:', logoUrl);
+        window.dispatchEvent(new CustomEvent('logoChanged', { 
+          detail: { logoUrl: logoUrl } 
+        }));
+      }
+
+      // Log apenas em desenvolvimento
+      if (import.meta.env.DEV) {
+        console.log('🖼️ Logo da marca aplicada:', logoUrl);
+      }
+    }
+
+    // Aplicar logo da marca quando o DOM estiver pronto
+    static applyBrandLogoWhenReady() {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          this.applyBrandLogo();
+        });
+      } else {
+        this.applyBrandLogo();
+      }
+    }
+
     // Obter logo da marca
     static getPoweredByLogo() {
       const layoutColors = JSON.parse(localStorage.getItem('layoutColors')) || {};
@@ -194,6 +228,9 @@ export class BrandColors {
             delete updatedLayout.LOGO_URL;
             localStorage.setItem('layoutColors', JSON.stringify(updatedLayout));
         }
+        
+        // Aplicar a logo automaticamente (mesma mecânica das cores)
+        this.applyBrandLogo();
     }
 
     // Obter nome da marca
@@ -271,6 +308,9 @@ export class BrandColors {
         localStorage.setItem('layoutColors', JSON.stringify(updatedLayout));
         // Aplicar as cores automaticamente
         this.applyBrandColors();
+        
+        // Aplicar a logo automaticamente também
+        this.applyBrandLogo();
     }
   }
   

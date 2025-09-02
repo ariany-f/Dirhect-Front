@@ -462,6 +462,7 @@ function MeusDadosSistema() {
             console.log('🔄 Removendo logo...');
             setSistema(prev => ({ ...prev, logoPreview: '' }));
             BrandColors.setBrandLogo(null);
+            
             if (fileInputRef.current) fileInputRef.current.value = '';
             toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Logo removida com sucesso!' });
             console.log('✅ Logo removida com sucesso');
@@ -556,8 +557,10 @@ function MeusDadosSistema() {
                             const dataUrl = reader.result;
                             console.log('Data URL criado, tamanho:', dataUrl.length);
                             
+                            // Atualizar logo e notificar mudanças (agora automático via BrandColors)
                             BrandColors.setBrandLogo(dataUrl);
                             setSistema(prev => ({ ...prev, logoPreview: dataUrl }));
+                            
                             toast.current.show({ 
                                 severity: 'success', 
                                 summary: 'Sucesso', 
