@@ -138,19 +138,23 @@ function FeriasListagem() {
     const { usuario } = useSessaoUsuarioContext()
     const [tab, setTab] = useState('calendario') // 'lista' ou 'calendario'
     const toast = useRef(null);
+    const requestInProgress = useRef(false);
 
     // Lista de anos disponíveis (últimos 5 anos + próximos 2)
-    const currentYear = useMemo(() => new Date().getFullYear(), [])
-    const anosDisponiveis = useMemo(() => [
-        { name: 'Todos os anos', value: null },
-        { name: 'Últimos 2 anos', value: 'ultimos_2' },
-        { name: 'Últimos 3 anos', value: 'ultimos_3' },
-        { name: 'Últimos 4 anos', value: 'ultimos_4' },
-        ...Array.from({ length: 9 }, (_, i) => {
-            const year = currentYear - 6 + i
-            return { name: year.toString(), value: year }
-        })
-    ], [currentYear])
+    const currentYear = new Date().getFullYear()
+    const anosDisponiveis = useMemo(() => {
+        const year = new Date().getFullYear()
+        return [
+            { name: 'Todos os anos', value: null },
+            { name: 'Últimos 2 anos', value: 'ultimos_2' },
+            { name: 'Últimos 3 anos', value: 'ultimos_3' },
+            { name: 'Últimos 4 anos', value: 'ultimos_4' },
+            ...Array.from({ length: 9 }, (_, i) => {
+                const yearItem = year - 6 + i
+                return { name: yearItem.toString(), value: yearItem }
+            })
+        ]
+    }, [])
 
     // Opções do filtro de período aberto
     const opcoesPeriodoAberto = [
@@ -160,6 +164,24 @@ function FeriasListagem() {
     ]
 
     useEffect(() => {
+        // Evita requisições duplicadas em desenvolvimento
+        if (requestInProgress.current) {
+            console.log('🚫 Requisição já em andamento, ignorando execução duplicada')
+            return;
+        }
+        
+        requestInProgress.current = true;
+        console.log('🔄 useEffect executando - Stack trace:', new Error().stack)
+        console.log('🔄 Dependências atuais:', {
+            anoSelecionado,
+            searchTerm,
+            periodoAberto,
+            tab,
+            currentPage,
+            pageSize,
+            forceUpdate
+        })
+        
         setLoading(true)
         
         let url = `ferias/?format=json`
@@ -205,9 +227,9 @@ function FeriasListagem() {
             }
         }
         
+        console.log('🌐 Fazendo requisição para:', url)
         http.get(url)
         .then(response => {
-            console.log('buscou férias')
             setFerias(response.results || response)
             setTotalRecords(response.count || (response.results ? response.results.length : 0))
         })
@@ -217,8 +239,9 @@ function FeriasListagem() {
         })
         .finally(() => {
             setLoading(false)
+            requestInProgress.current = false;
         })
-    }, [anoSelecionado, searchTerm, periodoAberto, tab, currentPage, pageSize, forceUpdate, currentYear])
+    }, [anoSelecionado, searchTerm, periodoAberto, tab, currentPage, pageSize, forceUpdate])
 
     const handleColaboradorSelecionado = async (colaborador) => {
         setModalSelecaoColaboradorOpened(false);
