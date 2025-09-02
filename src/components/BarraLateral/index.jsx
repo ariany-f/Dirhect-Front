@@ -224,7 +224,7 @@ function BarraLateral({ $sidebarOpened }) {
                 http.get(`permissao_grupo/?format=json&name=Acesso Base`)
                 .then(response => {
                     // Buscar o grupo "Acesso Base" da resposta
-                    if (response && response[0].permissions) {
+                    if (response && response[0] && response[0].permissions) {
                         // Para cada grupo existente, adicionar as permissões do Acesso Base
                         const gruposComAcessoBase = grupos.map(grupo => ({
                             ...grupo,
