@@ -526,14 +526,11 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
     // Para usar apenas dados reais: const allColabs = colabsReais;
     const allColabs = colabsReais;
 
-    // Definir período do calendário: 1 ano atrás até 1 ano à frente do ano atual
+    // Definir período do calendário: 1 ano atrás até 2 anos à frente do ano atual
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
     const minDate = new Date(currentYear - 1, 0, 1); // 01/01 do ano anterior
-    const maxDate = new Date(currentYear + 1, 11, 31); // 31/12 do ano seguinte
-
-    // Lista de anos disponíveis (ano anterior, atual e próximo)
-    const anosDisponiveis = [currentYear - 1, currentYear, currentYear + 1];
+    const maxDate = new Date(currentYear + 2, 11, 31); // 31/12 de 2 anos à frente
 
     // Estado do ano selecionado (padrão: ano atual)
     const [anoSelecionado, setAnoSelecionado] = useState(currentYear);
