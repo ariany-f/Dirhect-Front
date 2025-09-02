@@ -412,11 +412,6 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
           icon: <RiOrganizationChart size={18}/>
         },
         { 
-          label: 'Metadados', 
-          url: '/metadados',
-          icon: <FaDatabase size={18}/>
-        },
-        { 
           label: 'Tabelas de Sistema', 
           url: '/tabelas-de-sistema',
           icon: <RiTable2 size={18}/>
