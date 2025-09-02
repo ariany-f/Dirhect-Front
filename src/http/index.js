@@ -13,7 +13,7 @@ const MAX_CONNECTION_ERRORS = 3;
 let refreshInProgress = false;
 
 const http = axios.create({
-    timeout: 30000, // 30 segundos de timeout padrão
+    timeout: 45000, // 30 segundos de timeout padrão
     headers: {
         "Content-Type": "application/json",
         "Accept": "application/json"
