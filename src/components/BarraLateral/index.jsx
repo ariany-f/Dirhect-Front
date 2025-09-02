@@ -501,7 +501,7 @@ function BarraLateral({ $sidebarOpened }) {
     const menuDeveSerExibido = (menu) => {
        
         // Traduz o nome do menu usando i18n e normaliza
-        const menuNameTranslated = normalizarTexto(t(menu.itemTitulo.toLowerCase()));
+        const menuNameTranslated = normalizarTexto(menu.itemTitulo.toLowerCase());
         
         const perfilMenu = `${userGroups.toUpperCase()}_${menuNameTranslated}`;
         const todosMenu = `TODOS_${menuNameTranslated}`;

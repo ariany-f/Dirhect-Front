@@ -415,6 +415,7 @@ function Autenticado() {
                 http.get('parametros/por-assunto/?assunto=LAYOUT')
                 .then(response => {
                     if (response && response.parametros) {
+                        console.log('🔄 Parâmetros de layout encontrados:', response.parametros);
                         // Salvar e aplicar as cores do layout
                         BrandColors.setLayoutData(response.parametros);
                     }

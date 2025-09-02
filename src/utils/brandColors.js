@@ -129,13 +129,15 @@ export class BrandColors {
       // Aplicar cores secundárias
       root.style.setProperty('--gradient-secundaria', brandColors.secondary);
       root.style.setProperty('--secundaria', brandColors.accent);
+      root.style.setProperty('--terciaria', brandColors.tertiary);
 
       // Log apenas em desenvolvimento
       if (import.meta.env.DEV) {
         console.log('🎨 Cores da marca aplicadas:', {
           primary: brandColors.primary,
           secondary: brandColors.secondary,
-          accent: brandColors.accent
+          accent: brandColors.accent,
+          tertiary: brandColors.tertiary
         });
         console.log('🎨 Variações geradas:', colorVariations);
       }
@@ -172,6 +174,7 @@ export class BrandColors {
 
     // Salvar logo da marca
     static setBrandLogo(logoUrl) {
+      console.log('🔄 setBrandLogo chamado com:', logoUrl);
         if (logoUrl) {
             localStorage.setItem('brandLogo', logoUrl);
             
