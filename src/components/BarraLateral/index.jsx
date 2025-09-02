@@ -620,54 +620,59 @@ function BarraLateral({ $sidebarOpened }) {
     if (!grupos || grupos.length === 0) {
         return (
             <BarraLateralEstilizada $opened={$sidebarOpened}>
-                <div style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: '100%',
-                    width: '100%',
-                    overflow: 'hidden'
-                }}>
-                    <NavEstilizada>
-                        <NavTitulo>{capitalizeTipo(usuario.tipo)}</NavTitulo>
-                        {!temApenasUmPerfil && (
-                            <Link to="/login/selecionar-grupo" style={{ color: 'inherit', display: 'flex', alignItems: 'center' }}>
-                                <FaExchangeAlt size={18} style={{ marginLeft: 6, opacity: 0.7 }} />
-                            </Link>
-                        )}
-                        <ListaEstilizada>
-                            <div className="links" style={{ height: (whiteLabel ? '90%' : '100%') }}>
-                            {alwaysVisible.map((item) => (
-                                <StyledLink 
-                                    key={item.id} 
-                                    className="link p-ripple" 
-                                    to={item.url}
-                                    onClick={() => window.innerWidth <= 760 && setBarraLateralOpened(false)}>
-                                    <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
-                                        {item.icone}
-                                        {item.itemTitulo}
-                                    </ItemNavegacao>
-                                    <Ripple />
-                                </StyledLink>
-                            ))}
-                            </div>
-                            {whiteLabel && (
-                              <img 
-                                style={{ 
-                                  width: '70px', 
-                                  margin: 'auto', 
-                                  opacity: 0.30, 
-                                  pointerEvents: 'none', 
-                                  filter: 'blur(0.1px)',
-                                  userSelect: 'none',
-                                  display: 'block',
-                                }} 
-                                src={BrandColors.getPoweredByLogo()} 
-                                alt="Powered by" 
-                              />
+                    {image && <Logo src={BrandColors.getBrandLogo()} ref={ref} alt="Logo" />}
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        height: '100%',
+                        width: '100%',
+                        overflow: 'hidden'
+                    }}>
+                        <NavEstilizada>
+                            {usuario && usuario?.tipo && usuario?.tipo != 'Acesso Base' && (
+                                <NavTitulo>
+                                    {usuario.tipo}
+                                    {!temApenasUmPerfil && (
+                                        <Link to="/login/selecionar-grupo" style={{ color: 'inherit', display: 'flex', alignItems: 'center' }}>
+                                            <FaExchangeAlt fill="white" size={18} style={{ marginLeft: 6, opacity: 0.7 }} />
+                                        </Link>
+                                    )}
+                                </NavTitulo>
                             )}
-                        </ListaEstilizada>
-                    </NavEstilizada>
-                </div>
+                            <ListaEstilizada>
+                                <div className="links" style={{ height: (whiteLabel ? '90%' : '100%') }}>
+                                {alwaysVisible.map((item) => (
+                                    <StyledLink 
+                                        key={item.id} 
+                                        className="link p-ripple" 
+                                        to={item.url}
+                                        onClick={() => window.innerWidth <= 760 && setBarraLateralOpened(false)}>
+                                        <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
+                                            {item.icone}
+                                            {item.itemTitulo}
+                                        </ItemNavegacao>
+                                        <Ripple />
+                                    </StyledLink>
+                                ))}
+                                </div>
+                                {whiteLabel && (
+                                <img 
+                                    style={{ 
+                                    width: '70px', 
+                                    margin: 'auto', 
+                                    opacity: 0.30, 
+                                    pointerEvents: 'none', 
+                                    filter: 'blur(0.1px)',
+                                    userSelect: 'none',
+                                    display: 'block',
+                                    }} 
+                                    src={BrandColors.getPoweredByLogo()} 
+                                    alt="Powered by" 
+                                />
+                                )}
+                            </ListaEstilizada>
+                        </NavEstilizada>
+                    </div>
             </BarraLateralEstilizada>
         );
     }
@@ -686,14 +691,16 @@ function BarraLateral({ $sidebarOpened }) {
                     overflow: 'hidden'
                 }}>
                     <NavEstilizada>
-                        <NavTitulo>
-                            {usuario.tipo}
-                            {!temApenasUmPerfil && (
-                                <Link to="/login/selecionar-grupo" style={{ color: 'inherit', display: 'flex', alignItems: 'center' }}>
-                                    <FaExchangeAlt fill="white" size={18} style={{ marginLeft: 6, opacity: 0.7 }} />
-                                </Link>
-                            )}
-                        </NavTitulo>
+                        {usuario && usuario?.tipo && usuario?.tipo != 'Acesso Base' && (
+                            <NavTitulo>
+                                {usuario.tipo}
+                                {!temApenasUmPerfil && (
+                                    <Link to="/login/selecionar-grupo" style={{ color: 'inherit', display: 'flex', alignItems: 'center' }}>
+                                        <FaExchangeAlt fill="white" size={18} style={{ marginLeft: 6, opacity: 0.7 }} />
+                                    </Link>
+                                )}
+                            </NavTitulo>
+                        )}
                         <ListaEstilizada>
                             <div className="links" style={{ height: (whiteLabel ? '90%' : '100%') }}>
                                 {menusOrdenados.map((item) => (

@@ -41,19 +41,19 @@ const ModalListaColaboradoresPorEstrutura = ({
             if (tipoEstrutura === 'filial') {
                 params.append('filial__id', estruturaId);
             } else if (tipoEstrutura === 'departamento') {
-                params.append('departamento', estruturaId);
+                params.append('departamento__id', estruturaId);
             } else if (tipoEstrutura === 'secao') {
-                params.append('id_secao_id', estruturaId);
+                params.append('id_secao__id', estruturaId);
             } else if (tipoEstrutura === 'cargo') {
-                params.append('id_funcao', estruturaId);
+                params.append('id_funcao__id_cargo', estruturaId);
             } else if (tipoEstrutura === 'funcao') {
-                params.append('id_funcao_id', estruturaId);
+                params.append('id_funcao__id', estruturaId);
             } else if (tipoEstrutura === 'sindicato') {
                 params.append('sindicato', estruturaId);
             } else if (tipoEstrutura === 'horario') {
                 params.append('horario', estruturaId);
             } else if (tipoEstrutura === 'centro_custo') {
-                params.append('centro_custo_id', estruturaId);
+                params.append('centro_custo__id', estruturaId);
             }
 
             if (filtro.trim()) {
