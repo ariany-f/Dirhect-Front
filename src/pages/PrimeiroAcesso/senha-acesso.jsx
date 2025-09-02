@@ -84,7 +84,8 @@ function SenhaDeAcesso() {
                         response.user.perfil,
                         response.data.user.first_name,
                         response.data.user.last_name,
-                        response.data.user.foto_perfil
+                        response.data.user.foto_perfil,
+                        response.data.user.is_admin ?? false
                     )
                     usuario.cpf = response.data.user.cpf
                     setModalOpened(true)

@@ -50,8 +50,8 @@ function MeusDados() {
 
   useEffect(() => {
     // Verifica a permissão para alterar cliente
-    setPodeAlterarCliente(ArmazenadorToken.hasPermission('change_cliente'));
-    setKitAdmissional(import.meta.env.VITE_OPTIONS_KIT_ADMISSIONAL === 'true');
+    setPodeAlterarCliente(ArmazenadorToken.hasPermission('change_cliente') && ArmazenadorToken.IsAdmin && ArmazenadorToken.IsAdmin === 'true');
+    setKitAdmissional(import.meta.env.VITE_OPTIONS_KIT_ADMISSIONAL === 'true' && ArmazenadorToken.IsAdmin && ArmazenadorToken.IsAdmin === 'true');
 
     setLoading(true);
   }, []);
@@ -95,12 +95,16 @@ function MeusDados() {
           <Link className={styles.link} to="/usuario">
             <Botao estilo={location.pathname == '/usuario'?'black':''} size="small" tab>Dados Usuário</Botao>
           </Link>
-          <Link className={styles.link} to="/usuario/sistema">
-            <Botao estilo={location.pathname == '/usuario/sistema'?'black':''} size="small" tab>Sistema</Botao>
-          </Link>
-          <Link className={styles.link} to="/usuario/email">
-            <Botao estilo={location.pathname == '/usuario/email'?'black':''} size="small" tab>Emails</Botao>
-          </Link>
+          {ArmazenadorToken.IsAdmin && ArmazenadorToken.IsAdmin === 'true' && (
+            <Link className={styles.link} to="/usuario/sistema">
+              <Botao estilo={location.pathname == '/usuario/sistema'?'black':''} size="small" tab>Sistema</Botao>
+            </Link>
+          )}
+          {ArmazenadorToken.IsAdmin && ArmazenadorToken.IsAdmin === 'true' && (
+            <Link className={styles.link} to="/usuario/email">
+              <Botao estilo={location.pathname == '/usuario/email'?'black':''} size="small" tab>Emails</Botao>
+            </Link>
+          )}
           {kitAdmissional && (
             <Link className={styles.link} to="/usuario/kit-admissional">
               <Botao estilo={location.pathname.startsWith('/usuario/kit-admissional') ? 'black' : ''} size="small" tab>Kit Admissional</Botao>

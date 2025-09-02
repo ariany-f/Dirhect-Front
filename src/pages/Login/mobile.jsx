@@ -128,7 +128,8 @@ function LoginMobile() {
                             response.user.perfil,
                             response.user.first_name,
                             response.user.last_name,
-                            response.user.foto_perfil
+                            response.user.foto_perfil,
+                            response.user?.is_admin ?? false
                         );
                         ArmazenadorToken.removerTempToken();
 
@@ -155,7 +156,8 @@ function LoginMobile() {
                             response.user.perfil,
                             response.user.first_name,
                             response.user.last_name,
-                            response.user.foto_perfil
+                            response.user.foto_perfil,
+                            response.user?.is_admin ?? false
                         );
 
                         ArmazenadorToken.removerTempToken();

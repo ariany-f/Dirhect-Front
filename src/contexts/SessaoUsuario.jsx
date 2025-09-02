@@ -21,6 +21,7 @@ const usuarioInicial = {
     email: localStorage.getItem('email') ?? '',
     password: '',
     cpf: localStorage.getItem('cpf') ?? '',
+    is_admin: localStorage.getItem('is_admin') ?? false,
     document: '',
     public_id: localStorage.getItem('public_id') ?? '',
     company_public_id: localStorage.getItem('company_public_id') ?? '',
@@ -109,6 +110,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
         const tipoSalvo = localStorage.getItem('tipo');
         const groupsSalvo = localStorage.getItem('groups');
         const domainSalvo = localStorage.getItem('domain');
+        const isAdminSalvo = localStorage.getItem('is_admin');
         const simboloSalvo = localStorage.getItem('simbolo');
         const logoSalvo = localStorage.getItem('logo');
         const companyPublicIdSalvo = localStorage.getItem('company_public_id');
@@ -121,6 +123,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
             tipo: tipoSalvo ?? '',
             groups: groupsSalvo ?? null,
             name: nameSalvo ?? '',
+            is_admin: isAdminSalvo ?? false,
             first_name: firstNameSalvo ?? '',
             last_name: lastNameSalvo ?? '',
             foto_perfil: fotoPerfilSalvo ?? '',

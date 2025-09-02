@@ -27,6 +27,7 @@ const TENANTS_CACHE = 'tenants_cache'
 const COMPANIES_CACHE = 'companies_cache'
 const DOMAINS_CACHE = 'domains_cache'
 const CACHE_TIMESTAMP = 'cache_timestamp'
+const IS_ADMIN = 'is_admin'
 const CACHE_DURATION = 30 * 60 * 1000 // 30 minutos em millisegundos
 
 export class ArmazenadorToken {
@@ -130,7 +131,7 @@ export class ArmazenadorToken {
         localStorage.setItem(COMPANY_SYMBOL, company_symbol)
         localStorage.setItem(COMPANY_LOGO, company_logo)
     }
-    static definirUsuario(name, email, cpf, public_id, tipo, company_public_id, company_domain, company_symbol, company_logo, mfa_required, profile = '', first_name = '', last_name = '', foto_perfil = '') {
+    static definirUsuario(name, email, cpf, public_id, tipo, company_public_id, company_domain, company_symbol, company_logo, mfa_required, profile = '', first_name = '', last_name = '', foto_perfil = '', is_admin = false) {
         if (!email) {
             throw new Error('Email é obrigatório')
         }
@@ -149,6 +150,7 @@ export class ArmazenadorToken {
             localStorage.setItem(COMPANY_LOGO, company_logo || '')
             localStorage.setItem(MFA_REQUIRED, mfa_required || false)
             localStorage.setItem(USER_PROFILE, profile || '')
+            localStorage.setItem(IS_ADMIN, is_admin || false)
         } catch (error) {
             console.error('Erro ao armazenar dados do usuário:', error)
             throw new Error('Falha ao armazenar dados do usuário')
@@ -295,6 +297,7 @@ export class ArmazenadorToken {
         localStorage.removeItem(ADMISSAO_TOKEN)
         localStorage.removeItem(ADMISSAO_SECURITY_TOKEN)
         localStorage.removeItem(USER_NAME)
+        localStorage.removeItem(IS_ADMIN)
         localStorage.removeItem(USER_FIRST_NAME)
         localStorage.removeItem(USER_LAST_NAME)
         localStorage.removeItem(USER_FOTO_PERFIL)
@@ -329,6 +332,15 @@ export class ArmazenadorToken {
     }
     static get MfaRequired() {
         return localStorage.getItem(MFA_REQUIRED)
+    }
+    static get IsAdmin() {
+        return localStorage.getItem(IS_ADMIN)
+    }
+    static definirIsAdmin(is_admin) {
+        localStorage.setItem(IS_ADMIN, is_admin)
+    }
+    static removerIsAdmin() {
+        localStorage.removeItem(IS_ADMIN)
     }
     static get UserName() {
         return localStorage.getItem(USER_NAME)
