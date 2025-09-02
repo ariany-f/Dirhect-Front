@@ -138,7 +138,7 @@ function FeriasListagem() {
     const { usuario } = useSessaoUsuarioContext()
     const [tab, setTab] = useState('calendario') // 'lista' ou 'calendario'
     const toast = useRef(null);
-    const requestInProgress = useRef(false);
+    const abortControllerRef = useRef(null);
 
     // Lista de anos disponíveis (últimos 5 anos + próximos 2)
     const currentYear = new Date().getFullYear()
@@ -164,23 +164,13 @@ function FeriasListagem() {
     ]
 
     useEffect(() => {
-        // Evita requisições duplicadas em desenvolvimento
-        if (requestInProgress.current) {
-            console.log('🚫 Requisição já em andamento, ignorando execução duplicada')
-            return;
+        // Cancela requisição anterior se existir
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
         }
         
-        requestInProgress.current = true;
-        console.log('🔄 useEffect executando - Stack trace:', new Error().stack)
-        console.log('🔄 Dependências atuais:', {
-            anoSelecionado,
-            searchTerm,
-            periodoAberto,
-            tab,
-            currentPage,
-            pageSize,
-            forceUpdate
-        })
+        // Cria novo AbortController para esta requisição
+        abortControllerRef.current = new AbortController();
         
         setLoading(true)
         
@@ -227,21 +217,37 @@ function FeriasListagem() {
             }
         }
         
-        console.log('🌐 Fazendo requisição para:', url)
-        http.get(url)
+        http.get(url, { signal: abortControllerRef.current.signal })
         .then(response => {
-            setFerias(response.results || response)
-            setTotalRecords(response.count || (response.results ? response.results.length : 0))
+            // Verifica se a requisição não foi cancelada
+            if (!abortControllerRef.current.signal.aborted) {
+                setFerias(response.results || response)
+                setTotalRecords(response.count || (response.results ? response.results.length : 0))
+            }
         })
         .catch(erro => {
-            console.log(erro)
-            setLoading(false)
+            // Ignora erros de cancelamento
+            if (erro.name !== 'AbortError') {
+                console.log(erro)
+                setLoading(false)
+            }
         })
         .finally(() => {
-            setLoading(false)
-            requestInProgress.current = false;
+            // Só reseta loading se não foi cancelado
+            if (!abortControllerRef.current.signal.aborted) {
+                setLoading(false)
+            }
         })
     }, [anoSelecionado, searchTerm, periodoAberto, tab, currentPage, pageSize, forceUpdate])
+
+    // Cleanup: cancela requisições pendentes quando o componente for desmontado
+    useEffect(() => {
+        return () => {
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+        };
+    }, []);
 
     const handleColaboradorSelecionado = async (colaborador) => {
         setModalSelecaoColaboradorOpened(false);
