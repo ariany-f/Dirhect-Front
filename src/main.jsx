@@ -235,7 +235,7 @@ if (import.meta.env.VITE_ENABLE_SENTRY === 'true') {
 
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
-root.render(import.meta.env.MODE === 'development' ? (
+root.render(import.meta.env.VITE_MODE === 'development' ? (
     <React.StrictMode>{app}</React.StrictMode>
 ) : (
     app
