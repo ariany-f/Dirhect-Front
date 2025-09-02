@@ -209,8 +209,9 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                 comp[0].tenant?.logo || ''
             )
 
-            console.log('usuario tem que mudar lá', usuario)
             setUser(usuario);
+
+            localStorage.removeItem('layoutColors');
         }
 
          // Verifica se a URL atual termina com um ID numérico

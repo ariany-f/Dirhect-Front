@@ -658,7 +658,7 @@ function MeusDadosSistema() {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                                     <ColorPicker value={sistema.corPrimaria} onChange={e => handleChange('corPrimaria', '#' + e.value)} style={{ height: 40 }} />
                                     <div style={{display: 'flex', flexDirection: 'column', gap: 4, flex: 1}}>
-                                        <span>Cor Primária</span>
+                                        <span>Cor Primária (Botões, Borda de Campos Selecionados)</span>
                                         <CampoTexto
                                             valor={sistema.corPrimaria}
                                             setValor={valor => handleColorChange('corPrimaria', valor)}
@@ -668,21 +668,9 @@ function MeusDadosSistema() {
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                                    <ColorPicker value={sistema.corSecundaria} onChange={e => handleChange('corSecundaria', '#' + e.value)} style={{ height: 40 }} />
-                                    <div style={{display: 'flex', flexDirection: 'column', gap: 4, flex: 1}}>
-                                        <span>Cor Secundária</span>
-                                        <CampoTexto
-                                            valor={sistema.corSecundaria}
-                                            setValor={valor => handleColorChange('corSecundaria', valor)}
-                                            placeholder="#000000"
-                                            style={{ fontFamily: 'monospace', fontSize: 12 }}
-                                        />
-                                    </div>
-                                </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                                     <ColorPicker value={sistema.corAcento} onChange={e => handleChange('corAcento', '#' + e.value)} style={{ height: 40 }} />
                                     <div style={{display: 'flex', flexDirection: 'column', gap: 4, flex: 1}}>
-                                        <span>Cor de Acento</span>
+                                        <span>Cor de Acento (Texto dos botões com fundo da Cor Primária)</span>
                                         <CampoTexto
                                             valor={sistema.corAcento}
                                             setValor={valor => handleColorChange('corAcento', valor)}
@@ -692,9 +680,21 @@ function MeusDadosSistema() {
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                                    <ColorPicker value={sistema.corSecundaria} onChange={e => handleChange('corSecundaria', '#' + e.value)} style={{ height: 40 }} />
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: 4, flex: 1}}>
+                                        <span>Cor Secundária (Final do Gradient Sidebar)</span>
+                                        <CampoTexto
+                                            valor={sistema.corSecundaria}
+                                            setValor={valor => handleColorChange('corSecundaria', valor)}
+                                            placeholder="#000000"
+                                            style={{ fontFamily: 'monospace', fontSize: 12 }}
+                                        />
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                                     <ColorPicker value={sistema.corTerciaria} onChange={e => handleChange('corTerciaria', '#' + e.value)} style={{ height: 40 }} />
                                     <div style={{display: 'flex', flexDirection: 'column', gap: 4, flex: 1}}>
-                                        <span>Cor Terciária</span>
+                                        <span>Cor Terciária (Topo do Gradient Sidebar)</span>
                                         <CampoTexto
                                             valor={sistema.corTerciaria}
                                             setValor={valor => handleColorChange('corTerciaria', valor)}
