@@ -188,7 +188,7 @@ function FeriasListagem() {
             // Filtrar por fim do período aquisitivo: fim do ano passado + 11 meses
             const anoAtual = new Date().getFullYear();
             const fimAnoPassado = new Date(anoAtual - 1, 11, 31); // 31/12 do ano passado
-            fimAnoPassado.setMonth(fimAnoPassado.getMonth() + 11); // + 11 meses
+            fimAnoPassado.setMonth(fimAnoPassado.getMonth() + 24); // + 11 meses
             url += `&fimperaquis__lte=${fimAnoPassado.toISOString().split('T')[0]}`
             url += `&fimperaquis__gte=${new Date(currentYear, 0, 1).toISOString().split('T')[0]}`
         }
