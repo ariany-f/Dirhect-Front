@@ -207,6 +207,7 @@ function FeriasListagem() {
         
         http.get(url)
         .then(response => {
+            console.log('buscou férias')
             setFerias(response.results || response)
             setTotalRecords(response.count || (response.results ? response.results.length : 0))
         })
