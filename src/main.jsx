@@ -60,7 +60,7 @@ if (import.meta.env.VITE_ENABLE_SENTRY === 'true') {
     dsn: "https://87f4b21d4a2b4070937882709e03efa0@o4509715042402304.ingest.us.sentry.io/4509715044958208",
     
     // Configurações de ambiente
-    environment: import.meta.env.MODE || 'production',
+    environment: import.meta.env.VITE_MODE || 'production',
     release: import.meta.env.VITE_APP_VERSION || '1.0.0',
     
     // Integrações para captura avançada
@@ -99,8 +99,8 @@ if (import.meta.env.VITE_ENABLE_SENTRY === 'true') {
     ],
     
     // Configurações de sampling
-    tracesSampleRate: import.meta.env.MODE === 'development' ? 1.0 : 0.1, // 100% dev, 10% prod
-    profilesSampleRate: import.meta.env.MODE === 'development' ? 1.0 : 0.1, // Profiling de performance
+    tracesSampleRate: import.meta.env.VITE_MODE === 'development' ? 1.0 : 0.1, // 100% dev, 10% prod
+    profilesSampleRate: import.meta.env.VITE_MODE === 'development' ? 1.0 : 0.1, // Profiling de performance
     
     // Configurações de dados pessoais
     sendDefaultPii: false, // Não enviar PII por padrão (mais seguro)
@@ -108,7 +108,7 @@ if (import.meta.env.VITE_ENABLE_SENTRY === 'true') {
     // Configurações de captura
     beforeSend(event, hint) {
       // Filtrar erros de desenvolvimento
-      if (import.meta.env.MODE === 'development') {
+      if (import.meta.env.VITE_MODE === 'development') {
         console.log('Sentry event:', event);
       }
       
@@ -159,7 +159,7 @@ if (import.meta.env.VITE_ENABLE_SENTRY === 'true') {
     attachStacktrace: true,    // Anexar stack traces
     
     // Configurações de debug
-    debug: import.meta.env.MODE === 'development',
+    debug: import.meta.env.VITE_MODE === 'development',
     
     // Normalizar URLs para não vazar dados sensíveis
     normalizeDepth: 6,
