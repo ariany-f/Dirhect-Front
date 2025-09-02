@@ -268,10 +268,8 @@ function FeriasListagem() {
             }
 
             let [anoRow, mesRow, diaRow] = feria.fimperaquis.split('T')[0].split('-').map(Number);
-            // Subtrai 1 ano
+            // Início da aquisição é exatamente 1 ano antes da data de fim
             let dataInicioRow = new Date(anoRow - 1, mesRow - 1, diaRow);
-            // Soma 1 dia
-            dataInicioRow.setDate(dataInicioRow.getDate() + 1);
             
             const evento = {
                 colab: {

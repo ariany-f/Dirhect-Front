@@ -441,10 +441,10 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
             
             // Adiciona férias como ausências
             if (item.dt_inicio && item.dt_fim) {
-                // Calcula período aquisitivo baseado no ano das férias
-                const anoFerias = parseDateAsLocal(item.dt_inicio).getFullYear();
-                const periodoAquisitivoInicio = new Date(anoFerias, 0, 1); // 01/01 do ano
-                const periodoAquisitivoFim = new Date(anoFerias, 11, 31); // 31/12 do ano
+                                                            // Calcula período aquisitivo baseado no ano das férias
+                                            const anoFerias = parseDateAsLocal(item.dt_inicio).getFullYear();
+                                            const periodoAquisitivoFim = new Date(anoFerias, 11, 31); // 31/12 do ano
+                                            const periodoAquisitivoInicio = new Date(anoFerias - 1, 11, 31); // 31/12 do ano anterior
                 
                 colaboradoresMap[funcionarioId].ausencias.push({
                     id: item.id,
@@ -474,7 +474,7 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
             } else if (item.fimperaquis) {
                 // Se não tem dt_inicio e dt_fim, mas tem fimperaquis, adiciona para criar barra de férias a requisitar
                 const fimPeriodo = parseDateAsLocal(item.fimperaquis);
-                const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
+                const inicioPeriodo = new Date(fimPeriodo.getFullYear() - 1, fimPeriodo.getMonth(), fimPeriodo.getDate()); // 1 ano antes
                 
                 colaboradoresMap[funcionarioId].ausencias.push({
                     id: item.id,
@@ -849,22 +849,16 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                             // Se não tem dt_inicio e dt_fim, verifica fimperaquis
                                             if (aus.fimperaquis) {
                                                 const fimPeriodo = parseDateAsLocal(aus.fimperaquis);
-                                                const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
+                                                const inicioPeriodo = new Date(fimPeriodo.getFullYear() - 1, fimPeriodo.getMonth(), fimPeriodo.getDate()); // 1 ano antes
                                                 const limiteSolicitacao = new Date(fimPeriodo.getFullYear(), fimPeriodo.getMonth() + 11, fimPeriodo.getDate()); // 11 meses após o fim
                                                 
-                                                // Usa data_minima_solicitacao para o filtro de período, se disponível
-                                                const inicioFiltro = aus.data_minima_solicitacao ? 
-                                                    parseDateAsLocal(aus.data_minima_solicitacao) : 
-                                                    inicioPeriodo;
-                                                
-                                                const isInRange = limiteSolicitacao >= startDate && inicioFiltro <= endDate;
+                                                const isInRange = limiteSolicitacao >= startDate && inicioPeriodo <= endDate;
                                                 
                                                 // Debug específico para FLAVIO PEREIRA
                                                 if (colab.nome === 'FLAVIO PEREIRA DOS SANTOS') {
                                                     console.log('🔍 Debug FLAVIO PEREIRA - Filtro de período:', {
                                                         fimPeriodo,
                                                         inicioPeriodo,
-                                                        inicioFiltro,
                                                         limiteSolicitacao,
                                                         startDate,
                                                         endDate,
@@ -917,13 +911,11 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                                 return null;
                                             }
                                             const fimPeriodo = parseDateAsLocal(aus.fimperaquis);
-                                            const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
+                                            const inicioPeriodo = new Date(fimPeriodo.getFullYear() - 1, fimPeriodo.getMonth(), fimPeriodo.getDate()); // 1 ano antes
                                             const limiteSolicitacao = new Date(fimPeriodo.getFullYear(), fimPeriodo.getMonth() + 11, fimPeriodo.getDate()); // 11 meses após o fim
                                             
-                                            // Usa data_minima_solicitacao como início da barra, se disponível
-                                            const inicioBarra = aus.data_minima_solicitacao ? 
-                                                parseDateAsLocal(aus.data_minima_solicitacao) : 
-                                                inicioPeriodo;
+                                            // Início da barra é o início do período aquisitivo
+                                            const inicioBarra = inicioPeriodo;
                                             
                                             // Debug específico para FLAVIO PEREIRA
                                             if (colab.nome === 'FLAVIO PEREIRA DOS SANTOS') {

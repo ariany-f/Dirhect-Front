@@ -162,9 +162,8 @@ function DataTableFerias({
         let dataInicioAquisitivo;
         if (rowData.fimperaquis) {
             const [ano, mes, dia] = rowData.fimperaquis.split('T')[0].split('-').map(Number);
-            let dataInicio = new Date(ano - 1, mes - 1, dia);
-            dataInicio.setDate(dataInicio.getDate() + 1);
-            dataInicioAquisitivo = dataInicio;
+            // Data de início é exatamente 1 ano antes da data de fim
+            dataInicioAquisitivo = new Date(ano - 1, mes - 1, dia);
         }
     
         const eventoParaModal = {
