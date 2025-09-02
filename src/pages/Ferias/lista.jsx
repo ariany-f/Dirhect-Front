@@ -1,5 +1,5 @@
 import http from '@http'
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, useMemo } from "react"
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
@@ -140,8 +140,8 @@ function FeriasListagem() {
     const toast = useRef(null);
 
     // Lista de anos disponíveis (últimos 5 anos + próximos 2)
-    const currentYear = new Date().getFullYear()
-    const anosDisponiveis = [
+    const currentYear = useMemo(() => new Date().getFullYear(), [])
+    const anosDisponiveis = useMemo(() => [
         { name: 'Todos os anos', value: null },
         { name: 'Últimos 2 anos', value: 'ultimos_2' },
         { name: 'Últimos 3 anos', value: 'ultimos_3' },
@@ -150,7 +150,7 @@ function FeriasListagem() {
             const year = currentYear - 6 + i
             return { name: year.toString(), value: year }
         })
-    ]
+    ], [currentYear])
 
     // Opções do filtro de período aberto
     const opcoesPeriodoAberto = [
@@ -390,7 +390,6 @@ function FeriasListagem() {
                     <>
                         {tab === 'calendario' && <CalendarFerias 
                             colaboradores={ferias} 
-                            anoSelecionado={anoSelecionado} 
                             onUpdate={() => setForceUpdate(p => p + 1)}
                         />}
                         {tab === 'lista' && <DataTableFerias 
