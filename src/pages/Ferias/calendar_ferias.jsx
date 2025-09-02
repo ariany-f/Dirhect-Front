@@ -845,7 +845,21 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                                 const fimPeriodo = parseDateAsLocal(aus.fimperaquis);
                                                 const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
                                                 const limiteSolicitacao = new Date(fimPeriodo.getFullYear(), fimPeriodo.getMonth() + 11, fimPeriodo.getDate()); // 11 meses após o fim
-                                                return limiteSolicitacao >= startDate && inicioPeriodo <= endDate;
+                                                const isInRange = limiteSolicitacao >= startDate && inicioPeriodo <= endDate;
+                                                
+                                                // Debug específico para FLAVIO PEREIRA
+                                                if (colab.nome === 'FLAVIO PEREIRA DOS SANTOS') {
+                                                    console.log('🔍 Debug FLAVIO PEREIRA - Filtro de período:', {
+                                                        fimPeriodo,
+                                                        inicioPeriodo,
+                                                        limiteSolicitacao,
+                                                        startDate,
+                                                        endDate,
+                                                        isInRange
+                                                    });
+                                                }
+                                                
+                                                return isInRange;
                                             }
                                             return false;
                                         })
@@ -865,10 +879,30 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                         });
 
                                     return registrosOrdenados.map((aus, i) => {
+                                        // Debug específico para FLAVIO PEREIRA
+                                        if (colab.nome === 'FLAVIO PEREIRA DOS SANTOS') {
+                                            console.log('🔍 Debug FLAVIO PEREIRA - Processando ausência:', aus);
+                                            console.log('🔍 Debug FLAVIO PEREIRA - Tem fimperaquis?', !!aus.fimperaquis);
+                                            console.log('🔍 Debug FLAVIO PEREIRA - Tem data_inicio?', !!aus.data_inicio);
+                                            console.log('🔍 Debug FLAVIO PEREIRA - Tem data_fim?', !!aus.data_fim);
+                                        }
+                                        
                                         // Se não tem dt_inicio e dt_fim, mas tem fimperaquis, verifica se pode solicitar ou se está perdido
                                         if (!aus.data_inicio && !aus.data_fim && aus.fimperaquis) {
+                                            // Debug específico para FLAVIO PEREIRA
+                                            if (colab.nome === 'FLAVIO PEREIRA DOS SANTOS') {
+                                                console.log('🔍 Debug FLAVIO PEREIRA - Passou pela primeira verificação (tem fimperaquis)');
+                                                console.log('🔍 Debug FLAVIO PEREIRA - funcionario_marcado_demissao:', colab.funcionario_marcado_demissao);
+                                                console.log('🔍 Debug FLAVIO PEREIRA - funcionario_situacao_padrao:', aus.funcionario_situacao_padrao);
+                                            }
+                                            
                                             // NOVA REGRA: não exibe "a solicitar" se funcionario_marcado_demissao ou tipo_situacao Demitido
-                                            if (colab.funcionario_marcado_demissao === true || aus.funcionario_situacao_padrao === true) return null;
+                                            if (colab.funcionario_marcado_demissao === true || aus.funcionario_situacao_padrao === true) {
+                                                if (colab.nome === 'FLAVIO PEREIRA DOS SANTOS') {
+                                                    console.log('🔍 Debug FLAVIO PEREIRA - FILTRADO por demissão/situação');
+                                                }
+                                                return null;
+                                            }
                                             const fimPeriodo = parseDateAsLocal(aus.fimperaquis);
                                             const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
                                             const limiteSolicitacao = new Date(fimPeriodo.getFullYear(), fimPeriodo.getMonth() + 11, fimPeriodo.getDate()); // 11 meses após o fim
@@ -878,8 +912,23 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                                 parseDateAsLocal(aus.data_minima_solicitacao) : 
                                                 inicioPeriodo;
                                             
+                                            // Debug específico para FLAVIO PEREIRA
+                                            if (colab.nome === 'FLAVIO PEREIRA DOS SANTOS') {
+                                                console.log('🔍 Debug FLAVIO PEREIRA - Cálculo de datas:', {
+                                                    fimPeriodo,
+                                                    inicioPeriodo,
+                                                    inicioBarra,
+                                                    limiteSolicitacao,
+                                                    data_minima_solicitacao: aus.data_minima_solicitacao
+                                                });
+                                            }
+                                            
                                             // Verifica se o período está perdido usando o campo da API
                                             const isPerdido = aus.periodo_perdido === true;
+                                            
+                                            if (colab.nome === 'FLAVIO PEREIRA DOS SANTOS') {
+                                                console.log('🔍 Debug FLAVIO PEREIRA - isPerdido:', isPerdido);
+                                            }
                                             
                                             const { startPercent, widthPercent } = getBarPosition(inicioBarra, limiteSolicitacao, startDate, totalDays);
                                             
