@@ -196,6 +196,8 @@ function SelecionarEmpresa() {
                     comp[0].tenant?.simbolo || '',
                     comp[0].tenant?.logo || ''
                 )
+
+                localStorage.removeItem('layoutColors');
             }
 
             navegar('/')
