@@ -813,6 +813,12 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                         )}
                     </CalendarTableHeader>
                     {colabsFiltrados.map((colab, idx) => {
+                        // Debug específico para FLAVIO PEREIRA
+                        if (colab.nome === 'FLAVIO PEREIRA DOS SANTOS') {
+                            console.log('🔍 Debug FLAVIO PEREIRA - Renderizando colaborador:', colab);
+                            console.log('🔍 Debug FLAVIO PEREIRA - Ausências:', colab.ausencias);
+                        }
+                        
                         // Verificação de segurança para garantir que colab tem dados necessários
                         if (!colab || !colab.id || !colab.nome) {
                             console.warn('Colaborador inválido encontrado:', colab);
@@ -845,13 +851,20 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                                 const fimPeriodo = parseDateAsLocal(aus.fimperaquis);
                                                 const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
                                                 const limiteSolicitacao = new Date(fimPeriodo.getFullYear(), fimPeriodo.getMonth() + 11, fimPeriodo.getDate()); // 11 meses após o fim
-                                                const isInRange = limiteSolicitacao >= startDate && inicioPeriodo <= endDate;
+                                                
+                                                // Usa data_minima_solicitacao para o filtro de período, se disponível
+                                                const inicioFiltro = aus.data_minima_solicitacao ? 
+                                                    parseDateAsLocal(aus.data_minima_solicitacao) : 
+                                                    inicioPeriodo;
+                                                
+                                                const isInRange = limiteSolicitacao >= startDate && inicioFiltro <= endDate;
                                                 
                                                 // Debug específico para FLAVIO PEREIRA
                                                 if (colab.nome === 'FLAVIO PEREIRA DOS SANTOS') {
                                                     console.log('🔍 Debug FLAVIO PEREIRA - Filtro de período:', {
                                                         fimPeriodo,
                                                         inicioPeriodo,
+                                                        inicioFiltro,
                                                         limiteSolicitacao,
                                                         startDate,
                                                         endDate,
