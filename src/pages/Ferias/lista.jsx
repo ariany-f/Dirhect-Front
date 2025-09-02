@@ -75,8 +75,8 @@ const TabButton = styled.button`
     display: flex;
     align-items: center;
     gap: 8px;
-    background: ${({ active }) => active ? 'linear-gradient(to left, var(--black), var(--gradient-secundaria))' : '#f5f5f5'};
-    color: ${({ active }) => active ? '#fff' : '#333'};
+    background: ${({ $active }) => $active ? 'linear-gradient(to left, var(--black), var(--gradient-secundaria))' : '#f5f5f5'};
+    color: ${({ $active }) => $active ? '#fff' : '#333'};
     border: none;
     border-radius: 8px 8px 0 0;
     font-size: 16px;
@@ -84,12 +84,12 @@ const TabButton = styled.button`
     padding: 10px 22px;
     cursor: pointer;
     margin-right: 2px;
-    box-shadow: ${({ active }) => active ? '0 2px 8px var(--gradient-secundaria)40' : 'none'};
+    box-shadow: ${({ $active }) => $active ? '0 2px 8px var(--gradient-secundaria)40' : 'none'};
     transition: background 0.2s, color 0.2s;
     outline: none;
-    border-bottom: ${({ active }) => active ? '2px solid var(--gradient-secundaria)' : '2px solid transparent'};
+    border-bottom: ${({ $active }) => $active ? '2px solid var(--gradient-secundaria)' : '2px solid transparent'};
     &:hover {
-        background: ${({ active }) => active ? 'linear-gradient(to left, var(--black), var(--gradient-secundaria))' : '#ececec'};
+        background: ${({ $active }) => $active ? 'linear-gradient(to left, var(--black), var(--gradient-secundaria))' : '#ececec'};
     }
 `
 
@@ -217,7 +217,7 @@ function FeriasListagem() {
         .finally(() => {
             setLoading(false)
         })
-    }, [anoSelecionado, searchTerm, periodoAberto, tab, currentPage, pageSize, forceUpdate])
+    }, [anoSelecionado, searchTerm, periodoAberto, tab, currentPage, pageSize, forceUpdate, currentYear])
 
     const handleColaboradorSelecionado = async (colaborador) => {
         setModalSelecaoColaboradorOpened(false);
@@ -312,11 +312,11 @@ function FeriasListagem() {
             <Toast ref={toast} />
             <HeaderRow>
                 <TabPanel>
-                    <TabButton active={tab === 'calendario'} onClick={() => handleTabChange('calendario')}>
+                    <TabButton $active={tab === 'calendario'} onClick={() => handleTabChange('calendario')}>
                         <FaRegCalendarAlt fill={tab === 'calendario' ? 'white' : '#000'} />
                         <Texto color={tab === 'calendario' ? 'white' : '#000'}>Calendário</Texto>
                     </TabButton>
-                    <TabButton active={tab === 'lista'} onClick={() => handleTabChange('lista')}>
+                    <TabButton $active={tab === 'lista'} onClick={() => handleTabChange('lista')}>
                         <FaListUl fill={tab === 'lista' ? 'white' : '#000'} />
                         <Texto color={tab === 'lista' ? 'white' : '#000'}>Lista</Texto>
                     </TabButton>

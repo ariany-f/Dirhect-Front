@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { format, addMonths, startOfMonth, endOfMonth, addDays, isMonday, getMonth, getYear, differenceInCalendarDays, isAfter, isBefore, isWithinInterval, format as formatDateFns } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -87,20 +87,20 @@ const MonthTitle = styled.h2`
 `;
 
 const CalendarGrid = styled.div`
-    min-width: ${({ totalDays, dayWidth }) => totalDays * dayWidth + 200}px;
+    min-width: ${({ $totalDays, $dayWidth }) => $totalDays * $dayWidth + 200}px;
     min-height: 100%;
     position: relative;
 `;
 
 const WeekDaysRow = styled.div`
     display: grid;
-    grid-template-columns: 200px repeat(${({ totalDays }) => totalDays}, 1fr);
+    grid-template-columns: 200px repeat(${({ $totalDays }) => $totalDays}, 1fr);
     min-width: 100%;
 `;
 
 const WeekDayNameRow = styled.div`
     display: grid;
-    grid-template-columns: 200px repeat(${({ totalDays }) => totalDays}, 1fr);
+    grid-template-columns: 200px repeat(${({ $totalDays }) => $totalDays}, 1fr);
     min-width: 100%;
 `;
 
@@ -161,8 +161,8 @@ const DaysBar = styled.div`
 
 const EventBar = styled.div`
     position: absolute;
-    left: ${({ startPercent }) => startPercent}%;
-    width: ${({ widthPercent }) => widthPercent}%;
+    left: ${({ $startPercent }) => $startPercent}%;
+    width: ${({ $widthPercent }) => $widthPercent}%;
     top: 6px;
     height: 28px;
     display: flex;
@@ -176,20 +176,20 @@ const EventBar = styled.div`
     overflow: hidden;
     white-space: nowrap;
     color: #fff;
-    background: ${({ type }) => {
-        if (type === 'aSolicitar') return 'linear-gradient(to right, #ff5ca7, #ffb6c1)';
-        if (type === 'perdido') return 'linear-gradient(to right, #dc3545, #c82333)';
-        if (type === 'solicitada') return 'linear-gradient(to right, #fbb034,rgb(211, 186, 22))';
-        if (type === 'marcada') return 'linear-gradient(to right, #20c997, #17a2b8)';
-        if (type === 'aprovada') return GRADIENT;
-        if (type === 'acontecendo') return 'linear-gradient(to right,rgb(45, 126, 219),rgb(18, 37, 130))';
-        if (type === 'passada') return 'linear-gradient(to right, #bdbdbd, #757575)';
-        if (type === 'finalizada') return 'linear-gradient(to right, #6c757d, #495057)';
-        if (type === 'paga') return 'linear-gradient(to right, #28a745, #20c997)';
+    background: ${({ $type }) => {
+        if ($type === 'aSolicitar') return 'linear-gradient(to right, #ff5ca7, #ffb6c1)';
+        if ($type === 'perdido') return 'linear-gradient(to right, #dc3545, #c82333)';
+        if ($type === 'solicitada') return 'linear-gradient(to right, #fbb034,rgb(211, 186, 22))';
+        if ($type === 'marcada') return 'linear-gradient(to right, #20c997, #17a2b8)';
+        if ($type === 'aprovada') return GRADIENT;
+        if ($type === 'acontecendo') return 'linear-gradient(to right,rgb(45, 126, 219),rgb(18, 37, 130))';
+        if ($type === 'passada') return 'linear-gradient(to right, #bdbdbd, #757575)';
+        if ($type === 'finalizada') return 'linear-gradient(to right, #6c757d, #495057)';
+        if ($type === 'paga') return 'linear-gradient(to right, #28a745, #20c997)';
         return GRADIENT;
     }};
-    border: ${({ type }) => type === 'aSolicitar' ? '2px dashed #fff' : 'none'};
-    box-shadow: ${({ type }) => type === 'acontecendo' ? '0 0 16px 2pxrgba(44, 95, 206, 0.33)' : '0 2px 8px rgba(21, 0, 80, 0.13)'};
+    border: ${({ $type }) => $type === 'aSolicitar' ? '2px dashed #fff' : 'none'};
+    box-shadow: ${({ $type }) => $type === 'acontecendo' ? '0 0 16px 2pxrgba(44, 95, 206, 0.33)' : '0 2px 8px rgba(21, 0, 80, 0.13)'};
 `;
 
 const IconWrapper = styled.span`
@@ -197,7 +197,7 @@ const IconWrapper = styled.span`
     align-items: center;
     margin-right: 12px;
     font-size: 14px;
-    color: ${({ fill }) => fill};
+    color: ${({ $fill }) => $fill};
 `;
 
 const ToggleButton = styled.button`
@@ -242,8 +242,8 @@ const ViewToggleOption = styled.button`
     display: flex;
     align-items: center;
     gap: 8px;
-    background: ${({ active }) => active ? 'linear-gradient(to left, var(--black), var(--gradient-secundaria))' : 'transparent'};
-    color: ${({ active }) => active ? '#fff' : '#333'};
+    background: ${({ $active }) => $active ? 'linear-gradient(to left, var(--black), var(--gradient-secundaria))' : 'transparent'};
+    color: ${({ $active }) => $active ? '#fff' : '#333'};
     border: none;
     font-size: 15px;
     font-weight: 600;
@@ -278,7 +278,7 @@ const DAYS_IN_YEAR = 365;
 
 const TrimestreHeader = styled.div`
     display: grid;
-    grid-template-columns: 200px repeat(${({ totalDays }) => totalDays}, 1fr);
+    grid-template-columns: 200px repeat(${({ $totalDays }) => $totalDays}, 1fr);
     margin-bottom: 0px;
     min-width: 100%;
 `;
@@ -289,7 +289,7 @@ const TrimestreMonthCell = styled.div`
     font-weight: bold;
     color: #333;
     padding: 8px 0 0 0;
-    grid-column: ${({ start, end }) => `${start} / ${end}`};
+    grid-column: ${({ $start, $end }) => `${$start} / ${$end}`};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -302,12 +302,12 @@ const DaysBackgroundGrid = styled.div`
     height: 100%;
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(${({ totalDays }) => totalDays}, 1fr);
+    grid-template-columns: repeat(${({ $totalDays }) => $totalDays}, 1fr);
     z-index: 0;
 `;
 
 const DayBgCell = styled.div`
-    background: ${({ isWeekend }) => isWeekend ? '#f3f3f8' : '#fafbfc'};
+    background: ${({ $isWeekend }) => $isWeekend ? '#f3f3f8' : '#fafbfc'};
     border-right: 1px solid #f0f0f0;
     height: 100%;
 `;
@@ -368,15 +368,7 @@ function getMonthsInRange(start, end) {
     return months;
 }
 
-// Determina o status do evento de férias
-function getFeriasStatus({ data_inicio, data_fim }, hoje = new Date()) {
-    const inicio = parseDateAsLocal(data_inicio);
-    const fim = parseDateAsLocal(data_fim);
-    if (isAfter(inicio, hoje)) return 'aprovada'; // futura
-    if (isWithinInterval(hoje, { start: inicio, end: fim })) return 'acontecendo';
-    if (isBefore(fim, hoje)) return 'passada';
-    return 'solicitada'; // fallback
-}
+
 
 const statusIcons = {
     aSolicitar: <FaExclamationCircle fill='white' />,
@@ -420,7 +412,7 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
     }, []);
 
     // Função para normalizar os dados recebidos (API)
-    function normalizarColaboradores(colaboradores) {
+    const normalizarColaboradores = useCallback((colaboradores) => {
         if (!colaboradores || !Array.isArray(colaboradores)) return [];
         
         // Se já está no formato esperado (com ausencias), retorna como está
@@ -516,7 +508,7 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
             }
             return true;
         });
-    }
+    }, []);
 
     // Usa a função para garantir o formato correto
     const colabsReais = normalizarColaboradores(colaboradores || []);
@@ -527,10 +519,9 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
     const allColabs = colabsReais;
 
     // Definir período do calendário: 1 ano atrás até 2 anos à frente do ano atual
-    const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-    const minDate = new Date(currentYear - 1, 0, 1); // 01/01 do ano anterior
-    const maxDate = new Date(currentYear + 2, 11, 31); // 31/12 de 2 anos à frente
+    const currentYear = useMemo(() => new Date().getFullYear(), []);
+    const minDate = useMemo(() => new Date(currentYear - 1, 0, 1), [currentYear]); // 01/01 do ano anterior
+    const maxDate = useMemo(() => new Date(currentYear + 2, 11, 31), [currentYear]); // 31/12 de 2 anos à frente
 
     // Estado do ano selecionado (padrão: ano atual)
     const [anoSelecionado, setAnoSelecionado] = useState(currentYear);
@@ -540,40 +531,43 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
 
 
     // Ajusta para o início e fim do ano selecionado (dentro do período de 3 anos)
-    const startDate = startOfMonth(new Date(anoSelecionado, 0, 1));
-    const endDate = endOfMonth(new Date(anoSelecionado, 11, 1));
-    const daysArray = getDaysArray(startDate, endDate);
-    const totalDays = daysArray.length;
-    const monthsArray = getMonthsInRange(startDate, endDate);
+    const startDate = useMemo(() => startOfMonth(new Date(anoSelecionado, 0, 1)), [anoSelecionado]);
+    const endDate = useMemo(() => endOfMonth(new Date(anoSelecionado, 11, 1)), [anoSelecionado]);
+    const daysArray = useMemo(() => getDaysArray(startDate, endDate), [startDate, endDate]);
+    const totalDays = useMemo(() => daysArray.length, [daysArray]);
+    const monthsArray = useMemo(() => getMonthsInRange(startDate, endDate), [startDate, endDate]);
 
     // Filtra colaboradores pelo nome
-    const colabsFiltrados = allColabs.filter(colab =>
+    const colabsFiltrados = useMemo(() => allColabs.filter(colab =>
         colab.nome.toLowerCase().includes(filtroColaborador.toLowerCase())
-    );
+    ), [allColabs, filtroColaborador]);
 
     // Zoom dinâmico: calcula a largura do dia conforme a visualização e o tamanho do container
-    let dayWidth = 40;
-    if (visualizacao === 'mensal') {
-        dayWidth = Math.max(24, Math.floor(containerWidth / 20) * 0.8); // 20% menor
-    } else {
-        dayWidth = Math.max(12, Math.floor(containerWidth / 120)); // 4 meses (120 dias) visíveis
-    }
+    const dayWidth = useMemo(() => {
+        if (visualizacao === 'mensal') {
+            return Math.max(24, Math.floor(containerWidth / 20) * 0.8); // 20% menor
+        } else {
+            return Math.max(12, Math.floor(containerWidth / 120)); // 4 meses (120 dias) visíveis
+        }
+    }, [visualizacao, containerWidth]);
 
     // Drag-to-scroll horizontal
-    const handleMouseDown = (e) => {
+    const handleMouseDown = useCallback((e) => {
         if (e.target.closest('.event-bar')) return;
         setIsDragging(true);
         dragStartX.current = e.pageX;
         dragScrollLeft.current = scrollRef.current.scrollLeft;
-    };
-    const handleMouseMove = (e) => {
+    }, []);
+    
+    const handleMouseMove = useCallback((e) => {
         if (!isDragging) return;
         const dx = e.pageX - dragStartX.current;
         scrollRef.current.scrollLeft = dragScrollLeft.current - dx;
-    };
-    const handleMouseUp = () => {
+    }, [isDragging]);
+    
+    const handleMouseUp = useCallback(() => {
         setIsDragging(false);
-    };
+    }, []);
     useEffect(() => {
         if (!scrollRef.current) return;
         const ref = scrollRef.current;
@@ -585,19 +579,19 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
         };
-    });
+    }, []);
 
     // Função para calcular a posição e largura da barra
-    const getBarPosition = (start, end, startDate, totalDays) => {
+    const getBarPosition = useCallback((start, end, startDate, totalDays) => {
         const startDay = Math.max(0, Math.floor((parseDateAsLocal(start) - startDate) / (1000 * 60 * 60 * 24)));
         const endDay = Math.min(totalDays - 1, Math.floor((parseDateAsLocal(end) - startDate) / (1000 * 60 * 60 * 24)));
         const startPercent = (startDay / totalDays) * 100;
         const widthPercent = ((endDay - startDay + 1) / totalDays) * 100;
         return { startPercent, widthPercent };
-    };
+    }, []);
 
     // Modal evento
-    const handleEventClick = (colab, evento, tipo) => {
+    const handleEventClick = useCallback((colab, evento, tipo) => {
         // Verificação de segurança para garantir que colab é válido
         if (!colab || !colab.id) {
             console.warn('Colaborador inválido no handleEventClick:', colab);
@@ -606,9 +600,9 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
         }
         
         setModalEvento({ colab, evento, tipo });
-    };
+    }, []);
     
-    const fecharModal = (resultado) => {
+    const fecharModal = useCallback((resultado) => {
         setModalEvento(null);
         if (resultado) {
             if (resultado.sucesso) {
@@ -621,16 +615,26 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                 // Não chama onUpdate em caso de erro
             } else if (resultado.aviso) {
                 toast.current.show({ severity: 'warn', summary: 'Atenção', detail: resultado.mensagem, life: 3000 });
-                // Não chama onUpdate em caso de aviso
+                // Não chama setForceUpdate em caso de aviso
             } else if (resultado.info) {
                 toast.current.show({ severity: 'info', summary: 'Aviso', detail: resultado.mensagem, life: 3000 });
-                // Não chama onUpdate em caso de info
+                // Não chama setForceUpdate em caso de info
             }
         }
-    };
+    }, [onUpdate]);
 
     // Função para mapear status para tipo de cor/ícone
-    function mapStatusToType(status, data_inicio, data_fim) {
+    // Determina o status do evento de férias
+    const getFeriasStatus = useCallback(({ data_inicio, data_fim }, hoje = new Date()) => {
+        const inicio = parseDateAsLocal(data_inicio);
+        const fim = parseDateAsLocal(data_fim);
+        if (isAfter(inicio, hoje)) return 'aprovada'; // futura
+        if (isWithinInterval(hoje, { start: inicio, end: fim })) return 'acontecendo';
+        if (isBefore(fim, hoje)) return 'passada';
+        return 'solicitada'; // fallback
+    }, []);
+
+    const mapStatusToType = useCallback((status, data_inicio, data_fim) => {
         const hoje = new Date();
         hoje.setHours(0, 0, 0, 0);
 
@@ -667,7 +671,7 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
             default:
                 return isAcontecendo() ? 'acontecendo' : 'aprovada';
         }
-    }
+    }, []);
 
     return (
         <CalendarContainer ref={containerRef}>
@@ -678,14 +682,14 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                     <div></div>
                     <ViewToggleSwitch>
                         <ViewToggleOption
-                            active={visualizacao === 'mensal'}
+                            $active={visualizacao === 'mensal'}
                             onClick={() => setVisualizacao('mensal')}
                             title="Visualização mensal"
                         >
                             <FaThLarge fill={visualizacao === 'mensal' ? 'white' : 'black'} /> Mensal
                         </ViewToggleOption>
                         <ViewToggleOption
-                            active={visualizacao === 'trimestral'}
+                            $active={visualizacao === 'trimestral'}
                             onClick={() => setVisualizacao('trimestral')}
                             title="Visualização trimestral"
                         >
@@ -710,7 +714,7 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                         <p style={{ fontSize: '14px', marginTop: '8px' }}>Os dados aparecerão aqui quando houver férias registradas.</p>
                     </div>
                 ) : (
-                    <CalendarGrid totalDays={totalDays} dayWidth={dayWidth} style={{position: 'relative', minHeight: '100%'}}>
+                    <CalendarGrid $totalDays={totalDays} $dayWidth={dayWidth} style={{position: 'relative', minHeight: '100%'}}>
                     {/* Fundo cinza para a coluna dos colaboradores */}
                     <div style={{
                         position: 'absolute',
@@ -736,15 +740,15 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                         );
                     })}
                     <CalendarTableHeader>
-                        <TrimestreHeader totalDays={totalDays}>
+                        <TrimestreHeader $totalDays={totalDays}>
                             {monthsArray.map((m, idx) => {
                                 const startIdx = differenceInCalendarDays(m.start, startDate) + 1;
                                 const endIdx = differenceInCalendarDays(m.end, startDate) + 2;
                                 return (
                                     <TrimestreMonthCell
                                         key={idx}
-                                        start={startIdx}
-                                        end={endIdx}
+                                        $start={startIdx}
+                                        $end={endIdx}
                                         style={{ gridColumn: `${startIdx} / ${endIdx}` }}
                                     >
                                         {format(m.start, 'MMMM yyyy', { locale: ptBR }).toUpperCase()}
@@ -753,7 +757,7 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                             })}
                         </TrimestreHeader>
                         {visualizacao === 'mensal' && (
-                            <WeekDayNameRow totalDays={totalDays}>
+                            <WeekDayNameRow $totalDays={totalDays}>
                                 <div style={{
                                     background: '#f5f5f5',
                                     border: '1px solid #eee',
@@ -770,7 +774,7 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                             </WeekDayNameRow>
                         )}
                         {visualizacao === 'trimestral' ? (
-                            <WeekDaysRow totalDays={totalDays}>
+                            <WeekDaysRow $totalDays={totalDays}>
                                 <div style={{
                                     background: '#f5f5f5',
                                     border: '1px solid #eee',
@@ -788,7 +792,7 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                 ))}
                             </WeekDaysRow>
                         ) : (
-                            <WeekDaysRow totalDays={totalDays}>
+                            <WeekDaysRow $totalDays={totalDays}>
                                 <div style={{
                                     background: '#f5f5f5',
                                     border: '1px solid #eee',
@@ -820,9 +824,9 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                             <EmployeeCell>{colab.nome}</EmployeeCell>
                             <DaysBar style={{ minWidth: '100%', position: 'relative' }}>
                                 {/* Background grid */}
-                                <DaysBackgroundGrid totalDays={totalDays}>
+                                <DaysBackgroundGrid $totalDays={totalDays}>
                                     {daysArray.map((date, i) => (
-                                        <DayBgCell key={i} isWeekend={date.getDay() === 0 || date.getDay() === 6} />
+                                        <DayBgCell key={i} $isWeekend={date.getDay() === 0 || date.getDay() === 6} />
                                     ))}
                                 </DaysBackgroundGrid>
                                 {/* Eventos */}
@@ -861,7 +865,6 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                         });
 
                                     return registrosOrdenados.map((aus, i) => {
-                                        console.log(aus)
                                         // Se não tem dt_inicio e dt_fim, mas tem fimperaquis, verifica se pode solicitar ou se está perdido
                                         if (!aus.data_inicio && !aus.data_fim && aus.fimperaquis) {
                                             // NOVA REGRA: não exibe "a solicitar" se funcionario_marcado_demissao ou tipo_situacao Demitido
@@ -881,9 +884,9 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                                 return (
                                                     <EventBar
                                                         key={`perdido-${i}`}
-                                                        startPercent={startPercent}
-                                                        widthPercent={widthPercent}
-                                                        type="perdido"
+                                                        $startPercent={startPercent}
+                                                        $widthPercent={widthPercent}
+                                                        $type="perdido"
                                                         className="event-bar"
                                                         onClick={() => {
                                                             toast.current.show({
@@ -896,7 +899,7 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                                         style={{ cursor: 'pointer', position: 'relative', zIndex: 1 }}
                                                         data-pr-tooltip={tooltip}
                                                     >
-                                                        <IconWrapper fill='white'>{statusIcons['perdido']}</IconWrapper>
+                                                        <IconWrapper $fill='white'>{statusIcons['perdido']}</IconWrapper>
                                                         Período Perdido
                                                         <span style={{marginLeft:8, color:'#fff', fontWeight:400, fontSize:13}}>({aus.nrodiasferias || 30} dias)</span>
                                                     </EventBar>
@@ -909,9 +912,9 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                                 return (
                                                     <EventBar
                                                         key={`requisitar-${i}`}
-                                                        startPercent={startPercent}
-                                                        widthPercent={widthPercent}
-                                                        type="aSolicitar"
+                                                        $startPercent={startPercent}
+                                                        $widthPercent={widthPercent}
+                                                        $type="aSolicitar"
                                                         className="event-bar"
                                                         onClick={() => handleEventClick(colab, {
                                                             periodo_aquisitivo_inicio: inicioPeriodo,
@@ -931,7 +934,7 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                                         style={{ cursor: 'pointer', position: 'relative', zIndex: 1 }}
                                                         data-pr-tooltip={tooltip}
                                                     >
-                                                        <IconWrapper fill='white'>{statusIcons['aSolicitar']}</IconWrapper>
+                                                        <IconWrapper $fill='white'>{statusIcons['aSolicitar']}</IconWrapper>
                                                         A solicitar até {format(limiteSolicitacao, 'dd/MM/yyyy')}
                                                         <span style={{marginLeft:8, color:'#fff', fontWeight:400, fontSize:13}}>({aus.nrodiasferias || 30} dias)</span>
                                                     </EventBar>
@@ -940,7 +943,7 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                         }
                                         
                                         // Eventos normais com dt_inicio e dt_fim
-                                        const status = getFeriasStatus(aus, currentDate);
+                                        const status = getFeriasStatus(aus, new Date());
                                         const type = mapStatusToType(aus.status, aus.data_inicio, aus.data_fim);
                                         const { startPercent, widthPercent } = getBarPosition(aus.data_inicio, aus.data_fim, startDate, totalDays);
                                         let label = '';
@@ -982,15 +985,15 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                         return (
                                             <EventBar
                                                 key={i}
-                                                startPercent={startPercent}
-                                                widthPercent={widthPercent}
-                                                type={type}
+                                                $startPercent={startPercent}
+                                                $widthPercent={widthPercent}
+                                                $type={type}
                                                 className="event-bar"
                                                 onClick={() => handleEventClick(colab, eventoComPeriodo, type)}
                                                 style={{ cursor: 'pointer', position: 'relative', zIndex: 1 }}
                                                 data-pr-tooltip={tooltip}
                                             >
-                                                <IconWrapper fill='white'>{statusIcons[type]}</IconWrapper>
+                                                <IconWrapper $fill='white'>{statusIcons[type]}</IconWrapper>
                                                 {label}
                                             </EventBar>
                                         );
