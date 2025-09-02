@@ -130,9 +130,13 @@ const CampoArea = styled(InputTextarea)`
     }
 `
 
-function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = true, label, disabled = false, readonly = false, type='text',  setFocus, placeholder, valor = '', setValor, name, width = 'inherit', camposVazios = [], patternMask = [], reference=null, required = false, numeroCaracteres = null, onEnter = null, padding = null, rows = null, maskReverse = false }) {
+function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = true, label, disabled = false, readonly = false, type='text',  setFocus, placeholder, valor = '', setValor, name, width = 'inherit', camposVazios = [], camposInvalidos = [], patternMask = [], reference=null, required = false, numeroCaracteres = null, onEnter = null, padding = null, rows = null, maskReverse = false }) {
 
     const classeCampoVazio = camposVazios.filter((val) => {
+        return val === name
+    })
+    
+    const classeCampoInvalido = camposInvalidos.filter((val) => {
         return val === name
     })
     const [caracteresDigitados, setCaracteresDigitados] = useState(0)
@@ -478,7 +482,7 @@ function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = tr
                     readOnly={readonly}
                     rows={rows}
                     $width={width}
-                    className={(classeCampoVazio.includes(name) ? 'error' : '')}
+                    className={(classeCampoVazio.includes(name) ? 'error' : '') + (classeCampoInvalido.includes(name) ? ' error' : '')}
                     placeholder={placeholder}
                     maxLength={maxCaracteres}
                 />
@@ -487,12 +491,14 @@ function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = tr
                 }
                 {classeCampoVazio.includes(name)?
                     <p className={styles.erroMessage}>Você deve preencher esse campo</p>
-                    : (erro ?
-                        <p className={styles.erroMessage}>{erro}</p>
-                        : (validateError && 
-                            <p className={styles.erroMessage}>&nbsp;</p>
+                    : classeCampoInvalido.includes(name) ?
+                        <p className={styles.erroMessage}>Campo Inválido</p>
+                        : (erro ?
+                            <p className={styles.erroMessage}>{erro}</p>
+                            : (validateError && 
+                                <p className={styles.erroMessage}>&nbsp;</p>
+                            )
                         )
-                    )
                 }
             </div>
         )
@@ -512,7 +518,7 @@ function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = tr
                         ref={reference}
                         disabled={disabled}
                         readOnly={readonly}
-                        className={(classeCampoVazio.includes(name) ? 'error' : '')}
+                        className={(classeCampoVazio.includes(name) ? 'error' : '') + (classeCampoInvalido.includes(name) ? ' error' : '')}
                         onFocus={(setFocus) ? (evento) => setFocus(evento) : null}
                         onKeyDown={(evento) => validateKey(evento)}
                         $padding={padding}
@@ -538,7 +544,7 @@ function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = tr
                         ref={reference} 
                         disabled={disabled} 
                         readOnly={readonly} 
-                        className={(classeCampoVazio.includes(name) ? 'error' : '')} 
+                        className={(classeCampoVazio.includes(name) ? 'error' : '') + (classeCampoInvalido.includes(name) ? ' error' : '')} 
                         onFocus={(setFocus) ? (evento) => setFocus(evento) : null} 
                         onKeyDown={(evento) => validateKey(evento)} 
                         $padding={padding} 
@@ -559,12 +565,14 @@ function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = tr
                 }
                 {classeCampoVazio.includes(name)?
                     <p className={styles.erroMessage}>Você deve preencher esse campo</p>
-                    : (erro ?
-                        <p className={styles.erroMessage}>{erro}</p>
-                        : (validateError && 
-                            <p className={styles.erroMessage}>&nbsp;</p>
+                    : classeCampoInvalido.includes(name) ?
+                        <p className={styles.erroMessage}>Campo Inválido</p>
+                        : (erro ?
+                            <p className={styles.erroMessage}>{erro}</p>
+                            : (validateError && 
+                                <p className={styles.erroMessage}>&nbsp;</p>
+                            )
                         )
-                    )
                 }
             </div>
         </div>

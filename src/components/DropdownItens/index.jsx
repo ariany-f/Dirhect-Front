@@ -34,7 +34,7 @@ const Select = styled(Dropdown)`
     margin-bottom: ${ props => props.$margin ?  props.$margin : '0px' };
     ${props => props.$hasError && `
         border: 1px solid #dc2626;
-        box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2) !important;
+        outline: none;
     `}
 
     & .p-dropdown-label {

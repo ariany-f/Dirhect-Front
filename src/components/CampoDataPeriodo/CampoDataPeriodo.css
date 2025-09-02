@@ -10,6 +10,14 @@
     box-shadow: none !important;
 }
 
+
+.p-calendar > .p-inputtext {
+    &.error {
+        outline: 1px solid var(--error);
+        border: none;
+    }
+}
+
 .p-inputtext:enabled:focus {
     border-color: var(--primaria) !important;
     box-shadow: none !important;

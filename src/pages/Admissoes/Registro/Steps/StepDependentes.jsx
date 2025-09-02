@@ -64,7 +64,7 @@ const SectionTitle = styled.div`
     border-bottom: 1px solid #e2e8f0;
 `;
 
-const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, toast }) => {
+const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, toast, classInvalid = [], setClassInvalid }) => {
     const { candidato, setCandidato } = useCandidatoContext();
     const [grausParentesco, setGrausParentesco] = useState([]);
     const [generos, setGeneros] = useState([]);
@@ -184,7 +184,7 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
         }
 
         // Para dependentes novos, verificar se está completo
-        const isCompleto = dependente.nome_depend && dependente.grau_parentesco_id_origem && dependente.nrodepend;
+        const isCompleto = dependente.nome_depend && dependente.grau_parentesco_id_origem && dependente.nrodepend && dependente.genero_id_origem && dependente.estado_civil_id_origem;
         if (!isCompleto && abertos.includes(idx)) {
             return;
         }
@@ -251,7 +251,7 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
     };
 
     const executarSalvarDependente = async (dependente) => {
-        if (!dependente.nome_depend || !dependente.grau_parentesco_id_origem || !dependente.nrodepend) {
+        if (!dependente.nome_depend || !dependente.grau_parentesco_id_origem || !dependente.nrodepend || !dependente.genero_id_origem || !dependente.estado_civil_id_origem) {
             toast.current?.show({
                 severity: 'warn',
                 summary: 'Atenção',
@@ -566,7 +566,7 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
     };
 
     const podeSalvarDependente = (dependente) => {
-        const camposObrigatorios = dependente.nome_depend && dependente.grau_parentesco_id_origem && dependente.nrodepend;
+        const camposObrigatorios = dependente.nome_depend && dependente.grau_parentesco_id_origem && dependente.nrodepend && dependente.genero_id_origem && dependente.estado_civil_id_origem;
         
         if (!camposObrigatorios || dependente.id) {
             return false;
@@ -762,7 +762,10 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
                                             disabled={modoLeitura || isSaved}
                                         />
                                         <DropdownItens
+                                            name={`genero_id_origem_${idx}`}
+                                            camposVazios={isCampoEmErro(`genero_id_origem_${idx}`) ? [`genero_id_origem_${idx}`] : []}
                                             label="Gênero"
+                                            required={true}
                                             valor={(() => {
                                                 const valorEncontrado = generos.find(g => {
                                                     return g.code == dependente.genero_id_origem || g.id_origem == dependente.genero_id_origem;
@@ -776,13 +779,16 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
                                             filter
                                         />
                                         <DropdownItens
+                                            name={`estado_civil_id_origem_${idx}`}
                                             label="Estado Civil"
+                                            camposVazios={isCampoEmErro(`estado_civil_id_origem_${idx}`) ? [`estado_civil_id_origem_${idx}`] : []}
                                             valor={(() => {
                                                 const valorEncontrado = estadosCivis.find(g => {
                                                     return g.code == dependente.estado_civil_id_origem || g.id_origem == dependente.estado_civil_id_origem;
                                                 });
                                                 return valorEncontrado || null;
                                             })()}
+                                            required={true}
                                             setValor={(valor) => handleUpdateDependente(id, 'estado_civil_id_origem', (valor.code || null))}
                                             options={estadosCivis}
                                             placeholder="Selecione o estado civil"

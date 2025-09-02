@@ -495,6 +495,7 @@ const CandidatoRegistro = () => {
     const { candidato, setCandidato, admissao, setAdmissao, vaga, setVaga, setCampo } = useCandidatoContext()
     const { sidebarOpened } = useOutletContext() || { sidebarOpened: true }
     const [classError, setClassError] = useState([])
+    const [classInvalid, setClassInvalid] = useState([])
     const stepperRef = useRef(null);
     const navegar = useNavigate()
  
@@ -572,10 +573,6 @@ const CandidatoRegistro = () => {
     
     // Estado para rastrear campos que foram explicitamente selecionados pelo usuário
     const [camposSelecionados, setCamposSelecionados] = useState(new Set());
-    
-    
-
-
 
     // Normaliza os dados para comparação (remove propriedades que podem ser undefined/null)
     const normalizarObjeto = (obj) => {
@@ -640,11 +637,25 @@ const CandidatoRegistro = () => {
     
     // Função para marcar um campo como selecionado pelo usuário
     const marcarCampoSelecionado = (campo) => {
-        console.log(`🎯 marcarCampoSelecionado chamado para: ${campo}`);
         setCamposSelecionados(prev => {
             const novoSet = new Set([...prev, campo]);
-            console.log(`🎯 camposSelecionados atualizado:`, Array.from(novoSet));
             return novoSet;
+        });
+    };
+
+    // Função para marcar um campo como inválido
+    const marcarCampoInvalido = (campo) => {
+        setClassInvalid(prev => {
+            const novoArray = [...prev, campo];
+            return novoArray;
+        });
+    };
+
+    // Função para remover marcação de campo inválido
+    const removerCampoInvalido = (campo) => {
+        setClassInvalid(prev => {
+            const novoArray = prev.filter(c => c !== campo);
+            return novoArray;
         });
     };
 
@@ -792,7 +803,6 @@ const CandidatoRegistro = () => {
             if (!paises.length) {
                 try {
                     const paisesResponse = await http.get('pais/?format=json');
-                    console.log('Resposta da API de países:', paisesResponse);
                     
                     // Verifica se a resposta tem a estrutura esperada
                     let dadosPaises = [];
@@ -807,7 +817,6 @@ const CandidatoRegistro = () => {
                         dadosPaises = [];
                     }
                     
-                    console.log('Dados de países processados:', dadosPaises);
                     if (dadosPaises.length > 0) {
                         const paisesFormatados = dadosPaises
                             .filter(pais => pais && pais.nome_por) // Filtra países válidos com nome
@@ -988,8 +997,6 @@ const CandidatoRegistro = () => {
         if (id) {
             http.get(`admissao/${id}/`)
                 .then((data) => {
-                    console.log('📋 Dados recebidos da API:', data);
-                    console.log('📋 dados_vaga recebidos:', data.dados_vaga);
                     
                     const fullCandidatoData = {
                         ...data,
@@ -1000,8 +1007,6 @@ const CandidatoRegistro = () => {
                         anotacoes: data.anotacoes || '',
                         dados_vaga: data.dados_vaga || {}
                     };
-                    
-                    console.log('📋 fullCandidatoData.dados_vaga:', fullCandidatoData.dados_vaga);
                     
                     // Atualiza o candidato com todos os dados
                     setCandidato(fullCandidatoData);
@@ -1127,8 +1132,6 @@ const CandidatoRegistro = () => {
         if (mostrarExperiencia) {
             index += 1; // Experiência Profissional
         }
-        
-        console.log('🔍 getStepDependentesIndex - índice final:', index);
         return index; // Dependentes
     };
     
@@ -1179,10 +1182,6 @@ const CandidatoRegistro = () => {
             const candidatoNormalizado = normalizarObjeto(candidatoAtual);
             const initialNormalizado = normalizarObjeto(initialCandidato);
             
-            console.log('Candidato normalizado:', candidatoNormalizado);
-            console.log('Initial normalizado:', initialNormalizado);
-            console.log('grau_instrucao atual:', candidatoNormalizado.grau_instrucao);
-            console.log('grau_instrucao inicial:', initialNormalizado.grau_instrucao);
             
             if (JSON.stringify(candidatoNormalizado) === JSON.stringify(initialNormalizado)) {
                 toast.current.show({
@@ -1191,16 +1190,9 @@ const CandidatoRegistro = () => {
                     detail: 'Nenhuma alteração para salvar.',
                     life: 3000
                 });
-                console.log('Nenhuma alteração detectada, salvamento pulado.');
                 return;
             }
         } else {
-            // Log para mostrar quando está usando payload específico
-            console.log('🔍 EXECUTAR SALVAMENTO - Usando payload específico:', {
-                candidatoOverride: !!candidatoOverride,
-                payloadEspecifico: !!payloadEspecifico,
-                payloadKeys: payloadEspecifico ? Object.keys(payloadEspecifico) : []
-            });
             
             // Verificação específica para payload de dados contratuais
             if (payloadEspecifico && activeIndex === 3) {
@@ -1290,11 +1282,7 @@ const CandidatoRegistro = () => {
                     }
                 });
                 
-                console.log('🔍 VERIFICAÇÃO EDUCAÇÃO - Candidato atual:', candidatoEducacao);
-                console.log('🔍 VERIFICAÇÃO EDUCAÇÃO - Initial:', initialEducacao);
-                
                 if (JSON.stringify(candidatoEducacao) === JSON.stringify(initialEducacao)) {
-                    console.log('🔍 VERIFICAÇÃO EDUCAÇÃO - Nenhuma mudança detectada, salvamento pulado');
                     toast.current.show({
                         severity: 'info',
                         summary: 'Informação',
@@ -1302,8 +1290,6 @@ const CandidatoRegistro = () => {
                         life: 3000
                     });
                     return;
-                } else {
-                    console.log('🔍 VERIFICAÇÃO EDUCAÇÃO - Mudanças detectadas, salvamento permitido');
                 }
             }
             
@@ -1327,11 +1313,8 @@ const CandidatoRegistro = () => {
                     }
                 });
                 
-                console.log('🔍 VERIFICAÇÃO DEPENDENTES - Candidato atual:', candidatoDependentes);
-                console.log('🔍 VERIFICAÇÃO DEPENDENTES - Initial:', initialDependentes);
                 
                 if (JSON.stringify(candidatoDependentes) === JSON.stringify(initialDependentes)) {
-                    console.log('🔍 VERIFICAÇÃO DEPENDENTES - Nenhuma mudança detectada, salvamento pulado');
                     toast.current.show({
                         severity: 'info',
                         summary: 'Informação',
@@ -1339,9 +1322,7 @@ const CandidatoRegistro = () => {
                         life: 3000
                     });
                     return;
-                } else {
-                    console.log('🔍 VERIFICAÇÃO DEPENDENTES - Mudanças detectadas, salvamento permitido');
-                }
+                } 
             }
             
             // Verificação específica para payload de dados bancários
@@ -1367,11 +1348,7 @@ const CandidatoRegistro = () => {
                     }
                 });
                 
-                console.log('🔍 VERIFICAÇÃO BANCÁRIOS - Candidato atual:', candidatoBancario);
-                console.log('🔍 VERIFICAÇÃO BANCÁRIOS - Initial:', initialBancario);
-                
                 if (JSON.stringify(candidatoBancario) === JSON.stringify(initialBancario)) {
-                    console.log('🔍 VERIFICAÇÃO BANCÁRIOS - Nenhuma mudança detectada, salvamento pulado');
                     toast.current.show({
                         severity: 'info',
                         summary: 'Informação',
@@ -1379,8 +1356,6 @@ const CandidatoRegistro = () => {
                         life: 3000
                     });
                     return;
-                } else {
-                    console.log('🔍 VERIFICAÇÃO BANCÁRIOS - Mudanças detectadas, salvamento permitido');
                 }
             }
             
@@ -1423,29 +1398,14 @@ const CandidatoRegistro = () => {
                 
                 // Log detalhado de alguns campos importantes para debug
                 const camposDebug = ['nome', 'email', 'cpf', 'dt_nascimento', 'genero', 'estado_civil'];
-                console.log('🔍 VERIFICAÇÃO DADOS PESSOAIS - Debug campos importantes:');
-                camposDebug.forEach(campo => {
-                    console.log(`  ${campo}:`, {
-                        candidatoOriginal: candidatoAtual[campo],
-                        candidatoNormalizado: candidatoNormalizado[campo],
-                        initialOriginal: initialCandidato[campo],
-                        initialNormalizado: initialNormalizado[campo]
-                    });
-                });
-                
-                console.log('🔍 VERIFICAÇÃO DADOS PESSOAIS - Candidato atual:', candidatoPessoal);
-                console.log('🔍 VERIFICAÇÃO DADOS PESSOAIS - Initial:', initialPessoal);
+               
                 
                 // Comparação detalhada para identificar diferenças
                 const candidatoString = JSON.stringify(candidatoPessoal);
                 const initialString = JSON.stringify(initialPessoal);
-                
-                console.log('🔍 VERIFICAÇÃO DADOS PESSOAIS - Candidato JSON:', candidatoString);
-                console.log('🔍 VERIFICAÇÃO DADOS PESSOAIS - Initial JSON:', initialString);
-                console.log('🔍 VERIFICAÇÃO DADOS PESSOAIS - São iguais?', candidatoString === initialString);
+            
                 
                 if (candidatoString === initialString) {
-                    console.log('🔍 VERIFICAÇÃO DADOS PESSOAIS - Nenhuma mudança detectada, salvamento pulado');
                     toast.current.show({
                         severity: 'info',
                         summary: 'Informação',
@@ -1454,7 +1414,6 @@ const CandidatoRegistro = () => {
                     });
                     return;
                 } else {
-                    console.log('🔍 VERIFICAÇÃO DADOS PESSOAIS - Mudanças detectadas, salvamento permitido');
                     
                     // Identificar exatamente quais campos são diferentes
                     const camposDiferentes = [];
@@ -1714,6 +1673,9 @@ const CandidatoRegistro = () => {
                 console.warn('Campos duplicados encontrados:', camposDuplicados);
             }
 
+            if(classInvalid.length > 0) {
+                return;
+            }
             await http.put(`admissao/${admissao.id}/`, payload);
             
             // Salvar dependentes separadamente se houver dependentes
@@ -1773,7 +1735,6 @@ const CandidatoRegistro = () => {
 
                         try {
                             const dependentesSalvos = await http.post(`admissao/${candidatoAtual.id}/adiciona_dependentes/`, dependentesParaEnviar);
-                            console.log('Dependentes novos salvos com sucesso no endpoint específico');
 
                             // Atualiza o estado para refletir os dependentes salvos
                             if (dependentesSalvos && Array.isArray(dependentesSalvos)) {
@@ -1842,10 +1803,8 @@ const CandidatoRegistro = () => {
                 // Atualiza o estado de erro para destacar os campos com problema
                 const camposComErro = Object.keys(admissaoErrors);
                 setClassError(camposComErro);
-                
-                // Log detalhado dos erros
-                console.log('📋 Campos com erro:', camposComErro);
-                console.log('📝 Mensagens de erro:', admissaoErrors);
+                // Limpa campos inválidos quando há erro de validação da API
+                setClassInvalid([]);
                 
                 // ❌ INTERROMPE O FLUXO - NÃO CONTINUA PARA O PRÓXIMO STEP
                 return false;
@@ -2031,7 +1990,7 @@ const CandidatoRegistro = () => {
             // Validação de PIS (se preenchido, deve ser válido)
             if (dadosCandidato.pispasep && dadosCandidato.pispasep.trim() !== '' && !validarPIS(dadosCandidato.pispasep)) {
                 camposObrigatorios.push('PIS/PASEP (inválido)');
-                setClassError(prev => [...prev, 'pispasep']);
+                marcarCampoInvalido('pispasep');
             }
 
             // Validação de campos obrigatórios baseada nos documentos
@@ -2150,16 +2109,7 @@ const CandidatoRegistro = () => {
                 const camposExplicitos = [];
                 const precisaSelecaoExplicita = camposExplicitos.includes(campo);
                 
-                // Log temporário para debug
-                if (camposExplicitos.includes(campo)) {
-                    console.log(`🔍 VALIDAÇÃO DEBUG - Campo: ${campo}`, {
-                        valor: valor,
-                        foiSelecionado: foiSelecionado,
-                        precisaSelecaoExplicita: precisaSelecaoExplicita,
-                        camposSelecionados: Array.from(camposSelecionados)
-                    });
-                }
-                
+
                 if (!valor || (typeof valor === 'object' && !valor.id && !valor.code) || (typeof valor === 'string' && !valor.trim())) {
                     camposObrigatorios.push(nome);
                     setClassError(prev => [...prev, campo]);
@@ -2191,6 +2141,14 @@ const CandidatoRegistro = () => {
                     if (!dependente.grau_parentesco_id_origem) {
                         camposObrigatorios.push(`Grau de parentesco do dependente ${index + 1}`);
                         setClassError(prev => [...prev, `grau_parentesco_id_origem_${index}`]);
+                    }
+                    if (!dependente.genero_id_origem) {
+                        camposObrigatorios.push(`Gênero do dependente ${index + 1}`);
+                        setClassError(prev => [...prev, `genero_id_origem_${index}`]);
+                    }
+                    if (!dependente.estado_civil_id_origem) {
+                        camposObrigatorios.push(`Estado civil do dependente ${index + 1}`);
+                        setClassError(prev => [...prev, `estado_civil_id_origem_${index}`]);
                     }
                     
                     // Validação específica baseada em incidências e grau de parentesco
@@ -2243,8 +2201,9 @@ const CandidatoRegistro = () => {
             return false;
         }
         
-        // Se chegou até aqui, não há erros, então limpa o classError
+        // Se chegou até aqui, não há erros, então limpa o classError e classInvalid
         setClassError([]);
+        setClassInvalid([]);
         return true;
     };
 
@@ -2533,8 +2492,6 @@ const CandidatoRegistro = () => {
             // Verifica se o erro tem o formato específico da API
             if (error.response && error.response.data && error.response.data.admissao_errors) {
                 const admissaoErrors = error.response.data.admissao_errors;
-                console.log('❌ Erros de validação da API (LGPD):', admissaoErrors);
-                
                 // Processa os erros para exibir no toast
                 const errosFormatados = Object.entries(admissaoErrors).map(([campo, mensagens]) => {
                     const mensagem = Array.isArray(mensagens) ? mensagens.join(', ') : mensagens;
@@ -2551,6 +2508,8 @@ const CandidatoRegistro = () => {
                 // Atualiza o estado de erro para destacar os campos com problema
                 const camposComErro = Object.keys(admissaoErrors);
                 setClassError(camposComErro);
+                // Limpa campos inválidos quando há erro de validação da API
+                setClassInvalid([]);
                 
             } else {
                 toast.current.show({
@@ -2631,8 +2590,10 @@ const CandidatoRegistro = () => {
             // Verificar campos básicos obrigatórios
             const nomeVazio = !dependente.nome_depend?.trim();
             const grauVazio = !dependente.grau_parentesco_id_origem;
+            const generoVazio = !dependente.genero_id_origem;
+            const estadoCivilVazio = !dependente.estado_civil_id_origem;
             
-            if (nomeVazio || grauVazio) {
+            if (nomeVazio || grauVazio || generoVazio || estadoCivilVazio) {
                 return true;
             }
             
@@ -2705,7 +2666,6 @@ const CandidatoRegistro = () => {
                 ? secoes.filter(sec => String(sec.filial) === String(filialSelecionada))
                 : [];
             if (filialSelecionada && secoesFiltradas.length > 0) camposObrigatorios.push('id_secao');
-            console.log('🔍 SEÇÕES FILTRADAS:', secoesFiltradas);
             // Função
             const temFuncoes = funcoes && funcoes.length > 0;
             if (temFuncoes) camposObrigatorios.push('id_funcao');
@@ -2724,7 +2684,6 @@ const CandidatoRegistro = () => {
             if (candidato.confianca) {
                 camposObrigatorios.push('funcao_confianca');
             }
-            console.log('🔍 CAMPOS OBRIGATÓRIOS:', camposObrigatorios);
 
             // Checar quais campos não estão preenchidos
             const mapaCamposVaga = {
@@ -2800,8 +2759,9 @@ const CandidatoRegistro = () => {
     }, [activeIndex, candidato, self, modoLeitura, verificarDependentesIncompletos]);
 
     const handleValidarStep = () => {
-        // Limpa o classError antes de validar
+        // Limpa o classError e classInvalid antes de validar
         setClassError([]);
+        setClassInvalid([]);
         
         // Executa a validação do step atual para mostrar quais campos estão faltando
         const resultado = validarCamposObrigatoriosStep();
@@ -3008,7 +2968,6 @@ const CandidatoRegistro = () => {
                                 size="small" 
                                 iconPos="right" 
                                 aoClicar={() => {
-                                    console.log('🚨🚨🚨 BOTÃO VALIDAR CLICADO 🚨🚨🚨');
                                     handleValidarStep();
                                 }}
                                 disabled={!dadosCarregados}
@@ -3083,7 +3042,6 @@ const CandidatoRegistro = () => {
                 setActiveIndex(prev => prev + 1);
             }
         } catch (error) {
-            console.log("O salvamento foi interrompido devido a um erro ao adicionar dependentes.");
             // O toast de erro já foi exibido na função executarSalvamento
         }
     };
@@ -3129,25 +3087,12 @@ const CandidatoRegistro = () => {
                 quality: 0.8 // Qualidade de 80%
             };
             
-            console.log('Compactando imagem...', {
-                originalSize: (file.size / 1024 / 1024).toFixed(2) + 'MB',
-                originalName: file.name
-            });
-            
             const compressedFile = await imageCompression(file, options);
             
             // Garantir que o nome do arquivo seja preservado
             const finalFile = new File([compressedFile], file.name, {
                 type: compressedFile.type,
                 lastModified: Date.now(),
-            });
-            
-            console.log('Imagem compactada:', {
-                originalSize: (file.size / 1024 / 1024).toFixed(2) + 'MB',
-                compressedSize: (finalFile.size / 1024 / 1024).toFixed(2) + 'MB',
-                reduction: ((1 - finalFile.size / file.size) * 100).toFixed(1) + '%',
-                fileName: finalFile.name,
-                fileType: finalFile.type
             });
             
             return finalFile;
@@ -3439,7 +3384,6 @@ const CandidatoRegistro = () => {
             // Verifica se o erro tem o formato específico da API
             if (erro.response && erro.response.data && erro.response.data.admissao_errors) {
                 const admissaoErrors = erro.response.data.admissao_errors;
-                console.log('❌ Erros de validação da API (Upload):', admissaoErrors);
                 
                 // Processa os erros para exibir no toast
                 const errosFormatados = Object.entries(admissaoErrors).map(([campo, mensagens]) => {
@@ -3457,6 +3401,8 @@ const CandidatoRegistro = () => {
                 // Atualiza o estado de erro para destacar os campos com problema
                 const camposComErro = Object.keys(admissaoErrors);
                 setClassError(camposComErro);
+                // Limpa campos inválidos quando há erro de validação da API
+                setClassInvalid([]);
                 
             } else {
                 let errorMessage = 'Falha ao fazer upload da imagem.';
@@ -3527,7 +3473,6 @@ const CandidatoRegistro = () => {
             // Verifica se o erro tem o formato específico da API
             if (erro.response && erro.response.data && erro.response.data.admissao_errors) {
                 const admissaoErrors = erro.response.data.admissao_errors;
-                console.log('❌ Erros de validação da API (Remove):', admissaoErrors);
                 
                 // Processa os erros para exibir no toast
                 const errosFormatados = Object.entries(admissaoErrors).map(([campo, mensagens]) => {
@@ -3545,6 +3490,8 @@ const CandidatoRegistro = () => {
                 // Atualiza o estado de erro para destacar os campos com problema
                 const camposComErro = Object.keys(admissaoErrors);
                 setClassError(camposComErro);
+                // Limpa campos inválidos quando há erro de validação da API
+                setClassInvalid([]);
                 
             } else {
                 toast.current.show({ 
@@ -3640,21 +3587,6 @@ const CandidatoRegistro = () => {
             pispasep: candidato.pispasep
         };
         
-        console.log('🔍 STEP DADOS PESSOAIS - Dados atuais:', {
-            nome: candidato.nome,
-            email: candidato.email,
-            telefone: candidato.telefone,
-            cpf: candidato.cpf,
-            dt_nascimento: candidato.dt_nascimento,
-            genero: candidato.genero,
-            estado_civil: candidato.estado_civil,
-            cep: candidato.cep,
-            cidade: candidato.cidade,
-            estado: candidato.estado
-        });
-        
-        console.log('🔍 STEP DADOS PESSOAIS - Payload que será enviado:', payload);
-        
         return payload;
     };
 
@@ -3671,19 +3603,6 @@ const CandidatoRegistro = () => {
             pix_tipo: candidato.pix_tipo
         };
         
-        console.log('🔍 STEP DADOS BANCÁRIOS - Dados atuais:', {
-            banco: candidato.banco,
-            agencia: candidato.agencia,
-            agencia_nova: candidato.agencia_nova,
-            conta_corrente: candidato.conta_corrente,
-            tipo_conta: candidato.tipo_conta,
-            conta_operacao: candidato.conta_operacao,
-            pix: candidato.pix,
-            pix_tipo: candidato.pix_tipo
-        });
-        
-        console.log('🔍 STEP DADOS BANCÁRIOS - Payload que será enviado:', payload);
-        
         return payload;
     };
 
@@ -3692,27 +3611,6 @@ const CandidatoRegistro = () => {
         if (self) return {};
         
         const dadosVaga = candidato.dados_vaga || {};
-        
-        console.log('🔍 STEP DADOS CONTRATUAIS - Dados atuais:', {
-            candidato: {
-                filial: candidato.filial,
-                id_secao: candidato.id_secao,
-                id_funcao: candidato.id_funcao,
-                id_horario: candidato.id_horario,
-                centro_custo: candidato.centro_custo,
-                salario: candidato.salario,
-                ajuda_custo: candidato.ajuda_custo,
-                arredondamento: candidato.arredondamento,
-                media_sal_maternidade: candidato.media_sal_maternidade
-            },
-            dados_vaga: {
-                filial_id: dadosVaga.filial_id,
-                secao_id: dadosVaga.secao_id,
-                funcao_id: dadosVaga.funcao_id,
-                horario_id: dadosVaga.horario_id,
-                centro_custo_id: dadosVaga.centro_custo_id
-            }
-        });
         
         return {
             // Dados básicos da admissão
@@ -3781,7 +3679,6 @@ const CandidatoRegistro = () => {
             salario: formatarSalario(candidato.salario)
         };
         
-        console.log('🔍 STEP DADOS CONTRATUAIS - Payload que será enviado:', payload);
         
         return payload;
     };
@@ -3792,25 +3689,12 @@ const CandidatoRegistro = () => {
             grau_instrucao: candidato.grau_instrucao
         };
         
-        console.log('🔍 STEP EDUCAÇÃO - Dados atuais:', {
-            grau_instrucao: candidato.grau_instrucao
-        });
-        
-        console.log('🔍 STEP EDUCAÇÃO - Payload que será enviado:', payload);
-        
         return payload;
     };
 
     const gerarPayloadStepDependentes = () => {
         // Step Dependentes: não envia dados específicos, apenas valida
         const payload = {};
-        
-        console.log('🔍 STEP DEPENDENTES - Dados atuais:', {
-            dependentes: candidato.dependentes,
-            totalDependentes: candidato.dependentes?.length || 0
-        });
-        
-        console.log('🔍 STEP DEPENDENTES - Payload que será enviado:', payload);
         
         return payload;
     };
@@ -4213,6 +4097,8 @@ const CandidatoRegistro = () => {
                                     <StepDadosPessoais 
                                         classError={classError} 
                                         setClassError={setClassError}
+                                        classInvalid={classInvalid}
+                                        setClassInvalid={setClassInvalid}
                                         paises={paises}
                                         modoLeitura={modoLeitura} 
                                         opcoesDominio={opcoesDominio}
@@ -4226,7 +4112,7 @@ const CandidatoRegistro = () => {
                         <Container padding={'0'} gap="10px">
                             <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
                                 <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
-                                    <StepDadosBancarios modoLeitura={modoLeitura} classError={classError} setClassError={setClassError} />
+                                    <StepDadosBancarios modoLeitura={modoLeitura} classError={classError} setClassError={setClassError} classInvalid={classInvalid} setClassInvalid={setClassInvalid} />
                                 </ScrollPanel>
                             </div>
                         </Container>
@@ -4253,6 +4139,8 @@ const CandidatoRegistro = () => {
                                             availableDominioTables={availableDominioTables}
                                             classError={classError}
                                             setClassError={setClassError}
+                                            classInvalid={classInvalid}
+                                            setClassInvalid={setClassInvalid}
                                             marcarCampoSelecionado={marcarCampoSelecionado}
                                         />
                                     </ScrollPanel>
@@ -4265,7 +4153,7 @@ const CandidatoRegistro = () => {
                         <ScrollPanel className="responsive-scroll-panel">
                             <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
                                 <ScrollPanel className="responsive-inner-scroll">
-                                    <StepEducacao modoLeitura={modoLeitura} classError={classError} setClassError={setClassError} />
+                                    <StepEducacao modoLeitura={modoLeitura} classError={classError} setClassError={setClassError} classInvalid={classInvalid} setClassInvalid={setClassInvalid} />
                                 </ScrollPanel>
                             </div>
                         </ScrollPanel>
@@ -4300,7 +4188,7 @@ const CandidatoRegistro = () => {
                             <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
                                 <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
                                     <ScrollPanel className="responsive-inner-scroll">
-                                        <StepDependentes classError={classError} setClassError={setClassError} modoLeitura={modoLeitura} toast={toast} />
+                                        <StepDependentes classError={classError} setClassError={setClassError} classInvalid={classInvalid} setClassInvalid={setClassInvalid} modoLeitura={modoLeitura} toast={toast} />
                                     </ScrollPanel>
                             </ScrollPanel>
                             </div>

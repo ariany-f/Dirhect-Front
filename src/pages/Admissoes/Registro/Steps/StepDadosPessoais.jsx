@@ -39,7 +39,7 @@ const SectionTitle = styled.div`
     border-bottom: 1px solid #e2e8f0;
 `;
 
-const StepDadosPessoais = ({ classError = [], setClassError, paises = [], modoLeitura = false, opcoesDominio = {} }) => {
+const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], setClassInvalid, paises = [], modoLeitura = false, opcoesDominio = {} }) => {
     const { candidato, setCampo } = useCandidatoContext();
     const lastCepRef = useRef('');
     const [estados, setEstados] = useState([]);
@@ -178,6 +178,11 @@ const StepDadosPessoais = ({ classError = [], setClassError, paises = [], modoLe
     }, [classError]);
 
 
+    const isCampoInvalido = useMemo(() => {
+        return (campo) => {
+            return classInvalid.includes(campo);
+        };
+    }, [classInvalid]);
 
     useEffect(() => {
 
@@ -610,6 +615,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, paises = [], modoLe
                 label="PIS/PASEP"
                 placeholder="Digite o PIS/PASEP"
                 disabled={modoLeitura}
+                camposInvalidos={isCampoInvalido('pispasep') ? ['pispasep'] : []}
                 camposVazios={isCampoEmErro('pispasep') ? ['pispasep'] : []}
             />
 

@@ -63,7 +63,7 @@ const useDebounce = (value, delay) => {
     return debouncedValue;
 };
 
-const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassError }) => {
+const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassError, classInvalid = [], setClassInvalid }) => {
     const { candidato, setCampo } = useCandidatoContext();
     const [bancos, setBancos] = useState([]);
     const [loadingBancos, setLoadingBancos] = useState(false);
@@ -109,6 +109,10 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
         
         if (campoPreenchido) {
             setClassError(prev => prev.filter(erro => erro !== campo));
+            // Também remove do classInvalid se existir
+            if (setClassInvalid) {
+                setClassInvalid(prev => prev.filter(invalido => invalido !== campo));
+            }
         }
     };
 
@@ -337,6 +341,7 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
                         }}
                             label="Nova Agência"
                             placeholder="Digite o número da agência"
+                            camposInvalidos={classInvalid}
                         />
                     </div>
                     <div style={{ height: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -420,6 +425,7 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
 
             <CampoTexto
                 camposVazios={isCampoEmErro('conta_corrente') ? ['conta_corrente'] : []}
+                camposInvalidos={classInvalid}
                 name="conta_corrente"
                 required={true}
                 valor={candidato?.conta_corrente ?? ''}
@@ -441,6 +447,7 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
                 label="Operação (se houver)"
                 placeholder="Digite a operação"
                 disabled={modoLeitura}
+                camposInvalidos={classInvalid}
             />
 
             <DropdownItens
@@ -463,6 +470,7 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
                 label="Chave PIX"
                 placeholder="Digite a chave PIX"
                 disabled={modoLeitura}
+                camposInvalidos={classInvalid}
             />
 
             <InfoBox>
