@@ -873,14 +873,19 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                             const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
                                             const limiteSolicitacao = new Date(fimPeriodo.getFullYear(), fimPeriodo.getMonth() + 11, fimPeriodo.getDate()); // 11 meses após o fim
                                             
+                                            // Usa data_minima_solicitacao como início da barra, se disponível
+                                            const inicioBarra = aus.data_minima_solicitacao ? 
+                                                parseDateAsLocal(aus.data_minima_solicitacao) : 
+                                                inicioPeriodo;
+                                            
                                             // Verifica se o período está perdido usando o campo da API
                                             const isPerdido = aus.periodo_perdido === true;
                                             
-                                            const { startPercent, widthPercent } = getBarPosition(inicioPeriodo, limiteSolicitacao, startDate, totalDays);
+                                            const { startPercent, widthPercent } = getBarPosition(inicioBarra, limiteSolicitacao, startDate, totalDays);
                                             
                                             if (isPerdido) {
                                                 // Período perdido - não pode mais solicitar
-                                                const tooltip = `Período Aquisitivo: ${format(inicioPeriodo, 'dd/MM/yyyy')} até ${format(fimPeriodo, 'dd/MM/yyyy')}\nPERÍODO PERDIDO - Não é mais possível solicitar férias`;
+                                                const tooltip = `Período Aquisitivo: ${format(inicioPeriodo, 'dd/MM/yyyy')} até ${format(fimPeriodo, 'dd/MM/yyyy')}\nData mínima para solicitar: ${format(inicioBarra, 'dd/MM/yyyy')}\nPERÍODO PERDIDO - Não é mais possível solicitar férias`;
                                                 return (
                                                     <EventBar
                                                         key={`perdido-${i}`}
@@ -908,7 +913,7 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                                 // NOVA REGRA: não exibe "a solicitar" se funcionario_marcado_demissao
                                                 if (colab.funcionario_marcado_demissao === true) return null;
                                                 // Ainda pode solicitar
-                                                const tooltip = `Período Aquisitivo: ${format(inicioPeriodo, 'dd/MM/yyyy')} até ${format(fimPeriodo, 'dd/MM/yyyy')}\nLimite para solicitar: ${format(limiteSolicitacao, 'dd/MM/yyyy')}`;
+                                                const tooltip = `Período Aquisitivo: ${format(inicioPeriodo, 'dd/MM/yyyy')} até ${format(fimPeriodo, 'dd/MM/yyyy')}\nData mínima para solicitar: ${format(inicioBarra, 'dd/MM/yyyy')}\nLimite para solicitar: ${format(limiteSolicitacao, 'dd/MM/yyyy')}`;
                                                 return (
                                                     <EventBar
                                                         key={`requisitar-${i}`}
