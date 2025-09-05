@@ -3,6 +3,7 @@ import Botao from "@components/Botao";
 import RadioButton from "@components/RadioButton";
 import http from "@http";
 import "./index.css";
+import { ArmazenadorToken } from "@utils";
 
 const Syync = () => {
   const [tipoEnvio, setTipoEnvio] = useState("");
@@ -65,12 +66,16 @@ const Syync = () => {
       if (tipoEnvio === "folha-pagamento") {
         endpoint = "integracao/enviar_syync/folha/";
         payload = {
-          periodo: formData.periodo
+          periodo: formData.periodo,
+          mes: formData.mes,
+          ano: formData.ano,
+          tenant: ArmazenadorToken.UserCompanyPublicId
         };
       } else if (tipoEnvio === "recibo-ferias") {
         endpoint = "integracao/enviar_syync/ferias/";
         payload = {
-          data_pagamento: formData.dataPagamento
+          data_pagamento: formData.dataPagamento,
+          tenant: ArmazenadorToken.UserCompanyPublicId
         };
       }
       
