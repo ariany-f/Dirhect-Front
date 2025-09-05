@@ -1,16 +1,19 @@
 ﻿import React, { useState } from "react";
 import Botao from "@components/Botao";
 import RadioButton from "@components/RadioButton";
+import http from "@http";
 import "./index.css";
 
 const Syync = () => {
   const [tipoEnvio, setTipoEnvio] = useState("");
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const handleTipoEnvioChange = (valor) => {
     setTipoEnvio(valor);
     setFormData({}); // Limpa os dados do formulário anterior
+    setErrors({}); // Limpa os erros
   };
 
   const handleInputChange = (e) => {
@@ -19,22 +22,70 @@ const Syync = () => {
       ...prev,
       [name]: value
     }));
+    
+    // Limpa o erro do campo quando o usuário começa a digitar
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ""
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (tipoEnvio === "folha-pagamento") {
+      if (!formData.periodo || formData.periodo.trim() === "") {
+        newErrors.periodo = "Período é obrigatório";
+      }
+    } else if (tipoEnvio === "recibo-ferias") {
+      if (!formData.dataPagamento) {
+        newErrors.dataPagamento = "Data de pagamento é obrigatória";
+      }
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+    
     setLoading(true);
     
     try {
-      // Aqui será implementado o POST para o endpoint
-      console.log("Dados do formulário:", formData);
-      console.log("Tipo de envio:", tipoEnvio);
+      let endpoint = "";
+      let payload = {};
       
-      // TODO: Implementar chamada para o endpoint
+      if (tipoEnvio === "folha-pagamento") {
+        endpoint = "integracao/enviar_syync/folha/";
+        payload = {
+          periodo: formData.periodo
+        };
+      } else if (tipoEnvio === "recibo-ferias") {
+        endpoint = "integracao/enviar_syync/ferias/";
+        payload = {
+          data_pagamento: formData.dataPagamento
+        };
+      }
+      
+      const response = await http.post(endpoint, payload);
+      
+      console.log("Resposta do servidor:", response);
       alert("Formulário enviado com sucesso!");
+      
+      // Limpa o formulário após sucesso
+      setFormData({});
+      setTipoEnvio("");
+      
     } catch (error) {
       console.error("Erro ao enviar formulário:", error);
-      alert("Erro ao enviar formulário");
+      alert("Erro ao enviar formulário. Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -43,7 +94,7 @@ const Syync = () => {
   const renderFormularioReciboFerias = () => (
     <form onSubmit={handleSubmit} className="formulario">
       <div className="campo">
-        <label htmlFor="dataPagamento">DATA PAGAMENTO:</label>
+        <label htmlFor="dataPagamento">DATA PAGAMENTO: *</label>
         <input
           type="date"
           id="dataPagamento"
@@ -52,8 +103,11 @@ const Syync = () => {
           onChange={handleInputChange}
           required
         />
+        {errors.dataPagamento && (
+          <span className="error-message">{errors.dataPagamento}</span>
+        )}
       </div>
-
+  
       <Botao 
         type="submit" 
         disabled={loading} 
@@ -70,17 +124,21 @@ const Syync = () => {
   const renderFormularioFolhaPagamento = () => (
     <form onSubmit={handleSubmit} className="formulario">
       <div className="campo">
-        <label htmlFor="periodo">PERIODO:</label>
+        <label htmlFor="periodo">PERIODO: *</label>
         <input
           type="text"
           id="periodo"
           name="periodo"
           value={formData.periodo || ""}
           onChange={handleInputChange}
+          placeholder="Ex: 01"
           required
         />
+        {errors.periodo && (
+          <span className="error-message">{errors.periodo}</span>
+        )}
       </div>
-
+  
       <Botao 
         type="submit" 
         disabled={loading} 
