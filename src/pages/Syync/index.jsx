@@ -40,6 +40,12 @@ const Syync = () => {
       if (!formData.periodo || formData.periodo.trim() === "") {
         newErrors.periodo = "Período é obrigatório";
       }
+      if (!formData.mes || formData.mes.trim() === "") {
+        newErrors.mes = "Mês é obrigatório";
+      }
+      if (!formData.ano || formData.ano.trim() === "") {
+        newErrors.ano = "Ano é obrigatório";
+      }
     } else if (tipoEnvio === "recibo-ferias") {
       if (!formData.dataPagamento) {
         newErrors.dataPagamento = "Data de pagamento é obrigatória";
