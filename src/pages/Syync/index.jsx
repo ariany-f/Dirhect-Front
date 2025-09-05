@@ -138,6 +138,34 @@ const Syync = () => {
           <span className="error-message">{errors.periodo}</span>
         )}
       </div>
+      <div className="campo">
+        <label htmlFor="mes">MES: *</label>
+        <input
+          type="number"
+          id="mes"
+          name="mes"
+          value={formData.mes || ""}
+          onChange={handleInputChange}
+          required
+        />
+        {errors.mes && (
+          <span className="error-message">{errors.mes}</span>
+        )}
+      </div>
+      <div className="campo">
+        <label htmlFor="ano">ANO: *</label>
+        <input
+          type="number"
+          id="ano"
+          name="ano"
+          value={formData.ano || ""}
+          onChange={handleInputChange}
+          required
+        />
+        {errors.ano && (
+          <span className="error-message">{errors.ano}</span>
+        )}
+      </div>
   
       <Botao 
         type="submit" 
