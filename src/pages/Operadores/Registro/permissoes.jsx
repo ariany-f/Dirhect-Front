@@ -20,7 +20,7 @@ import {
     FaLock, 
     FaUsers, 
     FaPlus,
-    FaEdit,
+    FaPen,
     FaTrash,
     FaEye,
     FaBuilding
@@ -358,7 +358,7 @@ function OperadorRegistroPermissoes () {
                                                     alignItems: 'center',
                                                     gap: '2px'
                                                 }}>
-                                                    <FaEdit size={8} /> Editar
+                                                    <FaPen size={8} /> Editar
                                                 </span>
                                             )}
                                             {temDelete && (

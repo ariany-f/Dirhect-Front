@@ -12,7 +12,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import { Tag } from 'primereact/tag';
-import { FaTrash, FaEdit, FaShieldAlt, FaGlobe, FaKey, FaUser, FaCog, FaFileExcel } from 'react-icons/fa';
+import { FaTrash, FaPen, FaShieldAlt, FaGlobe, FaKey, FaUser, FaCog, FaFileExcel } from 'react-icons/fa';
 import { MdFilterAltOff } from 'react-icons/md';
 import { Tooltip } from 'primereact/tooltip';
 import { GrAddCircle } from 'react-icons/gr';
@@ -254,7 +254,7 @@ function DataTableCredenciais({ credenciais, paginator, rows, totalRecords, firs
         return (
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
                 <Tooltip target=".editar" mouseTrack mouseTrackLeft={10} />
-                <FaEdit 
+                <FaPen 
                     className="editar" 
                     data-pr-tooltip="Editar Credencial" 
                     size={16} 

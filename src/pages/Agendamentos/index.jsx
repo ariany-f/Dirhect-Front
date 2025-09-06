@@ -11,7 +11,7 @@ import { InputSwitch } from 'primereact/inputswitch';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { useRef } from 'react';
-import { FaPlus, FaEdit, FaTrash, FaPlay, FaPause, FaClock, FaSave, FaSync } from 'react-icons/fa';
+import { FaPlus, FaPen, FaTrash, FaPlay, FaPause, FaClock, FaSave, FaSync } from 'react-icons/fa';
 import Botao from '@components/Botao';
 import CampoTexto from '@components/CampoTexto';
 import DropdownItens from '@components/DropdownItens';
@@ -410,7 +410,7 @@ function Agendamentos() {
                     tooltip={rowData.ativo ? 'Pausar' : 'Ativar'}
                 />
                 <Button
-                    icon={<FaEdit />}
+                    icon={<FaPen />}
                     className="p-button-rounded p-button-text p-button-sm"
                     onClick={() => handleEdit(rowData)}
                     tooltip="Editar"
@@ -445,7 +445,7 @@ function Agendamentos() {
             tipo: 'total'
         },
         atestados: {
-            icon: <FaEdit fill="#1a73e8" />,
+            icon: <FaPen fill="#1a73e8" />,
             titulo: 'Atestados',
             tipo: 'atestados'
         },

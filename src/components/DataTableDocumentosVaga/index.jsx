@@ -1,6 +1,6 @@
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FaPen, FaTrash } from 'react-icons/fa';
 import { Tag } from 'primereact/tag';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import http from '@http';
@@ -55,7 +55,7 @@ function DataTableDocumentosVaga({ documentos = [], vaga = null, onEdit, onDelet
         
         return (
             <div style={{ display: 'flex', gap: 12 }}>
-                <FaEdit
+                <FaPen
                     style={{
                         cursor: vagaTransferida ? 'not-allowed' : 'pointer',
                         color: vagaTransferida ? 'var(--neutro-400)' : 'var(--primaria)',

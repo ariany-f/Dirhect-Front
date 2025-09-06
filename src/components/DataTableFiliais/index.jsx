@@ -17,7 +17,7 @@ import SwitchInput from '@components/SwitchInput';
 import { ArmazenadorToken } from '@utils';
 import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
 import Botao from '@components/Botao';
-import { FaCheck, FaTimes, FaEdit, FaTimes as FaCancel, FaUsers } from 'react-icons/fa';
+import { FaCheck, FaTimes, FaPen, FaTimes as FaCancel, FaUsers } from 'react-icons/fa';
 
 function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows, totalRecords, first, onPage, totalPages, onSearch, selected = null, setSelected = () => { }, onUpdate, sortField, sortOrder, onSort }) {
 
@@ -424,7 +424,7 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                 justifyContent: 'center'
             }}>
                 <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
-                <FaEdit 
+                <FaPen 
                     className="edit" 
                     data-pr-tooltip="Editar Filial" 
                     size={16} 
@@ -486,7 +486,7 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                                 color: 'white'
                             }}
                         >
-                            <FaEdit /> Editar vários
+                            <FaPen /> Editar vários
                         </Botao>
                     )}
                     {/* Controles de integração em massa */}

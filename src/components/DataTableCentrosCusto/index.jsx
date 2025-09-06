@@ -15,7 +15,7 @@ import http from '@http';
 import { ArmazenadorToken } from '@utils';
 import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
 import Botao from '@components/Botao';
-import { FaCheck, FaTimes, FaEdit, FaTimes as FaCancel, FaUsers } from 'react-icons/fa';
+import { FaCheck, FaTimes, FaPen, FaTimes as FaCancel, FaUsers } from 'react-icons/fa';
 import ModalListaColaboradoresPorEstrutura from '../ModalListaColaboradoresPorEstrutura';
 
 const NumeroColaboradores = styled.p`
@@ -329,7 +329,7 @@ function DataTableCentrosCusto({ centros_custo, showSearch = true, pagination = 
                 justifyContent: 'center'
             }}>
                 <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
-                <FaEdit 
+                <FaPen 
                     className="edit" 
                     data-pr-tooltip="Editar Centro de Custo" 
                     size={16} 
@@ -385,7 +385,7 @@ function DataTableCentrosCusto({ centros_custo, showSearch = true, pagination = 
                                 color: 'white'
                             }}
                         >
-                            <FaEdit /> Editar vários
+                            <FaPen /> Editar vários
                         </Botao>
                     )}
                     {/* Controles de integração em massa */}

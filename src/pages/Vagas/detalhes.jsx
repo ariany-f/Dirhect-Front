@@ -8,7 +8,7 @@ import Titulo from '@components/Titulo'
 import Botao from '@components/Botao'
 import { Skeleton } from 'primereact/skeleton'
 import Container from "@components/Container"
-import { FaArrowAltCircleRight, FaDoorOpen, FaEdit, FaPen, FaTrash, FaExchangeAlt } from 'react-icons/fa'
+import { FaArrowAltCircleRight, FaDoorOpen, FaPen, FaTrash, FaExchangeAlt } from 'react-icons/fa'
 import BotaoVoltar from "@components/BotaoVoltar"
 import BotaoGrupo from "@components/BotaoGrupo"
 import BotaoSemBorda from "@components/BotaoSemBorda"

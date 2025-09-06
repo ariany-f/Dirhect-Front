@@ -4,7 +4,7 @@ import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
 import { Checkbox } from 'primereact/checkbox';
-import { FaPlus, FaSave, FaTrash, FaPlusCircle, FaSearch, FaEdit, FaKey, FaUser, FaGlobe, FaCog, FaInfo, FaShieldAlt } from 'react-icons/fa';
+import { FaPlus, FaSave, FaTrash, FaPlusCircle, FaSearch, FaPen, FaKey, FaUser, FaGlobe, FaCog, FaInfo, FaShieldAlt } from 'react-icons/fa';
 import { GrAddCircle } from 'react-icons/gr';
 import http from '@http';
 import styled from 'styled-components';

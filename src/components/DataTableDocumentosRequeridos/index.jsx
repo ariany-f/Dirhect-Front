@@ -1,6 +1,6 @@
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FaPen, FaTrash } from 'react-icons/fa';
 import { Tag } from 'primereact/tag';
 import { Tooltip } from 'primereact/tooltip';
 import { RiDeleteBin6Line } from 'react-icons/ri';
@@ -34,7 +34,7 @@ function DataTableDocumentosRequeridos({ documentos = [], onEdit, onDelete }) {
             {ArmazenadorToken.hasPermission('change_documentorequerido') &&
                 <>
                     <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
-                    <FaEdit
+                    <FaPen
                         className="edit"
                         data-pr-tooltip="Editar Documento"
                         size={16}

@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { Real } from '@utils/formats'
 import { Tag } from 'primereact/tag';
-import { FaCheck, FaTimes, FaTrash, FaEdit } from 'react-icons/fa';
+import { FaCheck, FaTimes, FaTrash, FaPen } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import http from '@http';
 import { RiDeleteBin6Line } from 'react-icons/ri';
@@ -407,7 +407,7 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
                 {!vagaEncerrada && !vagaTransferida && !vagaAprovada && !vagaRejeitada && (
                     <>
                         <Tooltip target=".editar" mouseTrack mouseTrackLeft={10} />
-                        <FaEdit 
+                        <FaPen 
                             title="Editar" 
                             data-pr-tooltip="Editar candidato"
                             className="editar"

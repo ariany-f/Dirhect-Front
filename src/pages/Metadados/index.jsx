@@ -3,7 +3,7 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
-import { FaPlus, FaSave, FaTrash, FaPlusCircle, FaSearch, FaEdit } from 'react-icons/fa';
+import { FaPlus, FaSave, FaTrash, FaPlusCircle, FaSearch, FaPen } from 'react-icons/fa';
 import { GrAddCircle } from 'react-icons/gr';
 import http from '@http';
 import styled from 'styled-components';
@@ -1045,7 +1045,7 @@ function Metadados() {
                   size="medium" 
                   aoClicar={iniciarEdicaoRegra}
                 >
-                  <FaEdit size={14} /> Editar
+                  <FaPen size={14} /> Editar
                 </Botao>
                 <Botao 
                   size="medium" 

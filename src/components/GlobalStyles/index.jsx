@@ -553,6 +553,13 @@ template {
   height: 4px !important;
   border-radius: 0 0 6px 6px;
 }
+[data-pc-section="sort"] svg *, .p-column-filter-menu-button.p-link svg * {
+  fill: var(--primaria) !important;
+}
+  
+[data-pc-section="sort"] svg, .p-column-filter-menu-button.p-link svg {
+  margin-left: 2px !important;
+}
 `
 
 

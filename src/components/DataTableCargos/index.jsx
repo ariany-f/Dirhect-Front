@@ -20,7 +20,7 @@ import http from '@http';
 import { ArmazenadorToken } from '@utils';
 import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
 import Botao from '@components/Botao';
-import { FaCheck, FaTimes, FaEdit, FaTimes as FaCancel, FaUsers } from 'react-icons/fa';
+import { FaCheck, FaTimes, FaPen, FaTimes as FaCancel, FaUsers } from 'react-icons/fa';
 import ModalListaColaboradoresPorEstrutura from '../ModalListaColaboradoresPorEstrutura';
 
 const NumeroColaboradores = styled.p`
@@ -327,7 +327,7 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
                 justifyContent: 'center'
             }}>
                 <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
-                <FaEdit 
+                <FaPen 
                     className="edit" 
                     data-pr-tooltip="Editar Cargo" 
                     size={16} 
@@ -387,7 +387,7 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
                                 color: 'white'
                             }}
                         >
-                            <FaEdit /> Editar vários
+                            <FaPen /> Editar vários
                         </Botao>
                     )}
                     {/* Controles de integração em massa */}
