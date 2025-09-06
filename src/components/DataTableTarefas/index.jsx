@@ -431,6 +431,16 @@ function DataTableTarefas({
                 icon = <LuNewspaper fill="white" stroke="white" color="white" size={16}/>;
                 tagClass = 'tag-folha';
                 break;
+            case 'syync_segalas_ferias':
+                label = 'Syync Férias';
+                icon = <FaUmbrellaBeach fill="white" stroke="white" color="white" size={16}/>;
+                tagClass = 'tag-ferias';
+                break;
+            case 'syync_segalas_folha':
+                label = 'Syync Folha';
+                icon = <LuNewspaper fill="white" stroke="white" color="white" size={16}/>;
+                tagClass = 'tag-folha';
+                break;
             default:
                 label = rowData.processo_nome;
                 tagClass = 'tag-generico';
