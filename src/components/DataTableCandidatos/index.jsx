@@ -1,7 +1,7 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
+import { MdOutlineKeyboardArrowRight, MdWarning } from 'react-icons/md'
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
@@ -390,21 +390,33 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
         
         return (
             <div style={{ display: 'flex', gap: '12px' }}>
-                {/* <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
-                <RiDeleteBin6Line
-                    title="Excluir"
-                    data-pr-tooltip={vagaEncerrada ? "Vaga encerrada - Ação indisponível" : "Excluir candidatura"}
-                    className="delete"
-                    onClick={() => !vagaEncerrada && handleExcluir(rowData)}
+               {vagaEncerrada ? (
+                <Tag
+                    value="Vaga encerrada"
                     style={{
-                        cursor: vagaEncerrada ? 'not-allowed' : 'pointer',
-                        color: vagaEncerrada ? 'var(--neutro-400)' : 'var(--primaria)',
-                        opacity: vagaEncerrada ? 0.5 : 1,
+                        backgroundColor: 'var(--neutro-400)',
+                        color: 'white',
                     }}
-                /> */}
-                
+                />
+               ) : (
+                    vagasPreenchidas && (
+                        <Tag
+                            value={ <>
+                                <MdWarning fill='var(--secundaria)' /> {`Quantidade máx de candidatos`}
+                            </>}
+                            style={{
+                                backgroundColor: 'var(--neutro-400)',
+                                color: 'white',
+                                fontWeight: 600,
+                                fontSize: 10,
+                                borderRadius: 8,
+                                padding: '4px 8px'
+                            }}
+                        />
+                )
+               )}
                 {/* Ícone de edição - só aparece para candidatos não aprovados e não rejeitados */}
-                {!vagaEncerrada && !vagaTransferida && !vagaAprovada && !vagaRejeitada && (
+                {!vagaEncerrada && !vagasPreenchidas && !vagaTransferida && !vagaAprovada && !vagaRejeitada && (
                     <>
                         <Tooltip target=".editar" mouseTrack mouseTrackLeft={10} />
                         <FaPen 
@@ -435,7 +447,7 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
                         />
                     </>
                 )}
-                {!vagaEncerrada && !vagaTransferida && vagaConfigurada?.status !== 'R' && vagaConfigurada?.status !== 'A' && (
+                {!vagaEncerrada && !vagasPreenchidas && !vagaTransferida && vagaConfigurada?.status !== 'R' && vagaConfigurada?.status !== 'A' && (
                     <>
                         <Tooltip target=".rejeitar" mouseTrack mouseTrackLeft={10} />
                         <FaTimes 
@@ -473,7 +485,7 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
                 <Column body={representativeDataInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column> */}
                 <Column body={representativeStatusPreenchimentoTemplate} field="statusDePreenchimento" header="Status" style={{ width: '12%' }} />
                 {/* <Column body={representativeStatusCandidatoTemplate} field="statusDeCandidato" header="Status Candidato" style={{ width: '12%' }} /> */}
-                <Column body={actionTemplate} style={{ width: '10%' }} />
+                <Column body={actionTemplate} style={{ width: '15%' }} />
                 {/* <Column field="statusDeCandidato" header="Status Candidato" style={{ width: '10%' }}></Column> */}
             </DataTable>
             <ModalEncaminharVaga

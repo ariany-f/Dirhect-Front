@@ -128,7 +128,7 @@ function DataTableVagas({
     const representativeDescricaoTemplate = (rowData) => {
         if(rowData?.descricao) {
             const [showFullDescription, setShowFullDescription] = useState(false);
-            const maxLength = 100;
+            const maxLength = 60;
             const isLongText = rowData.descricao.length > maxLength;
             
             const displayText = showFullDescription || !isLongText 
@@ -227,10 +227,10 @@ function DataTableVagas({
                 }
             >
                 <Column body={representativeTituloTemplate} field="titulo" header="Titulo" style={{ width: '20%' }} sortable></Column>
-                <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" style={{ width: '25%' }} sortable></Column>
+                <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" style={{ width: '22%' }} sortable></Column>
                 <Column body={representativeAberturaTemplate} sortable header="Abertura" style={{ width: '15%' }}></Column>
                 <Column body={representativeEncerramentoTemplate} header="Encerramento" style={{ width: '15%' }} sortable></Column>
-                <Column body={representativeStatusTemplate} header="Status" style={{ width: '12%' }}></Column>
+                <Column body={representativeStatusTemplate} header="Status" style={{ width: '15%' }}></Column>
                 <Column body={representativeNumeroColaboradoresTemplate} header="Candidatos" style={{ width: '10%' }}></Column>
                 <Column body={representativeAprovadosTemplate} header="Aprovados" style={{ width: '10%' }}></Column>
                 <Column body={representativeSalarioTemplate} header="Salário" style={{ width: '15%' }} sortable></Column>
