@@ -197,6 +197,7 @@ import Metadados from '@pages/Metadados'
 import Credenciais from '@pages/Credenciais'
 import Agendamentos from './pages/Agendamentos'
 import Syync from './pages/Syync'
+import SyyncTarefasLista from './pages/Tarefas/syync'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
@@ -445,6 +446,7 @@ function AppRouter() {
 
               <Route path="tarefas" element={<Tarefas />} >
                 <Route index element={<TarefasLista />} />
+                <Route path="syync" element={<SyyncTarefasLista />} />
                 <Route path="detalhes/:id" element={<DetalhesTarefas />} />
               </Route>
 

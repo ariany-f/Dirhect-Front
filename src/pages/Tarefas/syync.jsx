@@ -12,7 +12,7 @@ const ConteudoFrame = styled.div`
     width: 100%;
 `
 
-const TarefasLista = () => {
+const SyyncTarefasLista = () => {
 
     const location = useLocation();
     const [loading, setLoading] = useState(false)
@@ -33,7 +33,8 @@ const TarefasLista = () => {
     const loadData = (currentPage, currentPageSize, search = '', sort = '-id', currentFilters) => {
         setLoading(true);
         let url = `processos/?format=json&page=${currentPage}&page_size=${currentPageSize}`;
-    
+        
+        
         if (search) {
             url += `&search=${search}`;
         }
@@ -41,13 +42,13 @@ const TarefasLista = () => {
         const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '';
         url += orderParam;
 
-        // Adicionar filtro de processo_codigo
+        // Adicionar filtro de processo_codigo (se houver filtro adicional)
         const processoCodigoFilter = currentFilters?.['processo_codigo']?.value;
         if (processoCodigoFilter) {
             url += `&processo_codigo=${encodeURIComponent(processoCodigoFilter)}`;
-        } else {
+        } else {            
             // Filtro fixo para apenas processos Syync Segalas
-            url += `&processo_codigo__not_in=syync_segalas_ferias,syync_segalas_folha`;
+            url += `&processo_codigo__in=syync_segalas_ferias,syync_segalas_folha`;
         }
 
         // Adicionar filtro de percentual_conclusao
@@ -148,4 +149,4 @@ const TarefasLista = () => {
     );
 };
 
-export default TarefasLista; 
+export default SyyncTarefasLista; 
