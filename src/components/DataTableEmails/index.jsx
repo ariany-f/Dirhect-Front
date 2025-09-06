@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { FaPen, FaPen, FaTrash, FaEye } from 'react-icons/fa';
+import { FaPen, FaTrash, FaEye } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Tag } from 'primereact/tag';
