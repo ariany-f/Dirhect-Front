@@ -565,12 +565,12 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                     </ColumnGroup>
                 }
             >
-                <Column body={representativeChapaTemplate} field="chapa" header="Matrícula" sortable style={{ width: '8%' }}></Column>
-                <Column body={representativeNomeTemplate} field="funcionario_pessoa_fisica.nome" sortField="id_pessoafisica__nome" header="Nome Completo" sortable style={{ width: '22%' }}></Column>
+                <Column body={representativeChapaTemplate} field="chapa" header={t('registration')} sortable style={{ width: '8%' }}></Column>
+                <Column body={representativeNomeTemplate} field="funcionario_pessoa_fisica.nome" sortField="id_pessoafisica__nome" header={t('full_name')} sortable style={{ width: '22%' }}></Column>
                 <Column 
                     body={representativeFilialTemplate} 
                     field="filial" 
-                    header="Filial" 
+                    header={t('branch')}
                     sortable 
                     style={{ width: '8%' }} 
                     filter 
@@ -579,14 +579,14 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                     filterElement={filialFilterTemplate} 
                     showFilterMenu={false} 
                 />
-                <Column body={representativeFuncaoTemplate} filter showFilterMenu={false} field="id_funcao" sortField="id_funcao_id" header="Função" style={{ width: '22%' }}></Column>
-                <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Admissão" style={{ width: '8%' }}></Column>
+                <Column body={representativeFuncaoTemplate} filter showFilterMenu={false} field="id_funcao" sortField="id_funcao_id" header={t('function')} style={{ width: '22%' }}></Column>
+                <Column body={representativeAdmissaoTemplate} field="dt_admissao" header={t('hire_date')} style={{ width: '8%' }}></Column>
                 {/* <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Nascimento" style={{ width: '8%' }}></Column> */}
                 <Column body={representativeNumeroDependentesTemplate} field="dependentes.length" header="Dep." style={{ width: '5%' }}></Column>
                 <Column 
                     body={representativSituacaoTemplate} 
                     field="situacao" 
-                    header="Situação" 
+                    header={t('situation')}
                     style={{ width: '12%' }}
                     filter
                     filterField="situacao"

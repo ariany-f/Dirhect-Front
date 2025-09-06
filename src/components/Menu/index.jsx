@@ -305,7 +305,7 @@ function Menu({ opened = false, aoFechar }){
                             <li onClick={() => FecharMenu()}>
                                 <Link className="link" to="/login/selecionar-grupo">
                                     <div className="group">
-                                        Alterar perfil
+                                        {t('change_profile')}
                                         <MdOutlineChevronRight size={20} className="icon"/>
                                     </div>
                                 </Link>

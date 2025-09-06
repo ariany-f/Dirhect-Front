@@ -20,6 +20,7 @@ import http from '@http';
 import { ArmazenadorToken } from '@utils';
 import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
 import Botao from '@components/Botao';
+import { useTranslation } from 'react-i18next';
 import { FaCheck, FaTimes, FaPen, FaTimes as FaCancel, FaUsers } from 'react-icons/fa';
 import ModalListaColaboradoresPorEstrutura from '../ModalListaColaboradoresPorEstrutura';
 
@@ -53,6 +54,7 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
     const [selectedForIntegration, setSelectedForIntegration] = useState([]);
     const [universalIntegrationValue, setUniversalIntegrationValue] = useState(false);
     const { metadadosDeveSerExibido } = useMetadadosPermission();
+    const { t } = useTranslation('common');
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && funcoes) {
@@ -150,7 +152,7 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
                                 textDecoration: 'underline'
                             }}
                         >
-                            {showFullDescription ? 'Ver menos' : 'Ver mais'}
+                            {showFullDescription ? t('see_less') : t('see_more')}
                         </button>
                     )}
                 </div>
