@@ -4,8 +4,9 @@ import RadioButton from "@components/RadioButton";
 import http from "@http";
 import "./index.css";
 import { ArmazenadorToken } from "@utils";
+import { Toast } from 'primereact/toast';
 
-const Syync = () => {
+const Syync = ({ aoSalvar }) => {
   const [tipoEnvio, setTipoEnvio] = useState("");
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -66,37 +67,16 @@ const Syync = () => {
     setLoading(true);
     
     try {
-      let endpoint = "";
-      let payload = {};
+      const result = await aoSalvar(formData, tipoEnvio);
       
-      if (tipoEnvio === "folha-pagamento") {
-        endpoint = "integracao/enviar_syync/folha/";
-        payload = {
-          periodo: formData.periodo,
-          mes: formData.mes,
-          ano: formData.ano,
-          tenant: ArmazenadorToken.UserCompanyPublicId
-        };
-      } else if (tipoEnvio === "recibo-ferias") {
-        endpoint = "integracao/enviar_syync/ferias/";
-        payload = {
-          data_pagamento: formData.dataPagamento,
-          tenant: ArmazenadorToken.UserCompanyPublicId
-        };
+      if (result.success) {
+        // Limpa o formulário após sucesso
+        setFormData({});
+        setTipoEnvio("");
       }
-      
-      const response = await http.post(endpoint, payload);
-      
-      console.log("Resposta do servidor:", response);
-      alert("Formulário enviado com sucesso!");
-      
-      // Limpa o formulário após sucesso
-      setFormData({});
-      setTipoEnvio("");
       
     } catch (error) {
       console.error("Erro ao enviar formulário:", error);
-      alert("Erro ao enviar formulário. Tente novamente.");
     } finally {
       setLoading(false);
     }

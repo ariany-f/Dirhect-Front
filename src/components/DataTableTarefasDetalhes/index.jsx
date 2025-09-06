@@ -12,7 +12,7 @@ import { Checkbox } from 'primereact/checkbox';
 import CheckboxContainer from '@components/CheckboxContainer'
 import { Real } from '@utils/formats'
 import { Button } from 'primereact/button';
-import { FaLink, FaArrowUp, FaArrowDown, FaCircle, FaCheck, FaCheckCircle, FaHistory, FaSync } from 'react-icons/fa';
+import { FaLink, FaArrowUp, FaArrowDown, FaCircle, FaCheck, FaCheckCircle, FaHistory, FaSync, FaInfo } from 'react-icons/fa';
 import { RiExchangeFill } from 'react-icons/ri';
 import { Tag } from 'primereact/tag';
 import http from '@http';
@@ -22,6 +22,7 @@ import React from 'react';
 import { Tooltip } from 'primereact/tooltip';
 import ModalHistoricoTarefa from '@components/ModalHistoricoTarefa';
 import Loading from '@components/Loading';
+import { Dialog } from 'primereact/dialog';
 
 function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = null }) {
     const toast = useRef(null);
@@ -36,6 +37,8 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = nul
     const [selectedTarefa, setSelectedTarefa] = useState(null);
     const [loadingAction, setLoadingAction] = useState(false);
     const navegar = useNavigate()
+    const [showDetalhes, setShowDetalhes] = useState(false);
+    const [dadosExtras, setDadosExtras] = useState(null);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -56,6 +59,12 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = nul
         e.stopPropagation();
         setSelectedTarefa(rowData);
         setShowHistorico(true);
+    };
+
+    const handleDetalhes = (e, rowData) => {
+        e.stopPropagation();
+        setDadosExtras(rowData.dados_extras);
+        setShowDetalhes(true);
     };
 
     const representativeCheckTemplate = (rowData) => {
@@ -405,22 +414,42 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = nul
     const representativeHistoricoTemplate = (rowData) => {
         const logs = rowData.logs || [];
         const temErro = logs.some(log => !log.sucesso || log.tipo === 'erro');
-
-        if (logs.length === 0) {
+        const temDadosExtras = rowData.dados_extras && Object.keys(rowData.dados_extras).length > 0;
+        
+        if (logs.length === 0 && !temDadosExtras) {
             return <span style={{ color: '#999', fontSize: '12px' }}>-</span>;
         }
 
         return (
-            <FaHistory
-                className="history"
-                data-pr-tooltip={`Ver Histórico (${logs.length} log${logs.length > 1 ? 's' : ''})`}
-                size={16}
-                onClick={(e) => handleHistorico(e, rowData)}
-                style={{
-                    cursor: 'pointer',
-                    color: temErro ? 'var(--error)' : 'var(--primaria)',
-                }}
-            />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {logs.length > 0 && (
+                    <FaHistory
+                        className="history"
+                        data-pr-tooltip={`Ver Histórico (${logs.length} log${logs.length > 1 ? 's' : ''})`}
+                        size={16}
+                        onClick={(e) => handleHistorico(e, rowData)}
+                        style={{
+                            cursor: 'pointer',
+                            color: temErro ? 'var(--error)' : 'var(--primaria)',
+                        }}
+                    />
+                )}
+                {temDadosExtras && (
+                    <FaInfo
+                        className="detalhes"
+                        data-pr-tooltip="Ver Detalhes"
+                        size={16}
+                        onClick={(e) => handleDetalhes(e, rowData)}
+                        style={{
+                            cursor: 'pointer',
+                            color: 'var(--info)',
+                        }}
+                    />
+                )}
+                {logs.length === 0 && !temDadosExtras && (
+                    <span style={{ color: '#999', fontSize: '12px' }}>-</span>
+                )}
+            </div>
         );
     };
     
@@ -556,6 +585,89 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = nul
         );
     };
 
+    const renderizarDadosExtras = (dados) => {
+        if (!dados) return null;
+        
+        const renderizarObjeto = (obj, prefixo = '') => {
+            return Object.entries(obj).map(([chave, valor]) => {
+                const chaveCompleta = prefixo ? `${prefixo}.${chave}` : chave;
+                
+                if (valor && typeof valor === 'object' && !Array.isArray(valor)) {
+                    return (
+                        <React.Fragment key={chaveCompleta}>
+                            <tr>
+                                <td colSpan="2" style={{ 
+                                    fontWeight: 'bold', 
+                                    backgroundColor: '#f8f9fa',
+                                    padding: '8px 12px',
+                                    borderBottom: '1px solid #dee2e6'
+                                }}>
+                                    {chave}
+                                </td>
+                            </tr>
+                            {renderizarObjeto(valor, chaveCompleta)}
+                        </React.Fragment>
+                    );
+                } else {
+                    return (
+                        <tr key={chaveCompleta}>
+                            <td style={{ 
+                                padding: '8px 12px', 
+                                borderBottom: '1px solid #dee2e6',
+                                fontWeight: '500',
+                                backgroundColor: '#f8f9fa',
+                                width: '30%'
+                            }}>
+                                {chave}
+                            </td>
+                            <td style={{ 
+                                padding: '8px 12px', 
+                                borderBottom: '1px solid #dee2e6',
+                                wordBreak: 'break-word'
+                            }}>
+                                {Array.isArray(valor) ? JSON.stringify(valor) : String(valor)}
+                            </td>
+                        </tr>
+                    );
+                }
+            });
+        };
+        
+        return (
+            <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                <table style={{ 
+                    width: '100%', 
+                    borderCollapse: 'collapse',
+                    fontSize: '14px'
+                }}>
+                    <thead>
+                        <tr style={{ backgroundColor: '#e9ecef' }}>
+                            <th style={{ 
+                                padding: '12px', 
+                                textAlign: 'left',
+                                borderBottom: '2px solid #dee2e6',
+                                fontWeight: 'bold'
+                            }}>
+                                Campo
+                            </th>
+                            <th style={{ 
+                                padding: '12px', 
+                                textAlign: 'left',
+                                borderBottom: '2px solid #dee2e6',
+                                fontWeight: 'bold'
+                            }}>
+                                Valor
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {renderizarObjeto(dados)}
+                    </tbody>
+                </table>
+            </div>
+        );
+    };
+
     return (
         <>
             <Loading opened={loadingAction} />
@@ -623,12 +735,25 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = nul
                 <Column body={representativeCheckTemplate} field="check" header="Ações" style={{ width: '15%' }}></Column>
             </DataTable>
             <Tooltip target=".history" mouseTrack mouseTrackLeft={10} />
+            <Tooltip target=".detalhes" mouseTrack mouseTrackLeft={10} />
             <ModalHistoricoTarefa 
                 opened={showHistorico}
                 aoFechar={() => setShowHistorico(false)}
                 tarefa={selectedTarefa}
                 logs={selectedTarefa ? selectedTarefa.logs || [] : []}
             />
+
+            {/* Modal de Detalhes */}
+            <Dialog
+                header="Detalhes da Tarefa"
+                visible={showDetalhes}
+                style={{ width: '50vw' }}
+                onHide={() => setShowDetalhes(false)}
+                maximizable
+                modal
+            >
+                {dadosExtras && renderizarDadosExtras(dadosExtras)}
+            </Dialog>
         </>
     )
 }

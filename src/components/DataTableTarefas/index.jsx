@@ -30,6 +30,8 @@ import { Skeleton } from 'primereact/skeleton';
 import http from '@http';
 import { ArmazenadorToken } from '@utils';
 import ModalSyync from '@components/ModalSyync';
+import { Toast } from 'primereact/toast';
+import { useRef } from 'react';
 
 function DataTableTarefas({ 
     tarefas, 
@@ -64,6 +66,7 @@ function DataTableTarefas({
     const {usuario} = useSessaoUsuarioContext()
     const navegar = useNavigate()
     const [modalSyyncOpened, setModalSyyncOpened] = useState(false);
+    const toast = useRef(null);
 
     // Opções dos filtros
     const statusOptions = [
@@ -194,8 +197,8 @@ function DataTableTarefas({
     const tipoProcessoFilterTemplate = (options) => {
         let dropdownOptions = [];
         if(syync) {
-            dropdownOptions.push({ label: 'Férias', value: 'syync_segalas_ferias'})
-            dropdownOptions.push({ label: 'Folha', value: 'syync_segalas_folha'})
+            dropdownOptions.push({ label: 'Syync Férias', value: 'syync_segalas_ferias'})
+            dropdownOptions.push({ label: 'Syync Folha', value: 'syync_segalas_folha'})
         }
         else {
             dropdownOptions.push({ label: 'Admissão', value: 'admissao' });
@@ -597,6 +600,59 @@ function DataTableTarefas({
         );
     };
 
+    const aoSalvar = async (formData, tipoEnvio) => {
+        try {
+            let endpoint = "";
+            let payload = {};
+            
+            if (tipoEnvio === "folha-pagamento") {
+                endpoint = "integracao/enviar_syync/folha/";
+                payload = {
+                    periodo: formData.periodo,
+                    mes: formData.mes,
+                    ano: formData.ano,
+                    tenant: ArmazenadorToken.UserCompanyPublicId
+                };
+            } else if (tipoEnvio === "recibo-ferias") {
+                endpoint = "integracao/enviar_syync/ferias/";
+                payload = {
+                    data_pagamento: formData.dataPagamento,
+                    tenant: ArmazenadorToken.UserCompanyPublicId
+                };
+            }
+            
+            const response = await http.post(endpoint, payload);
+            
+            console.log("Resposta do servidor:", response);
+            toast.current.show({ 
+                severity: 'success', 
+                summary: 'Sucesso', 
+                detail: 'Formulário enviado com sucesso!', 
+                life: 3000 
+            });
+            
+            // Fecha o modal após sucesso
+            setModalSyyncOpened(false);
+            
+            // Atualiza a lista de tarefas se houver callback
+            if (onRefresh) {
+                onRefresh();
+            }
+            
+            return { success: true };
+            
+        } catch (error) {
+            console.error("Erro ao enviar formulário:", error);
+            toast.current.show({ 
+                severity: 'error', 
+                summary: 'Erro', 
+                detail: 'Erro ao enviar formulário. Tente novamente.', 
+                life: 3000 
+            });
+            return { success: false, error };
+        }
+    };
+
     return (
         <>
             <style>
@@ -755,9 +811,11 @@ function DataTableTarefas({
             {syync && (
                 <ModalSyync 
                     opened={modalSyyncOpened} 
-                    onClose={() => setModalSyyncOpened(false)} 
+                    onClose={() => setModalSyyncOpened(false)}
+                    aoSalvar={aoSalvar}
                 />
             )}
+            <Toast ref={toast} />
         </>
     )
 }

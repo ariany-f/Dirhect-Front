@@ -2,7 +2,7 @@ import React from 'react';
 import { OverlayRight, DialogEstilizadoRight } from '@components/Modal/styles';
 import Syync from '@pages/Syync';
 
-const ModalSyync = ({ opened, onClose }) => {
+const ModalSyync = ({ opened, onClose, aoSalvar }) => {
     return (
         <OverlayRight $opened={opened}>
             <DialogEstilizadoRight 
@@ -20,7 +20,7 @@ const ModalSyync = ({ opened, onClose }) => {
                     </svg>
                 </button>
                 
-                <Syync />
+                <Syync aoSalvar={aoSalvar} />
             </DialogEstilizadoRight>
         </OverlayRight>
     );

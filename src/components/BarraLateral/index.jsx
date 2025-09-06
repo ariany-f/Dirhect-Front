@@ -517,19 +517,19 @@ function BarraLateral({ $sidebarOpened }) {
             pageTitulo: 'Syync',
             icone: <FaSync size={20} className="icon" />,
             itemTitulo: 'Syync',
-            permission: 'view_ferias',
+            permission: 'view_syync',
         }
     ];
 
     // Adicionar permissões de acordo com o grupo do usuário GAMBIARRA
     if(userGroups.includes('Benefícios')) {
         userPermissions.push('view_pedido')
-    }
-    else if(userGroups.includes('RH')) {
+    } else if(userGroups.includes('RH')) {
        // userPermissions.push('view_folha')
-    }
-    else if(userGroups.includes('Colaborador')) {
+    } else if(userGroups.includes('Colaborador')) {
         userPermissions.push('view_cadastro')
+    } else if(userGroups.includes('Outsourcing')) {
+        userPermissions.push('view_syync')
     }
 
 
