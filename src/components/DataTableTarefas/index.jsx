@@ -528,7 +528,7 @@ function DataTableTarefas({
             }
             else {
                 return <div key={rowData?.id || 'unknown'}>
-                    <Link to={`/${rowData.entidade_tipo_display}/`}>{rowData.processo_nome}</Link>
+                    {rowData.processo_nome}
                 </div>
             }
         }
