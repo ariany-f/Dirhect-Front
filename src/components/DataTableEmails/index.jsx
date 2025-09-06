@@ -9,10 +9,12 @@ import { Tag } from 'primereact/tag';
 import Texto from '@components/Texto';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast } from 'primereact/toast';
+import { useTranslation } from 'react-i18next';
 
 const DataTableEmails = ({ emails, onEdit, onDelete, onView, loading = false }) => {
     const toast = useRef(null);
     const [selectedEmails, setSelectedEmails] = useState(null);
+    const { t } = useTranslation('common');
 
     const actionBodyTemplate = (rowData) => {
         return (
@@ -55,8 +57,53 @@ const DataTableEmails = ({ emails, onEdit, onDelete, onView, loading = false }) 
     };
 
     const corpoBodyTemplate = (rowData) => {
+        const [showFullDescription, setShowFullDescription] = useState(false);
+        const content = rowData.body_html || rowData.corpo || rowData.content || rowData.body || '';
+        
+        if (!content) {
+            return <p>---</p>;
+        }
+        
+        const maxLength = 60;
+        const isLongText = content.length > maxLength;
+        
+        const displayText = showFullDescription || !isLongText 
+            ? content 
+            : content.substring(0, maxLength) + "...";
+
         return (
-            <Texto weight={500}>{rowData.body_html || rowData.corpo || rowData.content || rowData.body || ''}</Texto>
+            <div style={{
+                width: '100%',
+                wordWrap: 'break-word',
+                overflow: 'hidden'
+            }}>
+                <Texto weight={500} style={{
+                    margin: 0,
+                    marginBottom: isLongText ? '8px' : 0,
+                    lineHeight: '1.4'
+                }}>
+                    {displayText}
+                </Texto>
+                {isLongText && (
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setShowFullDescription(!showFullDescription);
+                        }}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            color: 'var(--primaria)',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            padding: '2px 0',
+                            textDecoration: 'underline'
+                        }}
+                    >
+                        {showFullDescription ? t('see_less') : t('see_more')}
+                    </button>
+                )}
+            </div>
         );
     };
 
@@ -108,6 +155,7 @@ const DataTableEmails = ({ emails, onEdit, onDelete, onView, loading = false }) 
                 emptyMessage={loading ? "Carregando..." : "Nenhum email encontrado."}
                 showGridlines
                 stripedRows
+                removableSort
                 tableStyle={{ minWidth: '68vw' }}
                 loading={loading}
             >
@@ -129,7 +177,7 @@ const DataTableEmails = ({ emails, onEdit, onDelete, onView, loading = false }) 
                     field="body_html"
                     header="Corpo"
                     body={corpoBodyTemplate}
-                    style={{ width: '25%', maxWidth: '200px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}
+                    style={{ width: '25%' }}
                 />
                 <Column
                     field="is_active"

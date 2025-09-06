@@ -749,6 +749,7 @@ function BarraLateral({ $sidebarOpened }) {
                                         justifyContent: 'center', 
                                         alignItems: 'center', 
                                         height: '100px',
+                                        width: '100%',
                                         color: 'var(--white)',
                                         opacity: 0.7
                                     }}>
@@ -760,7 +761,7 @@ function BarraLateral({ $sidebarOpened }) {
                                             borderRadius: '50%', 
                                             animation: 'spin 1s linear infinite' 
                                         }}></div>
-                                        <span style={{ marginLeft: '10px' }}>Carregando...</span>
+                                        <span style={{ marginLeft: '10px', color: 'var(--secundaria)' }}>Carregando...</span>
                                     </div>
                                 ) : (
                                     // Só mostra outros menus quando não estiver carregando

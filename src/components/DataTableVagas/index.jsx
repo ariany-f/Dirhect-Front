@@ -11,6 +11,8 @@ import { Real } from '@utils/formats'
 import { FaUserAlt } from 'react-icons/fa';
 import { Tag } from 'primereact/tag';
 import http from '@http';
+import Texto from '@components/Texto';
+import { useTranslation } from 'react-i18next';
 
 function DataTableVagas({ 
     vagas: initialVagas,
@@ -34,6 +36,7 @@ function DataTableVagas({
     })
     const [vagas, setVagas] = useState(initialVagas || []);
     const navegar = useNavigate()
+    const { t } = useTranslation('common');
 
     useEffect(() => {
         setVagas(initialVagas || []);
@@ -69,7 +72,16 @@ function DataTableVagas({
     }
 
     const representativeTituloTemplate = (rowData) => {
-        return <p style={{fontWeight: '600'}}>{rowData.titulo}</p>
+        return (
+            <div key={rowData.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                {/* Título da Vaga */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                    <Texto weight={700} width={'100%'}>
+                        {rowData.titulo}
+                    </Texto>
+                </div>
+            </div>
+        );
     }
 
     const representativeAprovadosTemplate = (rowData) => {
@@ -112,6 +124,56 @@ function DataTableVagas({
             </div>
         );
     }
+
+    const representativeDescricaoTemplate = (rowData) => {
+        if(rowData?.descricao) {
+            const [showFullDescription, setShowFullDescription] = useState(false);
+            const maxLength = 100;
+            const isLongText = rowData.descricao.length > maxLength;
+            
+            const displayText = showFullDescription || !isLongText 
+                ? rowData.descricao 
+                : rowData.descricao.substring(0, maxLength) + "...";
+        
+            return (
+                <div style={{
+                    width: '100%',
+                    wordWrap: 'break-word',
+                    overflow: 'hidden'
+                }}>
+                    <p style={{
+                        margin: 0,
+                        marginBottom: isLongText ? '8px' : 0,
+                        lineHeight: '1.4'
+                    }}>
+                        {displayText}
+                    </p>
+                    {isLongText && (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setShowFullDescription(!showFullDescription);
+                            }}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                color: 'var(--primaria)',
+                                cursor: 'pointer',
+                                fontSize: '12px',
+                                padding: '2px 0',
+                                textDecoration: 'underline'
+                            }}
+                        >
+                            {showFullDescription ? t('see_less') : t('see_more')}
+                        </button>
+                    )}
+                </div>
+            );
+        }
+        else {
+            return <p>---</p>;
+        }
+    };
 
     const handleSort = (event) => {
         if (onSort) {
@@ -165,7 +227,7 @@ function DataTableVagas({
                 }
             >
                 <Column body={representativeTituloTemplate} field="titulo" header="Titulo" style={{ width: '20%' }} sortable></Column>
-                <Column field="descricao" header="Descrição" style={{ width: '25%' }} sortable></Column>
+                <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" style={{ width: '25%' }} sortable></Column>
                 <Column body={representativeAberturaTemplate} sortable header="Abertura" style={{ width: '15%' }}></Column>
                 <Column body={representativeEncerramentoTemplate} header="Encerramento" style={{ width: '15%' }} sortable></Column>
                 <Column body={representativeStatusTemplate} header="Status" style={{ width: '12%' }}></Column>
