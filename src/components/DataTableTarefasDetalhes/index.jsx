@@ -461,6 +461,39 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = nul
         return <Texto width="100%" weight={600}>{rowData.descricao}</Texto>;
     }
 
+    const normalizarChave = (chave) => {
+        return chave
+            .split('_')
+            .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase())
+            .join(' ');
+    };
+
+    const formatarData = (valor) => {
+        // Verifica se é uma string que parece ser uma data
+        if (typeof valor === 'string' && valor.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)) {
+            try {
+                const data = new Date(valor);
+                if (!isNaN(data.getTime())) {
+                    const meses = [
+                        'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+                        'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+                    ];
+                    
+                    const dia = data.getDate();
+                    const mes = meses[data.getMonth()];
+                    const ano = data.getFullYear();
+                    const horas = data.getHours().toString().padStart(2, '0');
+                    const minutos = data.getMinutes().toString().padStart(2, '0');
+                    
+                    return `${dia} ${mes} ${ano} ${horas}h${minutos}`;
+                }
+            } catch (error) {
+                // Se houver erro na conversão, retorna o valor original
+            }
+        }
+        return valor;
+    };
+
 
     
     // Ordena as tarefas por prioridade
@@ -591,6 +624,7 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = nul
         const renderizarObjeto = (obj, prefixo = '') => {
             return Object.entries(obj).map(([chave, valor]) => {
                 const chaveCompleta = prefixo ? `${prefixo}.${chave}` : chave;
+                const chaveNormalizada = normalizarChave(chave);
                 
                 if (valor && typeof valor === 'object' && !Array.isArray(valor)) {
                     return (
@@ -602,13 +636,14 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = nul
                                     padding: '8px 12px',
                                     borderBottom: '1px solid #dee2e6'
                                 }}>
-                                    {chave}
+                                    {chaveNormalizada}
                                 </td>
                             </tr>
                             {renderizarObjeto(valor, chaveCompleta)}
                         </React.Fragment>
                     );
                 } else {
+                    const valorFormatado = formatarData(valor);
                     return (
                         <tr key={chaveCompleta}>
                             <td style={{ 
@@ -618,14 +653,14 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = nul
                                 backgroundColor: '#f8f9fa',
                                 width: '30%'
                             }}>
-                                {chave}
+                                {chaveNormalizada}
                             </td>
                             <td style={{ 
                                 padding: '8px 12px', 
                                 borderBottom: '1px solid #dee2e6',
                                 wordBreak: 'break-word'
                             }}>
-                                {Array.isArray(valor) ? JSON.stringify(valor) : String(valor)}
+                                {Array.isArray(valorFormatado) ? JSON.stringify(valorFormatado) : String(valorFormatado)}
                             </td>
                         </tr>
                     );
