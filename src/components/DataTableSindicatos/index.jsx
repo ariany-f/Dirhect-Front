@@ -257,17 +257,15 @@ function DataTableSindicatos({
     };
 
     const representativeNomeTemplate = (rowData) => {
-        return (
-            <div key={rowData.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                {/* Nome do Sindicato */}
-                <div style={{ flex: 1, minWidth: 0 }}>
-                    <Texto weight={700} width={'100%'}>
-                        {rowData?.nome}
-                    </Texto>
-                </div>
-            </div>
-        );
-    };
+        if(rowData?.nome)
+        {
+            return rowData.nome
+        }
+        else
+        {
+            return "----"
+        }
+    }
 
     const representativeCodigoTemplate = (rowData) => {
         if(rowData?.id_origem)
@@ -281,15 +279,17 @@ function DataTableSindicatos({
     }
 
     const representativeDescricaoTemplate = (rowData) => {
-        if(rowData?.descricao)
-        {
-            return rowData.descricao
-        }
-        else
-        {
-            return "---"
-        }
-    }
+        return (
+            <div key={rowData.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                {/* Descrição do Sindicato */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                    <Texto weight={700} width={'100%'}>
+                        {rowData?.descricao || "----"}
+                    </Texto>
+                </div>
+            </div>
+        );
+    };
 
     const representativeActionsTemplate = (rowData) => {
         return (
@@ -478,8 +478,8 @@ function DataTableSindicatos({
                 )}
                 <Column field="id" header="Id" sortable style={{ width: '10%' }}></Column>
                 <Column body={representativeCodigoTemplate} field="id_origem" header="Código" sortable style={{ width: '10%' }}></Column>
-                <Column body={representativeNomeTemplate} field="nome" header="Nome" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
                 <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
+                <Column body={representativeNomeTemplate} field="nome" header="Nome" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
                 {(metadadosDeveSerExibido || bulkIntegrationMode) && (
                     <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
                 )}
