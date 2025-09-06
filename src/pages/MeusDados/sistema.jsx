@@ -212,6 +212,10 @@ function MeusDadosSistema() {
         feriadosTipo: 'nacionais',
         feriadosUF: '',
         idioma: 'pt',
+        // Novos campos para configuração de logo
+        logoFormat: 'png', // png, jpeg, webp
+        logoQuality: 0.9, // 0.1 a 1.0
+        logoMaxSize: 1024, // tamanho máximo em pixels
     });
     const toast = useRef(null);
     const fileInputRef = useRef(null);
@@ -223,6 +227,30 @@ function MeusDadosSistema() {
     const [crop, setCrop] = useState({ unit: '%', width: 50, height: 50, x: 25, y: 25 });
     const [imageSrc, setImageSrc] = useState('');
     const [imageRef, setImageRef] = useState(null);
+
+    // Estados para configuração de logo
+    const [logoConfig, setLogoConfig] = useState({
+        format: 'png',
+        quality: 0.9,
+        maxSize: 1024,
+        preserveTransparency: true
+    });
+
+    // Estados para modal de logo (seguindo a lógica do usuário)
+    const [showLogoModal, setShowLogoModal] = useState(false);
+    const [showLogoPreview, setShowLogoPreview] = useState(false);
+    const [croppedLogoSrc, setCroppedLogoSrc] = useState('');
+    const [isLogoCropped, setIsLogoCropped] = useState(false);
+    const [hasLogoCropChanged, setHasLogoCropChanged] = useState(false);
+    const [showLogoCropSelection, setShowLogoCropSelection] = useState(false);
+    const [logoCrop, setLogoCrop] = useState({
+        unit: '%',
+        width: 50,
+        height: 50,
+        x: 25,
+        y: 25,
+        // Sem aspect fixo para permitir formatos livres
+    });
 
     const { usuario } = useSessaoUsuarioContext();
 
@@ -358,10 +386,11 @@ function MeusDadosSistema() {
             
             const options = { 
                 maxSizeMB: 1, 
-                maxWidthOrHeight: 1024, 
+                maxWidthOrHeight: logoConfig.maxSize, 
                 useWebWorker: true, 
-                fileType: file.type, 
-                quality: 0.8 
+                fileType: `image/${logoConfig.format}`, 
+                quality: logoConfig.quality,
+                preserveExif: false
             };
             
             console.log('Opções de compressão:', options);
@@ -376,8 +405,9 @@ function MeusDadosSistema() {
                 reduction: ((1 - compressedFile.size / file.size) * 100).toFixed(1) + '%'
             });
             
-            const finalFile = new File([compressedFile], file.name, { 
-                type: compressedFile.type, 
+            // Criar arquivo com o formato desejado
+            const finalFile = new File([compressedFile], `logo.${logoConfig.format}`, { 
+                type: `image/${logoConfig.format}`, 
                 lastModified: Date.now() 
             });
             
@@ -432,8 +462,12 @@ function MeusDadosSistema() {
             reader.onload = () => {
                 console.log('📖 Arquivo lido, atualizando estados...');
                 setImageSrc(reader.result);
-                setCrop({ unit: '%', width: 50, height: 50, x: 25, y: 25 });
+                setLogoCrop({ unit: '%', width: 50, height: 50, x: 25, y: 25 });
                 setShowCropModal(true);
+                setShowLogoCropSelection(false);
+                setIsLogoCropped(false);
+                setCroppedLogoSrc('');
+                setHasLogoCropChanged(false);
                 console.log('✅ Estados atualizados, modal deve aparecer');
             };
             reader.onerror = () => {
@@ -452,6 +486,80 @@ function MeusDadosSistema() {
                 severity: 'error', 
                 summary: 'Erro', 
                 detail: 'Erro ao processar a imagem. Tente novamente.', 
+                life: 3000 
+            });
+        }
+    };
+
+    const handleLogoCropChange = (crop, percentCrop) => {
+        setLogoCrop(percentCrop);
+        setHasLogoCropChanged(true);
+    };
+
+    const handleLogoCropComplete = (crop, percentCrop) => {
+        setLogoCrop(percentCrop);
+    };
+
+    const applyLogoCrop = async () => {
+        if (!hasLogoCropChanged) {
+            toast.current.show({ 
+                severity: 'info', 
+                summary: 'Aviso', 
+                detail: 'Mova ou redimensione a seleção para aplicar o corte.', 
+                life: 3000 
+            });
+            return;
+        }
+
+        if (!imageRef || !logoCrop.width || !logoCrop.height) {
+            return;
+        }
+
+        try {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Calcular dimensões reais da imagem
+            const naturalWidth = imageRef.naturalWidth;
+            const naturalHeight = imageRef.naturalHeight;
+            const displayWidth = imageRef.offsetWidth;
+            const displayHeight = imageRef.offsetHeight;
+            
+            // Calcular escala
+            const scaleX = naturalWidth / displayWidth;
+            const scaleY = naturalHeight / displayHeight;
+            
+            // Calcular dimensões do crop em pixels reais
+            const cropWidth = Math.round(logoCrop.width * scaleX);
+            const cropHeight = Math.round(logoCrop.height * scaleY);
+            const cropX = Math.round(logoCrop.x * scaleX);
+            const cropY = Math.round(logoCrop.y * scaleY);
+            
+            // Configurar canvas
+            canvas.width = cropWidth;
+            canvas.height = cropHeight;
+            
+            // Desenhar a área cortada
+            ctx.drawImage(
+                imageRef, 
+                cropX, cropY, cropWidth, cropHeight, 
+                0, 0, cropWidth, cropHeight
+            );
+            
+            canvas.toBlob((blob) => {
+                if (blob) {
+                    setCroppedLogoSrc(URL.createObjectURL(blob));
+                    setIsLogoCropped(true);
+                    setShowLogoCropSelection(false);
+                }
+            }, selectedFile.type, logoConfig.quality);
+            
+        } catch (erro) {
+            console.error("Erro ao aplicar corte:", erro);
+            toast.current.show({ 
+                severity: 'error', 
+                summary: 'Erro', 
+                detail: 'Erro ao aplicar o corte. Tente novamente.', 
                 life: 3000 
             });
         }
@@ -478,8 +586,8 @@ function MeusDadosSistema() {
 
     const handleCropImage = async () => {
         try {
-            if (!imageRef || !crop.width || !crop.height) {
-                console.log('Dados de corte inválidos:', { imageRef: !!imageRef, crop });
+            if (!imageRef || !logoCrop.width || !logoCrop.height) {
+                console.log('Dados de corte inválidos:', { imageRef: !!imageRef, logoCrop });
                 toast.current.show({ 
                     severity: 'error', 
                     summary: 'Erro', 
@@ -490,124 +598,69 @@ function MeusDadosSistema() {
             }
             
             setUploading(true);
-            console.log('Iniciando corte da imagem...');
+            console.log('Iniciando processamento da logo...');
 
-            const canvas = document.createElement('canvas');
+            let fileToProcess;
             
-            // Calcular dimensões reais da imagem
-            const naturalWidth = imageRef.naturalWidth;
-            const naturalHeight = imageRef.naturalHeight;
-            const displayWidth = imageRef.offsetWidth;
-            const displayHeight = imageRef.offsetHeight;
+            if (isLogoCropped && croppedLogoSrc) {
+                // Usar imagem cortada
+                const response = await fetch(croppedLogoSrc);
+                const blob = await response.blob();
+                fileToProcess = new File([blob], `logo.${logoConfig.format}`, { type: `image/${logoConfig.format}` });
+            } else {
+                // Usar imagem original
+                fileToProcess = selectedFile;
+            }
             
-            console.log('Dimensões da imagem:', {
-                natural: { width: naturalWidth, height: naturalHeight },
-                display: { width: displayWidth, height: displayHeight },
-                crop: crop
-            });
+            const compressedFile = await compressImage(fileToProcess);
             
-            // Calcular escala
-            const scaleX = naturalWidth / displayWidth;
-            const scaleY = naturalHeight / displayHeight;
-            
-            // Calcular dimensões do crop em pixels reais
-            const cropWidth = Math.round(crop.width * scaleX);
-            const cropHeight = Math.round(crop.height * scaleY);
-            const cropX = Math.round(crop.x * scaleX);
-            const cropY = Math.round(crop.y * scaleY);
-            
-            console.log('Dimensões do crop calculadas:', {
-                scaleX, scaleY,
-                cropWidth, cropHeight, cropX, cropY
-            });
-            
-            // Configurar canvas
-            canvas.width = cropWidth;
-            canvas.height = cropHeight;
-            const ctx = canvas.getContext('2d');
-            
-            // Desenhar a área cortada
-            ctx.drawImage(
-                imageRef, 
-                cropX, cropY, cropWidth, cropHeight, 
-                0, 0, cropWidth, cropHeight
-            );
-
-            // Converter para blob
-            canvas.toBlob(async (blob) => {
-                if (!blob) { 
-                    console.error('Falha ao criar blob da imagem cortada');
-                    setUploading(false); 
-                    return; 
-                }
-                
-                console.log('Blob criado com sucesso, tamanho:', blob.size);
-                
+            const reader = new FileReader();
+            reader.onloadend = () => {
                 try {
-                    const croppedFile = new File([blob], selectedFile.name, { type: selectedFile.type });
-                    console.log('Arquivo cortado criado:', croppedFile.name, croppedFile.size);
+                    console.log('🔄 Atualizando logo após processamento...');
+                    const dataUrl = reader.result;
+                    console.log('Data URL criado, tamanho:', dataUrl.length);
                     
-                    const compressedFile = await compressImage(croppedFile);
-                    console.log('Arquivo comprimido:', compressedFile.name, compressedFile.size);
+                    // Atualizar logo e notificar mudanças (agora automático via BrandColors)
+                    BrandColors.setBrandLogo(dataUrl);
+                    setSistema(prev => ({ ...prev, logoPreview: dataUrl }));
                     
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                        try {
-                            console.log('🔄 Atualizando logo após corte...');
-                            const dataUrl = reader.result;
-                            console.log('Data URL criado, tamanho:', dataUrl.length);
-                            
-                            // Atualizar logo e notificar mudanças (agora automático via BrandColors)
-                            BrandColors.setBrandLogo(dataUrl);
-                            setSistema(prev => ({ ...prev, logoPreview: dataUrl }));
-                            
-                            toast.current.show({ 
-                                severity: 'success', 
-                                summary: 'Sucesso', 
-                                detail: 'Logo atualizada com sucesso!' 
-                            });
-                            handleCancelCrop();
-                            console.log('✅ Logo atualizada com sucesso após corte');
-                        } catch (error) {
-                            console.error('❌ Erro ao atualizar logo após corte:', error);
-                            toast.current.show({ 
-                                severity: 'error', 
-                                summary: 'Erro', 
-                                detail: 'Erro ao atualizar logo: ' + error.message 
-                            });
-                        }
-                    };
-                    reader.onerror = () => {
-                        console.error('Erro ao ler arquivo comprimido');
-                        toast.current.show({ 
-                            severity: 'error', 
-                            summary: 'Erro', 
-                            detail: 'Erro ao processar a imagem cortada.', 
-                            life: 3000 
-                        });
-                    };
-                    reader.readAsDataURL(compressedFile);
+                    toast.current.show({ 
+                        severity: 'success', 
+                        summary: 'Sucesso', 
+                        detail: `Logo salva em formato ${logoConfig.format.toUpperCase()} com sucesso!` 
+                    });
+                    handleCancelCrop();
+                    console.log('✅ Logo atualizada com sucesso');
                 } catch (error) {
-                    console.error('Erro ao processar arquivo cortado:', error);
+                    console.error('❌ Erro ao atualizar logo:', error);
                     toast.current.show({ 
                         severity: 'error', 
                         summary: 'Erro', 
-                        detail: 'Erro ao processar a imagem cortada.', 
-                        life: 3000 
+                        detail: 'Erro ao atualizar logo: ' + error.message 
                     });
-                } finally {
-                    setUploading(false);
                 }
-            }, selectedFile.type, 0.9);
+            };
+            reader.onerror = () => {
+                console.error('Erro ao ler arquivo comprimido');
+                toast.current.show({ 
+                    severity: 'error', 
+                    summary: 'Erro', 
+                    detail: 'Erro ao processar a imagem.', 
+                    life: 3000 
+                });
+            };
+            reader.readAsDataURL(compressedFile);
             
         } catch (error) {
             console.error('Erro no handleCropImage:', error);
             toast.current.show({ 
                 severity: 'error', 
                 summary: 'Erro', 
-                detail: 'Erro ao cortar a imagem. Tente novamente.', 
+                detail: 'Erro ao processar a imagem. Tente novamente.', 
                 life: 3000 
             });
+        } finally {
             setUploading(false);
         }
     };
@@ -617,7 +670,11 @@ function MeusDadosSistema() {
         setShowCropModal(false);
         setImageSrc('');
         setSelectedFile(null);
-        setCrop({ unit: '%', width: 50, height: 50, x: 25, y: 25 });
+        setLogoCrop({ unit: '%', width: 50, height: 50, x: 25, y: 25 });
+        setIsLogoCropped(false);
+        setCroppedLogoSrc('');
+        setHasLogoCropChanged(false);
+        setShowLogoCropSelection(false);
         if (fileInputRef.current) fileInputRef.current.value = '';
         console.log('Modal de corte fechado e estado limpo');
     };
@@ -890,7 +947,12 @@ function MeusDadosSistema() {
                                     sistema.logoPreview ? (
                                         <>
                                             <ImageContainer $width="180px" $height="80px">
-                                                <UploadPreview src={sistema.logoPreview} alt="Logo da empresa" />
+                                                <UploadPreview 
+                                                    src={sistema.logoPreview} 
+                                                    alt="Logo da empresa" 
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => setShowLogoModal(true)}
+                                                />
                                                 <div className="hover-overlay">
                                                     <HoverIconButton 
                                                         onClick={(e) => {
@@ -1067,6 +1129,88 @@ function MeusDadosSistema() {
                                 </SwitchContainer>
                             </>
                         )}
+                        {/* Configurações de Logo */}
+                        <Texto>Configurações de Logo</Texto>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginTop: 16 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                                <span style={{ minWidth: '120px' }}>Formato:</span>
+                                <DropdownItens
+                                    valor={{ label: logoConfig.format.toUpperCase(), value: logoConfig.format }}
+                                    setValor={e => setLogoConfig(prev => ({ ...prev, format: e.value }))}
+                                    options={[
+                                        { label: 'PNG', value: 'png' },
+                                        { label: 'JPEG', value: 'jpeg' },
+                                        { label: 'WEBP', value: 'webp' }
+                                    ]}
+                                    placeholder="Selecione o formato"
+                                    name="logoFormat"
+                                    $height="40px"
+                                    optionLabel="label"
+                                />
+                            </div>
+                            
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                                <span style={{ minWidth: '120px' }}>Qualidade:</span>
+                                <input
+                                    type="range"
+                                    min="0.1"
+                                    max="1.0"
+                                    step="0.1"
+                                    value={logoConfig.quality}
+                                    onChange={e => setLogoConfig(prev => ({ ...prev, quality: parseFloat(e.target.value) }))}
+                                    style={{ flex: 1, margin: '0 8px' }}
+                                />
+                                <span style={{ minWidth: '40px', textAlign: 'center' }}>
+                                    {Math.round(logoConfig.quality * 100)}%
+                                </span>
+                            </div>
+                            
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                                <span style={{ minWidth: '120px' }}>Tamanho máximo:</span>
+                                <DropdownItens
+                                    valor={{ label: `${logoConfig.maxSize}px`, value: logoConfig.maxSize }}
+                                    setValor={e => setLogoConfig(prev => ({ ...prev, maxSize: e.value }))}
+                                    options={[
+                                        { label: '512px', value: 512 },
+                                        { label: '1024px', value: 1024 },
+                                        { label: '2048px', value: 2048 },
+                                        { label: '4096px', value: 4096 }
+                                    ]}
+                                    placeholder="Selecione o tamanho"
+                                    name="logoMaxSize"
+                                    $height="40px"
+                                    optionLabel="label"
+                                />
+                            </div>
+                            
+                            {logoConfig.format === 'png' && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                                    <span style={{ minWidth: '120px' }}>Transparência:</span>
+                                    <SwitchInput
+                                        checked={logoConfig.preserveTransparency}
+                                        onChange={valor => setLogoConfig(prev => ({ ...prev, preserveTransparency: valor }))}
+                                    />
+                                    <span style={{ fontSize: '12px', color: '#666' }}>
+                                        {logoConfig.preserveTransparency ? 'Preservar' : 'Remover'}
+                                    </span>
+                                </div>
+                            )}
+                            
+                            <div style={{ 
+                                background: '#f0f9ff', 
+                                border: '1px solid #0ea5e9', 
+                                borderRadius: '8px', 
+                                padding: '12px', 
+                                fontSize: '12px', 
+                                color: '#0c4a6e' 
+                            }}>
+                                <strong> Dicas:</strong><br/>
+                                • <strong>PNG:</strong> Melhor para logos com transparência<br/>
+                                • <strong>JPEG:</strong> Menor tamanho, sem transparência<br/>
+                                • <strong>WEBP:</strong> Boa compressão, suporte limitado<br/>
+                                • <strong>Qualidade:</strong> 90% é recomendado para logos
+                            </div>
+                        </div>
                     </Col6>
                 </Col12>
                 <ContainerButton>
@@ -1084,6 +1228,108 @@ function MeusDadosSistema() {
                     </Botao>
                 </ContainerButton>
             </form>
+                {/* Modal de visualização da logo */}
+                {showLogoModal && sistema.logoPreview && (
+                    <div 
+                        style={{ 
+                            position: 'fixed', 
+                            top: 0, 
+                            left: 0, 
+                            right: 0, 
+                            bottom: 0, 
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center', 
+                            zIndex: 1000,
+                            padding: '20px'
+                        }}
+                        onClick={(e) => {
+                            if (e.target === e.currentTarget) {
+                                setShowLogoModal(false);
+                            }
+                        }}
+                    >
+                        <div style={{
+                            background: '#fff', 
+                            borderRadius: '12px', 
+                            maxWidth: '90vw', 
+                            maxHeight: '90vh', 
+                            width: '600px',
+                            display: 'flex', 
+                            flexDirection: 'column', 
+                            overflow: 'hidden'
+                        }}>
+                            {/* Header */}
+                            <div style={{
+                                padding: '16px 20px', 
+                                borderBottom: '1px solid #e5e7eb',
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'space-between'
+                            }}>
+                                <h3 style={{ margin: 0, color: '#374151', fontSize: '18px' }}>Logo da Empresa</h3>
+                                <button 
+                                    onClick={() => setShowLogoModal(false)} 
+                                    style={{
+                                        background: 'none', 
+                                        border: 'none', 
+                                        fontSize: '24px', 
+                                        cursor: 'pointer',
+                                        color: '#6b7280'
+                                    }}
+                                >×</button>
+                            </div>
+
+                            {/* Content */}
+                            <div style={{
+                                padding: '20px', 
+                                display: 'flex', 
+                                flexDirection: 'column', 
+                                alignItems: 'center', 
+                                gap: '20px'
+                            }}>
+                                <img 
+                                    src={sistema.logoPreview} 
+                                    alt="Logo da empresa" 
+                                    style={{ 
+                                        maxWidth: '100%', 
+                                        maxHeight: '400px', 
+                                        objectFit: 'contain',
+                                        borderRadius: '8px'
+                                    }} 
+                                />
+                                
+                                <div style={{ display: 'flex', gap: '12px' }}>
+                                    <Botao 
+                                        estilo="vermilion" 
+                                        size="small"
+                                        aoClicar={() => {
+                                            setShowLogoModal(false);
+                                            fileInputRef.current.click();
+                                        }}
+                                    >
+                                        <RiUpload2Fill /> Alterar Logo
+                                    </Botao>
+                                    <Botao 
+                                        estilo="neutro" 
+                                        size="small"
+                                        aoClicar={handleRemoveLogo}
+                                    >
+                                        <HiX /> Remover Logo
+                                    </Botao>
+                                    <Botao 
+                                        estilo="neutro" 
+                                        size="small"
+                                        aoClicar={() => setShowLogoModal(false)}
+                                    >
+                                        Fechar
+                                    </Botao>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
                 {/* Modal de Corte */}
                 {showCropModal && imageSrc && selectedFile && (
                     <div 
@@ -1107,7 +1353,7 @@ function MeusDadosSistema() {
                             background: '#fff', 
                             borderRadius: '16px', 
                             maxWidth: '90vw', 
-                            width: '700px', 
+                            width: '900px', 
                             maxHeight: '90vh',
                             display: 'flex', 
                             flexDirection: 'column',
@@ -1134,7 +1380,7 @@ function MeusDadosSistema() {
                                     fontWeight: '600',
                                     color: '#1f2937'
                                 }}>
-                                    ✂️ Cortar Imagem
+                                    🖼️ Configurar Logo
                                 </h3>
                                 <button 
                                     onClick={handleCancelCrop} 
@@ -1152,14 +1398,6 @@ function MeusDadosSistema() {
                                         justifyContent: 'center',
                                         transition: 'all 0.2s ease'
                                     }}
-                                    onMouseEnter={(e) => {
-                                        e.target.style.background = 'rgba(239, 68, 68, 0.2)';
-                                        e.target.style.transform = 'scale(1.1)';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.target.style.background = 'rgba(239, 68, 68, 0.1)';
-                                        e.target.style.transform = 'scale(1)';
-                                    }}
                                 >
                                     ×
                                 </button>
@@ -1169,79 +1407,184 @@ function MeusDadosSistema() {
                             <div style={{ 
                                 padding: '24px', 
                                 display: 'flex', 
-                                justifyContent: 'center', 
+                                gap: '24px',
                                 minHeight: '400px',
                                 maxHeight: '60vh',
                                 overflow: 'hidden'
                             }}>
+                                {/* Imagem Original ou Cortada */}
                                 <div style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    gap: '16px',
-                                    width: '100%'
+                                    flex: showLogoCropSelection && !isLogoCropped ? 0.5 : 1,
+                                    display: 'flex', 
+                                    flexDirection: 'column', 
+                                    alignItems: 'center', 
+                                    justifyContent: 'center',
+                                    background: '#f9fafb', 
+                                    borderRadius: '12px', 
+                                    padding: '20px', 
+                                    minHeight: '400px'
                                 }}>
+                                    {isLogoCropped ? (
+                                        <img src={croppedLogoSrc} alt="Logo Cortada" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                                    ) : (
+                                        <img ref={setImageRef} src={imageSrc} alt="Logo Original" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                                    )}
+                                </div>
+                                
+                                {/* Área de Seleção */}
+                                {showLogoCropSelection && !isLogoCropped && (
                                     <div style={{
-                                        background: '#f8fafc',
-                                        border: '2px dashed #d1d5db',
-                                        borderRadius: '12px',
-                                        padding: '20px',
-                                        textAlign: 'center',
-                                        marginBottom: '16px'
+                                        flex: 0.5, 
+                                        display: 'flex', 
+                                        flexDirection: 'column', 
+                                        alignItems: 'center', 
+                                        justifyContent: 'center',
+                                        background: '#f0f9ff', 
+                                        borderRadius: '12px', 
+                                        padding: '20px', 
+                                        minHeight: '400px',
+                                        border: '2px dashed #0ea5e9'
                                     }}>
                                         <ReactCrop 
-                                            crop={crop} 
-                                            onChange={c => {
-                                                console.log('Crop alterado:', c);
-                                                setCrop(c);
-                                            }}
-                                            onComplete={(c) => {
-                                                console.log('Crop completado:', c);
-                                            }}
-                                            aspect={1}
-                                            minWidth={50}
-                                            minHeight={50}
+                                            crop={logoCrop} 
+                                            onChange={handleLogoCropChange}
+                                            onComplete={handleLogoCropComplete}
+                                            // Sem aspect fixo para permitir formatos livres
+                                            minWidth={30}
+                                            minHeight={30}
+                                            keepSelection
+                                            ruleOfThirds
                                             style={{
                                                 maxWidth: '100%',
-                                                maxHeight: '50vh'
+                                                maxHeight: '100%'
                                             }}
                                         >
                                             <img 
-                                                ref={setImageRef} 
                                                 src={imageSrc} 
                                                 alt="Para Cortar" 
                                                 style={{ 
                                                     maxWidth: '100%',
-                                                    maxHeight: '50vh',
+                                                    maxHeight: '100%',
                                                     objectFit: 'contain',
                                                     borderRadius: '8px'
-                                                }}
-                                                onLoad={() => {
-                                                    console.log('Imagem carregada no modal de corte');
-                                                }}
-                                                onError={(e) => {
-                                                    console.error('Erro ao carregar imagem no modal:', e);
                                                 }}
                                             />
                                         </ReactCrop>
                                     </div>
-                                    
-                                    {/* Instruções */}
-                                    <div style={{
-                                        background: '#f0f9ff',
-                                        border: '1px solid #0ea5e9',
-                                        borderRadius: '8px',
-                                        padding: '12px 16px',
-                                        fontSize: '14px',
-                                        color: '#0c4a6e',
-                                        textAlign: 'center',
-                                        maxWidth: '400px'
-                                    }}>
-                                        <strong>💡 Como usar:</strong><br/>
-                                        • Arraste para selecionar a área quadrada (1:1)<br/>
-                                        • A seleção mantém sempre proporção quadrada<br/>
-                                        • Clique em "Aplicar Corte" para ver o resultado
-                                    </div>
+                                )}
+
+                                {/* Controles */}
+                                <div style={{
+                                    width: '250px',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '16px'
+                                }}>
+                                    {!isLogoCropped ? (
+                                        <>
+                                            {!showLogoCropSelection ? (
+                                                <button
+                                                    onClick={() => setShowLogoCropSelection(true)}
+                                                    style={{ 
+                                                        width: '100%', 
+                                                        background: '#374151', 
+                                                        border: 'none', 
+                                                        borderRadius: '6px', 
+                                                        padding: '12px', 
+                                                        cursor: 'pointer', 
+                                                        fontSize: '14px', 
+                                                        color: '#fff', 
+                                                        transition: 'all 0.2s ease' 
+                                                    }}
+                                                >
+                                                    ✂️ Cortar
+                                                </button>
+                                            ) : (
+                                                <>
+                                                    <button
+                                                        onClick={applyLogoCrop}
+                                                        disabled={!hasLogoCropChanged}
+                                                        style={{ 
+                                                            width: '100%', 
+                                                            background: !hasLogoCropChanged ? '#9ca3af' : '#059669', 
+                                                            border: 'none', 
+                                                            borderRadius: '6px', 
+                                                            padding: '12px', 
+                                                            cursor: !hasLogoCropChanged ? 'not-allowed' : 'pointer', 
+                                                            fontSize: '14px', 
+                                                            color: '#fff', 
+                                                            transition: 'all 0.2s ease' 
+                                                        }}
+                                                    >
+                                                        ✅ Aplicar Corte
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setShowLogoCropSelection(false)}
+                                                        style={{ 
+                                                            width: '100%', 
+                                                            background: '#f3f4f6', 
+                                                            border: '1px solid #d1d5db', 
+                                                            borderRadius: '6px', 
+                                                            padding: '10px', 
+                                                            cursor: 'pointer', 
+                                                            fontSize: '14px', 
+                                                            transition: 'all 0.2s ease' 
+                                                        }}
+                                                    >
+                                                        🔄 Resetar Seleção
+                                                    </button>
+                                                </>
+                                            )}
+                                            
+                                            {/* Instruções */}
+                                            <div style={{ 
+                                                background: '#f8fafc', 
+                                                border: '1px solid #e2e8f0', 
+                                                borderRadius: '8px', 
+                                                padding: '12px', 
+                                                fontSize: '13px', 
+                                                color: '#6b7280', 
+                                                lineHeight: '1.5' 
+                                            }}>
+                                                <strong style={{ color: '#374151' }}>Como usar:</strong><br/>
+                                                {!showLogoCropSelection ? 'Clique em "Cortar" para começar.' : 'Arraste para selecionar e clique em "Aplicar Corte".'}
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <button
+                                                onClick={() => { 
+                                                    setIsLogoCropped(false); 
+                                                    setCroppedLogoSrc(''); 
+                                                    setShowLogoCropSelection(true); 
+                                                }}
+                                                style={{ 
+                                                    width: '100%', 
+                                                    background: '#f3f4f6', 
+                                                    border: '1px solid #d1d5db', 
+                                                    borderRadius: '6px', 
+                                                    padding: '10px', 
+                                                    cursor: 'pointer', 
+                                                    fontSize: '14px', 
+                                                    transition: 'all 0.2s ease' 
+                                                }}
+                                            >
+                                                🔄 Voltar e Editar
+                                            </button>
+                                            <div style={{ 
+                                                background: '#f8fafc', 
+                                                border: '1px solid #e2e8f0', 
+                                                borderRadius: '8px', 
+                                                padding: '12px', 
+                                                fontSize: '13px', 
+                                                color: '#6b7280', 
+                                                lineHeight: '1.5' 
+                                            }}>
+                                                <strong style={{ color: '#374151' }}>Pronto!</strong><br/>
+                                                Clique em "Salvar" para finalizar ou volte para editar.
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                             
@@ -1261,7 +1604,7 @@ function MeusDadosSistema() {
                                     color: '#6b7280',
                                     fontStyle: 'italic'
                                 }}>
-                                    {uploading ? 'Processando imagem...' : 'Selecione a área desejada'}
+                                    {uploading ? 'Processando logo...' : 'Configure sua logo como desejar'}
                                 </div>
                                 <div style={{ display: 'flex', gap: '12px' }}>
                                     <Botao 
@@ -1274,10 +1617,10 @@ function MeusDadosSistema() {
                                     <Botao 
                                         estilo="vermilion" 
                                         aoClicar={handleCropImage} 
-                                        disabled={uploading}
+                                        disabled={uploading || (showLogoCropSelection && !isLogoCropped)} 
                                         size="small"
                                     >
-                                        {uploading ? '⏳ Processando...' : '✅ Aplicar Corte'}
+                                        {uploading ? '⏳ Processando...' : (showLogoCropSelection && !isLogoCropped) ? 'Aplique ou cancele o corte' : (isLogoCropped ? 'Salvar Logo Cortada' : 'Salvar Logo Original')}
                                     </Botao>
                                 </div>
                             </div>
