@@ -13,6 +13,7 @@ import ModalEditarFilial from '../ModalEditarFilial';
 import styled from 'styled-components';
 import BadgeBeneficio from '@components/BadgeBeneficio'
 import { FaBan } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 
 const Beneficios = styled.div`
     display: flex;
@@ -30,7 +31,7 @@ function DataTableColaboradorElegibilidade({ colaboradores = [], showSearch = tr
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
     const [selectedFiliais, setSelectedFiliais] = useState([]);
-
+    const { t } = useTranslation('common');
     const navegar = useNavigate()
 
     // Filtra as colaboradores se não estiver mostrando todas
@@ -169,7 +170,7 @@ function DataTableColaboradorElegibilidade({ colaboradores = [], showSearch = tr
             {showSearch && 
                 <div className="flex justify-content-end">
                     <span className="p-input-icon-left">
-                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaboradores" />
+                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder={t('search_colaborators')} />
                     </span>
                 </div>
             }

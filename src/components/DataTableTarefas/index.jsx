@@ -7,7 +7,7 @@ import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import styles from '@pages/Tarefas/Tarefas.module.css'
 import { Tag } from 'primereact/tag';
 import { ProgressBar } from 'primereact/progressbar';
@@ -32,6 +32,7 @@ import { ArmazenadorToken } from '@utils';
 import ModalSyync from '@components/ModalSyync';
 import { Toast } from 'primereact/toast';
 import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 function DataTableTarefas({ 
     tarefas, 
@@ -67,6 +68,21 @@ function DataTableTarefas({
     const navegar = useNavigate()
     const [modalSyyncOpened, setModalSyyncOpened] = useState(false);
     const toast = useRef(null);
+    const { t, i18n } = useTranslation('common');
+    const [languageKey, setLanguageKey] = useState(i18n.language);
+
+    // Escutar mudanças de idioma para forçar re-renderização
+    useEffect(() => {
+        const handleLanguageChange = (lng) => {
+            setLanguageKey(lng);
+        };
+        
+        i18n.on('languageChanged', handleLanguageChange);
+        
+        return () => {
+            i18n.off('languageChanged', handleLanguageChange);
+        };
+    }, [i18n]);
 
     // Opções dos filtros
     const statusOptions = [
@@ -458,7 +474,16 @@ function DataTableTarefas({
     };
 
     const dataInicioTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{rowData.created_at ? new Date(rowData.created_at).toLocaleDateString('pt-BR') : '-'}</p>
+        if (!rowData.created_at) return <p style={{fontWeight: '400'}}>-</p>;
+        
+        const data = new Date(rowData.created_at);
+        const meses = t('monthNamesShort', { returnObjects: true });
+        
+        const dia = data.getDate();
+        const mes = meses[data.getMonth()];
+        const ano = data.getFullYear();
+        
+        return <p style={{fontWeight: '400'}}>{dia} {mes} {ano}</p>;
     }
 
     const dataEntregaTemplate = (rowData) => {
@@ -499,9 +524,16 @@ function DataTableTarefas({
             }
         }
 
+        // Formatar data com meses localizados
+        const meses = t('monthNamesShort', { returnObjects: true });
+        const dia = dataEntrega.getDate();
+        const mes = meses[dataEntrega.getMonth()];
+        const ano = dataEntrega.getFullYear();
+        const dataFormatada = `${dia} ${mes} ${ano}`;
+
         return (
             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'start'}}>
-                <p style={{fontWeight: '600', margin: 0, color: cor}}>{dataEntrega.toLocaleDateString('pt-BR')}</p>
+                <p style={{fontWeight: '600', margin: 0, color: cor}}>{dataFormatada}</p>
                 <span style={{fontSize: 12, fontWeight: 400, marginTop: 2}}>{statusPrazo}</span>
             </div>
         );
@@ -668,7 +700,7 @@ function DataTableTarefas({
                      <>
                      <div className="flex justify-content-end">
                          <span className="p-input-icon-left">
-                            <CampoTexto width={"320px"} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
+                            <CampoTexto width={"320px"} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder={t('search')} />
                         </span>
                     </div>
                     </>
@@ -681,7 +713,7 @@ function DataTableTarefas({
                             model="filled"
                             aoClicar={() => setModalSyyncOpened(true)}
                         >
-                            <GrAddCircle className={styles.icon} fill="var(--secundaria)" stroke="white" color="white"/>Criar
+                            <GrAddCircle className={styles.icon} fill="var(--secundaria)" stroke="white" color="white"/>{t('add')}
                         </Botao>
                     )}
                     {onRefresh && (
@@ -713,6 +745,7 @@ function DataTableTarefas({
                 </div>
             </BotaoGrupo>
             <DataTable 
+                key={`${languageKey}-${JSON.stringify(tarefasFiltradas)}`}
                 value={tarefasFiltradas} 
                 filters={serverFilters}
                 onFilter={onFilter}

@@ -27,6 +27,7 @@ import { Toast } from 'primereact/toast';
 import CheckboxContainer from '@components/CheckboxContainer';
 import { RadioButton } from 'primereact/radiobutton';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 const DependentesTag = styled(Tag)`
     color: var(--black) !important;
@@ -53,6 +54,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     const [dadosCarregados, setDadosCarregados] = useState(false);
     const [exportingExcel, setExportingExcel] = useState(false);
     const toast = useRef(null);
+    const { t } = useTranslation('common');
 
     const navegar = useNavigate()
     const {usuario} = useSessaoUsuarioContext()
@@ -508,7 +510,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                     <>
                     <div className="flex justify-content-end">
                         <span className="p-input-icon-left">
-                            <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
+                            <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder={t('search_colaborators')} />
                         </span>
                     </div>
                     </>

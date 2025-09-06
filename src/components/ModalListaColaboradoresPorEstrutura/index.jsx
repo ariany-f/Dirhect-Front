@@ -6,6 +6,7 @@ import { Toast } from 'primereact/toast';
 import CampoTexto from '@components/CampoTexto';
 import http from '@http';
 import './ModalListaColaboradoresPorEstrutura.css';
+import { useTranslation } from 'react-i18next';
 
 const ModalListaColaboradoresPorEstrutura = ({ 
     visible, 
@@ -22,6 +23,7 @@ const ModalListaColaboradoresPorEstrutura = ({
     const [totalRegistros, setTotalRegistros] = useState(0);
     const [registrosPorPagina] = useState(20);
     const toast = useRef(null);
+    const { t } = useTranslation('common');
 
     useEffect(() => {
         if (visible && estruturaId) {
@@ -204,7 +206,7 @@ const ModalListaColaboradoresPorEstrutura = ({
                     width="300px"
                     valor={filtro}
                     setValor={handleFiltroChange}
-                    placeholder="Buscar colaboradores..."
+                    placeholder={t('search_colaborators')}
                     type="search"
                 />
             </div>
