@@ -193,8 +193,8 @@ const ModalListaColaboradoresPorEstrutura = ({
     const getTituloModal = () => {
         const tipo = estruturaTipo || tipoEstrutura;
         return (
-            <div style={{ display: 'flex', paddingBottom: '14px', alignItems: 'center', gap: '8px' }}>
-                <Texto size="16px" weight="600">Colaboradores ({tipo.charAt(0).toUpperCase() + tipo.slice(1)})</Texto>
+            <div style={{ display: 'flex', paddingBottom: '12px', alignItems: 'center', gap: '8px' }}>
+                <Texto size="18px" weight="600">Colaboradores ({tipo.charAt(0).toUpperCase() + tipo.slice(1)})</Texto>
                 <div
                     style={{
                         backgroundColor: 'rgba(150, 164, 95, 0.1)', // Azul com 10% de transparência
