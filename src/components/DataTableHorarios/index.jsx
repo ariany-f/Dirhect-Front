@@ -515,7 +515,7 @@ function DataTableHorarios({
                 onHide={() => setModalColaboradoresOpened(false)}
                 tipoEstrutura="horario"
                 estruturaId={selectedHorarioColaboradores.id}
-                estruturaNome={selectedHorarioColaboradores.descricao}
+                estruturaNome={selectedHorarioColaboradores.descricao || selectedHorarioColaboradores.nome}
                 estruturaTipo="Horário"
             />
         </>
