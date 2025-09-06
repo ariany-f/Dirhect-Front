@@ -17,8 +17,9 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import CalendarFerias from './calendar_ferias'
-import { FaListUl, FaRegCalendarAlt, FaUmbrellaBeach, FaSpinner } from 'react-icons/fa';
+import { FaListUl, FaRegCalendarAlt, FaUmbrellaBeach, FaSpinner, FaSearch } from 'react-icons/fa';
 import Texto from '@components/Texto';
+import { BsSearch } from 'react-icons/bs'
 import { ArmazenadorToken } from '@utils';
 import DropdownItens from '@components/DropdownItens';
 import { Toast } from 'primereact/toast';
@@ -117,6 +118,134 @@ const Wrapper = styled.div`
         height: 0;
     }
 `
+
+const FiltersContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    transition: all 0.2s ease;
+`;
+
+const ModernDropdown = styled.div`
+    position: relative;
+    min-width: 140px;
+    
+    select {
+        appearance: none;
+        background: #ffffff;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        padding: 10px 16px;
+        padding-right: 40px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #374151;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        min-width: 100%;
+        
+        &:hover {
+            border-color: #9ca3af;
+            background: #f9fafb;
+        }
+        
+        &:focus {
+            outline: none;
+            border-color: var(--primaria);
+        }
+    }
+    
+    &::after {
+        content: '▼';
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+        font-size: 12px;
+        pointer-events: none;
+        transition: transform 0.2s ease;
+    }
+    
+    &:hover::after {
+        color: #374151;
+    }
+`;
+
+const SearchContainer = styled.div`
+    position: relative;
+    min-width: 200px;
+    
+    input {
+        width: 100%;
+        padding: 10px 16px;
+        padding-left: 44px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 14px;
+        color: #374151;
+        background: #ffffff;
+        transition: all 0.2s ease;
+        
+        &::placeholder {
+            color: #9ca3af;
+        }
+        
+        &:hover {
+            border-color: #9ca3af;
+            background: #f9fafb;
+        }
+        
+        &:focus {
+            outline: none;
+            border-color: var(--primaria);
+            background: #ffffff;
+        }
+    }
+    
+    .search-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af;
+        font-size: 16px;
+        pointer-events: none;
+    }
+`;
+
+const ActionButton = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--primaria) 0%, var(--primaria) 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
+    min-width: 140px;
+    justify-content: center;
+    
+    &:hover {
+        transform: translateY(-1px);
+    }
+    
+    &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
+    }
+    
+    svg {
+        font-size: 16px;
+    }
+`;
 
 // Configurar o localizador com Moment.js
 const localizer = momentLocalizer(moment);
@@ -349,67 +478,55 @@ function FeriasListagem() {
                         <Texto color={tab === 'lista' ? 'white' : '#000'}>Lista</Texto>
                     </TabButton>
                 </TabPanel>
-                <div style={{ 
-                    display: 'flex', 
-                    gap: '8px', 
-                    paddingTop: '2px',
-                    width: '90%',
-                    marginLeft: 'auto',
-                    alignItems: 'center',
-                    justifyContent: 'end'
-                }}>
                 
-                    {tab === 'lista' && 
+                <FiltersContainer>
+                    {tab === 'lista' && (
                         <>
-                            <div style={{flexShrink: 0 }}>
-                                <DropdownItens
-                                    valor={anoSelecionado}
-                                    setValor={setAnoSelecionado}
-                                    options={anosDisponiveis}
-                                    placeholder="Todos os anos"
-                                    name="ano"
-                                    $height="40px"
-                                    allowClear={false}
-                                />
-                            </div>
-                            <div style={{flexShrink: 0 }}>
-                                <DropdownItens
-                                    valor={periodoAberto}
-                                    setValor={setPeriodoAberto}
-                                    options={opcoesPeriodoAberto}
-                                    placeholder="Apenas Abertos"
-                                    name="periodo_aberto"
-                                    $height="40px"
-                                    allowClear={false}
-                                />
-                            </div>
+                            <ModernDropdown>
+                                <select 
+                                    value={anoSelecionado || ''} 
+                                    onChange={(e) => setAnoSelecionado(e.target.value === '' ? null : e.target.value)}
+                                >
+                                    {anosDisponiveis.map((ano) => (
+                                        <option key={ano.value || 'todos'} value={ano.value || ''}>
+                                            {ano.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </ModernDropdown>
+                            
+                            <ModernDropdown>
+                                <select 
+                                    value={periodoAberto === null ? '' : periodoAberto} 
+                                    onChange={(e) => setPeriodoAberto(e.target.value === '' ? null : e.target.value === 'true')}
+                                >
+                                    {opcoesPeriodoAberto.map((opcao) => (
+                                        <option key={opcao.value} value={opcao.value === null ? '' : opcao.value}>
+                                            {opcao.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </ModernDropdown>
                         </>
-                    }
-                    <div style={{flexShrink: 0 }}>
-                        <CampoTexto
-                            valor={searchTerm}
-                            setValor={setSearchTerm}
-                            placeholder="Buscar por colaborador"
-                            type="search"
-                            $width="120px"
-                            padding="2px 2px"
-                        />
-                    </div>
-                    {(ArmazenadorToken.hasPermission('add_ferias') || usuario.tipo === 'colaborador') && (
-                        <div style={{flexShrink: 0 }}>
-                            <Botao 
-                                aoClicar={() => setModalSelecaoColaboradorOpened(true)} 
-                                estilo="vermilion" 
-                                size="small" 
-                                tab
-                                style={{ width: '100%' }}
-                            >
-                                <FaUmbrellaBeach fill='var(--secundaria)' color='var(--secundaria)' className={styles.icon}/> 
-                                Solicitar Férias
-                            </Botao>
-                        </div>
                     )}
-                </div>
+                    
+                    <SearchContainer>
+                        <BsSearch className="search-icon" />
+                        <input
+                            type="text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            placeholder="Buscar por colaborador"
+                        />
+                    </SearchContainer>
+                    
+                    {(ArmazenadorToken.hasPermission('add_ferias') || usuario.tipo === 'colaborador') && (
+                        <ActionButton onClick={() => setModalSelecaoColaboradorOpened(true)}>
+                            <FaUmbrellaBeach fill='var(--secundaria)'/>
+                            Solicitar Férias
+                        </ActionButton>
+                    )}
+                </FiltersContainer>
             </HeaderRow>
             <Wrapper>
                 {loading ? (
