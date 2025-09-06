@@ -275,15 +275,65 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
         );
     };
 
+    const representativeNomeTemplate = (rowData) => {
+        return (
+            <div key={rowData.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                {/* Nome do Cargo */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                    <Texto weight={700} width={'100%'}>
+                        {rowData?.nome}
+                    </Texto>
+                </div>
+            </div>
+        );
+    };
+
+    const representativeCodigoTemplate = (rowData) => {
+        if(rowData?.id_origem)
+        {
+            return rowData.id_origem
+        }
+        else
+        {
+            return "---"
+        }
+    }
+
+    const representativeDescricaoTemplate = (rowData) => {
+        if(rowData?.descricao)
+        {
+            return rowData.descricao
+        }
+        else
+        {
+            return "---"
+        }
+    }
+
     const representativeActionsTemplate = (rowData) => {
         return (
             <div style={{ 
                 display: 'flex', 
                 gap: '8px',
                 alignItems: 'center',
+                width: '100%',
                 justifyContent: 'center'
             }}>
-                <Tooltip target=".colaboradores" mouseTrack mouseTrackLeft={10} />
+                <Tooltip style={{fontSize: '10px'}} target=".edit" mouseTrack mouseTrackLeft={10} />
+                <FaPen 
+                    className="edit" 
+                    data-pr-tooltip="Editar Cargo" 
+                    size={16} 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        editarCargo(rowData);
+                    }}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--primaria)'
+                    }}
+                />
+                <Tooltip style={{fontSize: '10px'}} target=".colaboradores" mouseTrack mouseTrackLeft={10} />
                 {ArmazenadorToken.hasPermission('view_funcionario') && (
                     <FaUsers 
                         className="colaboradores" 
@@ -299,7 +349,7 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
                         }}
                     />
                 )}
-                <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
+                <Tooltip style={{fontSize: '10px'}} target=".delete" mouseTrack mouseTrackLeft={10} />
                 {ArmazenadorToken.hasPermission('delete_cargo') && (
                     <RiDeleteBin6Line 
                         className="delete" 
@@ -315,31 +365,6 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
                         }}
                     />
                 )}
-            </div>
-        );
-    };
-
-    const representativeEditTemplate = (rowData) => {
-        return (
-            <div style={{ 
-                display: 'flex', 
-                alignItems: 'center',
-                justifyContent: 'center'
-            }}>
-                <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
-                <FaPen 
-                    className="edit" 
-                    data-pr-tooltip="Editar Cargo" 
-                    size={16} 
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        editarCargo(rowData);
-                    }}
-                    style={{
-                        cursor: 'pointer',
-                        color: 'var(--primaria)'
-                    }}
-                />
             </div>
         );
     };
@@ -465,14 +490,13 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 )}
                 <Column field="id" header="Id" sortable style={{ width: '10%' }}></Column>
-                <Column field="id_origem" header="Código" sortable style={{ width: '10%' }}></Column>
-                <Column field="nome" header="Nome" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
-                <Column field="descricao" header="Descrição" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
+                <Column body={representativeCodigoTemplate} field="id_origem" header="Código" sortable style={{ width: '10%' }}></Column>
+                <Column body={representativeNomeTemplate} field="nome" header="Nome" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
+                <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
                 {(metadadosDeveSerExibido || bulkIntegrationMode) && (
                     <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
                 )}
-                <Column body={representativeEditTemplate} header="Editar" style={{ width: '8%' }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: '12%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '20%' }}></Column>
             </DataTable>
             <ModalListaColaboradoresPorEstrutura 
                 visible={modalColaboradoresOpened}

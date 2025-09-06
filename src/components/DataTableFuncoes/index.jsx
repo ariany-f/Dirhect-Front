@@ -340,15 +340,54 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
         );
     };
 
+    const representativeNomeTemplate = (rowData) => {
+        return (
+            <div key={rowData.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                {/* Nome da Função */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                    <Texto weight={700} width={'100%'}>
+                        {rowData?.nome}
+                    </Texto>
+                </div>
+            </div>
+        );
+    };
+
+    const representativeCodigoTemplate = (rowData) => {
+        if(rowData?.id_origem)
+        {
+            return rowData.id_origem
+        }
+        else
+        {
+            return "---"
+        }
+    }
+
     const representativeActionsTemplate = (rowData) => {
         return (
             <div style={{ 
                 display: 'flex', 
                 gap: '8px',
                 alignItems: 'center',
+                width: '100%',
                 justifyContent: 'center'
             }}>
-                <Tooltip target=".colaboradores" mouseTrack mouseTrackLeft={10} />
+                <Tooltip style={{fontSize: '10px'}} target=".edit" mouseTrack mouseTrackLeft={10} />
+                <FaPen 
+                    className="edit" 
+                    data-pr-tooltip="Editar Função" 
+                    size={16} 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        editarFuncao(rowData);
+                    }}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--primaria)'
+                    }}
+                />
+                <Tooltip style={{fontSize: '10px'}} target=".colaboradores" mouseTrack mouseTrackLeft={10} />
                 {ArmazenadorToken.hasPermission('view_funcionario') && (
                     <FaUsers 
                         className="colaboradores" 
@@ -364,7 +403,7 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
                         }}
                     />
                 )}
-                <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
+                <Tooltip style={{fontSize: '10px'}} target=".delete" mouseTrack mouseTrackLeft={10} />
                 {ArmazenadorToken.hasPermission('delete_funcao') && (
                     <RiDeleteBin6Line 
                         className="delete" 
@@ -380,31 +419,6 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
                         }}
                     />
                 )}
-            </div>
-        );
-    };
-
-    const representativeEditTemplate = (rowData) => {
-        return (
-            <div style={{ 
-                display: 'flex', 
-                alignItems: 'center',
-                justifyContent: 'center'
-            }}>
-                <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
-                <FaPen 
-                    className="edit" 
-                    data-pr-tooltip="Editar Função" 
-                    size={16} 
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        editarFuncao(rowData);
-                    }}
-                    style={{
-                        cursor: 'pointer',
-                        color: 'var(--primaria)'
-                    }}
-                />
             </div>
         );
     };
@@ -513,9 +527,6 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
                 paginator={paginator} 
                 lazy
                 dataKey="id"
-                filters={filters}
-                
-                globalFilterFields={['nome', 'descricao']}
                 rows={rows}
                 totalRecords={totalRecords}
                 first={first}
@@ -530,14 +541,13 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 )}
                 <Column field="id" header="Id" sortable style={{ width: '10%' }}></Column>
-                <Column field="id_origem" header="Código" sortable style={{ width: '10%' }}></Column>
-                <Column field="nome" header="Nome" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
+                <Column body={representativeCodigoTemplate} field="id_origem" header="Código" sortable style={{ width: '10%' }}></Column>
+                <Column body={representativeNomeTemplate} field="nome" header="Nome" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
                 <Column body={representativeDetalhesTemplate} header="Descrição" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
                 {(metadadosDeveSerExibido || bulkIntegrationMode) && (
                     <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
                 )}
-                <Column body={representativeEditTemplate} header="Editar" style={{ width: '8%' }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: '12%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '20%' }}></Column>
             </DataTable>
             <ModalListaColaboradoresPorEstrutura 
                 visible={modalColaboradoresOpened}

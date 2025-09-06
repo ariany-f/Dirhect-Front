@@ -19,6 +19,7 @@ import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
 import Botao from '@components/Botao';
 import { FaCheck, FaTimes, FaPen, FaTimes as FaCancel, FaUsers } from 'react-icons/fa';
 import ModalListaColaboradoresPorEstrutura from '../ModalListaColaboradoresPorEstrutura';
+import Texto from '@components/Texto';
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -255,15 +256,65 @@ function DataTableSindicatos({
         );
     };
 
+    const representativeNomeTemplate = (rowData) => {
+        return (
+            <div key={rowData.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                {/* Nome do Sindicato */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                    <Texto weight={700} width={'100%'}>
+                        {rowData?.nome}
+                    </Texto>
+                </div>
+            </div>
+        );
+    };
+
+    const representativeCodigoTemplate = (rowData) => {
+        if(rowData?.id_origem)
+        {
+            return rowData.id_origem
+        }
+        else
+        {
+            return "---"
+        }
+    }
+
+    const representativeDescricaoTemplate = (rowData) => {
+        if(rowData?.descricao)
+        {
+            return rowData.descricao
+        }
+        else
+        {
+            return "---"
+        }
+    }
+
     const representativeActionsTemplate = (rowData) => {
         return (
             <div style={{ 
                 display: 'flex', 
+                gap: '8px',
                 alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px'
+                width: '100%',
+                justifyContent: 'center'
             }}>
-                <Tooltip target=".colaboradores" mouseTrack mouseTrackLeft={10} />
+                <Tooltip style={{fontSize: '10px'}} target=".edit" mouseTrack mouseTrackLeft={10} />
+                <FaPen 
+                    className="edit" 
+                    data-pr-tooltip="Editar Sindicato" 
+                    size={16} 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        editarSindicato(rowData);
+                    }}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--primaria)'
+                    }}
+                />
+                <Tooltip style={{fontSize: '10px'}} target=".colaboradores" mouseTrack mouseTrackLeft={10} />
                 {ArmazenadorToken.hasPermission('view_funcionario') && (
                     <FaUsers 
                         className="colaboradores" 
@@ -279,7 +330,7 @@ function DataTableSindicatos({
                         }}
                     />
                 )}
-                <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
+                <Tooltip style={{fontSize: '10px'}} target=".delete" mouseTrack mouseTrackLeft={10} />
                 <RiDeleteBin6Line 
                     className="delete" 
                     data-pr-tooltip="Excluir Sindicato" 
@@ -299,31 +350,6 @@ function DataTableSindicatos({
                     style={{
                         cursor: 'pointer',
                         color: '#dc3545'
-                    }}
-                />
-            </div>
-        );
-    };
-
-    const representativeEditTemplate = (rowData) => {
-        return (
-            <div style={{ 
-                display: 'flex', 
-                alignItems: 'center',
-                justifyContent: 'center'
-            }}>
-                <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
-                <FaPen 
-                    className="edit" 
-                    data-pr-tooltip="Editar Sindicato" 
-                    size={16} 
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        editarSindicato(rowData);
-                    }}
-                    style={{
-                        cursor: 'pointer',
-                        color: 'var(--primaria)'
                     }}
                 />
             </div>
@@ -437,9 +463,6 @@ function DataTableSindicatos({
                 paginator={pagination} 
                 lazy
                 dataKey="id"
-                filters={filters}
-                
-                globalFilterFields={['nome', 'descricao']}
                 rows={rows}
                 totalRecords={totalRecords}
                 first={first}
@@ -454,14 +477,13 @@ function DataTableSindicatos({
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 )}
                 <Column field="id" header="Id" sortable style={{ width: '10%' }}></Column>
-                <Column field="id_origem" header="Código" sortable style={{ width: '10%' }}></Column>
-                <Column field="nome" header="Nome" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
-                <Column field="descricao" header="Descrição" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
+                <Column body={representativeCodigoTemplate} field="id_origem" header="Código" sortable style={{ width: '10%' }}></Column>
+                <Column body={representativeNomeTemplate} field="nome" header="Nome" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
+                <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
                 {(metadadosDeveSerExibido || bulkIntegrationMode) && (
                     <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
                 )}
-                <Column body={representativeEditTemplate} header="Editar" style={{ width: '8%' }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: '12%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '20%' }}></Column>
             </DataTable>
             <ModalListaColaboradoresPorEstrutura 
                 visible={modalColaboradoresOpened}
