@@ -3,10 +3,12 @@ import { Dialog } from 'primereact/dialog';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
+import Texto from '@components/Texto';
 import CampoTexto from '@components/CampoTexto';
 import http from '@http';
 import './ModalListaColaboradoresPorEstrutura.css';
 import { useTranslation } from 'react-i18next';
+import { Tag } from 'primereact/tag';
 
 const ModalListaColaboradoresPorEstrutura = ({ 
     visible, 
@@ -190,7 +192,24 @@ const ModalListaColaboradoresPorEstrutura = ({
 
     const getTituloModal = () => {
         const tipo = estruturaTipo || tipoEstrutura;
-        return `Colaboradores - ${tipo.charAt(0).toUpperCase() + tipo.slice(1)}: ${estruturaNome}`;
+        return (
+            <div style={{ display: 'flex', paddingBottom: '14px', alignItems: 'center', gap: '8px' }}>
+                <Texto size="16px" weight="600">Colaboradores ({tipo.charAt(0).toUpperCase() + tipo.slice(1)})</Texto>
+                <div
+                    style={{
+                        backgroundColor: 'rgba(150, 164, 95, 0.1)', // Azul com 10% de transparência
+                        color: 'var(--neutro-700)',
+                        padding: '2px 12px',
+                        borderRadius: '10px',
+                        fontSize: '12px',
+                        fontWeight: '500', // Azul com 20% de transparência
+                        display: 'inline-block'
+                    }}
+                >
+                    {estruturaNome}
+                </div>
+            </div>
+        );
     };
 
     const headerTemplate = (
