@@ -331,6 +331,7 @@ function DataTableSindicatos({
                     />
                 )}
                 <Tooltip style={{fontSize: '10px'}} target=".delete" mouseTrack mouseTrackLeft={10} />
+                {ArmazenadorToken.hasPermission('delete_sindicato') && (
                 <RiDeleteBin6Line 
                     className="delete" 
                     data-pr-tooltip="Excluir Sindicato" 
@@ -352,6 +353,7 @@ function DataTableSindicatos({
                         color: '#dc3545'
                     }}
                 />
+                )}
             </div>
         );
     };
