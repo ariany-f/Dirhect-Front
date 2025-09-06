@@ -361,7 +361,7 @@ function DetalhesTarefas() {
             <Loading opened={loading} />
             <ConfirmDialog  />
             <Container gap="18px">
-                <BotaoVoltar linkFixo="/tarefas" />
+                <BotaoVoltar />
                 {tarefa ?
                     <>
                     {/* Topo: tipo de tarefa, status do prazo, referência (esquerda) e cliente (direita) */}
