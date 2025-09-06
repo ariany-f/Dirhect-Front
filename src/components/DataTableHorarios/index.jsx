@@ -464,7 +464,7 @@ function DataTableHorarios({
                 lazy
                 dataKey="id"
                 filters={filters}
-                filterDisplay="row"
+                
                 globalFilterFields={['nome', 'descricao']}
                 rows={rows}
                 totalRecords={totalRecords}

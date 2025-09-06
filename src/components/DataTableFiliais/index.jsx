@@ -18,6 +18,7 @@ import { ArmazenadorToken } from '@utils';
 import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
 import Botao from '@components/Botao';
 import { FaCheck, FaTimes, FaPen, FaTimes as FaCancel, FaUsers } from 'react-icons/fa';
+import Texto from '@components/Texto';
 
 function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows, totalRecords, first, onPage, totalPages, onSearch, selected = null, setSelected = () => { }, onUpdate, sortField, sortOrder, onSort }) {
 
@@ -372,15 +373,50 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
         }
     };
 
+    const representativeNomeTemplate = (rowData) => {
+        const cnpj = rowData?.cnpj ? formataCNPJ(rowData.cnpj) : '---';
+        
+        return (
+            <div key={rowData.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                
+                
+                {/* Nome e CNPJ */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                    <Texto weight={700} width={'100%'}>
+                        {rowData?.nome}
+                    </Texto>
+                    <div style={{marginTop: '6px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                        CNPJ:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cnpj}</p>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     const representativeActionsTemplate = (rowData) => {
         return (
             <div style={{ 
                 display: 'flex', 
                 gap: '8px',
                 alignItems: 'center',
+                width: '100%',
                 justifyContent: 'center'
             }}>
-                <Tooltip target=".colaboradores" mouseTrack mouseTrackLeft={10} />
+                 <Tooltip style={{fontSize: '10px'}} target=".edit" mouseTrack mouseTrackLeft={10} />
+                <FaPen 
+                    className="edit" 
+                    data-pr-tooltip="Editar Filial" 
+                    size={16} 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        editarFilialClick(rowData);
+                    }}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--primaria)'
+                    }}
+                />
+                <Tooltip style={{fontSize: '10px'}}  target=".colaboradores" mouseTrack mouseTrackLeft={10} />
                 {ArmazenadorToken.hasPermission('view_funcionario') && (
                     <FaUsers 
                         className="colaboradores" 
@@ -423,20 +459,7 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                 alignItems: 'center',
                 justifyContent: 'center'
             }}>
-                <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
-                <FaPen 
-                    className="edit" 
-                    data-pr-tooltip="Editar Filial" 
-                    size={16} 
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        editarFilialClick(rowData);
-                    }}
-                    style={{
-                        cursor: 'pointer',
-                        color: 'var(--primaria)'
-                    }}
-                />
+               
             </div>
         );
     };
@@ -564,14 +587,13 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                 {bulkIntegrationMode && (
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 )}
-                <Column field="nome" header="Filial" sortable style={{ width: metadadosDeveSerExibido ? '20%' : '35%' }}></Column>
+                <Column body={representativeNomeTemplate} field="nome" header="Filial" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '40%' }}></Column>
                 <Column field="cidade" header="Cidade" sortable style={{ width: '15%' }}></Column>
-                <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" sortable style={{ width: metadadosDeveSerExibido ? '20%' : '35%' }}></Column>
+                {/* <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" sortable style={{ width: metadadosDeveSerExibido ? '15%' : '25%' }}></Column> */}
                 {(metadadosDeveSerExibido || bulkIntegrationMode) && (
                     <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
                 )}
-                <Column body={representativeEditTemplate} header="Editar" style={{ width: '8%' }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: '12%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '20%' }}></Column>
             </DataTable>
             <ModalEditarFilial aoSalvar={editarFilial} filial={selectedFilial} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
             <ModalListaColaboradoresPorEstrutura 
