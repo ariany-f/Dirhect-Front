@@ -513,7 +513,7 @@ function BarraLateral({ $sidebarOpened }) {
         },
         {
             id: 23,
-            url: '/syync',
+            url: '/tarefas/syync',
             pageTitulo: 'Syync',
             icone: <FaSync size={20} className="icon" />,
             itemTitulo: 'Syync',

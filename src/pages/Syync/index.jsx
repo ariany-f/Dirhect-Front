@@ -193,7 +193,7 @@ const Syync = () => {
 
   return (
     <div className="syync-container">
-      <h1>{tipoEnvio === "folha-pagamento" ? "Envio de Folha de Pagamento" : "Envio de Recibo de Férias"}</h1>
+      <h1>{tipoEnvio === "folha-pagamento" ? "Envio de Folha de Pagamento" : (tipoEnvio === "recibo-ferias" ? "Envio de Recibo de Férias" : "Syync")}</h1>
       
       <div className="radio-container">
         <label className="radio-label">Selecione o tipo de envio:</label>

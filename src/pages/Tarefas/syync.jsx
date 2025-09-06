@@ -126,6 +126,7 @@ const SyyncTarefasLista = () => {
     return (
         <ConteudoFrame>
             <Loading opened={loading} />
+            
             {tarefas && (
                 <DataTableTarefas 
                     tarefas={tarefas} 
@@ -136,6 +137,7 @@ const SyyncTarefasLista = () => {
                     first={first} 
                     onPage={onPage}
                     onSearch={onSearch}
+                    syync={true}
                     onSort={onSort}
                     sortField={sortField}
                     sortOrder={sortOrder}

@@ -29,6 +29,7 @@ import { FaSync } from 'react-icons/fa';
 import { Skeleton } from 'primereact/skeleton';
 import http from '@http';
 import { ArmazenadorToken } from '@utils';
+import ModalSyync from '@components/ModalSyync';
 
 function DataTableTarefas({ 
     tarefas, 
@@ -47,7 +48,8 @@ function DataTableTarefas({
     onFilter,
     serverFilters,
     onRefresh,
-    loading = false
+    loading = false,
+    syync = false
 }) {
 
     const[selectedVaga, setSelectedVaga] = useState(0)
@@ -61,6 +63,7 @@ function DataTableTarefas({
     const [clienteFiltro, setClienteFiltro] = useState(null);
     const {usuario} = useSessaoUsuarioContext()
     const navegar = useNavigate()
+    const [modalSyyncOpened, setModalSyyncOpened] = useState(false);
 
     // Opções dos filtros
     const statusOptions = [
@@ -169,65 +172,6 @@ function DataTableTarefas({
         );
     };
 
-    // Header customizado
-    const headerTemplate = (
-        <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 8, flexWrap: 'wrap', padding: 0 }}>
-            <style>
-                {`
-                    @keyframes spin {
-                        from { transform: rotate(0deg); }
-                        to { transform: rotate(360deg); }
-                    }
-                `}
-            </style>
-            <BotaoGrupo align={'space-between'} wrap>
-                <div style={{display: 'flex', gap: 16, alignItems: 'center'}}>
-                {showSearch && (
-                    <CampoTexto width={"320px"} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
-                )}
-                {onRefresh && (
-                <button
-                    onClick={onRefresh}
-                    disabled={loading}
-                    title="Atualizar dados"
-                    style={{
-                        background: 'transparent',
-                        border: 'none',
-                            cursor: loading ? 'not-allowed' : 'pointer',
-                            padding: '8px',
-                            borderRadius: '4px',
-                            transition: 'background-color 0.2s',
-                            opacity: loading ? 0.5 : 1
-                        }}
-                    onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--neutro-100)')}
-                    onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
-                >
-                    <FaSync 
-                        size={16} 
-                        color="var(--gradient-secundaria)" 
-                        style={{
-                            animation: loading ? 'spin 1s linear infinite' : 'none'
-                        }}
-                        />
-                </button>
-            )}</div>
-            </BotaoGrupo>
-            <div style={{display: 'flex', gap: 16, alignItems: 'flex-start', justifyContent: 'flex-end'}}>
-                <BotaoGrupo align={'end'} wrap>
-                    {!colaborador && (
-                        <>
-                            <BotaoGrupo align="end" gap="8px">
-                                {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') && 
-                                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="var(--secundaria)" stroke="white" color="white"/> Registrar Tarefa</Botao>
-                                }
-                            </BotaoGrupo>
-                        </>
-                    )}
-                </BotaoGrupo>
-            </div>
-        </div>
-    );
-
     function verDetalhes(value)
     {
         navegar(`/tarefas/detalhes/${value.id}`)
@@ -247,23 +191,31 @@ function DataTableTarefas({
     };
 
     // Template para filtro de tipo de processo
-    const tipoProcessoFilterTemplate = (options) => (
-        <Dropdown
-            value={options.value}
-            options={[
-                { label: 'Admissão', value: 'admissao' },
-                { label: 'Demissão', value: 'demissao' },
-                { label: 'Férias', value: 'ferias' },
-                { label: 'Envio de Variáveis', value: 'envio_variaveis' },
-                { label: 'Adiantamento', value: 'adiantamento' },
-                { label: 'Encargos', value: 'encargos' },
-                { label: 'Folha Mensal', value: 'folha' }
-            ]}
-            onChange={e => options.filterApplyCallback(e.value)}
-            placeholder="Tipo de Processo"
-            style={{ minWidth: '12rem' }}
-        />
-    );
+    const tipoProcessoFilterTemplate = (options) => {
+        let dropdownOptions = [];
+        if(syync) {
+            dropdownOptions.push({ label: 'Férias', value: 'syync_segalas_ferias'})
+            dropdownOptions.push({ label: 'Folha', value: 'syync_segalas_folha'})
+        }
+        else {
+            dropdownOptions.push({ label: 'Admissão', value: 'admissao' });
+            dropdownOptions.push({ label: 'Demissão', value: 'demissao' });
+            dropdownOptions.push({ label: 'Férias', value: 'ferias' });
+            dropdownOptions.push({ label: 'Envio de Variáveis', value: 'envio_variaveis' });
+            dropdownOptions.push({ label: 'Adiantamento', value: 'adiantamento' });
+            dropdownOptions.push({ label: 'Encargos', value: 'encargos' });
+            dropdownOptions.push({ label: 'Folha Mensal', value: 'folha' });
+        }
+        return (
+            <Dropdown
+                value={options.value}
+                options={dropdownOptions}
+                onChange={e => options.filterApplyCallback(e.value)}
+                placeholder="Tipo de Processo"
+                style={{ minWidth: '12rem' }}
+            />
+        )
+    };
 
     const filterClearTemplate = (options) => {
         return (
@@ -637,6 +589,63 @@ function DataTableTarefas({
 
     return (
         <>
+            <style>
+                {`
+                    @keyframes spin {
+                        from { transform: rotate(0deg); }
+                        to { transform: rotate(360deg); }
+                    }
+                `}
+            </style>
+            <BotaoGrupo align={showSearch ? 'space-between' : 'end'} wrap>
+                {showSearch && (
+                     <>
+                     <div className="flex justify-content-end">
+                         <span className="p-input-icon-left">
+                            <CampoTexto width={"320px"} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
+                        </span>
+                    </div>
+                    </>
+                )}
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    {syync && (
+                        <Botao
+                            size="small"
+                            estilo="vermilion"
+                            model="filled"
+                            aoClicar={() => setModalSyyncOpened(true)}
+                        >
+                            <GrAddCircle className={styles.icon} fill="var(--secundaria)" stroke="white" color="white"/>Criar
+                        </Botao>
+                    )}
+                    {onRefresh && (
+                        <button
+                            onClick={onRefresh}
+                            disabled={loading}
+                            title="Atualizar dados"
+                            style={{
+                                background: 'transparent',
+                                border: 'none',
+                                    cursor: loading ? 'not-allowed' : 'pointer',
+                                    padding: '8px',
+                                    borderRadius: '4px',
+                                    transition: 'background-color 0.2s',
+                                    opacity: loading ? 0.5 : 1
+                                }}
+                            onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--neutro-100)')}
+                            onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
+                        >
+                            <FaSync 
+                                size={16} 
+                                color="var(--gradient-secundaria)" 
+                                style={{
+                                    animation: loading ? 'spin 1s linear infinite' : 'none'
+                                }}
+                                />
+                        </button>
+                    )}
+                </div>
+            </BotaoGrupo>
             <DataTable 
                 value={tarefasFiltradas} 
                 filters={serverFilters}
@@ -657,7 +666,6 @@ function DataTableTarefas({
                 sortOrder={sortOrder === 'desc' ? -1 : 1}
                 onSort={handleSort}
                 removableSort
-                header={headerTemplate}
                 footerColumnGroup={
                     paginator ? (
                         <ColumnGroup>
@@ -732,6 +740,14 @@ function DataTableTarefas({
                 />
             </DataTable>
             <ModalTarefas opened={modalOpened} aoFechar={() => setModalOpened(false)} />
+            
+            {/* Modal Syync */}
+            {syync && (
+                <ModalSyync 
+                    opened={modalSyyncOpened} 
+                    onClose={() => setModalSyyncOpened(false)} 
+                />
+            )}
         </>
     )
 }
