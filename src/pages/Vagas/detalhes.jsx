@@ -28,6 +28,7 @@ import ModalTransferirVaga from '@components/ModalTransferirVaga'
 import { unformatCurrency } from '@utils/formats'
 import ModalAdicionarCandidato from '@components/ModalAdicionarCandidato';
 import ModalEditarCandidato from '@components/ModalEditarCandidato';
+import { useTranslation } from 'react-i18next';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -46,6 +47,59 @@ const Col6 = styled.div`
     flex: 1 1 calc(50% - 10px);
 `
 
+const DescricaoComVerMais = ({ descricao }) => {
+    const [showFullDescription, setShowFullDescription] = useState(false);
+    const { t } = useTranslation('common');
+    
+    if (!descricao) {
+        return <Texto weight="800">----</Texto>;
+    }
+    
+    const maxLength = 145;
+    const isLongText = descricao.length > maxLength;
+    
+    const displayText = showFullDescription || !isLongText 
+        ? descricao 
+        : descricao.substring(0, maxLength) + "...";
+
+    return (
+        <div style={{
+            width: '100%',
+            wordWrap: 'break-word',
+            overflow: 'hidden'
+        }}>
+            <Texto weight="800" style={{
+                margin: 0,
+                marginBottom: isLongText ? '8px' : 0,
+                lineHeight: '1.4'
+            }}>
+                {displayText}
+            </Texto>
+            {isLongText && (
+                <div style={{ textAlign: 'right' }}>
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setShowFullDescription(!showFullDescription);
+                        }}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            color: 'var(--primaria)',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            padding: '2px 0',
+                            textDecoration: 'underline'
+                        }}
+                    >
+                        {showFullDescription ? t('see_less') : t('see_more')}
+                    </button>
+                </div>
+            )}
+        </div>
+    );
+};
+
 function DetalhesVaga() {
 
     let { id } = useParams()
@@ -60,6 +114,7 @@ function DetalhesVaga() {
     const [modalAdicionarCandidatoAberto, setModalAdicionarCandidatoAberto] = useState(false);
     const [modalEditarCandidatoAberto, setModalEditarCandidatoAberto] = useState(false);
     const [candidatoEditando, setCandidatoEditando] = useState(null);
+    const { t } = useTranslation('common');
 
     const listaPericulosidades = [
         { code: 'QC', name: 'Trabalho com Substâncias Químicas Perigosas' },
@@ -313,7 +368,12 @@ function DetalhesVaga() {
     const handleEditarVaga = (vagaAtualizada) => {
         http.put(`vagas/${id}/`, vagaAtualizada)
             .then(response => {
-                setVaga(response);
+                // Preserva os candidatos existentes ao atualizar a vaga
+                const vagaComCandidatos = {
+                    ...response,
+                    candidatos: vaga?.candidatos || response.candidatos || []
+                };
+                setVaga(vagaComCandidatos);
                 toast.current.show({
                     severity: 'success',
                     summary: 'Vaga atualizada com sucesso!',
@@ -536,12 +596,11 @@ function DetalhesVaga() {
                                 : vaga ? '----' : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Descrição</Texto>
-                            {vaga ?
-                                (vaga?.descricao ?
-                                    <Texto weight="800">{vaga?.descricao}</Texto>
-                                    : '----')
-                                : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
+                            {vaga ? (
+                                <DescricaoComVerMais descricao={vaga?.descricao} />
+                            ) : (
+                                <Skeleton variant="rectangular" width={200} height={25} />
+                            )}
                             <Texto>Salário</Texto>
                             {vaga?.salario ?
                                 <Texto weight="800">{Real.format(vaga?.salario)}</Texto>
