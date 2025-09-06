@@ -492,7 +492,7 @@ function DataTableSindicatos({
                 onHide={() => setModalColaboradoresOpened(false)}
                 tipoEstrutura="sindicato"
                 estruturaId={selectedSindicatoColaboradores.id}
-                estruturaNome={selectedSindicatoColaboradores.nome}
+                estruturaNome={selectedSindicatoColaboradores.descricao}
                 estruturaTipo="Sindicato"
             />
         </>
