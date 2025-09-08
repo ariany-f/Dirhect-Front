@@ -274,19 +274,6 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                                 <StyledDropdownContainer>
                                     <DropdownItens 
                                         camposVazios={classError} 
-                                        valor={tipo_desconto} 
-                                        setValor={setTipoDesconto} 
-                                        options={dropdownTiposDesconto} 
-                                        label="Tipo de Desconto" 
-                                        name="tipo_desconto" 
-                                        placeholder="Tipo de Desconto"
-                                    /> 
-                                </StyledDropdownContainer>
-                            </Col6>
-                            <Col6>
-                                <StyledDropdownContainer>
-                                    <DropdownItens 
-                                        camposVazios={classError} 
                                         valor={tipo_calculo} 
                                         setValor={setTipoCalculo} 
                                         options={dropdownTiposCalculo} 
@@ -300,6 +287,19 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                                         <IoSettingsSharp/><Link to={'/contratos/configuracao'} className={styles.link}>Configurar Tabela Interna</Link>
                                     </BotaoSemBorda>
                                 }
+                            </Col6>
+                            <Col6>
+                                <StyledDropdownContainer>
+                                    <DropdownItens 
+                                        camposVazios={classError} 
+                                        valor={tipo_desconto} 
+                                        setValor={setTipoDesconto} 
+                                        options={dropdownTiposDesconto} 
+                                        label="Tipo de Desconto" 
+                                        name="tipo_desconto" 
+                                        placeholder="Tipo de Desconto"
+                                    /> 
+                                </StyledDropdownContainer>
                             </Col6>
                         </Col12>
                         <Col12>
