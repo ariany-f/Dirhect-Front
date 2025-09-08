@@ -4,6 +4,7 @@ import CampoTexto from "@components/CampoTexto"
 import BotaoSemBorda from "@components/BotaoSemBorda"
 import CheckboxContainer from '@components/CheckboxContainer'
 import DropdownItens from '@components/DropdownItens'
+import BotaoGrupo from '@components/BotaoGrupo'
 import Titulo from "@components/Titulo"
 import { RiCloseFill } from 'react-icons/ri'
 import http from '@http'
@@ -410,10 +411,10 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                         </div>
                     </Frame>
                     <form method="dialog">
-                        <div className={styles.containerBottom}>
+                        <BotaoGrupo>
                             <Botao aoClicar={fecharModal} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
                             <Botao aoClicar={validarESalvar} estilo="vermilion" size="medium" filled>Salvar</Botao>
-                        </div>
+                        </BotaoGrupo>
                     </form>
                 </DialogEstilizadoRight>
             </OverlayRight>
