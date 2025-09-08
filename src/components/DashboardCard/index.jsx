@@ -702,8 +702,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     // Dados mockados para demonstração - em produção viriam da API
     const dadosRH = {
         // Gestão de Colaboradores
-        totalColaboradores: totalColaboradores,
-        totalAtivos: totalAtivos,
+        totalColaboradores: totalAtivos, // Usando funcionarios_ativos para mostrar apenas colaboradores ativos
         novosContratadosMes: novosColaboradoresMes,
         demissoesMes: demitidosNoMes,
         turnover: calcularTurnover(),
@@ -1593,7 +1592,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     <div className="metric-grid">
                         <div className="metric-item">
                             <div className="metric-value metric-primary">
-                                <FaUsers /> {dadosRH.totalAtivos}
+                                <FaUsers /> {dadosRH.totalColaboradores}
                             </div>
                             <div className="metric-label">{t("total_active")}</div>
                         </div>
