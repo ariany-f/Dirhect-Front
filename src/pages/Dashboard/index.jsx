@@ -193,7 +193,7 @@ function Dashboard() {
                     }
                     return; // Sair da função para usuários Outsourcing
                 }
-
+                console.log(ArmazenadorToken.hasPermission('view_funcionario'))
                 // Para outros tipos de usuário, carregar todos os dados normalmente
                 // Carregar dados do dashboard de funcionários apenas se tiver permissão
                 if (ArmazenadorToken.hasPermission('view_funcionario')) {
@@ -305,7 +305,7 @@ function Dashboard() {
         carregarDashboard();
         console.log('Carregou dashboard');
         return () => { isMounted.current = false; };
-    }, [usuarioEstaLogado]); // Removido colaboradores das dependências
+    }, [usuarioEstaLogado, usuario?.tipo]); // Removido colaboradores das dependências
 
     const getSLAInfo = (atividade) => {
         if (atividade.status === 'concluida') {
