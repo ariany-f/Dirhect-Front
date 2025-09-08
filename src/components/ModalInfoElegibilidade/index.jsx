@@ -85,9 +85,12 @@ const ModalInfoElegibilidade = ({ open, item, onClose }) => {
     const beneficio = item.item?.beneficio;
     const operadora = item?.operadora;
     const regras = item?.regra_elegibilidade || [];
+    
     // Monta os nodes para o Tree
     const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
-    const regrasTreeNodes = regras.flatMap((regra, idx) =>
+    
+    // CORREÇÃO: Verificar se regras é um array antes de usar flatMap
+    const regrasTreeNodes = Array.isArray(regras) ? regras.flatMap((regra, idx) =>
         Object.entries(regra).map(([key, value]) => ({
             key: `regra-${idx}-${key}`,
             label: capitalize(key),
@@ -98,7 +101,7 @@ const ModalInfoElegibilidade = ({ open, item, onClose }) => {
                     label: `${k}: ${Array.isArray(v) ? v.join(', ') : v}`
                 }))
         }))
-    );
+    ) : [];
     return (
         <OverlayRight $opened={open}>
             <DialogEstilizadoRight $width="40vw" open={open} $opened={open}>
