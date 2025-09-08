@@ -135,6 +135,9 @@ export const DialogEstilizadoRight = styled.dialog`
     padding: 24px;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     background: white;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
     transform: ${({ $opened }) => $opened ? 'translateX(0)' : 'translateX(100%)'};
     opacity: ${({ $opened }) => $opened ? 1 : 0};
     box-shadow: ${({ $opened }) => $opened 

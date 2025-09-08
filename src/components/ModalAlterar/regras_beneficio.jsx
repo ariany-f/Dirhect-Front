@@ -271,139 +271,143 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                             }
                         </Titulo>
                     </Frame>
-                    <Frame padding="24px 0px">
-                        <Col12>
-                            <Col6>
-                                <StyledDropdownContainer>
-                                    <DropdownItens 
-                                        camposVazios={classError} 
-                                        valor={tipo_calculo} 
-                                        setValor={setTipoCalculo} 
-                                        options={dropdownTiposCalculo} 
-                                        label="Tipo de Cálculo" 
-                                        name="tipo_calculo" 
-                                        placeholder="Tipo de Cálculo"
-                                    /> 
-                                </StyledDropdownContainer>
-                                {tipo_calculo.code === 'T' &&
-                                    <BotaoSemBorda color="var(--terciaria)">
-                                        <IoSettingsSharp/><Link to={'/contratos/configuracao'} className={styles.link}>Configurar Tabela Interna</Link>
-                                    </BotaoSemBorda>
-                                }
-                            </Col6>
-                            <Col6>
-                                <StyledDropdownContainer>
-                                    <DropdownItens 
-                                        camposVazios={classError} 
-                                        valor={tipo_desconto} 
-                                        setValor={setTipoDesconto} 
-                                        options={dropdownTiposDesconto} 
-                                        label="Tipo de Desconto" 
-                                        name="tipo_desconto" 
-                                        placeholder="Tipo de Desconto"
-                                    /> 
-                                </StyledDropdownContainer>
-                            </Col6>
-                        </Col12>
-                        <Col12>
-                            <Col6>
-                                <StyledInputContainer>
-                                    <CampoTexto 
-                                        camposVazios={classError} 
-                                        name="descricao" 
-                                        valor={descricao} 
-                                        setValor={setDescricao} 
-                                        type="text" 
-                                        label="Descrição" 
-                                        placeholder="Digite Descrição" 
-                                    />
-                                </StyledInputContainer>
-                            </Col6>
-                            <Col6>
-                                <StyledInputContainer>
-                                    <CampoTexto 
-                                        camposVazios={classError} 
-                                        name="valor" 
-                                        valor={valor} 
-                                        setValor={handleValorCompraChange} 
-                                        type="text" 
-                                        label="Valor Compra" 
-                                        placeholder="Digite o valor da compra"
-                                        patternMask="BRL" 
-                                    />
-                                </StyledInputContainer>
-                            </Col6>
-                        </Col12>
-                        <Col12>
-                            <Col6>
-                                <StyledInputContainer>
-                                    <CampoTexto 
-                                        camposVazios={classError} 
-                                        name="desconto" 
-                                        valor={desconto} 
-                                        setValor={handleValorColaboradorChange} 
-                                        type="text" 
-                                        label="Valor Colaborador" 
-                                        placeholder="Digite o valor do colaborador"
-                                        patternMask="BRL" 
-                                    />
-                                    {erroValor && <span style={{color: 'var(--error)', fontSize: '12px'}}>{erroValor}</span>}
-                                </StyledInputContainer>
-                            </Col6>
-                            <Col6>
-                                <StyledInputContainer>
-                                    <CampoTexto 
-                                        camposVazios={classError} 
-                                        name="empresa" 
-                                        valor={empresa} 
-                                        setValor={() => {}} 
-                                        type="text" 
-                                        label="Valor empresa" 
-                                        placeholder="Valor empresa"
-                                        disabled
-                                        patternMask="BRL"
-                                        style={{backgroundColor: 'var(--neutro-100)'}} 
-                                    />
-                                </StyledInputContainer>
-                            </Col6>
-                        </Col12>
-                        <hr style={{width: '100%', border: 'none', borderTop: '1px solid rgb(205, 205, 205)', margin: '16px 0'}} />
-                        <Col12>
-                            <Col6>
-                                <h6>Regra de Concessão</h6>
-                                <div style={{display: 'flex', alignItems: 'center', gap: 16}}>
-                                    <DropdownItens
-                                        camposVazios={classError}
-                                        valor={regra_concessao}
-                                        setValor={setRegraConcessao}
-                                        options={[
-                                            {code: 'D', name: 'Valor Diário'},
-                                            {code: 'C', name: '% sobre o valor da compra'},
-                                            {code: 'S', name: '% do Valor do Salário'},
-                                            {code: 'F', name: 'Valor Fixo'}
-                                        ]}
-                                        label="Regra de Concessão"
-                                    />
-                                </div>
-                            </Col6>
-                            <Col6>
-                                <h6>Regra de Revogação</h6>
-                                <div style={{display: 'flex', alignItems: 'center', gap: 16}}>
-                                    <DropdownItens
-                                        camposVazios={classError}
-                                        valor={regra_revogacao}
-                                        setValor={setRegraRevogacao}
-                                        options={[
-                                            {code: 'D', name: 'Valor Diário'},
-                                            {code: 'C', name: '% sobre o valor da compra'},
-                                            {code: 'S', name: '% do Valor do Salário'},
-                                            {code: 'F', name: 'Valor Fixo'}
-                                        ]}
-                                        label="Regra de Revogação"
-                                    />
-                                </div>
-                            </Col6>
-                        </Col12>
+                    <Frame overflowY="auto" padding="0px 32px 32px 8px">
+                        <div style={{padding: '32px 0 24px 0'}}>
+                            <Col12>
+                                <Col6>
+                                    <StyledDropdownContainer>
+                                        <DropdownItens 
+                                            camposVazios={classError} 
+                                            valor={tipo_calculo} 
+                                            setValor={setTipoCalculo} 
+                                            options={dropdownTiposCalculo} 
+                                            label="Tipo de Cálculo" 
+                                            name="tipo_calculo" 
+                                            placeholder="Tipo de Cálculo"
+                                        /> 
+                                    </StyledDropdownContainer>
+                                    {tipo_calculo.code === 'T' &&
+                                        <BotaoSemBorda color="var(--terciaria)">
+                                            <IoSettingsSharp/><Link to={'/contratos/configuracao'} className={styles.link}>Configurar Tabela Interna</Link>
+                                        </BotaoSemBorda>
+                                    }
+                                </Col6>
+                                <Col6>
+                                    <StyledDropdownContainer>
+                                        <DropdownItens 
+                                            camposVazios={classError} 
+                                            valor={tipo_desconto} 
+                                            setValor={setTipoDesconto} 
+                                            options={dropdownTiposDesconto} 
+                                            label="Tipo de Desconto" 
+                                            name="tipo_desconto" 
+                                            placeholder="Tipo de Desconto"
+                                        /> 
+                                    </StyledDropdownContainer>
+                                </Col6>
+                            </Col12>
+                            <Col12>
+                                <Col6>
+                                    <StyledInputContainer>
+                                        <CampoTexto 
+                                            camposVazios={classError} 
+                                            name="descricao" 
+                                            valor={descricao} 
+                                            setValor={setDescricao} 
+                                            type="text" 
+                                            label="Descrição" 
+                                            placeholder="Digite Descrição" 
+                                        />
+                                    </StyledInputContainer>
+                                </Col6>
+                                <Col6>
+                                    <StyledInputContainer>
+                                        <CampoTexto 
+                                            camposVazios={classError} 
+                                            name="valor" 
+                                            valor={valor} 
+                                            setValor={handleValorCompraChange} 
+                                            type="text" 
+                                            label="Valor Compra" 
+                                            placeholder="Digite o valor da compra"
+                                            patternMask="BRL" 
+                                        />
+                                    </StyledInputContainer>
+                                </Col6>
+                            </Col12>
+                            <Col12>
+                                <Col6>
+                                    <StyledInputContainer>
+                                        <CampoTexto 
+                                            camposVazios={classError} 
+                                            name="desconto" 
+                                            valor={desconto} 
+                                            setValor={handleValorColaboradorChange} 
+                                            type="text" 
+                                            label="Valor Colaborador" 
+                                            placeholder="Digite o valor do colaborador"
+                                            patternMask="BRL" 
+                                        />
+                                        {erroValor && <span style={{color: 'var(--error)', fontSize: '12px'}}>{erroValor}</span>}
+                                    </StyledInputContainer>
+                                </Col6>
+                                <Col6>
+                                    <StyledInputContainer>
+                                        <CampoTexto 
+                                            camposVazios={classError} 
+                                            name="empresa" 
+                                            valor={empresa} 
+                                            setValor={() => {}} 
+                                            type="text" 
+                                            label="Valor empresa" 
+                                            placeholder="Valor empresa"
+                                            disabled
+                                            patternMask="BRL"
+                                            style={{backgroundColor: 'var(--neutro-100)'}} 
+                                        />
+                                    </StyledInputContainer>
+                                </Col6>
+                            </Col12>
+                            <hr style={{width: '100%', border: 'none', borderTop: '1px solid rgb(205, 205, 205)', margin: '16px 0'}} />
+                            <Col12>
+                                <Col6>
+                                    <h6>Regra de Concessão</h6>
+                                    <div style={{display: 'flex', alignItems: 'center', gap: 16}}>
+                                        <DropdownItens
+                                            camposVazios={classError}
+                                            valor={regra_concessao}
+                                            setValor={setRegraConcessao}
+                                            options={[
+                                                {code: 'D', name: 'A partir da data de admissão'},
+                                                {code: 'C', name: 'A partir do 1º período de experiência'},
+                                                {code: 'S', name: 'A partir do 2º período de experiência'},
+                                                {code: 'F', name: '120 dias após a admissão'},
+                                                {code: 'G', name: '180 dias após a admissão'},
+                                                {code: 'H', name: 'Data informada manualmente'},
+                                            ]}
+                                            label="Regra de Concessão"
+                                        />
+                                    </div>
+                                </Col6>
+                                <Col6>
+                                    <h6>Regra de Revogação</h6>
+                                    <div style={{display: 'flex', alignItems: 'center', gap: 16}}>
+                                        <DropdownItens
+                                            camposVazios={classError}
+                                            valor={regra_revogacao}
+                                            setValor={setRegraRevogacao}
+                                            options={[
+                                                {code: 'D', name: 'A partir da data de demissão'},
+                                                {code: 'C', name: '30 dias após a data de demissão'},
+                                                {code: 'S', name: '60 dias após a data de demissão'},
+                                                {code: 'F', name: 'Data informada manualmente'}
+                                            ]}
+                                            label="Regra de Revogação"
+                                        />
+                                    </div>
+                                </Col6>
+                            </Col12>
+                        </div>
                     </Frame>
                     <form method="dialog">
                         <div className={styles.containerBottom}>
