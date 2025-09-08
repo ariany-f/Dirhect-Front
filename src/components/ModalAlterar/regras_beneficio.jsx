@@ -72,6 +72,9 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
     const [tipo_desconto, setTipoDesconto] = useState('')
     const [erroValor, setErroValor] = useState('')
 
+    const [regra_concessao, setRegraConcessao] = useState('')
+    const [regra_revogacao, setRegraRevogacao] = useState('')
+
     const [tiposCalculo, setTiposCalculo] = useState([
         {code: 'M', name: 'Valor Mensal'},
         {code: 'D', name: 'Valor Diário'},
@@ -362,6 +365,43 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                                         style={{backgroundColor: 'var(--neutro-100)'}} 
                                     />
                                 </StyledInputContainer>
+                            </Col6>
+                        </Col12>
+                        <hr style={{width: '100%', border: 'none', borderTop: '1px solid rgb(205, 205, 205)', margin: '16px 0'}} />
+                        <Col12>
+                            <Col6>
+                                <h6>Regra de Concessão</h6>
+                                <div style={{display: 'flex', alignItems: 'center', gap: 16}}>
+                                    <DropdownItens
+                                        camposVazios={classError}
+                                        valor={regra_concessao}
+                                        setValor={setRegraConcessao}
+                                        options={[
+                                            {code: 'D', name: 'Valor Diário'},
+                                            {code: 'C', name: '% sobre o valor da compra'},
+                                            {code: 'S', name: '% do Valor do Salário'},
+                                            {code: 'F', name: 'Valor Fixo'}
+                                        ]}
+                                        label="Regra de Concessão"
+                                    />
+                                </div>
+                            </Col6>
+                            <Col6>
+                                <h6>Regra de Revogação</h6>
+                                <div style={{display: 'flex', alignItems: 'center', gap: 16}}>
+                                    <DropdownItens
+                                        camposVazios={classError}
+                                        valor={regra_revogacao}
+                                        setValor={setRegraRevogacao}
+                                        options={[
+                                            {code: 'D', name: 'Valor Diário'},
+                                            {code: 'C', name: '% sobre o valor da compra'},
+                                            {code: 'S', name: '% do Valor do Salário'},
+                                            {code: 'F', name: 'Valor Fixo'}
+                                        ]}
+                                        label="Regra de Revogação"
+                                    />
+                                </div>
                             </Col6>
                         </Col12>
                     </Frame>

@@ -305,7 +305,7 @@ function Dashboard() {
         carregarDashboard();
         console.log('Carregou dashboard');
         return () => { isMounted.current = false; };
-    }, [usuarioEstaLogado, usuario?.tipo]); // Removido colaboradores das dependências
+    }, [usuarioEstaLogado, usuario]); // Removido colaboradores das dependências
 
     const getSLAInfo = (atividade) => {
         if (atividade.status === 'concluida') {
