@@ -378,7 +378,6 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
     { "id": 25, "url": "atividades", "pageTitulo": t("activities") },
     { "id": 26, "url": "tabelas-de-sistema", "pageTitulo": t("system_tables") },
     { "id": 27, "url": "syync", "pageTitulo": "Syync" },
-    { "id": 28, "url": "tarefas/syync", "pageTitulo": "Syync" }
   ];
 
   const titulo = titulos.find(item => 
