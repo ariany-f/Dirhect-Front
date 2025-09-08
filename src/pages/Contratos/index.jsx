@@ -25,7 +25,7 @@ const Contratos = () => {
     const [searchTerm, setSearchTerm] = useState('')
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('');
-
+    const [refreshKey, setRefreshKey] = useState(0); // Chave para forçar refresh
 
     const loadData = (currentPage, currentPageSize, search = '', sort = '-id') => {
         setLoading(true)  
@@ -43,6 +43,14 @@ const Contratos = () => {
                 setLoading(false)
             })
     }
+
+    // Recarregar dados quando voltar da página de detalhes
+    useEffect(() => {
+        // Verifica se estamos na rota principal de contratos (não em detalhes)
+        if (location.pathname === '/contratos') {
+            loadData(page, pageSize, searchTerm)
+        }
+    }, [location.pathname, refreshKey])
 
     useEffect(() => {
         loadData(page, pageSize, searchTerm)
@@ -65,6 +73,7 @@ const Contratos = () => {
         setSortField,
         setSortOrder,
         loadData,
+        refreshData: () => setRefreshKey(prev => prev + 1), // Função para forçar refresh
         push: (newContrato) => {
             setContratos(prevContratos => {
                 if (!prevContratos) return [newContrato];
