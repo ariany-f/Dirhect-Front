@@ -200,9 +200,10 @@ function Dashboard() {
                     console.log('Tem permissão para carregar dashboard de funcionários');
                     await http.get('funcionario/dashboard/')
                         .then(response => {
+                            console.log('Response do dashboard de funcionários:', response);
                             setFuncionariosDashboard(response);
-                            // Usar total_funcionarios como colaboradores para manter compatibilidade
-                            setColaboradores(Array(response.total_funcionarios).fill(null));
+                            // CORREÇÃO: Definir colaboradores como array vazio em vez de array com nulls
+                            setColaboradores([]);
                         })
                         .catch(error => {
                             console.error('Erro ao carregar dashboard de funcionários:', error);
@@ -440,7 +441,8 @@ function Dashboard() {
         sla_por_tipo: {}
     };
 
-    if (!colaboradores) {
+    // CORREÇÃO: Mudar a condição de loading para verificar se os dados foram carregados
+    if (colaboradores === null) {
         return <Loading opened={loadingOpened} />
     }
 
