@@ -302,10 +302,18 @@ function Dashboard() {
     useEffect(() => {
         console.log('useEffect');
         isMounted.current = true;
-        carregarDashboard();
-        console.log('Carregou dashboard');
-        return () => { isMounted.current = false; };
-    }, [usuarioEstaLogado, usuario]); // Removido colaboradores das dependências
+        
+        // Adicionar delay de 1 segundo antes de carregar o dashboard
+        const timer = setTimeout(() => {
+            carregarDashboard();
+            console.log('Carregou dashboard');
+        }, 1000);
+        
+        return () => { 
+            isMounted.current = false;
+            clearTimeout(timer); // Limpar o timer se o componente for desmontado
+        };
+    }, [usuarioEstaLogado]); // Removido colaboradores das dependências
 
     const getSLAInfo = (atividade) => {
         if (atividade.status === 'concluida') {
