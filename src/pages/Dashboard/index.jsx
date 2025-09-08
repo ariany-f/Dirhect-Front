@@ -167,9 +167,11 @@ function Dashboard() {
 
     // Função para buscar todos os dados do dashboard
     const carregarDashboard = async () => {
+        console.log('Carregando dashboard');
         setRefreshing(true);
         try {
             if(usuarioEstaLogado) {
+                console.log('Usuario esta logado');
                 // Se for usuário Outsourcing, carregar apenas os indicadores
                 if (usuario?.tipo === 'Outsourcing') {
                     if(ArmazenadorToken.hasPermission('view_tarefa')) {
@@ -195,6 +197,7 @@ function Dashboard() {
                 // Para outros tipos de usuário, carregar todos os dados normalmente
                 // Carregar dados do dashboard de funcionários apenas se tiver permissão
                 if (ArmazenadorToken.hasPermission('view_funcionario')) {
+                    console.log('Tem permissão para carregar dashboard de funcionários');
                     await http.get('funcionario/dashboard/')
                         .then(response => {
                             setFuncionariosDashboard(response);
@@ -296,8 +299,10 @@ function Dashboard() {
     };
 
     useEffect(() => {
+        console.log('useEffect');
         isMounted.current = true;
         carregarDashboard();
+        console.log('Carregou dashboard');
         return () => { isMounted.current = false; };
     }, [usuarioEstaLogado]); // Removido colaboradores das dependências
 
