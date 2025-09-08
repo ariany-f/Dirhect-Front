@@ -87,13 +87,17 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
                 setSelectedOperadora(operadoras[0]);
                 onSelectionChange(operadoras[0]);
             }
-            // Inicializa status de acordo com o campo ativo
-            setOperadorasStatus(
-                operadoras.reduce((acc, operadora) => ({
-                    ...acc,
-                    [operadora.id]: operadora.ativo === true
-                }), {})
-            );
+            // CORREÇÃO: Só inicializa status se ainda não existir
+            setOperadorasStatus(prev => {
+                const newStatus = {};
+                operadoras.forEach(operadora => {
+                    // Mantém o status atual se já existe, senão usa o valor da API
+                    newStatus[operadora.id] = prev[operadora.id] !== undefined 
+                        ? prev[operadora.id] 
+                        : operadora.ativo === true;
+                });
+                return newStatus;
+            });
         }
     }, [operadoras, selectedOperadora, onSelectionChange]);
 
@@ -118,18 +122,18 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
             const operadora = operadoras.find(op => op.id === id);
             const novoStatus = !operadora.ativo;
 
+            // Atualiza o estado local imediatamente para feedback visual
+            setOperadorasStatus(prev => ({
+                ...prev,
+                [id]: novoStatus
+            }));
+
             // Chamada à API com o novo status
             const response = await http.put(`operadora/${id}/`, {
                 ativo: novoStatus
             });
 
-            // Atualiza o estado da operadora no array usando a resposta
-            const operadorasAtualizadas = operadoras.map(op => 
-                op.id === id ? response : op
-            );
-            onSelectionChange(operadorasAtualizadas);
-
-            // Recarrega os dados
+            // Recarrega os dados através da função onUpdate
             if (onUpdate) {
                 onUpdate();
             }
