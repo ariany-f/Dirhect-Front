@@ -44,7 +44,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     const { t } = useTranslation('common');
 
     // Definições de variáveis do dashboard de funcionários
-    const totalColaboradores = funcionariosDashboard?.total_funcionarios || 0;
+    const totalColaboradores = funcionariosDashboard?.funcionarios_ativos || 0;
     const novosColaboradoresMes = funcionariosDashboard?.admitidos_no_mes || 0;
     const demitidos = funcionariosDashboard?.funcionarios_demitidos || [];
     const totalDemitidos = funcionariosDashboard?.total_demitidos || 0;
