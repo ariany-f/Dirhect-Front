@@ -1591,7 +1591,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     <div className="metric-grid">
                         <div className="metric-item">
                             <div className="metric-value metric-primary">
-                                <FaUsers /> {dadosRH.funcionarios_ativos}
+                                <FaUsers /> {dadosRH.funcionariosAtivos}
                             </div>
                             <div className="metric-label">{t("total_active")}</div>
                         </div>
