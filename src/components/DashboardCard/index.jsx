@@ -45,6 +45,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
     // Definições de variáveis do dashboard de funcionários
     const totalColaboradores = funcionariosDashboard?.total_funcionarios || 0;
+    const totalAtivos = funcionariosDashboard?.funcionarios_ativos || 0;
     const novosColaboradoresMes = funcionariosDashboard?.admitidos_no_mes || 0;
     const demitidos = funcionariosDashboard?.funcionarios_demitidos || [];
     const totalDemitidos = funcionariosDashboard?.total_demitidos || 0;
@@ -702,6 +703,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     const dadosRH = {
         // Gestão de Colaboradores
         totalColaboradores: totalColaboradores,
+        totalAtivos: totalAtivos,
         novosContratadosMes: novosColaboradoresMes,
         demissoesMes: demitidosNoMes,
         turnover: calcularTurnover(),
@@ -1591,7 +1593,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     <div className="metric-grid">
                         <div className="metric-item">
                             <div className="metric-value metric-primary">
-                                <FaUsers /> {dadosRH.funcionariosAtivos}
+                                <FaUsers /> {dadosRH.totalAtivos}
                             </div>
                             <div className="metric-label">{t("total_active")}</div>
                         </div>
