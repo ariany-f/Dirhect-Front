@@ -305,9 +305,10 @@ function Dashboard() {
         
         // Adicionar delay de 1 segundo antes de carregar o dashboard
         const timer = setTimeout(() => {
+            console.log('Carregando dashboard');
             carregarDashboard();
             console.log('Carregou dashboard');
-        }, 2000);
+        }, 4000);
         
         return () => { 
             isMounted.current = false;
