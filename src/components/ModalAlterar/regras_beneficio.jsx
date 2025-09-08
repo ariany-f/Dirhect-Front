@@ -386,7 +386,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                                                 {code: 'G', name: '180 dias após a admissão'},
                                                 {code: 'H', name: 'Data informada manualmente'},
                                             ]}
-                                            label="Regra de Concessão"
+                                            label="Inclusão do Benefício"
                                         />
                                     </div>
                                 </Col6>
@@ -403,7 +403,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                                                 {code: 'S', name: '60 dias após a data de demissão'},
                                                 {code: 'F', name: 'Data informada manualmente'}
                                             ]}
-                                            label="Regra de Revogação"
+                                            label="Cancelamento do Benefício"
                                         />
                                     </div>
                                 </Col6>
