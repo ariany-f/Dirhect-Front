@@ -307,7 +307,7 @@ function Dashboard() {
         const timer = setTimeout(() => {
             carregarDashboard();
             console.log('Carregou dashboard');
-        }, 1000);
+        }, 2000);
         
         return () => { 
             isMounted.current = false;
