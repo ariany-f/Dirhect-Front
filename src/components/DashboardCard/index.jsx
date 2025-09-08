@@ -45,7 +45,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
     // Definições de variáveis do dashboard de funcionários
     const totalColaboradores = funcionariosDashboard?.total_funcionarios || 0;
-    const totalAtivos = funcionariosDashboard?.funcionarios_ativos || 0;
     const novosColaboradoresMes = funcionariosDashboard?.admitidos_no_mes || 0;
     const demitidos = funcionariosDashboard?.funcionarios_demitidos || [];
     const totalDemitidos = funcionariosDashboard?.total_demitidos || 0;
@@ -702,7 +701,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     // Dados mockados para demonstração - em produção viriam da API
     const dadosRH = {
         // Gestão de Colaboradores
-        totalColaboradores: totalAtivos, // Usando funcionarios_ativos para mostrar apenas colaboradores ativos
+        totalColaboradores: totalColaboradores,
         novosContratadosMes: novosColaboradoresMes,
         demissoesMes: demitidosNoMes,
         turnover: calcularTurnover(),
