@@ -116,6 +116,7 @@ function ModalOperadoraBeneficios({ opened = false, aoClicar, aoFechar, aoSucess
                                 setValor={setBeneficio} 
                                 options={dropdownBeneficios} 
                                 label="Benefício*" 
+                                filter
                                 name="beneficio" 
                                 placeholder="Selecione um benefício"
                                 optionTemplate={beneficioOptionTemplate}
