@@ -2,7 +2,7 @@ import { RiBusFill, RiComputerLine, RiShoppingCartFill, RiGasStationFill, RiEBik
 import { FaCar, FaCoins, FaQuestion, FaTheaterMasks, FaTooth, FaRunning } from 'react-icons/fa'
 import { BiBookReader } from 'react-icons/bi'
 import { PiForkKnifeFill } from 'react-icons/pi'
-import { MdOutlineMedicalServices, MdOutlineFastfood, MdSecurity } from 'react-icons/md'
+import { MdOutlineMedicalServices, MdOutlineFastfood, MdSecurity, MdPets } from 'react-icons/md'
 import styles from '@components/BadgeBeneficio/BadgeBeneficio.module.css'
 import { IoFastFoodSharp } from 'react-icons/io5'
 import { FaHeartPulse, FaMoneyBillTransfer } from 'react-icons/fa6'
@@ -86,6 +86,8 @@ const iconMap = {
     'Academia': FaRunning,
     'FaHome': FaHome,
     'Moradia': FaHome,
+    'Pets': MdPets,
+    'MdPets': MdPets,
 
     // Ícone padrão para quando não encontrado
     'default': FaQuestion

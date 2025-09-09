@@ -74,7 +74,8 @@ import {
     MdDirectionsBike,
     MdSecurity,
     MdOutlineMedicalServices,
-    MdOutlineFastfood
+    MdOutlineFastfood,
+    MdPets
 } from 'react-icons/md';
 
 const iconMap = {
@@ -161,6 +162,8 @@ const iconMap = {
     'PlanoSaude': FaHospital,
     'FaPills': FaPills,
     'Medicamentos': FaPills,
+    'MdPets': MdPets,
+    'Pets': MdPets,
     
     // Educação
     'FaGraduationCap': FaGraduationCap,

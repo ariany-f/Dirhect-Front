@@ -237,6 +237,7 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar, beneficio = null 
                                         options={opcoesIcones} 
                                         label="Ícone*" 
                                         name="icone" 
+                                        filter
                                         placeholder="Selecione um ícone"
                                         optionTemplate={iconeOptionTemplate}
                                         valueTemplate={iconeValueTemplate}
