@@ -452,6 +452,10 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
         );
     };
 
+    const representativeCidadeTemplate = (rowData) => {
+        return rowData.cidade ? rowData.cidade : '---';
+    };
+
     const representativeEditTemplate = (rowData) => {
         return (
             <div style={{ 
@@ -588,7 +592,7 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 )}
                 <Column body={representativeNomeTemplate} field="nome" header="Filial" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '40%' }}></Column>
-                <Column field="cidade" header="Cidade" sortable style={{ width: '15%' }}></Column>
+                <Column field="cidade" body={representativeCidadeTemplate} header="Cidade" sortable style={{ width: '15%' }}></Column>
                 {/* <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" sortable style={{ width: metadadosDeveSerExibido ? '15%' : '25%' }}></Column> */}
                 {(metadadosDeveSerExibido || bulkIntegrationMode) && (
                     <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
