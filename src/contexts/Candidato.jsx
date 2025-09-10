@@ -22,6 +22,7 @@ const candidatoInicial = {
         funcao_id: null,
         centro_custo_nome: '',
         centro_custo_id: null,
+        centro_custo: null,
         secao_nome: '',
         secao_id: null,
         horario_id: null,
