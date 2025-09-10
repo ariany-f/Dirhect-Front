@@ -404,8 +404,8 @@ function Agendamentos() {
         },
         atestados: {
             icon: <FaPen fill="#1a73e8" />,
-            titulo: 'Atestados',
-            tipo: 'atestados'
+            titulo: 'Atestado',
+            tipo: 'atestado'
         },
         funcionarios: {
             icon: <FaPlus fill="#dc3545" />,
@@ -414,8 +414,8 @@ function Agendamentos() {
         },
         estrutura: {
             icon: <FaSync fill="#28a745" />,
-            titulo: 'Estrutura',
-            tipo: 'estrutura'
+            titulo: 'Estrutura Organizacional',
+            tipo: 'estrutura_organizacional'
         }
     };
 

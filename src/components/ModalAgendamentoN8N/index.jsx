@@ -80,9 +80,9 @@ const ModalAgendamentoN8N = ({
     });
 
     const tiposAgendamento = [
-        { label: 'Backup', value: 'backup' },
-        { label: 'Relatório', value: 'relatorio' },
-        { label: 'Limpeza', value: 'limpeza' }
+        { label: 'Atestado', value: 'atestado' },
+        { label: 'Funcionário', value: 'funcionario' },
+        { label: 'Estrutura Organizacional', value: 'estrutura_organizacional' }
     ];
 
     const unidadesRecorrencia = [
