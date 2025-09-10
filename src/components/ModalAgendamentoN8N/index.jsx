@@ -352,9 +352,7 @@ const ModalAgendamentoN8N = ({
 
                             <FormRow>
                                 <div>
-                                    <FormLabel>
-                                        {formData.tipo === 'unico' ? 'Data/Hora de Execução' : 'Data de Início'}
-                                    </FormLabel>
+                                    <FormLabel>Data da Execução</FormLabel>
                                     <Calendar
                                         value={formData.data_inicio}
                                         onChange={(e) => setFormData({...formData, data_inicio: e.value})}
@@ -378,8 +376,7 @@ const ModalAgendamentoN8N = ({
                                 )}
                             </FormRow>
 
-                            <FormRow>
-                                <div></div>
+                            <FormRow className="single-field">
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '24px' }}>
                                     <SwitchInput
                                         checked={formData.ativo}

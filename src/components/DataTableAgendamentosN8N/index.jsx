@@ -62,19 +62,26 @@ const DataTableAgendamentosN8N = ({
     };
 
     const tipoTemplate = (rowData) => {
-        return <FrequencyBadge>{rowData.tipo_display || rowData.entidade_display}</FrequencyBadge>;
+        return <FrequencyBadge>{rowData.tipo_agendamento_display}</FrequencyBadge>;
     };
 
-
-
-    const agendadoParaTemplate = (rowData) => {
-        if (!rowData.agendado_para) return '-';
-        return new Date(rowData.agendado_para).toLocaleString('pt-BR');
+    const entidadeTemplate = (rowData) => {
+        const entidadeMap = {
+            'funcionario': 'Funcionário',
+            'atestado': 'Atestado', 
+            'estrutura_organizacional': 'Estrutura Organizacional'
+        };
+        return entidadeMap[rowData.entidade] || rowData.entidade;
     };
 
-    const concluidoEmTemplate = (rowData) => {
-        if (!rowData.concluido_em) return 'Pendente';
-        return new Date(rowData.concluido_em).toLocaleString('pt-BR');
+    const proximaExecucaoTemplate = (rowData) => {
+        if (!rowData.proxima_execucao) return '-';
+        return new Date(rowData.proxima_execucao).toLocaleString('pt-BR');
+    };
+
+    const ultimaExecucaoTemplate = (rowData) => {
+        if (!rowData.ultima_execucao) return 'Nunca executado';
+        return new Date(rowData.ultima_execucao).toLocaleString('pt-BR');
     };
 
     const actionsTemplate = (rowData) => {
@@ -115,13 +122,14 @@ const DataTableAgendamentosN8N = ({
             loading={loading}
             lazy={paginator}
         >
-            <Column field="descricao" header="Descrição" sortable style={{ width: '25%' }} />
-            <Column body={tipoTemplate} header="Tipo" style={{ width: '15%' }} />
+            <Column field="nome" header="Nome" sortable style={{ width: '20%' }} />
+            <Column body={entidadeTemplate} header="Entidade" style={{ width: '12%' }} />
+            <Column body={tipoTemplate} header="Tipo" style={{ width: '12%' }} />
             <Column body={statusTemplate} header="Status" style={{ width: '10%' }} />
-            <Column body={agendadoParaTemplate} header="Agendado Para" style={{ width: '15%' }} />
-            <Column body={concluidoEmTemplate} header="Concluído Em" style={{ width: '15%' }} />
-            <Column field="tentativas" header="Tentativas" style={{ width: '8%' }} />
-            <Column body={actionsTemplate} header="Ações" style={{ width: '12%' }} />
+            <Column body={proximaExecucaoTemplate} header="Próxima Execução" style={{ width: '15%' }} />
+            <Column body={ultimaExecucaoTemplate} header="Última Execução" style={{ width: '15%' }} />
+            <Column field="tentativas_realizadas" header="Tentativas" style={{ width: '8%' }} />
+            <Column body={actionsTemplate} header="Ações" style={{ width: '8%' }} />
         </DataTable>
     );
 };
