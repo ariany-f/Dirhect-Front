@@ -674,7 +674,6 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                     setCampo('centro_custo', valor.code);
                     setCampo('dados_vaga', { 
                         ...candidato.dados_vaga, 
-                        centro_custo: valor.code,
                         centro_custo_id: valor.code,
                         centro_custo_nome: valor.name
                     });
