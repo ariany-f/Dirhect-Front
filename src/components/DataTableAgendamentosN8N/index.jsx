@@ -39,7 +39,7 @@ const FrequencyBadge = styled.span`
 
 const ActionButtons = styled.div`
     display: flex;
-    gap: 8px;
+    gap: 2px;
     align-items: center;
 `;
 
@@ -129,7 +129,7 @@ const DataTableAgendamentosN8N = ({
             <Column body={proximaExecucaoTemplate} header="Próxima Execução" style={{ width: '15%' }} />
             <Column body={ultimaExecucaoTemplate} header="Última Execução" style={{ width: '15%' }} />
             <Column field="tentativas_realizadas" header="Tentativas" style={{ width: '8%' }} />
-            <Column body={actionsTemplate} header="Ações" style={{ width: '8%' }} />
+            <Column body={actionsTemplate} header="" style={{ width: '8%' }} />
         </DataTable>
     );
 };
