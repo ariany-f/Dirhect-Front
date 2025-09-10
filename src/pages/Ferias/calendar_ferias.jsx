@@ -1231,7 +1231,6 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                         display: 'flex', 
                         alignItems: 'center', 
                         justifyContent: 'center',
-                        backgroundColor: '#f8f9fa',
                         borderTop: '1px solid #e5e7eb',
                         margin: '40px auto', // Aumenta a margem para afastar do conteúdo
                         width: '100%',
@@ -1244,8 +1243,9 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                 Carregando mais dados...
                             </div>
                         ) : (
-                            <div style={{ color: '#999', fontSize: '12px', textAlign: 'center' }}>
-                                Carregando automaticamente...
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#999', fontSize: '12px' }}>
+                                <FaRegClock style={{ animation: 'spin 1s linear infinite' }} />
+                                
                             </div>
                         )}
                     </div>
