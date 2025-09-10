@@ -2125,9 +2125,9 @@ const CandidatoRegistro = () => {
                 camposObrigatorios.push('Filial');
                 setClassError(prev => [...prev, 'filial_id']);
             }
-            if (centros_custo && centros_custo.length > 0 && !dadosVaga.centro_custo_id) {
+            if (centros_custo && centros_custo.length > 0 && !dadosVaga.centro_custo) {
                 camposObrigatorios.push('Centro de custo');
-                setClassError(prev => [...prev, 'centro_custo_id']);
+                setClassError(prev => [...prev, 'centro_custo']);
             }
         } else if (activeIndex === getStepDependentesIndex() && activeIndex !== getStepEducacaoIndex()) { // Step Dependentes (apenas se não for o mesmo que educação)
            
@@ -2244,7 +2244,7 @@ const CandidatoRegistro = () => {
             if (filiais && filiais.length > 0 && !dadosVaga.filial_id) {
                 camposObrigatorios.push('Filial');
             }
-            if (centros_custo && centros_custo.length > 0 && !dadosVaga.centro_custo_id) {
+            if (centros_custo && centros_custo.length > 0 && !dadosVaga.centro_custo) {
                 camposObrigatorios.push('Centro de custo');
             }
             if (!dadosVaga.salario?.trim()) {
