@@ -1,29 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { Calendar } from 'primereact/calendar';
-import { InputSwitch } from 'primereact/inputswitch';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { useRef } from 'react';
-import { FaPlus, FaPen, FaTrash, FaPlay, FaPause, FaClock, FaSave, FaSync } from 'react-icons/fa';
+import { FaPlus, FaClock, FaSync, FaTrash, FaSave, FaPen } from 'react-icons/fa';
 import Botao from '@components/Botao';
-import CampoTexto from '@components/CampoTexto';
-import DropdownItens from '@components/DropdownItens';
 import Loading from '@components/Loading';
 import Frame from '@components/Frame';
 import Container from '@components/Container';
+import DataTableAgendamentosN8N from '@components/DataTableAgendamentosN8N';
+import ModalAgendamentoN8N from '@components/ModalAgendamentoN8N';
+import http from '@http';
 
 const ConteudoFrame = styled.div`
     display: flex;
     flex-direction: column;
     gap: 24px;
     width: 100%;
+    overflow-x: hidden;
 `;
 
 const ContainerSemRegistro = styled.div`
@@ -52,14 +46,23 @@ const CardContainer = styled.div`
     flex-wrap: wrap;
     margin-bottom: 32px;
     width: 100%;
+    overflow-x: hidden;
+    
+    @media (max-width: 768px) {
+        gap: 16px;
+    }
+    
+    @media (max-width: 480px) {
+        gap: 12px;
+        flex-direction: column;
+    }
 `;
 
 const Card = styled.div`
     background: ${props => {
         if (props.tipo === 'atestados') return '#F8FAFF';
         if (props.tipo === 'funcionarios') return '#FFF5F5';
-        if (props.tipo === 'backup') return '#FFFDF5';
-        if (props.tipo === 'relatorio') return '#F5FFF8';
+        if (props.tipo === 'estrutura') return '#F5FFF8';
         if (props.tipo === 'total') return '#F8F9FA';
         return '#fff';
     }};
@@ -68,14 +71,17 @@ const Card = styled.div`
     cursor: pointer;
     transition: all 0.2s;
     flex: 1;
-    min-width: 200px;
+    min-width: 180px;
+    
+    @media (max-width: 768px) {
+        min-width: 150px;
+    }
     box-shadow: ${props => props.active ? '0 4px 12px rgba(0,0,0,0.1)' : '0 2px 4px rgba(0,0,0,0.05)'};
     border: 1px solid ${props => {
         if (!props.active) return '#E5E7EB';
         if (props.tipo === 'atestados') return '#1a73e8';
         if (props.tipo === 'funcionarios') return '#dc3545';
-        if (props.tipo === 'backup') return '#ffa000';
-        if (props.tipo === 'relatorio') return '#28a745';
+        if (props.tipo === 'estrutura') return '#28a745';
         if (props.tipo === 'total') return 'var(--black)';
         return '#E5E7EB';
     }};
@@ -97,8 +103,7 @@ const Card = styled.div`
         color: ${props => {
             if (props.tipo === 'atestados') return '#1a73e8';
             if (props.tipo === 'funcionarios') return '#dc3545';
-            if (props.tipo === 'backup') return '#ffa000';
-            if (props.tipo === 'relatorio') return '#28a745';
+            if (props.tipo === 'estrutura') return '#28a745';
             if (props.tipo === 'total') return 'var(--black)';
             return '#222';
         }};
@@ -110,8 +115,7 @@ const Card = styled.div`
         color: ${props => {
             if (props.tipo === 'atestados') return '#1a73e8';
             if (props.tipo === 'funcionarios') return '#dc3545';
-            if (props.tipo === 'backup') return '#ffa000';
-            if (props.tipo === 'relatorio') return '#28a745';
+            if (props.tipo === 'estrutura') return '#28a745';
             if (props.tipo === 'total') return 'var(--black)';
             return '#222';
         }};
@@ -123,8 +127,7 @@ const Card = styled.div`
         color: ${props => {
             if (props.tipo === 'atestados') return '#1a73e8';
             if (props.tipo === 'funcionarios') return '#dc3545';
-            if (props.tipo === 'backup') return '#ffa000';
-            if (props.tipo === 'relatorio') return '#28a745';
+            if (props.tipo === 'estrutura') return '#28a745';
             if (props.tipo === 'total') return 'var(--black)';
             return '#222';
         }};
@@ -169,64 +172,21 @@ const RefreshButton = styled.button`
     }
 `;
 
-const StatusBadge = styled.span`
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
-    text-transform: uppercase;
-    
-    &.ativo {
-        background: #d4edda;
-        color: #155724;
-    }
-    
-    &.inativo {
-        background: #f8d7da;
-        color: #721c24;
-    }
-    
-    &.pausado {
-        background: #fff3cd;
-        color: #856404;
-    }
-`;
 
-const FrequencyBadge = styled.span`
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 500;
-    background: #e3f2fd;
-    color: #1976d2;
-`;
 
-const ActionButtons = styled.div`
-    display: flex;
-    gap: 8px;
-    align-items: center;
-`;
 
-const FormRow = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 16px;
-    
-    &.full-width {
-        grid-template-columns: 1fr;
-    }
-`;
-
-const FormLabel = styled.label`
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: #495057;
-`;
 
 function Agendamentos() {
-    const [agendamentos, setAgendamentos] = useState(null);
+    const [agendamentos, setAgendamentos] = useState([]);
+    const [agrupamentoPorTipo, setAgrupamentoPorTipo] = useState([]);
+    const [paginationInfo, setPaginationInfo] = useState({
+        count: 0,
+        total_pages: 0,
+        current_page: 1,
+        page_size: 10,
+        next: null,
+        previous: null
+    });
     const [modalVisible, setModalVisible] = useState(false);
     const [editingAgendamento, setEditingAgendamento] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -234,119 +194,98 @@ function Agendamentos() {
     const [filtroAtivo, setFiltroAtivo] = useState('total');
     const toast = useRef(null);
 
-    // Estados do formulário
-    const [formData, setFormData] = useState({
-        nome: '',
-        tipo: '',
-        frequencia: '',
-        horario: '',
-        ativo: true,
-        proximaExecucao: null,
-        descricao: ''
-    });
-
-    const tiposAgendamento = [
-        { label: 'Validação de Atestados', value: 'atestados' },
-        { label: 'Validação de Funcionários', value: 'funcionarios' },
-        { label: 'Limpeza de Logs', value: 'limpeza' }
-    ];
-
-    const frequencias = [
-        { label: 'Diário', value: 'diario' },
-        { label: 'Semanal', value: 'semanal' },
-        { label: 'Mensal', value: 'mensal' },
-        { label: 'Trimestral', value: 'trimestral' },
-        { label: 'Anual', value: 'anual' }
-    ];
-
-    // Dados mockados para demonstração
-    useEffect(() => {
-        const mockData = [
-            {
-                id: 1,
-                nome: 'Validação de Atestados - Manhã',
-                tipo: 'atestados',
-                frequencia: 'diario',
-                horario: '08:00',
-                ativo: true,
-                proximaExecucao: new Date('2024-01-15T08:00:00'),
-                ultimaExecucao: new Date('2024-01-14T08:00:00'),
-                descricao: 'Validação automática de atestados médicos todos os dias às 8h'
-            },
-            {
-                id: 2,
-                nome: 'Validação de Funcionários - Semanal',
-                tipo: 'funcionarios',
-                frequencia: 'semanal',
-                horario: '09:00',
-                ativo: true,
-                proximaExecucao: new Date('2024-01-16T09:00:00'),
-                ultimaExecucao: new Date('2024-01-09T09:00:00'),
-                descricao: 'Verificação semanal de dados dos funcionários'
+    // Carregar agendamentos com paginação
+    const fetchDados = async (page = 1, pageSize = 10) => {
+        try {
+            setLoading(true);
+            
+            // Carregar agendamentos paginados com agrupamento
+            const response = await http.get(`/schedule_n8n/?page=${page}&page_size=${pageSize}`);
+            const data = response;
+            
+            // Extrair dados paginados
+            setAgendamentos(data.results || []);
+            setAgrupamentoPorTipo(data.agrupamento_por_tipo || []);
+            setPaginationInfo({
+                count: data.count || 0,
+                total_pages: data.total_pages || 0,
+                current_page: data.current_page || page,
+                page_size: data.page_size || pageSize,
+                next: data.next,
+                previous: data.previous
+            });
+            
+        } catch (error) {
+            if (toast.current) {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Não foi possível carregar os dados.'
+                });
             }
-        ];
-        setAgendamentos(mockData);
+            console.error('Erro ao carregar dados:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchDados();
     }, []);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSave = async (formData) => {
         setSavingAgendamento(true);
 
-        // Simular salvamento
-        setTimeout(() => {
+        try {
             if (editingAgendamento) {
                 // Editar existente
+                const response = await http.put(`/schedule_n8n/${editingAgendamento.id}/`, formData);
                 setAgendamentos(prev => prev.map(item => 
-                    item.id === editingAgendamento.id 
-                        ? { ...formData, id: editingAgendamento.id, ultimaExecucao: item.ultimaExecucao }
-                        : item
+                    item.id === editingAgendamento.id ? response : item
                 ));
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Sucesso',
-                    detail: 'Agendamento atualizado com sucesso!'
-                });
+                if (toast.current) {
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Sucesso',
+                        detail: 'Agendamento atualizado com sucesso!'
+                    });
+                }
             } else {
                 // Criar novo
-                const novoAgendamento = {
-                    ...formData,
-                    id: Date.now(),
-                    ultimaExecucao: null
-                };
-                setAgendamentos(prev => [...prev, novoAgendamento]);
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Sucesso',
-                    detail: 'Agendamento criado com sucesso!'
-                });
+                const response = await http.post('/schedule_n8n/', formData);
+                setAgendamentos(prev => [...prev, response]);
+                if (toast.current) {
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Sucesso',
+                        detail: 'Agendamento criado com sucesso!'
+                    });
+                }
             }
 
             setModalVisible(false);
             setEditingAgendamento(null);
-            setFormData({
-                nome: '',
-                tipo: '',
-                frequencia: '',
-                horario: '',
-                ativo: true,
-                proximaExecucao: null,
-                descricao: ''
-            });
+        } catch (error) {
+            if (toast.current) {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Não foi possível salvar o agendamento.'
+                });
+            }
+            console.error('Erro ao salvar agendamento:', error);
+        } finally {
             setSavingAgendamento(false);
-        }, 1000);
+        }
+    };
+
+    const handleCloseModal = () => {
+        setModalVisible(false);
+        setEditingAgendamento(null);
     };
 
     const handleEdit = (agendamento) => {
         setEditingAgendamento(agendamento);
-        setFormData({
-            nome: agendamento.nome,
-            tipo: agendamento.tipo,
-            frequencia: agendamento.frequencia,
-            horario: agendamento.horario,
-            ativo: agendamento.ativo,
-            proximaExecucao: agendamento.proximaExecucao,
-            descricao: agendamento.descricao
-        });
         setModalVisible(true);
     };
 
@@ -355,87 +294,106 @@ function Agendamentos() {
             message: `Tem certeza que deseja excluir o agendamento "${agendamento.nome}"?`,
             header: 'Confirmar Exclusão',
             icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-                setAgendamentos(prev => prev.filter(item => item.id !== agendamento.id));
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Sucesso',
-                    detail: 'Agendamento excluído com sucesso!'
-                });
+            accept: async () => {
+                try {
+                    await http.delete(`/schedule_n8n/${agendamento.id}/`);
+                    setAgendamentos(prev => prev.filter(item => item.id !== agendamento.id));
+                    if (toast.current) {
+                        toast.current.show({
+                            severity: 'success',
+                            summary: 'Sucesso',
+                            detail: 'Agendamento excluído com sucesso!'
+                        });
+                    }
+                } catch (error) {
+                    if (toast.current) {
+                        toast.current.show({
+                            severity: 'error',
+                            summary: 'Erro',
+                            detail: 'Não foi possível excluir o agendamento.'
+                        });
+                    }
+                    console.error('Erro ao excluir agendamento:', error);
+                }
             }
         });
     };
 
-    const toggleStatus = (agendamento) => {
-        setAgendamentos(prev => prev.map(item => 
-            item.id === agendamento.id 
-                ? { ...item, ativo: !item.ativo }
-                : item
-        ));
-        
-        toast.current.show({
-            severity: 'success',
-            summary: 'Sucesso',
-            detail: `Agendamento ${agendamento.ativo ? 'pausado' : 'ativado'} com sucesso!`
-        });
+    const toggleStatus = async (agendamento) => {
+        try {
+            const endpoint = agendamento.ativo ? 'deactivate' : 'activate';
+            const response = await http.post(`/schedule_n8n/${agendamento.id}/${endpoint}/`);
+            
+            setAgendamentos(prev => prev.map(item => 
+                item.id === agendamento.id 
+                    ? { ...item, ativo: !item.ativo }
+                    : item
+            ));
+            
+            if (toast.current) {
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: `Agendamento ${agendamento.ativo ? 'desativado' : 'ativado'} com sucesso!`
+                });
+            }
+        } catch (error) {
+            if (toast.current) {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Não foi possível alterar o status do agendamento.'
+                });
+            }
+            console.error('Erro ao alterar status:', error);
+        }
     };
 
-    const statusTemplate = (rowData) => {
-        const status = rowData.ativo ? 'ativo' : 'inativo';
-        return <StatusBadge className={status}>{rowData.ativo ? 'Ativo' : 'Inativo'}</StatusBadge>;
-    };
 
-    const frequenciaTemplate = (rowData) => {
-        const freq = frequencias.find(f => f.value === rowData.frequencia);
-        return <FrequencyBadge>{freq ? freq.label : rowData.frequencia}</FrequencyBadge>;
-    };
 
-    const proximaExecucaoTemplate = (rowData) => {
-        if (!rowData.proximaExecucao) return '-';
-        return new Date(rowData.proximaExecucao).toLocaleString('pt-BR');
-    };
-
-    const ultimaExecucaoTemplate = (rowData) => {
-        if (!rowData.ultimaExecucao) return 'Nunca';
-        return new Date(rowData.ultimaExecucao).toLocaleString('pt-BR');
-    };
-
-    const actionsTemplate = (rowData) => {
-        return (
-            <ActionButtons>
-                <Button
-                    icon={rowData.ativo ? <FaPause /> : <FaPlay />}
-                    className="p-button-rounded p-button-text p-button-sm"
-                    onClick={() => toggleStatus(rowData)}
-                    tooltip={rowData.ativo ? 'Pausar' : 'Ativar'}
-                />
-                <Button
-                    icon={<FaPen />}
-                    className="p-button-rounded p-button-text p-button-sm"
-                    onClick={() => handleEdit(rowData)}
-                    tooltip="Editar"
-                />
-                <Button
-                    icon={<FaTrash />}
-                    className="p-button-rounded p-button-text p-button-sm p-button-danger"
-                    onClick={() => handleDelete(rowData)}
-                    tooltip="Excluir"
-                />
-            </ActionButtons>
-        );
-    };
-
-    // Funções para contar agendamentos por tipo
+    // Funções para contar agendamentos por tipo baseado no agrupamento
     const contarAgendamentosPorTipo = (tipo) => {
-        if (!agendamentos) return 0;
-        if (tipo === 'total') return agendamentos.length;
-        return agendamentos.filter(a => a.tipo === tipo).length;
+        if (!agrupamentoPorTipo || agrupamentoPorTipo.length === 0) return 0;
+        
+        if (tipo === 'total') {
+            return agrupamentoPorTipo.reduce((sum, item) => sum + item.total, 0);
+        }
+        
+        // Mapear tipos do card para tipos da API
+        const tipoMap = {
+            'atestados': 'Atestados',
+            'funcionarios': 'Funcionários',  
+            'estrutura': 'Estrutura'
+        };
+        
+        const tipoAPI = tipoMap[tipo];
+        const item = agrupamentoPorTipo.find(item => 
+            item.entidade_tipo && item.entidade_tipo.includes(tipoAPI)
+        );
+        
+        return item ? item.total : 0;
     };
 
     const contarAgendamentosAtivosPorTipo = (tipo) => {
-        if (!agendamentos) return 0;
-        if (tipo === 'total') return agendamentos.filter(a => a.ativo).length;
-        return agendamentos.filter(a => a.tipo === tipo && a.ativo).length;
+        if (!agrupamentoPorTipo || agrupamentoPorTipo.length === 0) return 0;
+        
+        if (tipo === 'total') {
+            return agrupamentoPorTipo.reduce((sum, item) => sum + (item.total_abertos || 0), 0);
+        }
+        
+        // Mapear tipos do card para tipos da API
+        const tipoMap = {
+            'atestados': 'Atestados',
+            'funcionarios': 'Funcionários',
+            'estrutura': 'Estrutura'
+        };
+        
+        const tipoAPI = tipoMap[tipo];
+        const item = agrupamentoPorTipo.find(item => 
+            item.entidade_tipo && item.entidade_tipo.includes(tipoAPI)
+        );
+        
+        return item ? (item.total_abertos || 0) : 0;
     };
 
     const cardConfig = {
@@ -450,9 +408,14 @@ function Agendamentos() {
             tipo: 'atestados'
         },
         funcionarios: {
-            icon: <FaPlay fill="#dc3545" />,
+            icon: <FaPlus fill="#dc3545" />,
             titulo: 'Funcionários',
             tipo: 'funcionarios'
+        },
+        estrutura: {
+            icon: <FaSync fill="#28a745" />,
+            titulo: 'Estrutura',
+            tipo: 'estrutura'
         }
     };
 
@@ -464,22 +427,25 @@ function Agendamentos() {
         }
     };
 
-    const recarregarDados = () => {
-        setLoading(true);
-        // Simular recarregamento
-        setTimeout(() => {
-            setLoading(false);
+    const handlePageChange = (event) => {
+        const newPage = event.page + 1; // PrimeReact usa base 0, API usa base 1
+        fetchDados(newPage, event.rows);
+    };
+
+    const recarregarDados = async () => {
+        await fetchDados(paginationInfo.current_page, paginationInfo.page_size);
+        if (toast.current) {
             toast.current.show({
                 severity: 'success',
                 summary: 'Sucesso',
                 detail: 'Dados recarregados com sucesso!'
             });
-        }, 1000);
+        }
     };
 
     // Filtrar agendamentos baseado no filtro ativo
-    const agendamentosFiltrados = agendamentos ? 
-        (filtroAtivo === 'total' ? agendamentos : agendamentos.filter(a => a.tipo === filtroAtivo)) 
+    const agendamentosFiltrados = agendamentos !== null ? 
+        (filtroAtivo === 'total' ? agendamentos : agendamentos.filter(a => a.entidade_tipo === filtroAtivo)) 
         : [];
 
     return (
@@ -489,7 +455,7 @@ function Agendamentos() {
             <ConfirmDialog />
             
             {
-                agendamentos ?
+                agendamentos !== null && agrupamentoPorTipo !== null ?
                 <ConteudoFrame>
                     <Frame gap="12px">
                         <Container gap="12px">
@@ -513,7 +479,10 @@ function Agendamentos() {
                                             </div>
                                             <div className="quantidade">{ativos}</div>
                                             <div style={{ fontSize: 13, color: '#888', marginTop: 2 }}>
-                                                {ativos} de {total} ativo{ativos !== 1 ? 's' : ''}
+                                                {tipo === 'total' ? 
+                                                    `${ativos} abertos de ${total} total` :
+                                                    `${ativos} abertos de ${total} total`
+                                                }
                                             </div>
                                         </Card>
                                     );
@@ -527,10 +496,11 @@ function Agendamentos() {
                                 alignItems: 'center',
                                 gap: '12px',
                                 width: '100%',
-                                marginBottom: '16px' 
+                                marginBottom: '16px',
+                                overflowX: 'hidden'
                                 }}>
                                     <div></div>
-                                    <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', alignItems: 'center' }}>
+                                    <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
                                         <Botao
                                             size="small"
                                             aoClicar={() => setModalVisible(true)}
@@ -546,22 +516,18 @@ function Agendamentos() {
                                     </div>
                             </div>
                             
-                            <DataTable
-                                value={agendamentosFiltrados}
-                                paginator
-                                rows={10}
-                                emptyMessage="Nenhum agendamento encontrado"
-                                className="p-datatable-sm"
-                            >
-                                <Column field="nome" header="Nome" sortable style={{ width: '25%' }} />
-                                <Column field="tipo" header="Tipo" sortable style={{ width: '15%' }} />
-                                <Column body={frequenciaTemplate} header="Frequência" style={{ width: '12%' }} />
-                                <Column field="horario" header="Horário" style={{ width: '10%' }} />
-                                <Column body={statusTemplate} header="Status" style={{ width: '10%' }} />
-                                <Column body={proximaExecucaoTemplate} header="Próxima Execução" style={{ width: '15%' }} />
-                                <Column body={ultimaExecucaoTemplate} header="Última Execução" style={{ width: '15%' }} />
-                                <Column body={actionsTemplate} header="Ações" style={{ width: '13%' }} />
-                            </DataTable>
+                            <DataTableAgendamentosN8N
+                                data={agendamentosFiltrados}
+                                onEdit={handleEdit}
+                                onDelete={handleDelete}
+                                onToggleStatus={toggleStatus}
+                                loading={loading}
+                                paginator={true}
+                                rows={paginationInfo.page_size}
+                                totalRecords={paginationInfo.count}
+                                onPageChange={handlePageChange}
+                                first={(paginationInfo.current_page - 1) * paginationInfo.page_size}
+                            />
                         </Container>
                     </Frame>
                 </ConteudoFrame>
@@ -569,183 +535,19 @@ function Agendamentos() {
                 <ContainerSemRegistro>
                     <section style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
                         <FaClock size={64} color="#6c757d" />
-                        <h6>Não há agendamentos registrados</h6>
-                        <p>Aqui você verá todos os agendamentos de tarefas automáticas registrados.</p>
+                        <h6>Carregando dados...</h6>
+                        <p>Aguarde enquanto carregamos os agendamentos e estatísticas.</p>
                     </section>
                 </ContainerSemRegistro>
             }
 
-            <Dialog
-                header={
-                    <div style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: '12px',
-                        fontSize: '20px',
-                        fontWeight: '600',
-                        color: '#495057'
-                    }}>
-                        {editingAgendamento ? 'Editar Agendamento' : 'Novo Agendamento'}
-                    </div>
-                }
+            <ModalAgendamentoN8N
                 visible={modalVisible}
-                onHide={() => {
-                    setModalVisible(false);
-                    setEditingAgendamento(null);
-                    setFormData({
-                        nome: '',
-                        tipo: '',
-                        frequencia: '',
-                        horario: '',
-                        ativo: true,
-                        proximaExecucao: null,
-                        descricao: ''
-                    });
-                }}
-                style={{ width: '600px' }}
-                modal
-                closeOnEscape
-                closable
-                footer={
-                    <div style={{ 
-                        display: 'flex', 
-                        justifyContent: 'end', 
-                        alignItems: 'center',
-                        padding: '16px 0'
-                    }}>
-                        <div style={{ display: 'flex', gap: '12px' }}>
-                            <Botao
-                                size="medium"
-                                aoClicar={() => {
-                                    setModalVisible(false);
-                                    setEditingAgendamento(null);
-                                    setFormData({
-                                        nome: '',
-                                        tipo: '',
-                                        frequencia: '',
-                                        horario: '',
-                                        ativo: true,
-                                        proximaExecucao: null,
-                                        descricao: ''
-                                    });
-                                }}
-                                style={{
-                                    background: 'linear-gradient(135deg, #6c757d 0%, #5a6268 100%)',
-                                    border: 'none',
-                                    color: 'white'
-                                }}
-                            >
-                                Cancelar
-                            </Botao>
-                            <Botao
-                                size="medium"
-                                aoClicar={handleSubmit}
-                                loading={savingAgendamento}
-                                style={{
-                                    background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
-                                    border: 'none',
-                                    color: 'white'
-                                }}
-                            >
-                                <FaSave /> {editingAgendamento ? 'Atualizar' : 'Salvar'}
-                            </Botao>
-                        </div>
-                    </div>
-                }
-            >
-                <div style={{ padding: '0' }}>
-                    <form onSubmit={handleSubmit}>
-                        <FormRow>
-                            <div>
-                                <CampoTexto
-                                    label="Nome do Agendamento"
-                                    valor={formData.nome}
-                                    setValor={(valor) => setFormData({...formData, nome: valor})}
-                                    name="nome"
-                                    placeholder="Ex: Validação de Atestados"
-                                    required={true}
-                                    width="100%"
-                                />
-                            </div>
-                            <div>
-                                <DropdownItens
-                                    label="Tipo"
-                                    valor={formData.tipo}
-                                    setValor={(valor) => setFormData({...formData, tipo: valor})}
-                                    options={tiposAgendamento}
-                                    name="tipo"
-                                    placeholder="Selecione o tipo"
-                                    required={true}
-                                    $width="100%"
-                                    optionLabel="label"
-                                />
-                            </div>
-                        </FormRow>
-
-                        <FormRow>
-                            <div>
-                                <DropdownItens
-                                    label="Frequência"
-                                    valor={formData.frequencia}
-                                    setValor={(valor) => setFormData({...formData, frequencia: valor})}
-                                    options={frequencias}
-                                    name="frequencia"
-                                    placeholder="Selecione a frequência"
-                                    required={true}
-                                    $width="100%"
-                                    optionLabel="label"
-                                />
-                            </div>
-                            <div>
-                                <CampoTexto
-                                    label="Horário"
-                                    valor={formData.horario}
-                                    setValor={(valor) => setFormData({...formData, horario: valor})}
-                                    name="horario"
-                                    type="time"
-                                    required={true}
-                                    width="100%"
-                                />
-                            </div>
-                        </FormRow>
-
-                        <FormRow>
-                            <div>
-                                <FormLabel>Próxima Execução</FormLabel>
-                                <Calendar
-                                    value={formData.proximaExecucao}
-                                    onChange={(e) => setFormData({...formData, proximaExecucao: e.value})}
-                                    showTime
-                                    hourFormat="24"
-                                    className="w-full"
-                                    required
-                                />
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '24px' }}>
-                                <InputSwitch
-                                    checked={formData.ativo}
-                                    onChange={(e) => setFormData({...formData, ativo: e.value})}
-                                />
-                                <FormLabel style={{ margin: 0 }}>Ativo</FormLabel>
-                            </div>
-                        </FormRow>
-
-                        <FormRow className="full-width">
-                            <div>
-                                <CampoTexto
-                                    label="Descrição"
-                                    valor={formData.descricao}
-                                    setValor={(valor) => setFormData({...formData, descricao: valor})}
-                                    name="descricao"
-                                    placeholder="Descreva o que este agendamento faz..."
-                                    rows={3}
-                                    width="100%"
-                                />
-                            </div>
-                        </FormRow>
-                    </form>
-                </div>
-            </Dialog>
+                onHide={handleCloseModal}
+                onSave={handleSave}
+                editingData={editingAgendamento}
+                saving={savingAgendamento}
+            />
         </>
     );
 }

@@ -347,20 +347,18 @@ function DataTableTiposBeneficio({
         <>
             <ConfirmDialog  />
             <Toast ref={toast} />
-            <BotaoGrupo align="space-between">
-                <CampoTexto  
-                    width={'320px'} 
-                    valor={globalFilterValue}
-                    setValor={onGlobalFilterChange}
-                    type="search" 
-                    label="" 
-                    placeholder="Buscar tipo de benefício" 
-                />
-                <BotaoGrupo align="end">
+            <BotaoGrupo verticalalign="center" align="space-between">
+                <div className="flex justify-content-end">
+                    <span className="p-input-icon-left">
+                        <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder={t('search_benefit_types')} 
+                        />
+                    </span>
+                </div>
+                 <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                     <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
-                        <GrAddCircle className={styles.icon} stroke="var(--secundaria)"/> {t('add')} Tipo de Benefício
+                        <GrAddCircle stroke="var(--secundaria)"/> {t('add')} Tipo de Benefício
                     </Botao>
-                </BotaoGrupo>
+                </div>
             </BotaoGrupo>
             <DataTable 
                 value={beneficios} 
