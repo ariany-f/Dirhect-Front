@@ -1231,7 +1231,6 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                         display: 'flex', 
                         alignItems: 'center', 
                         justifyContent: 'center',
-                        borderTop: '1px solid #e5e7eb',
                         margin: '40px auto', // Aumenta a margem para afastar do conteúdo
                         width: '100%',
                         position: 'relative',
