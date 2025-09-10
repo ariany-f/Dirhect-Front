@@ -212,18 +212,53 @@ function BarraLateral({ $sidebarOpened }) {
             // Se já existe no ArmazenadorToken, usa ele
             if (ArmazenadorToken.UserPermissions && Array.isArray(ArmazenadorToken.UserPermissions) && ArmazenadorToken.UserPermissions.length > 0) {
                 setGrupos(ArmazenadorToken.UserPermissions);
-                // Buscar parâmetros de menus apenas se não existir no localStorage
-                http.get('parametros/por-assunto/?assunto=MENUS')
-                    .then(response => {
-                        const parametros = response.parametros || {};
+                
+                // Verificar se precisa buscar e adicionar permissões do Acesso Base
+                const grupoAtual = ArmazenadorToken.UserPermissions.find(g => g.name === usuario.tipo);
+                const temPermissoesAcessoBase = grupoAtual && grupoAtual.permissions.some(p => p.codename === 'view_home');
+                
+                if (usuario.tipo !== 'Acesso Base' && !temPermissoesAcessoBase) {
+                    // Buscar permissões do Acesso Base e adicionar
+                    Promise.all([
+                        http.get('parametros/por-assunto/?assunto=MENUS'),
+                        http.get(`permissao_grupo/?format=json&name=Acesso Base`)
+                    ]).then(([parametrosResponse, acessoBaseResponse]) => {
+                        const parametros = parametrosResponse.parametros || {};
                         setParametrosMenus(parametros);
                         ArmazenadorToken.definirParametrosMenus(parametros);
-                        setIsLoading(false); // Só define como false quando tudo estiver carregado
-                    })
-                    .catch(error => {
-                        console.log('Erro ao buscar parâmetros de menus:', error);
-                        setIsLoading(false); // Define como false mesmo com erro
+                        
+                        if (acessoBaseResponse && acessoBaseResponse[0] && acessoBaseResponse[0].permissions) {
+                            setGrupos(prevGrupos => {
+                                const gruposComAcessoBase = prevGrupos.map(grupo => ({
+                                    ...grupo,
+                                    permissions: [
+                                        ...grupo.permissions,
+                                        ...acessoBaseResponse[0].permissions
+                                    ]
+                                }));
+                                ArmazenadorToken.definirPermissoes(gruposComAcessoBase);
+                                return gruposComAcessoBase;
+                            });
+                        }
+                        setIsLoading(false);
+                    }).catch(error => {
+                        console.log('Erro ao buscar dados adicionais:', error);
+                        setIsLoading(false);
                     });
+                } else {
+                    // Buscar apenas parâmetros de menus
+                    http.get('parametros/por-assunto/?assunto=MENUS')
+                        .then(response => {
+                            const parametros = response.parametros || {};
+                            setParametrosMenus(parametros);
+                            ArmazenadorToken.definirParametrosMenus(parametros);
+                            setIsLoading(false);
+                        })
+                        .catch(error => {
+                            console.log('Erro ao buscar parâmetros de menus:', error);
+                            setIsLoading(false);
+                        });
+                }
             } else {
                 // Buscar grupos e parâmetros em paralelo
                 Promise.all([

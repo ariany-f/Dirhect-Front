@@ -76,9 +76,9 @@ const Card = styled.div`
     @media (max-width: 768px) {
         min-width: 150px;
     }
-    box-shadow: ${props => props.active ? '0 4px 12px rgba(0,0,0,0.1)' : '0 2px 4px rgba(0,0,0,0.05)'};
+    box-shadow: ${props => props.$active ? '0 4px 12px rgba(0,0,0,0.1)' : '0 2px 4px rgba(0,0,0,0.05)'};
     border: 1px solid ${props => {
-        if (!props.active) return '#E5E7EB';
+        if (!props.$active) return '#E5E7EB';
         if (props.tipo === 'atestados') return '#1a73e8';
         if (props.tipo === 'funcionarios') return '#dc3545';
         if (props.tipo === 'estrutura') return '#28a745';
@@ -471,7 +471,7 @@ function Agendamentos() {
                                         <Card 
                                             key={tipo}
                                             tipo={config.tipo}
-                                            active={filtroAtivo === tipo}
+                                            $active={filtroAtivo === tipo}
                                             onClick={() => handleFiltroChange(tipo)}
                                         >
                                             <div className="header">
