@@ -68,7 +68,8 @@ const ModalAgendamentoN8N = ({
     const [formData, setFormData] = useState({
         nome: '',
         descricao: '',
-        tipo_agendamento: '',
+        tipo: '',
+        entidade: '',
         data_inicio: null,
         data_fim: null,
         intervalo_recorrencia: 1,
@@ -76,21 +77,26 @@ const ModalAgendamentoN8N = ({
         horario_execucao: '',
         ativo: true,
         max_tentativas: 3,
-        n8n_workflow_id: ''
+        webhook_url: ''
     });
 
-    const tiposAgendamento = [
-        { label: 'Atestado', value: 'atestado' },
+    const tiposExecucao = [
+        { label: 'Recorrente', value: 'recorrente' },
+        { label: 'Única Execução', value: 'unico' }
+    ];
+
+    const entidades = [
         { label: 'Funcionário', value: 'funcionario' },
+        { label: 'Atestado', value: 'atestado' },
         { label: 'Estrutura Organizacional', value: 'estrutura_organizacional' }
     ];
 
     const unidadesRecorrencia = [
-        { label: 'Minutos', value: 'minutes' },
-        { label: 'Horas', value: 'hours' },
-        { label: 'Dias', value: 'days' },
-        { label: 'Semanas', value: 'weeks' },
-        { label: 'Meses', value: 'months' }
+        { label: 'Minutos', value: 'minutos' },
+        { label: 'Horas', value: 'horas' },
+        { label: 'Dias', value: 'dias' },
+        { label: 'Semanas', value: 'semanas' },
+        { label: 'Meses', value: 'meses' }
     ];
 
     // Resetar formulário quando modal abre/fecha
@@ -101,7 +107,8 @@ const ModalAgendamentoN8N = ({
                 setFormData({
                     nome: editingData.nome || '',
                     descricao: editingData.descricao || '',
-                    tipo_agendamento: editingData.tipo_agendamento || '',
+                    tipo: editingData.tipo || '',
+                    entidade: editingData.entidade || '',
                     data_inicio: editingData.data_inicio ? new Date(editingData.data_inicio) : null,
                     data_fim: editingData.data_fim ? new Date(editingData.data_fim) : null,
                     intervalo_recorrencia: editingData.intervalo_recorrencia || 1,
@@ -109,7 +116,7 @@ const ModalAgendamentoN8N = ({
                     horario_execucao: editingData.horario_execucao || '',
                     ativo: editingData.ativo !== undefined ? editingData.ativo : true,
                     max_tentativas: editingData.max_tentativas || 3,
-                    n8n_workflow_id: editingData.n8n_workflow_id || ''
+                    webhook_url: editingData.webhook_url || ''
                 });
             } else {
                 // Modo criação - resetar formulário
@@ -122,7 +129,8 @@ const ModalAgendamentoN8N = ({
         setFormData({
             nome: '',
             descricao: '',
-            tipo_agendamento: '',
+            tipo: '',
+            entidade: '',
             data_inicio: null,
             data_fim: null,
             intervalo_recorrencia: 1,
@@ -130,7 +138,7 @@ const ModalAgendamentoN8N = ({
             horario_execucao: '',
             ativo: true,
             max_tentativas: 3,
-            n8n_workflow_id: ''
+            webhook_url: ''
         });
     };
 
@@ -157,7 +165,7 @@ const ModalAgendamentoN8N = ({
 
     return (
         <OverlayRight $opened={visible} onClick={handleOverlayClick}>
-            <DialogEstilizadoRight $opened={visible} $width="600px" onClick={e => e.stopPropagation()}>
+            <DialogEstilizadoRight $opened={visible} $width="40vw" onClick={e => e.stopPropagation()}>
                 <ModalHeader>
                     <ModalTitle>
                         {editingData ? 'Editar Agendamento' : 'Novo Agendamento'}
@@ -184,12 +192,12 @@ const ModalAgendamentoN8N = ({
                                 </div>
                                 <div>
                                     <DropdownItens
-                                        label="Tipo"
-                                        valor={formData.tipo_agendamento}
-                                        setValor={(valor) => setFormData({...formData, tipo_agendamento: valor})}
-                                        options={tiposAgendamento}
-                                        name="tipo_agendamento"
-                                        placeholder="Selecione o tipo"
+                                        label="Tipo de Execução"
+                                        valor={formData.tipo}
+                                        setValor={(valor) => setFormData({...formData, tipo: valor})}
+                                        options={tiposExecucao}
+                                        name="tipo"
+                                        placeholder="Recorrente ou única"
                                         required={true}
                                         $width="100%"
                                         optionLabel="label"
@@ -198,46 +206,77 @@ const ModalAgendamentoN8N = ({
                             </FormRow>
 
                             <FormRow>
-                                <div>
-                                    <CampoTexto
-                                        label="Intervalo de Recorrência"
-                                        valor={formData.intervalo_recorrencia}
-                                        setValor={(valor) => setFormData({...formData, intervalo_recorrencia: parseInt(valor) || 1})}
-                                        name="intervalo_recorrencia"
-                                        type="number"
-                                        placeholder="1"
-                                        min="1"
-                                        required={true}
-                                        width="100%"
-                                    />
-                                </div>
                                 <div>
                                     <DropdownItens
-                                        label="Unidade de Recorrência"
-                                        valor={formData.unidade_recorrencia}
-                                        setValor={(valor) => setFormData({...formData, unidade_recorrencia: valor})}
-                                        options={unidadesRecorrencia}
-                                        name="unidade_recorrencia"
-                                        placeholder="Selecione a unidade"
+                                        label="Entidade"
+                                        valor={formData.entidade}
+                                        setValor={(valor) => setFormData({...formData, entidade: valor})}
+                                        options={entidades}
+                                        name="entidade"
+                                        placeholder="Selecione a entidade"
                                         required={true}
                                         $width="100%"
                                         optionLabel="label"
                                     />
                                 </div>
-                            </FormRow>
-
-                            <FormRow>
                                 <div>
                                     <CampoTexto
-                                        label="Horário de Execução"
-                                        valor={formData.horario_execucao}
-                                        setValor={(valor) => setFormData({...formData, horario_execucao: valor})}
-                                        name="horario_execucao"
-                                        type="time"
-                                        placeholder="08:00"
+                                        label="Webhook URL"
+                                        valor={formData.webhook_url}
+                                        setValor={(valor) => setFormData({...formData, webhook_url: valor})}
+                                        name="webhook_url"
+                                        placeholder="https://n8n.exemplo.com/webhook/..."
+                                        required={true}
                                         width="100%"
                                     />
                                 </div>
+                            </FormRow>
+
+                            {formData.tipo === 'recorrente' && (
+                                <FormRow>
+                                    <div>
+                                        <CampoTexto
+                                            label="Intervalo de Recorrência"
+                                            valor={formData.intervalo_recorrencia}
+                                            setValor={(valor) => setFormData({...formData, intervalo_recorrencia: parseInt(valor) || 1})}
+                                            name="intervalo_recorrencia"
+                                            type="number"
+                                            placeholder="1"
+                                            min="1"
+                                            required={true}
+                                            width="100%"
+                                        />
+                                    </div>
+                                    <div>
+                                        <DropdownItens
+                                            label="Unidade de Recorrência"
+                                            valor={formData.unidade_recorrencia}
+                                            setValor={(valor) => setFormData({...formData, unidade_recorrencia: valor})}
+                                            options={unidadesRecorrencia}
+                                            name="unidade_recorrencia"
+                                            placeholder="Selecione a unidade"
+                                            required={true}
+                                            $width="100%"
+                                            optionLabel="label"
+                                        />
+                                    </div>
+                                </FormRow>
+                            )}
+
+                            <FormRow>
+                                {formData.tipo === 'recorrente' && (
+                                    <div>
+                                        <CampoTexto
+                                            label="Horário de Execução"
+                                            valor={formData.horario_execucao}
+                                            setValor={(valor) => setFormData({...formData, horario_execucao: valor})}
+                                            name="horario_execucao"
+                                            type="time"
+                                            placeholder="08:00"
+                                            width="100%"
+                                        />
+                                    </div>
+                                )}
                                 <div>
                                     <CampoTexto
                                         label="Máximo de Tentativas"
@@ -256,7 +295,9 @@ const ModalAgendamentoN8N = ({
 
                             <FormRow>
                                 <div>
-                                    <FormLabel>Data de Início</FormLabel>
+                                    <FormLabel>
+                                        {formData.tipo === 'unica' ? 'Data/Hora de Execução' : 'Data de Início'}
+                                    </FormLabel>
                                     <Calendar
                                         value={formData.data_inicio}
                                         onChange={(e) => setFormData({...formData, data_inicio: e.value})}
@@ -266,29 +307,22 @@ const ModalAgendamentoN8N = ({
                                         required
                                     />
                                 </div>
-                                <div>
-                                    <FormLabel>Data de Fim (Opcional)</FormLabel>
-                                    <Calendar
-                                        value={formData.data_fim}
-                                        onChange={(e) => setFormData({...formData, data_fim: e.value})}
-                                        showTime
-                                        hourFormat="24"
-                                        className="w-full"
-                                    />
-                                </div>
+                                {formData.tipo === 'recorrente' && (
+                                    <div>
+                                        <FormLabel>Data de Fim (Opcional)</FormLabel>
+                                        <Calendar
+                                            value={formData.data_fim}
+                                            onChange={(e) => setFormData({...formData, data_fim: e.value})}
+                                            showTime
+                                            hourFormat="24"
+                                            className="w-full"
+                                        />
+                                    </div>
+                                )}
                             </FormRow>
 
                             <FormRow>
-                                <div>
-                                    <CampoTexto
-                                        label="N8N Workflow ID"
-                                        valor={formData.n8n_workflow_id}
-                                        setValor={(valor) => setFormData({...formData, n8n_workflow_id: valor})}
-                                        name="n8n_workflow_id"
-                                        placeholder="ID do workflow no N8N"
-                                        width="100%"
-                                    />
-                                </div>
+                                <div></div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '24px' }}>
                                     <InputSwitch
                                         checked={formData.ativo}
