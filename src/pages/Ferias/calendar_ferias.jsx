@@ -231,35 +231,19 @@ const EventBar = styled.div`
     overflow: hidden;
     white-space: nowrap;
     
-    animation: slideInFromBottom 0.4s ease-out forwards;
+    animation: fadeInSoft 0.4s ease-out forwards;
     animation-delay: 0s; /* Sem delay para novos itens */
     
     
     @keyframes fadeInSoft {
         0% {
             opacity: 0;
-            transform: translateY(8px);
         }
         100% {
             opacity: 1;
-            transform: translateY(0);
         }
     }
     
-    @keyframes slideInFromBottom {
-        0% {
-            opacity: 0;
-            transform: translateY(20px) scale(0.95);
-        }
-        50% {
-            opacity: 0.7;
-            transform: translateY(-2px) scale(1.02);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-    }
     color: #fff;
     background: ${({ $type }) => {
         if ($type === 'aSolicitar') return 'linear-gradient(to right, #ff5ca7, #ffb6c1)';
