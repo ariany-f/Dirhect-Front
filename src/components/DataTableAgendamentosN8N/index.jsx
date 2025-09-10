@@ -185,10 +185,10 @@ const DataTableAgendamentosN8N = ({
             <Column body={entidadeTemplate} header="Entidade" style={{ width: '12%', minWidth: '100px' }} />
             <Column body={tipoTemplate} header="Tipo" style={{ width: '12%', minWidth: '100px' }} />
             <Column body={statusTemplate} header="Status" style={{ width: '10%', minWidth: '80px' }} />
-            <Column body={proximaExecucaoTemplate} header="Próxima Execução" style={{ width: '17%', minWidth: '140px' }} />
-            <Column body={ultimaExecucaoTemplate} header="Última Execução" style={{ width: '17%', minWidth: '140px' }} />
+            <Column body={proximaExecucaoTemplate} header="Próxima Execução" style={{ width: '15%', minWidth: '140px' }} />
+            <Column body={ultimaExecucaoTemplate} header="Última Execução" style={{ width: '15%', minWidth: '140px' }} />
             <Column field="tentativas_realizadas" header="Tent." style={{ width: '6%', minWidth: '50px', textAlign: 'center' }} />
-            <Column body={actionsTemplate} header="" style={{ width: '8%', minWidth: '100px' }} />
+            <Column body={actionsTemplate} header="" style={{ width: '12%', minWidth: '100px' }} />
         </StyledDataTable>
     );
 };
