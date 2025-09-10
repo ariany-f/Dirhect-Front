@@ -272,6 +272,7 @@ function FeriasListagem() {
     const [nextCursor, setNextCursor] = useState(null);
     const [hasMore, setHasMore] = useState(true);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const [isRendering, setIsRendering] = useState(false); // Estado para controlar renderização
     
     // Estados gerais
     const [searchTerm, setSearchTerm] = useState('');
@@ -436,11 +437,22 @@ function FeriasListagem() {
                                 ...item,
                                 _isNewItem: true
                             }));
+                            
+                            // Sinaliza que está renderizando
+                            setIsRendering(true);
                             setFerias(prev => [...(prev || []), ...newDataWithMarker]);
                             console.log('✅ Dados adicionados ao calendário:', newDataWithMarker?.length, 'novos itens únicos');
                             console.log('🚫 Duplicatas filtradas:', newData.length - newItemsOnly.length, 'itens');
+                            
+                            // Aguarda a renderização antes de finalizar loading
+                            setTimeout(() => {
+                                setIsLoadingMore(false);
+                                setIsRendering(false);
+                                console.log('✅ Renderização finalizada');
+                            }, 200);
                         } else {
                             console.log('⚠️ Nenhum item novo encontrado - todos já existem no calendário');
+                            setIsLoadingMore(false);
                         }
                     } else {
                         setFerias(newData);
@@ -468,7 +480,10 @@ function FeriasListagem() {
         } finally {
             if (!abortControllerRef.current.signal.aborted) {
                 setLoading(false);
-                setIsLoadingMore(false);
+                // Para lazy loading, só finaliza se não estiver renderizando
+                if (!isLoadMore) {
+                    setIsLoadingMore(false);
+                }
             }
         }
     }, [buildApiUrl, tab]);
@@ -703,6 +718,7 @@ function FeriasListagem() {
                                 onLoadMore={loadMore}
                                 hasMore={hasMore}
                                 isLoadingMore={isLoadingMore}
+                                isRendering={isRendering}
                             />
                         )}
                         {tab === 'lista' && (

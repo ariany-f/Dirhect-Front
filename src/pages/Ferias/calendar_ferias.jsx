@@ -456,7 +456,7 @@ const DAYS_BATCH = 30; // Carrega mais 1 mês por vez
 const INITIAL_COLABS = 3;
 const COLABS_BATCH = 2;
 
-const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadingMore }) => {
+const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadingMore, isRendering }) => {
     const [visualizacao, setVisualizacao] = useState('trimestral'); // 'mensal' ou 'trimestral'
     const [modalEvento, setModalEvento] = useState(null); // {colab, evento, tipo}
     const [isDragging, setIsDragging] = useState(false);
@@ -1265,7 +1265,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                         position: 'relative',
                         zIndex: 1
                     }}>
-                        {isLoadingMore ? (
+                        {(isLoadingMore || isRendering) ? (
                             <div style={{ 
                                 display: 'flex', 
                                 alignItems: 'center', 
@@ -1274,7 +1274,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                 fontSize: '14px' 
                             }}>
                                 <FaRegClock style={{ animation: 'spin 1s linear infinite' }} />
-                                Carregando mais dados...
+                                {isLoadingMore ? 'Carregando mais dados...' : 'Renderizando novos itens...'}
                             </div>
                         ) : (
                             <div style={{ 

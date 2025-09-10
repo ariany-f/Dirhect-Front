@@ -188,10 +188,10 @@ const ModalAgendamentoN8N = ({
             // Formatação do horário para envio
             const dataToSend = {
                 ...formData,
-                // Garante que horário_execucao esteja no formato correto (HH:MM:SS ou vazio)
+                // Garante que horário_execucao esteja no formato correto (HH:MM:SS ou null/vazio)
                 horario_execucao: formData.horario_execucao 
                     ? formatTimeForAPI(formData.horario_execucao)
-                    : ''
+                    : (formData.tipo === 'unico' ? null : '')
             };
             onSave(dataToSend);
         }
@@ -312,19 +312,17 @@ const ModalAgendamentoN8N = ({
                             )}
 
                             <FormRow>
-                                {formData.tipo === 'recorrente' && (
-                                    <div>
-                                        <CampoTexto
-                                            label="Horário de Execução"
-                                            valor={formData.horario_execucao}
-                                            setValor={(valor) => setFormData({...formData, horario_execucao: valor})}
-                                            name="horario_execucao"
-                                            type="time"
-                                            placeholder="08:00"
-                                            width="100%"
-                                        />
-                                    </div>
-                                )}
+                                <div>
+                                    <CampoTexto
+                                        label="Horário de Execução"
+                                        valor={formData.horario_execucao}
+                                        setValor={(valor) => setFormData({...formData, horario_execucao: valor})}
+                                        name="horario_execucao"
+                                        type="time"
+                                        placeholder="08:00"
+                                        width="100%"
+                                    />
+                                </div>
                                 <div>
                                     <CampoTexto
                                         label="Máximo de Tentativas"
@@ -344,7 +342,7 @@ const ModalAgendamentoN8N = ({
                             <FormRow>
                                 <div>
                                     <FormLabel>
-                                        {formData.tipo === 'unica' ? 'Data/Hora de Execução' : 'Data de Início'}
+                                        {formData.tipo === 'unico' ? 'Data/Hora de Execução' : 'Data de Início'}
                                     </FormLabel>
                                     <Calendar
                                         value={formData.data_inicio}
