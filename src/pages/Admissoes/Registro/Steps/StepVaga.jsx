@@ -677,6 +677,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                         centro_custo_id: valor.code,
                         centro_custo_nome: valor.name
                     });
+                    console.log(candidato.dados_vaga)
                 }}
                 options={opcoesCentrosCusto}
                 label="Centro de Custo"
