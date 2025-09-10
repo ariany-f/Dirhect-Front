@@ -42,8 +42,8 @@ function ColaboradoresCadastrados() {
     const [totalPages, setTotalPages] = useState(0);
     const [first, setFirst] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
-    const [sortField, setSortField] = useState('');
-    const [sortOrder, setSortOrder] = useState('');
+    const [sortField, setSortField] = useState(null);
+    const [sortOrder, setSortOrder] = useState(null);
     const [situacoesUnicas, setSituacoesUnicas] = useState([]);
     const [filters, setFilters] = useState({
         'situacao': { value: null, matchMode: 'custom' }
@@ -53,14 +53,21 @@ function ColaboradoresCadastrados() {
         setLoading(true);
         let url = `funcionario/?format=json&page=${currentPage}&page_size=${currentPageSize}`;
         
+        console.log('🔍 loadData chamado com:', { currentPage, currentPageSize, search, sort, currentFilters });
+        
         if (search) {
             url += `&search=${search}`;
         }
         
         // Melhorar o tratamento da ordenação
-        if (sort && sort !== '') {
+        if (sort && sort !== '' && sort.trim() !== '') {
+            console.log('🔍 Adicionando ordenação à URL:', sort);
             url += `&ordering=${encodeURIComponent(sort)}`;
+        } else {
+            console.log('🔍 Sem ordenação aplicada');
         }
+        
+        console.log('🔍 URL final:', url);
     
         console.log('🔍 currentFilters:', currentFilters);
 
@@ -110,7 +117,7 @@ function ColaboradoresCadastrados() {
         setPageSize(newPageSize);
         
         // Usar os novos valores diretamente para evitar problemas de estado
-        const currentSort = sortField ? `${sortOrder === 'desc' ? '-' : ''}${sortField}` : '';
+        const currentSort = (sortField && sortOrder) ? `${sortOrder === 'desc' ? '-' : ''}${sortField}` : '';
         loadData(newPage, newPageSize, searchTerm, currentSort, filters);
     };
 
@@ -120,12 +127,12 @@ function ColaboradoresCadastrados() {
         setFirst(0);
         
         // Usar os estados atuais para ordenação
-        const currentSort = sortField ? `${sortOrder === 'desc' ? '-' : ''}${sortField}` : '';
+        const currentSort = (sortField && sortOrder) ? `${sortOrder === 'desc' ? '-' : ''}${sortField}` : '';
         loadData(1, pageSize, search, currentSort, filters);
     };
 
     const getSortParam = () => {
-        if (!sortField || sortField === '') {
+        if (!sortField || !sortOrder || sortField === '') {
             return '';
         }
         
@@ -134,10 +141,28 @@ function ColaboradoresCadastrados() {
     };
 
     const onSort = ({ field, order }) => {
+        console.log('🔍 onSort recebido:', { field, order });
+        console.log('🔍 Estados atuais:', { sortField, sortOrder, page, pageSize, searchTerm });
+        
+        // Se field ou order estão vazios, remover ordenação
+        if (!field || !order || field === '' || order === '') {
+            console.log('🔍 Removendo ordenação (field ou order vazios)');
+            setSortField(null);
+            setSortOrder(null);
+            loadData(page, pageSize, searchTerm, '', filters);
+            return;
+        }
+        
+        console.log('🔍 Definindo novos estados de ordenação:', { field, order });
         setSortField(field);
         setSortOrder(order);
-        // Usar getSortParam() para manter consistência
-        loadData(page, pageSize, searchTerm, getSortParam(), filters);
+        
+        // Construir o parâmetro de ordenação diretamente com os novos valores
+        const sortParam = `${order === 'desc' ? '-' : ''}${field}`;
+        console.log('🔍 sortParam construído:', sortParam);
+        console.log('🔍 Chamando loadData com sortParam:', sortParam);
+        
+        loadData(page, pageSize, searchTerm, sortParam, filters);
     };
     
     const onFilter = (event) => {
@@ -147,7 +172,7 @@ function ColaboradoresCadastrados() {
         setFirst(0);
         
         // Usar os estados atuais para ordenação
-        const currentSort = sortField ? `${sortOrder === 'desc' ? '-' : ''}${sortField}` : '';
+        const currentSort = (sortField && sortOrder) ? `${sortOrder === 'desc' ? '-' : ''}${sortField}` : '';
         loadData(1, pageSize, searchTerm, currentSort, newFilters);
     };
 
@@ -168,7 +193,7 @@ function ColaboradoresCadastrados() {
                     onSearch={onSearch}
                     onSort={onSort}
                     sortField={sortField}
-                    sortOrder={sortOrder}
+                    sortOrder={sortOrder === 'asc' ? 1 : sortOrder === 'desc' ? -1 : 0}
                     onFilter={onFilter}
                     filters={filters}
                     situacoesUnicas={situacoesUnicas}

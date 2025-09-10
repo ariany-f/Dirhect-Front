@@ -491,11 +491,33 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     };
 
     const handleSort = (event) => {
+        console.log('🔍 handleSort event completo:', event);
+        console.log('🔍 sortOrder valor:', event.sortOrder);
+        console.log('🔍 sortField valor:', event.sortField);
         
         if (onSort) {
+            // PrimeReact: 1 = asc, -1 = desc, 0 = sem ordenação
+            let order = '';
+            let field = event.sortField || '';
+            
+            if (event.sortOrder === 1) {
+                order = 'asc';
+                console.log('🔍 Definindo como ASC');
+            } else if (event.sortOrder === -1) {
+                order = 'desc';
+                console.log('🔍 Definindo como DESC');
+            } else {
+                // sortOrder === 0 ou null - remover ordenação
+                console.log('🔍 Removendo ordenação');
+                onSort({ field: '', order: '' });
+                return;
+            }
+            
+            console.log('🔍 Enviando ordenação final:', { field, order });
+            
             onSort({
-                field: event.sortField,
-                order: event.sortOrder === 1 ? 'asc' : 'desc'
+                field: field,
+                order: order
             });
         } else {
             console.log('🔍 onSort não está definido');
@@ -556,7 +578,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 showGridlines
                 stripedRows
                 sortField={sortField}
-                sortOrder={sortOrder === 'desc' ? -1 : (sortOrder === 'asc' ? 1 : 0)}
+                sortOrder={sortOrder}
                 footerColumnGroup={
                     <ColumnGroup>
                         <Row>
