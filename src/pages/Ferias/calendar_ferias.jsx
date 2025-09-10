@@ -485,7 +485,11 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Intersection Observer para lazy loading
+    // Controle para evitar múltiplas chamadas automáticas sem scroll do usuário
+    const lastUserScrollTime = useRef(0);
+    const hasTriggeredLoad = useRef(false);
+    
+    // Intersection Observer para lazy loading controlado
     useEffect(() => {
         if (!loadMoreTriggerRef.current || !onLoadMore || !hasMore) return;
 
@@ -494,19 +498,33 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                 const target = entries[0];
                 const now = Date.now();
                 const timeSinceLastLoad = now - lastLoadTime.current;
+                const timeSinceLastScroll = now - lastUserScrollTime.current;
                 
-                if (target.isIntersecting && !isLoadingMore && timeSinceLastLoad > 100) { // Mínimo 1 segundo entre requisições
-                    console.log('🔍 Trigger detectado, carregando mais dados...');
-                    lastLoadTime.current = now;
-                    onLoadMore();
-                } else if (target.isIntersecting && timeSinceLastLoad <= 100) {
+                // Só carrega se:
+                // 1. Está intersectando
+                // 2. Não está carregando
+                // 3. Passou tempo suficiente desde o último carregamento
+                // 4. Não foi disparado ainda OU usuário rolou recentemente (últimos 2 segundos)
+                if (target.isIntersecting && !isLoadingMore && timeSinceLastLoad > 1000) {
+                    if (!hasTriggeredLoad.current || timeSinceLastScroll < 2000) {
+                        console.log('🔍 Trigger detectado, carregando mais dados...', {
+                            hasTriggeredLoad: hasTriggeredLoad.current,
+                            timeSinceLastScroll
+                        });
+                        lastLoadTime.current = now;
+                        hasTriggeredLoad.current = true;
+                        onLoadMore();
+                    } else {
+                        console.log('⏳ Trigger detectado, mas aguardando nova interação do usuário');
+                    }
+                } else if (target.isIntersecting && timeSinceLastLoad <= 1000) {
                     console.log('⏰ Trigger detectado, mas muito cedo. Aguardando...', timeSinceLastLoad + 'ms');
                 }
             },
             {
-                root: scrollRef.current, // Define o container de scroll como raiz
-                threshold: 0.5, // Reduzido para ser menos agressivo
-                rootMargin: '50px' // Reduzido para só carregar quando mais próximo
+                root: scrollRef.current,
+                threshold: 0.3,
+                rootMargin: '100px'
             }
         );
 
@@ -524,22 +542,21 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
         const scrollElement = scrollRef.current;
         if (!scrollElement) return;
 
-        const handleScroll = () => {
+                const handleScroll = () => {
             lastScrollPosition.current = scrollElement.scrollTop;
             
-            // Backup para lazy loading caso o Intersection Observer não funcione
-            if (hasMore && !isLoadingMore) {
+            // Registra o tempo da última interação do usuário (scroll)
+            lastUserScrollTime.current = Date.now();
+            
+            // Reset do flag quando usuário rola (permite nova chamada automática)
+            if (hasTriggeredLoad.current) {
                 const { scrollTop, scrollHeight, clientHeight } = scrollElement;
-                const isNearBottom = scrollTop + clientHeight >= scrollHeight - 100; // Reduzido para 100px antes do final
-                const now = Date.now();
-                const timeSinceLastLoad = now - lastLoadTime.current;
+                const isNearBottom = scrollTop + clientHeight >= scrollHeight - 200;
                 
-                if (isNearBottom && timeSinceLastLoad > 100) { // Mínimo 1 segundo entre requisições
-                    console.log('🔄 Backup lazy loading ativado (scroll)');
-                    lastLoadTime.current = now;
-                    onLoadMore();
-                } else if (isNearBottom && timeSinceLastLoad <= 100) {
-                    console.log('⏰ Scroll backup detectado, mas muito cedo. Aguardando...', timeSinceLastLoad + 'ms');
+                // Se o usuário rolou para longe do final, permite nova chamada automática
+                if (!isNearBottom) {
+                    hasTriggeredLoad.current = false;
+                    console.log('🔄 Flag reset - usuário rolou para longe do final');
                 }
             }
         };
@@ -1236,27 +1253,40 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                     
                 </CalendarGrid>
                 
-                {/* Trigger para lazy loading - movido para fora do CalendarGrid */}
+                {/* Trigger automático controlado para lazy loading */}
                 {hasMore && (
                     <div ref={loadMoreTriggerRef} style={{ 
-                        height: '40px', // Reduzido para ser menos óbvio
+                        height: '40px',
                         display: 'flex', 
                         alignItems: 'center', 
                         justifyContent: 'center',
-                        margin: '40px auto', // Aumenta a margem para afastar do conteúdo
+                        margin: '40px auto',
                         width: '100%',
                         position: 'relative',
                         zIndex: 1
                     }}>
                         {isLoadingMore ? (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#666', fontSize: '14px' }}>
+                            <div style={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: '8px', 
+                                color: '#666', 
+                                fontSize: '14px' 
+                            }}>
                                 <FaRegClock style={{ animation: 'spin 1s linear infinite' }} />
                                 Carregando mais dados...
                             </div>
                         ) : (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#999', fontSize: '12px' }}>
+                            <div style={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: '8px', 
+                                color: '#999', 
+                                fontSize: '12px',
+                                textAlign: 'center'
+                            }}>
                                 <FaRegClock style={{ animation: 'spin 1s linear infinite' }} />
-                                
+                                Role para carregar mais
                             </div>
                         )}
                     </div>
