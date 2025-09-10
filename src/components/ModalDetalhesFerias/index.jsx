@@ -753,19 +753,9 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
         if (opened && evento) {
             const saldoDisponivel = evento?.evento?.saldo_dias ?? evento?.evento?.nrodiasferias ?? 30;
             setNumeroDiasFerias(saldoDisponivel.toString());
-
-            // Se houver data_minima_solicitacao, setar como valor inicial de dataInicio
             const rawMin = evento?.evento?.data_minima_solicitacao;
-            if (rawMin) {
-                let minDate = rawMin;
-                if (!/^\d{4}-\d{2}-\d{2}$/.test(rawMin)) {
-                    const d = new Date(rawMin);
-                    if (!isNaN(d)) minDate = d.toISOString().split('T')[0];
-                }
-                setDataInicio(minDate);
-            } else {
-                setDataInicio('');
-            }
+            // Limpar a data de início - não preencher automaticamente
+            setDataInicio('');
 
             // Buscar parâmetros de férias quando o modal abrir
             http.get('parametros/por-assunto/?assunto=FERIAS')
