@@ -407,6 +407,26 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
     const toast = useRef(null);
     const [containerWidth, setContainerWidth] = useState(1200);
     const loadMoreTriggerRef = useRef(null);
+    const lastScrollPosition = useRef(0);
+
+    // Função para preservar posição do scroll quando novos dados são carregados
+    const preserveScrollPosition = useCallback(() => {
+        if (scrollRef.current) {
+            lastScrollPosition.current = scrollRef.current.scrollTop;
+        }
+    }, []);
+
+    // Função para restaurar posição do scroll após carregamento
+    const restoreScrollPosition = useCallback(() => {
+        if (scrollRef.current && lastScrollPosition.current > 0) {
+            // Pequeno delay para garantir que os novos elementos foram renderizados
+            requestAnimationFrame(() => {
+                if (scrollRef.current) {
+                    scrollRef.current.scrollTop = lastScrollPosition.current;
+                }
+            });
+        }
+    }, []);
 
     useEffect(() => {
         if (containerRef.current) {
@@ -445,7 +465,35 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                 observer.unobserve(loadMoreTriggerRef.current);
             }
         };
-    }, [onLoadMore, hasMore, isLoadingMore]);
+    }, [onLoadMore, hasMore, isLoadingMore, preserveScrollPosition]);
+
+    // Effect para monitorar scroll e preservar posição
+    useEffect(() => {
+        const scrollElement = scrollRef.current;
+        if (!scrollElement) return;
+
+        const handleScroll = () => {
+            lastScrollPosition.current = scrollElement.scrollTop;
+        };
+
+        scrollElement.addEventListener('scroll', handleScroll, { passive: true });
+
+        return () => {
+            scrollElement.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
+    // Effect para lidar com novos dados sem quebrar o scroll
+    useEffect(() => {
+        if (colaboradores && colaboradores.length > 0 && !isLoadingMore && lastScrollPosition.current > 0) {
+            // Mantém a posição do scroll quando novos dados são adicionados
+            requestAnimationFrame(() => {
+                if (scrollRef.current) {
+                    scrollRef.current.scrollTop = lastScrollPosition.current;
+                }
+            });
+        }
+    }, [colaboradores?.length, isLoadingMore]);
 
     // Função para normalizar os dados recebidos (API)
     const normalizarColaboradores = useCallback((colaboradores) => {
@@ -849,11 +897,6 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                         )}
                     </CalendarTableHeader>
                     {colabsFiltrados.map((colab, idx) => {
-                        // Debug específico para FLAVIO PEREIRA
-                        if (colab.nome === 'FLAVIO PEREIRA DOS SANTOS') {
-                            console.log('🔍 Debug FLAVIO PEREIRA - Renderizando colaborador:', colab);
-                            console.log('🔍 Debug FLAVIO PEREIRA - Ausências:', colab.ausencias);
-                        }
                         
                         // Verificação de segurança para garantir que colab tem dados necessários
                         if (!colab || !colab.id || !colab.nome) {
@@ -889,18 +932,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                                 const limiteSolicitacao = new Date(fimPeriodo.getFullYear(), fimPeriodo.getMonth() + 11, fimPeriodo.getDate()); // 11 meses após o fim
                                                 
                                                 const isInRange = limiteSolicitacao >= startDate && inicioPeriodo <= endDate;
-                                                
-                                                // Debug específico para FLAVIO PEREIRA
-                                                if (colab.nome === 'FLAVIO PEREIRA DOS SANTOS') {
-                                                    console.log('🔍 Debug FLAVIO PEREIRA - Filtro de período:', {
-                                                        fimPeriodo,
-                                                        inicioPeriodo,
-                                                        limiteSolicitacao,
-                                                        startDate,
-                                                        endDate,
-                                                        isInRange
-                                                    });
-                                                }
+
                                                 
                                                 return isInRange;
                                             }
@@ -922,28 +954,13 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                         });
 
                                     return registrosOrdenados.map((aus, i) => {
-                                        // Debug específico para FLAVIO PEREIRA
-                                        if (colab.nome === 'FLAVIO PEREIRA DOS SANTOS') {
-                                            console.log('🔍 Debug FLAVIO PEREIRA - Processando ausência:', aus);
-                                            console.log('🔍 Debug FLAVIO PEREIRA - Tem fimperaquis?', !!aus.fimperaquis);
-                                            console.log('🔍 Debug FLAVIO PEREIRA - Tem data_inicio?', !!aus.data_inicio);
-                                            console.log('🔍 Debug FLAVIO PEREIRA - Tem data_fim?', !!aus.data_fim);
-                                        }
                                         
                                         // Se não tem dt_inicio e dt_fim, mas tem fimperaquis, verifica se pode solicitar ou se está perdido
                                         if (!aus.data_inicio && !aus.data_fim && aus.fimperaquis) {
-                                            // Debug específico para FLAVIO PEREIRA
-                                            if (colab.nome === 'FLAVIO PEREIRA DOS SANTOS') {
-                                                console.log('🔍 Debug FLAVIO PEREIRA - Passou pela primeira verificação (tem fimperaquis)');
-                                                console.log('🔍 Debug FLAVIO PEREIRA - funcionario_marcado_demissao:', colab.funcionario_marcado_demissao);
-                                                console.log('🔍 Debug FLAVIO PEREIRA - funcionario_situacao_padrao:', aus.funcionario_situacao_padrao);
-                                            }
+                                            
                                             
                                             // NOVA REGRA: não exibe "a solicitar" se funcionario_marcado_demissao ou tipo_situacao Demitido
                                             if (colab.funcionario_marcado_demissao === true || aus.funcionario_situacao_padrao === true) {
-                                                if (colab.nome === 'FLAVIO PEREIRA DOS SANTOS') {
-                                                    console.log('🔍 Debug FLAVIO PEREIRA - FILTRADO por demissão/situação');
-                                                }
                                                 return null;
                                             }
                                             const fimPeriodo = parseDateAsLocal(aus.fimperaquis);
@@ -953,23 +970,9 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                             // Início da barra é o início do período aquisitivo
                                             const inicioBarra = inicioPeriodo;
                                             
-                                            // Debug específico para FLAVIO PEREIRA
-                                            if (colab.nome === 'FLAVIO PEREIRA DOS SANTOS') {
-                                                console.log('🔍 Debug FLAVIO PEREIRA - Cálculo de datas:', {
-                                                    fimPeriodo,
-                                                    inicioPeriodo,
-                                                    inicioBarra,
-                                                    limiteSolicitacao,
-                                                    data_minima_solicitacao: aus.data_minima_solicitacao
-                                                });
-                                            }
-                                            
                                             // Verifica se o período está perdido usando o campo da API
                                             const isPerdido = aus.periodo_perdido === true;
-                                            
-                                            if (colab.nome === 'FLAVIO PEREIRA DOS SANTOS') {
-                                                console.log('🔍 Debug FLAVIO PEREIRA - isPerdido:', isPerdido);
-                                            }
+                
                                             
                                             const { startPercent, widthPercent } = getBarPosition(inicioBarra, limiteSolicitacao, startDate, totalDays);
                                             
