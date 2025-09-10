@@ -63,10 +63,26 @@ const StyledDataTable = styled(DataTable)`
         word-wrap: break-word;
         overflow: hidden;
         text-overflow: ellipsis;
+        vertical-align: middle;
     }
     
     .p-datatable-tbody > tr:hover {
         background: #f8f9fa;
+    }
+    
+    /* Correção para botões do PrimeReact */
+    .p-button {
+        line-height: 1 !important;
+        height: 32px !important;
+        width: 32px !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        
+        .p-button-icon {
+            margin: 0 !important;
+        }
     }
     
     /* Responsivo */
@@ -75,6 +91,11 @@ const StyledDataTable = styled(DataTable)`
         .p-datatable-tbody > tr > td {
             padding: 8px 4px;
             font-size: 13px;
+        }
+        
+        .p-button {
+            height: 28px !important;
+            width: 28px !important;
         }
     }
 `;
