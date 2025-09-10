@@ -997,6 +997,34 @@ const CandidatoRegistro = () => {
         if (id) {
             http.get(`admissao/${id}/`)
                 .then((data) => {
+                    console.log('🔍 DADOS DA API - admissao completa:', data);
+                    console.log('🔍 DADOS DA API - dados_vaga:', data.dados_vaga);
+                    console.log('🔍 DADOS DA API - centro_custo direto:', data.centro_custo);
+                    
+                    // Processar dados_vaga para garantir que os campos sejam preenchidos corretamente
+                    let dadosVagaProcessados = data.dados_vaga || {};
+                    
+                    // Mapear campos da admissão para dados_vaga se estiverem faltando
+                    const camposMapeamento = {
+                        centro_custo_id: data.centro_custo,
+                        filial_id: data.filial,
+                        departamento_id: data.departamento,
+                        secao_id: data.id_secao,
+                        funcao_id: data.id_funcao,
+                        cargo_id: data.cargo,
+                        horario_id: data.id_horario || data.horario,
+                        sindicato_id: data.sindicato
+                    };
+                    
+                    // Preencher campos faltantes em dados_vaga
+                    Object.entries(camposMapeamento).forEach(([campoVaga, valorAdmissao]) => {
+                        if (!dadosVagaProcessados[campoVaga] && valorAdmissao) {
+                            console.log(`🔧 CORREÇÃO - Preenchendo ${campoVaga} em dados_vaga com valor:`, valorAdmissao);
+                            dadosVagaProcessados[campoVaga] = valorAdmissao;
+                        }
+                    });
+                    
+                    console.log('🔍 DADOS PROCESSADOS - dados_vaga final:', dadosVagaProcessados);
                     
                     const fullCandidatoData = {
                         ...data,
@@ -1005,12 +1033,12 @@ const CandidatoRegistro = () => {
                         experiencia: data.experiencia || [],
                         dependentes: data.dependentes || [],
                         anotacoes: data.anotacoes || '',
-                        dados_vaga: data.dados_vaga || {}
+                        dados_vaga: dadosVagaProcessados
                     };
                     
                     // Atualiza o candidato com todos os dados
                     setCandidato(fullCandidatoData);
-                    setVaga(data.dados_vaga || {});
+                    setVaga(dadosVagaProcessados);
                     setAdmissao(data);
                     
                     // Aguarda um tick para garantir que os componentes processaram os dados
