@@ -1,5 +1,5 @@
 import http from '@http'
-import { useEffect, useState, useRef, useMemo } from "react"
+import { useEffect, useState, useRef, useMemo, useCallback } from "react"
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
@@ -221,7 +221,7 @@ const ActionButton = styled.button`
     align-items: center;
     gap: 8px;
     background: linear-gradient(135deg, var(--primaria) 0%, var(--primaria) 100%);
-    color: white;
+    color: var(--secundaria);
     border: none;
     border-radius: 8px;
     padding: 10px 16px;
@@ -250,126 +250,233 @@ const ActionButton = styled.button`
 // Configurar o localizador com Moment.js
 const localizer = momentLocalizer(moment);
 
-function FeriasListagem() {
+// Constantes
+const CURRENT_YEAR = new Date().getFullYear();
+const DEFAULT_PAGE_SIZE = 10;
 
-    const [ferias, setFerias] = useState(null)
-    const [loading, setLoading] = useState(true)
-    const [anoSelecionado, setAnoSelecionado] = useState(null)
-    const [searchTerm, setSearchTerm] = useState('')
-    const [periodoAberto, setPeriodoAberto] = useState(true) // true = apenas abertos, false = apenas fechados, null = todos
-    const [totalRecords, setTotalRecords] = useState(0)
-    const [currentPage, setCurrentPage] = useState(1)
-    const [pageSize, setPageSize] = useState(10)
-    const [forceUpdate, setForceUpdate] = useState(0)
-    const context = useOutletContext()
-    const [modalSelecaoColaboradorOpened, setModalSelecaoColaboradorOpened] = useState(false)
-    const [eventoSelecionado, setEventoSelecionado] = useState(null)
-    const { usuario } = useSessaoUsuarioContext()
-    const [tab, setTab] = useState('calendario') // 'lista' ou 'calendario'
+function FeriasListagem() {
+    // Estados principais
+    const [ferias, setFerias] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [totalRecords, setTotalRecords] = useState(0);
+    const [forceUpdate, setForceUpdate] = useState(0);
+    const [tab, setTab] = useState('calendario');
+    
+    // Estados para filtros da lista
+    const [anoSelecionado, setAnoSelecionado] = useState(null);
+    const [periodoAberto, setPeriodoAberto] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+    
+    // Estados para cursor pagination (calendário)
+    const [nextCursor, setNextCursor] = useState(null);
+    const [hasMore, setHasMore] = useState(true);
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
+    
+    // Estados gerais
+    const [searchTerm, setSearchTerm] = useState('');
+    const [modalSelecaoColaboradorOpened, setModalSelecaoColaboradorOpened] = useState(false);
+    const [eventoSelecionado, setEventoSelecionado] = useState(null);
+    
+    // Refs
     const toast = useRef(null);
     const abortControllerRef = useRef(null);
+    
+    // Contexts
+    const context = useOutletContext();
+    const { usuario } = useSessaoUsuarioContext();
 
-    // Lista de anos disponíveis (últimos 5 anos + próximos 2)
-    const currentYear = new Date().getFullYear()
-    const anosDisponiveis = useMemo(() => {
-        const year = new Date().getFullYear()
-        return [
-            { name: 'Todos os anos', value: null },
-            { name: 'Últimos 2 anos', value: 'ultimos_2' },
-            { name: 'Últimos 3 anos', value: 'ultimos_3' },
-            { name: 'Últimos 4 anos', value: 'ultimos_4' },
-            ...Array.from({ length: 9 }, (_, i) => {
-                const yearItem = year - 6 + i
-                return { name: yearItem.toString(), value: yearItem }
-            })
-        ]
-    }, [])
+    // Lista de anos disponíveis
+    const anosDisponiveis = useMemo(() => [
+        { name: 'Todos os anos', value: null },
+        { name: 'Últimos 2 anos', value: 'ultimos_2' },
+        { name: 'Últimos 3 anos', value: 'ultimos_3' },
+        { name: 'Últimos 4 anos', value: 'ultimos_4' },
+        ...Array.from({ length: 9 }, (_, i) => {
+            const yearItem = CURRENT_YEAR - 6 + i;
+            return { name: yearItem.toString(), value: yearItem };
+        })
+    ], []);
 
     // Opções do filtro de período aberto
     const opcoesPeriodoAberto = [
         { name: 'Apenas Abertos', value: true },
         { name: 'Apenas Fechados', value: false },
         { name: 'Todos os Períodos', value: null }
-    ]
+    ];
 
-    useEffect(() => {
+    // Função para construir URL baseada na aba
+    const buildApiUrl = useCallback((isLoadMore = false) => {
+        if (tab === 'calendario' && isLoadMore && nextCursor) {
+            // Se está carregando mais dados do calendário e tem nextCursor, 
+            // extrai apenas o path da URL (remove o domínio e /api/)
+            try {
+                const url = new URL(nextCursor);
+                let finalUrl = url.pathname + url.search;
+                
+                // Remove /api/ do início se existir (pois o http interceptor já adiciona)
+                if (finalUrl.startsWith('/api/')) {
+                    finalUrl = finalUrl.substring(5); // Remove '/api/'
+                }
+                
+                // Adiciona o termo de busca se houver e não estiver na URL
+                if (searchTerm.trim() && !finalUrl.includes('funcionario_nome=')) {
+                    const separator = finalUrl.includes('?') ? '&' : '?';
+                    finalUrl += `${separator}funcionario_nome=${encodeURIComponent(searchTerm.trim())}`;
+                }
+                
+                console.log('🔄 URL transformada:', nextCursor, '→', finalUrl);
+                return finalUrl;
+            } catch (error) {
+                console.warn('Erro ao processar URL do cursor:', error);
+                return nextCursor; // fallback para a URL completa
+            }
+        }
+        
+        let url = `ferias/`;
+        
+        // Adiciona termo de busca se houver
+        if (searchTerm.trim()) {
+            if(!url.includes('?')) {
+                url += `?`;
+            } else {
+                url += `&`;
+            }
+            url += `funcionario_nome=${encodeURIComponent(searchTerm.trim())}`;
+        }
+        
+        if (tab === 'calendario') {
+            if(!url.includes('?')) {
+                url += `?`;
+            } else {
+                url += `&`;
+            }
+            // Para calendário: usar cursor pagination
+            url += `cursor`;
+            url += `&page_size=10`; // Páginas maiores para calendário
+            url += `&periodo_aberto=true`;
+            url += `&incluir_finalizadas=true`;
+            
+            // Filtrar por período aquisitivo
+            const anoAtual = new Date().getFullYear();
+            const fimAnoPassado = new Date(anoAtual - 1, 11, 31);
+            fimAnoPassado.setMonth(fimAnoPassado.getMonth() + 22);
+            url += `&fimperaquis__lte=${fimAnoPassado.toISOString().split('T')[0]}`;
+            url += `&fimperaquis__gte=${new Date(CURRENT_YEAR, 0, 1).toISOString().split('T')[0]}`;
+        } else {
+            // Para lista: usar paginação tradicional
+            if(!url.includes('?')) {
+                url += `?`;
+            } else {
+                url += `&`;
+            }
+            url += `page=${currentPage}&page_size=${pageSize}`;
+            
+            // Filtro de ano
+            if (anoSelecionado !== null && typeof anoSelecionado !== 'object') {
+                if (anoSelecionado === 'ultimos_2') {
+                    url += `&dt_inicio__gte=${new Date(CURRENT_YEAR - 1, 0, 1).toISOString().split('T')[0]}`;
+                } else if (anoSelecionado === 'ultimos_3') {
+                    url += `&dt_inicio__gte=${new Date(CURRENT_YEAR - 2, 0, 1).toISOString().split('T')[0]}`;
+                } else if (anoSelecionado === 'ultimos_4') {
+                    url += `&dt_inicio__gte=${new Date(CURRENT_YEAR - 3, 0, 1).toISOString().split('T')[0]}`;
+                } else {
+                    url += `&ano=${anoSelecionado}`;
+                }
+            }
+            
+            // Filtro de período
+            if (!periodoAberto || periodoAberto === false || periodoAberto === 'false') {
+                url += `&incluir_finalizadas=true`;
+            }
+            if (periodoAberto !== null && typeof periodoAberto !== 'object') {
+                url += `&periodo_aberto=${periodoAberto}`;
+            }
+        }
+        
+        return url;
+    }, [tab, searchTerm, currentPage, pageSize, anoSelecionado, periodoAberto, nextCursor]);
+
+    // Função para carregar dados
+    const loadData = useCallback(async (isLoadMore = false) => {
         // Cancela requisição anterior se existir
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
         }
         
-        // Cria novo AbortController para esta requisição
+        // Cria novo AbortController
         abortControllerRef.current = new AbortController();
         
-        setLoading(true)
-        
-        let url = `ferias/?format=json`
-        
-        // Adiciona parâmetro de busca se houver termo de pesquisa
-        if (searchTerm.trim()) {
-            url += `&funcionario_nome=${encodeURIComponent(searchTerm.trim())}`
+        if (!isLoadMore) {
+            setLoading(true);
+        } else {
+            setIsLoadingMore(true);
         }
         
-        // Se estiver na aba calendário, adiciona filtro de período aberto
-        if (tab === 'calendario') {
-            url += `&periodo_aberto=true`
-            url += `&incluir_finalizadas=true`
-            // Filtrar por fim do período aquisitivo: fim do ano passado + 11 meses
-            const anoAtual = new Date().getFullYear();
-            const fimAnoPassado = new Date(anoAtual - 1, 11, 31); // 31/12 do ano passado
-            fimAnoPassado.setMonth(fimAnoPassado.getMonth() + 22); // + 11 meses
-            url += `&fimperaquis__lte=${fimAnoPassado.toISOString().split('T')[0]}`
-            url += `&fimperaquis__gte=${new Date(currentYear, 0, 1).toISOString().split('T')[0]}`
-        }
-        // Se estiver na aba lista, adiciona parâmetros de paginação
-        else if (tab === 'lista') {
-            url += `&page=${currentPage}&page_size=${pageSize}`
-            // Adiciona filtro de ano baseado na seleção
-            if (anoSelecionado !== null && typeof anoSelecionado != 'object') {
-                if (anoSelecionado === 'ultimos_2') {
-                    url += `&dt_inicio__gte=${new Date(currentYear - 1, 0, 1).toISOString().split('T')[0]}`
-                } else if (anoSelecionado === 'ultimos_3') {
-                    url += `&dt_inicio__gte=${new Date(currentYear - 2, 0, 1).toISOString().split('T')[0]}`
-                } else if (anoSelecionado === 'ultimos_4') {
-                    url += `&dt_inicio__gte=${new Date(currentYear - 3, 0, 1).toISOString().split('T')[0]}`
+        try {
+            const url = buildApiUrl(isLoadMore);
+            const response = await http.get(url, { 
+                signal: abortControllerRef.current.signal 
+            });
+            
+            if (!abortControllerRef.current.signal.aborted) {
+                const newData = response.results || response;
+                
+                if (tab === 'calendario') {
+                    // Para calendário com cursor pagination
+                    if (isLoadMore) {
+                        setFerias(prev => [...(prev || []), ...newData]);
+                        console.log('✅ Dados adicionados ao calendário:', newData?.length, 'novos itens');
+                    } else {
+                        setFerias(newData);
+                        console.log('✅ Dados iniciais do calendário carregados:', newData?.length, 'itens');
+                    }
+                    
+                    // Atualiza cursor e hasMore
+                    // Para cursor pagination, armazena a URL completa do next
+                    setNextCursor(response.next || null);
+                    setHasMore(!!response.next);
+                    console.log('✅ Cursor atualizado:', !!response.next ? 'Há mais dados' : 'Fim dos dados');
                 } else {
-                    url += `&ano=${anoSelecionado}`
+                    // Para lista com paginação tradicional
+                    setFerias(newData);
+                    setTotalRecords(response.count || 0);
                 }
             }
-
-            if(!periodoAberto || periodoAberto === false || periodoAberto === 'false') {
-                url += `&incluir_finalizadas=true`
+        } catch (error) {
+            if (error.name !== 'AbortError') {
+                console.error('Erro ao carregar férias:', error);
+                if (!isLoadMore) {
+                    setFerias(null);
+                }
             }
-            // Adiciona filtro de período aberto se especificado
-            if (periodoAberto !== null && typeof periodoAberto != 'object') {
-                url += `&periodo_aberto=${periodoAberto}`
+        } finally {
+            if (!abortControllerRef.current.signal.aborted) {
+                setLoading(false);
+                setIsLoadingMore(false);
             }
         }
-        
-        http.get(url, { signal: abortControllerRef.current.signal })
-        .then(response => {
-            // Verifica se a requisição não foi cancelada
-            if (!abortControllerRef.current.signal.aborted) {
-                setFerias(response.results || response)
-                setTotalRecords(response.count || (response.results ? response.results.length : 0))
-            }
-        })
-        .catch(erro => {
-            // Ignora erros de cancelamento
-            if (erro.name !== 'AbortError') {
-                console.log(erro)
-                setLoading(false)
-            }
-        })
-        .finally(() => {
-            // Só reseta loading se não foi cancelado
-            if (!abortControllerRef.current.signal.aborted) {
-                setLoading(false)
-            }
-        })
-    }, [anoSelecionado, searchTerm, periodoAberto, tab, currentPage, pageSize, forceUpdate])
+    }, [buildApiUrl, tab]);
 
-    // Cleanup: cancela requisições pendentes quando o componente for desmontado
+    // Função para carregar mais dados (lazy loading)
+    const loadMore = useCallback(() => {
+        if (tab === 'calendario' && hasMore && !isLoadingMore) {
+            loadData(true);
+        }
+    }, [tab, hasMore, isLoadingMore, loadData]);
+
+    // Effect principal para carregar dados
+    useEffect(() => {
+        // Reset estados quando mudar de aba
+        if (tab === 'calendario') {
+            setNextCursor(null);
+            setHasMore(true);
+        }
+        
+        loadData(false);
+    }, [tab, anoSelecionado, searchTerm, periodoAberto, currentPage, pageSize, forceUpdate]);
+
+    // Cleanup: cancela requisições pendentes
     useEffect(() => {
         return () => {
             if (abortControllerRef.current) {
@@ -378,34 +485,58 @@ function FeriasListagem() {
         };
     }, []);
 
-    const handleColaboradorSelecionado = async (colaborador) => {
+    // Reset paginação quando filtros mudarem (apenas para lista)
+    useEffect(() => {
+        if (tab === 'lista') {
+            setCurrentPage(1);
+        }
+    }, [anoSelecionado, searchTerm, periodoAberto, tab]);
+
+    // Função para lidar com mudança de aba
+    const handleTabChange = useCallback((newTab) => {
+        setTab(newTab);
+        if (newTab === 'lista') {
+            setCurrentPage(1);
+        }
+    }, []);
+
+    // Função para lidar com seleção de colaborador
+    const handleColaboradorSelecionado = useCallback(async (colaborador) => {
         setModalSelecaoColaboradorOpened(false);
 
-        // Verificação de segurança para garantir que colaborador existe
-        if (!colaborador || !colaborador.id) {
-            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Colaborador inválido selecionado', life: 3000 });
+        if (!colaborador?.id) {
+            toast.current.show({ 
+                severity: 'error', 
+                summary: 'Erro', 
+                detail: 'Colaborador inválido selecionado', 
+                life: 3000 
+            });
             return;
         }
 
         try {
-            const ferias = await http.get(`ferias/?format=json&funcionario=${colaborador.id}`)
-            const feria = ferias[0]
+            const feriasColaborador = await http.get(`ferias/?format=json&funcionario=${colaborador.id}`);
+            const feria = feriasColaborador[0];
 
-            if(!feria) {
-                toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Não há férias disponíveis para este colaborador', life: 3000 });
-                return
+            if (!feria) {
+                toast.current.show({ 
+                    severity: 'error', 
+                    summary: 'Erro', 
+                    detail: 'Não há férias disponíveis para este colaborador', 
+                    life: 3000 
+                });
+                return;
             }
 
-            let [anoRow, mesRow, diaRow] = feria.fimperaquis.split('T')[0].split('-').map(Number);
-            // Início da aquisição é exatamente 1 ano antes da data de fim
-            let dataInicioRow = new Date(anoRow - 1, mesRow - 1, diaRow);
+            const [anoRow, mesRow, diaRow] = feria.fimperaquis.split('T')[0].split('-').map(Number);
+            const dataInicioRow = new Date(anoRow - 1, mesRow - 1, diaRow);
             
             const evento = {
                 colab: {
                     id: colaborador.id,
                     nome: colaborador.nome || colaborador.funcionario_nome || colaborador.funcionario_pessoa_fisica?.nome,
                     gestor: colaborador.gestor,
-                    funcionario_situacao_padrao: colaborador.funcionario_situacao_padrao === true // garante booleano
+                    funcionario_situacao_padrao: colaborador.funcionario_situacao_padrao === true
                 },
                 evento: {
                     periodo_aquisitivo_inicio: dataInicioRow,
@@ -423,50 +554,55 @@ function FeriasListagem() {
                 },
                 tipo: 'aSolicitar'
             };
+            
             setEventoSelecionado(evento);
         } catch (error) {
-            console.error('Erro ao buscar férias do colaborador:', error)
-            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao buscar férias do colaborador', life: 3000 });
+            console.error('Erro ao buscar férias do colaborador:', error);
+            toast.current.show({ 
+                severity: 'error', 
+                summary: 'Erro', 
+                detail: 'Erro ao buscar férias do colaborador', 
+                life: 3000 
+            });
         }
-    }
+    }, []);
 
-    const fecharModal = (resultado) => {
+    // Função para fechar modal com resultado
+    const handleFecharModal = useCallback((resultado) => {
         setEventoSelecionado(null);
+        
         if (resultado) {
-            if (resultado.sucesso) {
-                toast.current.show({ severity: 'success', summary: 'Sucesso', detail: resultado.mensagem, life: 3000 });
-                // Atualiza a lista para refletir a nova solicitação
-                setForceUpdate(p => p + 1);
-            } else if (resultado.erro) {
-                toast.current.show({ severity: 'error', summary: 'Erro', detail: resultado.mensagem, life: 3000 });
-            } else if (resultado.aviso) {
-                toast.current.show({ severity: 'warn', summary: 'Atenção', detail: resultado.mensagem, life: 3000 });
-            } else if (resultado.info) {
-                toast.current.show({ severity: 'info', summary: 'Aviso', detail: resultado.mensagem, life: 3000 });
+            const severityMap = {
+                sucesso: 'success',
+                erro: 'error',
+                aviso: 'warn',
+                info: 'info'
+            };
+            
+            const severity = Object.keys(severityMap).find(key => resultado[key]);
+            if (severity) {
+                toast.current.show({ 
+                    severity: severityMap[severity], 
+                    summary: severity === 'sucesso' ? 'Sucesso' : 
+                            severity === 'erro' ? 'Erro' :
+                            severity === 'aviso' ? 'Atenção' : 'Aviso',
+                    detail: resultado.mensagem, 
+                    life: 3000 
+                });
+                
+                // Apenas atualiza em caso de sucesso
+                if (severity === 'sucesso') {
+                    setForceUpdate(prev => prev + 1);
+                }
             }
         }
-    };
-
-    // Função para lidar com mudança de aba
-    const handleTabChange = (newTab) => {
-        setTab(newTab)
-        // Reset paginação quando mudar para lista
-        if (newTab === 'lista') {
-            setCurrentPage(1)
-        }
-    }
-
-    // Reset paginação quando ano, busca ou período aberto mudar
-    useEffect(() => {
-        setCurrentPage(1)
-    }, [anoSelecionado, searchTerm, periodoAberto])
-
-
+    }, []);
 
     return (
         <ConteudoFrame>
             <Loading opened={loading} />
             <Toast ref={toast} />
+            
             <HeaderRow>
                 <TabPanel>
                     <TabButton $active={tab === 'calendario'} onClick={() => handleTabChange('calendario')}>
@@ -528,24 +664,32 @@ function FeriasListagem() {
                     )}
                 </FiltersContainer>
             </HeaderRow>
+            
             <Wrapper>
                 {loading ? (
                     <></>
-                ) : (ferias ? (
+                ) : ferias ? (
                     <>
-                        {tab === 'calendario' && <CalendarFerias 
-                            colaboradores={ferias} 
-                            onUpdate={() => setForceUpdate(p => p + 1)}
-                        />}
-                        {tab === 'lista' && <DataTableFerias 
-                            ferias={ferias} 
-                            totalRecords={totalRecords}
-                            currentPage={currentPage}
-                            setCurrentPage={setCurrentPage}
-                            pageSize={pageSize}
-                            setPageSize={setPageSize}
-                            onUpdate={() => setForceUpdate(p => p + 1)}
-                        />}
+                        {tab === 'calendario' && (
+                            <CalendarFerias 
+                                colaboradores={ferias} 
+                                onUpdate={() => setForceUpdate(prev => prev + 1)}
+                                onLoadMore={loadMore}
+                                hasMore={hasMore}
+                                isLoadingMore={isLoadingMore}
+                            />
+                        )}
+                        {tab === 'lista' && (
+                            <DataTableFerias 
+                                ferias={ferias} 
+                                totalRecords={totalRecords}
+                                currentPage={currentPage}
+                                setCurrentPage={setCurrentPage}
+                                pageSize={pageSize}
+                                setPageSize={setPageSize}
+                                onUpdate={() => setForceUpdate(prev => prev + 1)}
+                            />
+                        )}
                     </>
                 ) : (
                     <ContainerSemRegistro>
@@ -555,38 +699,23 @@ function FeriasListagem() {
                             <p>Aqui você verá todas as ausências registradas.</p>
                         </section>
                     </ContainerSemRegistro>
-                ))}
+                )}
             </Wrapper>
+            
             <ModalSelecionarColaborador 
                 opened={modalSelecaoColaboradorOpened} 
                 aoFechar={() => setModalSelecaoColaboradorOpened(false)} 
                 aoSelecionar={handleColaboradorSelecionado}
                 demitidos={false}
             />
+            
             <ModalDetalhesFerias 
                 opened={!!eventoSelecionado} 
                 evento={eventoSelecionado} 
-                aoFechar={(resultado) => {
-                    setEventoSelecionado(null);
-                    if (resultado) {
-                        if (resultado.sucesso) {
-                            toast.current.show({ severity: 'success', summary: 'Sucesso', detail: resultado.mensagem, life: 3000 });
-                            setForceUpdate(p => p + 1); // Atualiza apenas em caso de sucesso
-                        } else if (resultado.erro) {
-                            toast.current.show({ severity: 'error', summary: 'Erro', detail: resultado.mensagem, life: 3000 });
-                            // Não chama setForceUpdate em caso de erro
-                        } else if (resultado.aviso) {
-                            toast.current.show({ severity: 'warn', summary: 'Atenção', detail: resultado.mensagem, life: 3000 });
-                            // Não chama setForceUpdate em caso de aviso
-                        } else if (resultado.info) {
-                            toast.current.show({ severity: 'info', summary: 'Aviso', detail: resultado.mensagem, life: 3000 });
-                            // Não chama setForceUpdate em caso de info
-                        }
-                    }
-                }}
+                aoFechar={handleFecharModal}
             />
         </ConteudoFrame>
-    )
+    );
 }
 
 export default FeriasListagem

@@ -24,6 +24,15 @@ const CalendarContainer = styled.div`
     flex-direction: column;
     height: 73vh;
     position: relative;
+    
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
 `;
 
 const FixedHeader = styled.div`
@@ -387,7 +396,7 @@ const DAYS_BATCH = 30; // Carrega mais 1 mês por vez
 const INITIAL_COLABS = 3;
 const COLABS_BATCH = 2;
 
-const CalendarFerias = ({ colaboradores, onUpdate }) => {
+const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadingMore }) => {
     const [visualizacao, setVisualizacao] = useState('trimestral'); // 'mensal' ou 'trimestral'
     const [modalEvento, setModalEvento] = useState(null); // {colab, evento, tipo}
     const [isDragging, setIsDragging] = useState(false);
@@ -397,6 +406,7 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
     const containerRef = useRef();
     const toast = useRef(null);
     const [containerWidth, setContainerWidth] = useState(1200);
+    const loadMoreTriggerRef = useRef(null);
 
     useEffect(() => {
         if (containerRef.current) {
@@ -410,6 +420,32 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
+
+    // Intersection Observer para lazy loading
+    useEffect(() => {
+        if (!loadMoreTriggerRef.current || !onLoadMore || !hasMore) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                const target = entries[0];
+                if (target.isIntersecting && !isLoadingMore) {
+                    onLoadMore();
+                }
+            },
+            {
+                threshold: 0.1,
+                rootMargin: '100px'
+            }
+        );
+
+        observer.observe(loadMoreTriggerRef.current);
+
+        return () => {
+            if (loadMoreTriggerRef.current) {
+                observer.unobserve(loadMoreTriggerRef.current);
+            }
+        };
+    }, [onLoadMore, hasMore, isLoadingMore]);
 
     // Função para normalizar os dados recebidos (API)
     const normalizarColaboradores = useCallback((colaboradores) => {
@@ -441,10 +477,10 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
             
             // Adiciona férias como ausências
             if (item.dt_inicio && item.dt_fim) {
-                                                            // Calcula período aquisitivo baseado no ano das férias
-                                            const anoFerias = parseDateAsLocal(item.dt_inicio).getFullYear();
-                                            const periodoAquisitivoFim = new Date(anoFerias, 11, 31); // 31/12 do ano
-                                            const periodoAquisitivoInicio = new Date(anoFerias - 1, 11, 31); // 31/12 do ano anterior
+                // Calcula período aquisitivo baseado no ano das férias
+                const anoFerias = parseDateAsLocal(item.dt_inicio).getFullYear();
+                const periodoAquisitivoFim = new Date(anoFerias, 11, 31); // 31/12 do ano
+                const periodoAquisitivoInicio = new Date(anoFerias - 1, 11, 31); // 31/12 do ano anterior
                 
                 colaboradoresMap[funcionarioId].ausencias.push({
                     id: item.id,
@@ -1062,6 +1098,30 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                         </EmployeeRow>
                         );
                     })}
+                    
+                    {/* Trigger para lazy loading */}
+                    {hasMore && (
+                        <div ref={loadMoreTriggerRef} style={{ 
+                            height: '80px', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center',
+                            backgroundColor: '#f8f9fa',
+                            borderTop: '1px solid #e5e7eb',
+                            margin: '20px 0'
+                        }}>
+                            {isLoadingMore ? (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#666', fontSize: '14px' }}>
+                                    <FaRegClock style={{ animation: 'spin 1s linear infinite' }} />
+                                    Carregando mais dados...
+                                </div>
+                            ) : (
+                                <div style={{ color: '#999', fontSize: '12px', textAlign: 'center' }}>
+                                    Carregando automaticamente...
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </CalendarGrid>
                 )}
             </CalendarScrollArea>
