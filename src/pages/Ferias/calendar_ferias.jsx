@@ -409,24 +409,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
     const loadMoreTriggerRef = useRef(null);
     const lastScrollPosition = useRef(0);
 
-    // Função para preservar posição do scroll quando novos dados são carregados
-    const preserveScrollPosition = useCallback(() => {
-        if (scrollRef.current) {
-            lastScrollPosition.current = scrollRef.current.scrollTop;
-        }
-    }, []);
-
-    // Função para restaurar posição do scroll após carregamento
-    const restoreScrollPosition = useCallback(() => {
-        if (scrollRef.current && lastScrollPosition.current > 0) {
-            // Pequeno delay para garantir que os novos elementos foram renderizados
-            requestAnimationFrame(() => {
-                if (scrollRef.current) {
-                    scrollRef.current.scrollTop = lastScrollPosition.current;
-                }
-            });
-        }
-    }, []);
+    // Sistema de preservação de scroll simplificado
 
     useEffect(() => {
         if (containerRef.current) {
@@ -465,7 +448,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                 observer.unobserve(loadMoreTriggerRef.current);
             }
         };
-    }, [onLoadMore, hasMore, isLoadingMore, preserveScrollPosition]);
+    }, [onLoadMore, hasMore, isLoadingMore]);
 
     // Effect para monitorar scroll e preservar posição
     useEffect(() => {
