@@ -353,7 +353,7 @@ function FeriasListagem() {
             }
             // Para calendário: usar cursor pagination
             url += `cursor`;
-            url += `&page_size=10`; // Páginas maiores para calendário
+            url += `&page_size=15`; // Páginas maiores para calendário
             url += `&periodo_aberto=true`;
             url += `&incluir_finalizadas=true`;
             
@@ -426,13 +426,22 @@ function FeriasListagem() {
                 if (tab === 'calendario') {
                     // Para calendário com cursor pagination
                     if (isLoadMore) {
-                        // Marca novos itens para garantir que vão para o final do calendário
-                        const newDataWithMarker = newData.map(item => ({
-                            ...item,
-                            _isNewItem: true
-                        }));
-                        setFerias(prev => [...(prev || []), ...newDataWithMarker]);
-                        console.log('✅ Dados adicionados ao calendário:', newDataWithMarker?.length, 'novos itens');
+                        // Filtra apenas itens que não existem no calendário atual
+                        const existingIds = new Set((ferias || []).map(item => item.id));
+                        const newItemsOnly = newData.filter(item => !existingIds.has(item.id));
+                        
+                        if (newItemsOnly.length > 0) {
+                            // Marca novos itens para garantir que vão para o final do calendário
+                            const newDataWithMarker = newItemsOnly.map(item => ({
+                                ...item,
+                                _isNewItem: true
+                            }));
+                            setFerias(prev => [...(prev || []), ...newDataWithMarker]);
+                            console.log('✅ Dados adicionados ao calendário:', newDataWithMarker?.length, 'novos itens únicos');
+                            console.log('🚫 Duplicatas filtradas:', newData.length - newItemsOnly.length, 'itens');
+                        } else {
+                            console.log('⚠️ Nenhum item novo encontrado - todos já existem no calendário');
+                        }
                     } else {
                         setFerias(newData);
                         console.log('✅ Dados iniciais do calendário carregados:', newData?.length, 'itens');

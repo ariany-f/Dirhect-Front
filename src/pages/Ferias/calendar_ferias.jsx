@@ -218,15 +218,15 @@ const EventBar = styled.div`
     position: absolute;
     left: ${({ $startPercent }) => $startPercent}%;
     width: ${({ $widthPercent }) => $widthPercent}%;
-    top: 6px;
-    height: 28px;
+    top: 8px;
+    height: 24px;
     display: flex;
     align-items: center;
     box-shadow: 0 2px 8px rgba(44, 0, 80, 0.13);
     border-radius: 4px;
     font-weight: 400;
     font-size: 14px;
-    padding: 0 24px 0 12px;
+    padding: 0 20px 0 12px;
     z-index: 2;
     overflow: hidden;
     white-space: nowrap;
@@ -495,11 +495,11 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                 const now = Date.now();
                 const timeSinceLastLoad = now - lastLoadTime.current;
                 
-                if (target.isIntersecting && !isLoadingMore && timeSinceLastLoad > 1000) { // Mínimo 1 segundo entre requisições
+                if (target.isIntersecting && !isLoadingMore && timeSinceLastLoad > 100) { // Mínimo 1 segundo entre requisições
                     console.log('🔍 Trigger detectado, carregando mais dados...');
                     lastLoadTime.current = now;
                     onLoadMore();
-                } else if (target.isIntersecting && timeSinceLastLoad <= 1000) {
+                } else if (target.isIntersecting && timeSinceLastLoad <= 100) {
                     console.log('⏰ Trigger detectado, mas muito cedo. Aguardando...', timeSinceLastLoad + 'ms');
                 }
             },
@@ -534,11 +534,11 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                 const now = Date.now();
                 const timeSinceLastLoad = now - lastLoadTime.current;
                 
-                if (isNearBottom && timeSinceLastLoad > 1000) { // Mínimo 1 segundo entre requisições
+                if (isNearBottom && timeSinceLastLoad > 100) { // Mínimo 1 segundo entre requisições
                     console.log('🔄 Backup lazy loading ativado (scroll)');
                     lastLoadTime.current = now;
                     onLoadMore();
-                } else if (isNearBottom && timeSinceLastLoad <= 1000) {
+                } else if (isNearBottom && timeSinceLastLoad <= 100) {
                     console.log('⏰ Scroll backup detectado, mas muito cedo. Aguardando...', timeSinceLastLoad + 'ms');
                 }
             }
@@ -623,8 +623,14 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                 colaboradoresOrder.push(funcionarioId); // Adiciona à lista de ordem
             }
             
-            // Adiciona férias como ausências
+            // Adiciona férias como ausências (evita duplicatas)
             if (item.dt_inicio && item.dt_fim) {
+                // Verifica se esta ausência já existe
+                const ausenciaExiste = colaboradoresMap[funcionarioId].ausencias.some(ausencia => ausencia.id === item.id);
+                if (ausenciaExiste) {
+                    return; // Pula este item se já existe
+                }
+                
                 // Calcula período aquisitivo baseado no ano das férias
                 const anoFerias = parseDateAsLocal(item.dt_inicio).getFullYear();
                 const periodoAquisitivoFim = new Date(anoFerias, 11, 31); // 31/12 do ano
@@ -656,6 +662,12 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                     tarefas: item.tarefas || [] // Tarefas agora vêm diretamente do item
                 });
             } else if (item.fimperaquis) {
+                // Verifica se esta ausência já existe (mesmo para fimperaquis)
+                const ausenciaExiste = colaboradoresMap[funcionarioId].ausencias.some(ausencia => ausencia.id === item.id);
+                if (ausenciaExiste) {
+                    return; // Pula este item se já existe
+                }
+                
                 // Se não tem dt_inicio e dt_fim, mas tem fimperaquis, adiciona para criar barra de férias a requisitar
                 const fimPeriodo = parseDateAsLocal(item.fimperaquis);
                 const inicioPeriodo = new Date(fimPeriodo.getFullYear() - 1, fimPeriodo.getMonth(), fimPeriodo.getDate()); // 1 ano antes
