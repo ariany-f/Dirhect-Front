@@ -449,7 +449,7 @@ function FeriasListagem() {
                                 setIsLoadingMore(false);
                                 setIsRendering(false);
                                 console.log('✅ Renderização finalizada');
-                            }, 400);
+                            }, 700);
                         } else {
                             console.log('⚠️ Nenhum item novo encontrado - todos já existem no calendário');
                             setIsLoadingMore(false);
