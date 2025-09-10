@@ -672,6 +672,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 setValor={valor => {
                     // Salvar tanto no campo direto quanto no dados_vaga para garantir consistência
                     setCampo('centro_custo', valor.code);
+                    setCampo('centro_custo_id', valor.code);
                     setCampo('dados_vaga', { 
                         ...candidato.dados_vaga, 
                         centro_custo_id: valor.code,
