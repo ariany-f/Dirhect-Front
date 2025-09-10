@@ -39,8 +39,44 @@ const FrequencyBadge = styled.span`
 
 const ActionButtons = styled.div`
     display: flex;
-    gap: 2px;
+    padding: 0;
+    gap: 1px;
     align-items: center;
+    justify-content: center;
+`;
+
+const StyledDataTable = styled(DataTable)`
+    .p-datatable-table {
+        table-layout: fixed;
+    }
+    
+    .p-datatable-thead > tr > th {
+        padding: 12px 8px;
+        font-weight: 600;
+        background: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .p-datatable-tbody > tr > td {
+        padding: 12px 8px;
+        border-bottom: 1px solid #e9ecef;
+        word-wrap: break-word;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .p-datatable-tbody > tr:hover {
+        background: #f8f9fa;
+    }
+    
+    /* Responsivo */
+    @media (max-width: 1200px) {
+        .p-datatable-thead > tr > th,
+        .p-datatable-tbody > tr > td {
+            padding: 8px 4px;
+            font-size: 13px;
+        }
+    }
 `;
 
 const DataTableAgendamentosN8N = ({ 
@@ -88,19 +124,19 @@ const DataTableAgendamentosN8N = ({
         return (
             <ActionButtons>
                 <Button
-                    icon={rowData.ativo ? <FaPause /> : <FaPlay />}
+                    icon={rowData.ativo ? <FaPause size={16} /> : <FaPlay size={16} />}
                     className="p-button-rounded p-button-text p-button-sm"
                     onClick={() => onToggleStatus && onToggleStatus(rowData)}
                     tooltip={rowData.ativo ? 'Pausar' : 'Ativar'}
                 />
                 <Button
-                    icon={<FaPen />}
+                    icon={<FaPen size={16} />}
                     className="p-button-rounded p-button-text p-button-sm"
                     onClick={() => onEdit && onEdit(rowData)}
                     tooltip="Editar"
                 />
                 <Button
-                    icon={<FaTrash />}
+                    icon={<FaTrash size={16} />}
                     className="p-button-rounded p-button-text p-button-sm p-button-danger"
                     onClick={() => onDelete && onDelete(rowData)}
                     tooltip="Excluir"
@@ -110,7 +146,7 @@ const DataTableAgendamentosN8N = ({
     };
 
     return (
-        <DataTable
+        <StyledDataTable
             value={data}
             paginator={paginator}
             rows={rows}
@@ -121,16 +157,18 @@ const DataTableAgendamentosN8N = ({
             className="p-datatable-sm"
             loading={loading}
             lazy={paginator}
+            scrollable={false}
+            resizableColumns={false}
         >
-            <Column field="nome" header="Nome" sortable style={{ width: '10%' }} />
-            <Column body={entidadeTemplate} header="Entidade" style={{ width: '8%' }} />
-            <Column body={tipoTemplate} header="Tipo" style={{ width: '8%' }} />
-            <Column body={statusTemplate} header="Status" style={{ width: '8%' }} />
-            <Column body={proximaExecucaoTemplate} header="Próxima Execução" style={{ width: '15%' }} />
-            <Column body={ultimaExecucaoTemplate} header="Última Execução" style={{ width: '15%' }} />
-            <Column field="tentativas_realizadas" header="Tentativas" style={{ width: '8%' }} />
-            <Column body={actionsTemplate} header="" style={{ width: '8%' }} />
-        </DataTable>
+            <Column field="nome" header="Nome" sortable style={{ width: '18%', minWidth: '150px' }} />
+            <Column body={entidadeTemplate} header="Entidade" style={{ width: '12%', minWidth: '100px' }} />
+            <Column body={tipoTemplate} header="Tipo" style={{ width: '12%', minWidth: '100px' }} />
+            <Column body={statusTemplate} header="Status" style={{ width: '10%', minWidth: '80px' }} />
+            <Column body={proximaExecucaoTemplate} header="Próxima Execução" style={{ width: '17%', minWidth: '140px' }} />
+            <Column body={ultimaExecucaoTemplate} header="Última Execução" style={{ width: '17%', minWidth: '140px' }} />
+            <Column field="tentativas_realizadas" header="Tent." style={{ width: '6%', minWidth: '50px', textAlign: 'center' }} />
+            <Column body={actionsTemplate} header="" style={{ width: '8%', minWidth: '100px' }} />
+        </StyledDataTable>
     );
 };
 
