@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Calendar } from 'primereact/calendar';
-import { InputSwitch } from 'primereact/inputswitch';
 import { FaSave, FaTimes } from 'react-icons/fa';
 import Botao from '@components/Botao';
 import CampoTexto from '@components/CampoTexto';
 import DropdownItens from '@components/DropdownItens';
+import SwitchInput from '@components/SwitchInput';
 import { OverlayRight, DialogEstilizadoRight } from '@components/Modal/styles';
 
 const FormRow = styled.div`
@@ -57,6 +57,36 @@ const ModalFooter = styled.div`
     padding-top: 16px;
     border-top: 1px solid #e9ecef;
 `;
+
+// Função para formatar horário para o formato esperado pela API
+const formatTimeForAPI = (timeString) => {
+    if (!timeString) return '';
+    
+    // Se já está no formato correto (HH:MM:SS), retorna como está
+    if (timeString.match(/^\d{2}:\d{2}:\d{2}$/)) {
+        return timeString;
+    }
+    
+    // Se está no formato HH:MM, adiciona :00
+    if (timeString.match(/^\d{2}:\d{2}$/)) {
+        return `${timeString}:00`;
+    }
+    
+    // Se está no formato H:MM, adiciona zero à esquerda e :00
+    if (timeString.match(/^\d{1}:\d{2}$/)) {
+        return `0${timeString}:00`;
+    }
+    
+    // Se está no formato H:M, formata completamente
+    if (timeString.match(/^\d{1}:\d{1}$/)) {
+        const [hour, minute] = timeString.split(':');
+        return `0${hour}:0${minute}:00`;
+    }
+    
+    // Fallback: retorna vazio se não conseguir formatar
+    console.warn('Formato de horário não reconhecido:', timeString);
+    return '';
+};
 
 const ModalAgendamentoN8N = ({
     visible,
@@ -145,7 +175,15 @@ const ModalAgendamentoN8N = ({
     const handleSubmit = (e) => {
         e.preventDefault();
         if (onSave) {
-            onSave(formData);
+            // Formatação do horário para envio
+            const dataToSend = {
+                ...formData,
+                // Garante que horário_execucao esteja no formato correto (HH:MM:SS ou vazio)
+                horario_execucao: formData.horario_execucao 
+                    ? formatTimeForAPI(formData.horario_execucao)
+                    : ''
+            };
+            onSave(dataToSend);
         }
     };
 
@@ -324,9 +362,9 @@ const ModalAgendamentoN8N = ({
                             <FormRow>
                                 <div></div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '24px' }}>
-                                    <InputSwitch
+                                    <SwitchInput
                                         checked={formData.ativo}
-                                        onChange={(e) => setFormData({...formData, ativo: e.value})}
+                                        onChange={(value) => setFormData({...formData, ativo: value})}
                                     />
                                     <FormLabel style={{ margin: 0 }}>Ativo</FormLabel>
                                 </div>
