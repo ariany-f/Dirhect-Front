@@ -206,6 +206,10 @@ function Agendamentos() {
             // Extrair dados paginados
             setAgendamentos(data.results || []);
             setAgrupamentoPorTipo(data.agrupamento_por_tipo || []);
+            
+            // Debug para verificar os dados
+            console.log('Agendamentos recebidos:', data.results);
+            console.log('Agrupamento recebido:', data.agrupamento_por_tipo);
             setPaginationInfo({
                 count: data.count || 0,
                 total_pages: data.total_pages || 0,
@@ -353,47 +357,39 @@ function Agendamentos() {
 
     // Funções para contar agendamentos por tipo baseado no agrupamento
     const contarAgendamentosPorTipo = (tipo) => {
-        if (!agrupamentoPorTipo || agrupamentoPorTipo.length === 0) return 0;
+        if (!agendamentos || agendamentos.length === 0) return 0;
         
         if (tipo === 'total') {
-            return agrupamentoPorTipo.reduce((sum, item) => sum + item.total, 0);
+            return agendamentos.length;
         }
         
         // Mapear tipos do card para tipos da API
         const tipoMap = {
-            'atestados': 'Atestados',
-            'funcionarios': 'Funcionários',  
-            'estrutura': 'Estrutura'
+            'atestados': 'atestado',
+            'funcionarios': 'funcionario',  
+            'estrutura': 'estrutura_organizacional'
         };
         
         const tipoAPI = tipoMap[tipo];
-        const item = agrupamentoPorTipo.find(item => 
-            item.entidade_tipo && item.entidade_tipo.includes(tipoAPI)
-        );
-        
-        return item ? item.total : 0;
+        return agendamentos.filter(item => item.entidade === tipoAPI).length;
     };
 
     const contarAgendamentosAtivosPorTipo = (tipo) => {
-        if (!agrupamentoPorTipo || agrupamentoPorTipo.length === 0) return 0;
+        if (!agendamentos || agendamentos.length === 0) return 0;
         
         if (tipo === 'total') {
-            return agrupamentoPorTipo.reduce((sum, item) => sum + (item.total_abertos || 0), 0);
+            return agendamentos.filter(item => item.ativo).length;
         }
         
         // Mapear tipos do card para tipos da API
         const tipoMap = {
-            'atestados': 'Atestados',
-            'funcionarios': 'Funcionários',
-            'estrutura': 'Estrutura'
+            'atestados': 'atestado',
+            'funcionarios': 'funcionario',
+            'estrutura': 'estrutura_organizacional'
         };
         
         const tipoAPI = tipoMap[tipo];
-        const item = agrupamentoPorTipo.find(item => 
-            item.entidade_tipo && item.entidade_tipo.includes(tipoAPI)
-        );
-        
-        return item ? (item.total_abertos || 0) : 0;
+        return agendamentos.filter(item => item.entidade === tipoAPI && item.ativo).length;
     };
 
     const cardConfig = {
@@ -405,7 +401,7 @@ function Agendamentos() {
         atestados: {
             icon: <FaPen fill="#1a73e8" />,
             titulo: 'Atestado',
-            tipo: 'atestado'
+            tipo: 'atestados'
         },
         funcionarios: {
             icon: <FaPlus fill="#dc3545" />,
@@ -415,7 +411,7 @@ function Agendamentos() {
         estrutura: {
             icon: <FaSync fill="#28a745" />,
             titulo: 'Estrutura Organizacional',
-            tipo: 'estrutura_organizacional'
+            tipo: 'estrutura'
         }
     };
 
@@ -445,7 +441,14 @@ function Agendamentos() {
 
     // Filtrar agendamentos baseado no filtro ativo
     const agendamentosFiltrados = agendamentos !== null ? 
-        (filtroAtivo === 'total' ? agendamentos : agendamentos.filter(a => a.entidade_tipo === filtroAtivo)) 
+        (filtroAtivo === 'total' ? agendamentos : agendamentos.filter(a => {
+            const tipoMap = {
+                'atestados': 'atestado',
+                'funcionarios': 'funcionario',
+                'estrutura': 'estrutura_organizacional'
+            };
+            return a.entidade === tipoMap[filtroAtivo];
+        })) 
         : [];
 
     return (
@@ -455,7 +458,7 @@ function Agendamentos() {
             <ConfirmDialog />
             
             {
-                agendamentos !== null && agrupamentoPorTipo !== null ?
+                agendamentos !== null ?
                 <ConteudoFrame>
                     <Frame gap="12px">
                         <Container gap="12px">
@@ -480,8 +483,8 @@ function Agendamentos() {
                                             <div className="quantidade">{ativos}</div>
                                             <div style={{ fontSize: 13, color: '#888', marginTop: 2 }}>
                                                 {tipo === 'total' ? 
-                                                    `${ativos} abertos de ${total} total` :
-                                                    `${ativos} abertos de ${total} total`
+                                                    `${ativos} ativos de ${total} total` :
+                                                    `${ativos} ativos de ${total} total`
                                                 }
                                             </div>
                                         </Card>
