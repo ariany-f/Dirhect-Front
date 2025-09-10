@@ -9,23 +9,34 @@ import SwitchInput from '@components/SwitchInput';
 import { OverlayRight, DialogEstilizadoRight } from '@components/Modal/styles';
 
 const FormRow = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-wrap: wrap;
     gap: 16px;
     margin-bottom: 16px;
     
-    &.full-width {
-        grid-template-columns: 1fr;
+    /* Cada campo ocupa metade da largura menos o gap */
+    & > div {
+        flex: 1;
+        min-width: calc(50% - 8px);
     }
     
-    /* Quando há apenas uma div (primeira div vazia), alinha à esquerda */
-    & > div:first-child:empty + div {
-        justify-self: start;
+    /* Para campos que devem ocupar a largura total */
+    &.full-width > div {
+        flex: 1;
+        min-width: 100%;
     }
     
-    /* Quando há apenas uma div no total, alinha à esquerda */
-    & > div:only-child {
-        justify-self: start;
+    /* Para casos especiais onde queremos apenas um campo por linha */
+    &.single-field > div {
+        flex: 1;
+        min-width: 100%;
+    }
+    
+    /* Responsivo - em telas menores, cada campo ocupa toda a largura */
+    @media (max-width: 768px) {
+        & > div {
+            min-width: 100%;
+        }
     }
 `;
 
