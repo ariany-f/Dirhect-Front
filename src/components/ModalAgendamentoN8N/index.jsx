@@ -17,6 +17,16 @@ const FormRow = styled.div`
     &.full-width {
         grid-template-columns: 1fr;
     }
+    
+    /* Quando há apenas uma div (primeira div vazia), alinha à esquerda */
+    & > div:first-child:empty + div {
+        justify-self: start;
+    }
+    
+    /* Quando há apenas uma div no total, alinha à esquerda */
+    & > div:only-child {
+        justify-self: start;
+    }
 `;
 
 const FormLabel = styled.label`
