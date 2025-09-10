@@ -6,7 +6,6 @@ import { FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck,
 import { Tooltip } from 'primereact/tooltip';
 import { Toast } from 'primereact/toast';
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
-import colaboradoresFake from '@json/ferias.json'; // Dados fake para exemplos de renderização
 import DropdownItens from '@components/DropdownItens'
 import CampoTexto from '@components/CampoTexto';
 import http from '@http';
@@ -72,6 +71,53 @@ const CalendarScrollArea = styled.div`
         height: 0;
     }
 `;
+
+// const EmployeeRow = styled.div`
+//     display: grid;
+//     grid-template-columns: 200px 1fr;
+//     align-items: center;
+//     min-height: 44px;
+//     margin: 0;
+//     padding: 0;
+//     border-bottom: none;
+    
+//     /* Fade-in sutil para todos os elementos */
+//     opacity: 0;
+//     animation: fadeInSoft 0.6s ease-out forwards;
+//     animation-delay: ${({ $index }) => ($index || 0) * 0.05}s; /* Delay escalonado */
+    
+//     /* Animação específica para novos itens */
+//     &.new-item {
+//         animation: slideInFromBottom 0.4s ease-out forwards;
+//         animation-delay: 0s; /* Sem delay para novos itens */
+//     }
+    
+//     @keyframes fadeInSoft {
+//         0% {
+//             opacity: 0;
+//             transform: translateY(8px);
+//         }
+//         100% {
+//             opacity: 1;
+//             transform: translateY(0);
+//         }
+//     }
+    
+//     @keyframes slideInFromBottom {
+//         0% {
+//             opacity: 0;
+//             transform: translateY(20px) scale(0.95);
+//         }
+//         50% {
+//             opacity: 0.7;
+//             transform: translateY(-2px) scale(1.02);
+//         }
+//         100% {
+//             opacity: 1;
+//             transform: translateY(0) scale(1);
+//         }
+//     }
+// `;
 
 const CalendarTableHeader = styled.div`
     position: sticky;
@@ -184,6 +230,36 @@ const EventBar = styled.div`
     z-index: 2;
     overflow: hidden;
     white-space: nowrap;
+    
+    animation: slideInFromBottom 0.4s ease-out forwards;
+    animation-delay: 0s; /* Sem delay para novos itens */
+    
+    
+    @keyframes fadeInSoft {
+        0% {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes slideInFromBottom {
+        0% {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+        }
+        50% {
+            opacity: 0.7;
+            transform: translateY(-2px) scale(1.02);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
     color: #fff;
     background: ${({ $type }) => {
         if ($type === 'aSolicitar') return 'linear-gradient(to right, #ff5ca7, #ffb6c1)';
@@ -478,6 +554,33 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
         }
     }, [colaboradores?.length, isLoadingMore]);
 
+    // Estado local para controlar a limpeza das marcações _isNewItem
+    const [colaboradoresLimpos, setColaboradoresLimpos] = useState([]);
+
+    // Effect para remover marcação _isNewItem após animação dos novos itens
+    useEffect(() => {
+        const hasNewItems = colaboradores?.some(item => item._isNewItem);
+        if (hasNewItems) {
+            // Remove a marcação após 2 segundos (tempo suficiente para a animação)
+            const timer = setTimeout(() => {
+                // Limpa as marcações _isNewItem localmente sem recarregar dados
+                const colaboradoresSemMarcacao = colaboradores.map(item => ({
+                    ...item,
+                    _isNewItem: false
+                }));
+                setColaboradoresLimpos(colaboradoresSemMarcacao);
+            }, 2000);
+            
+            return () => clearTimeout(timer);
+        } else if (colaboradores && colaboradores.length > 0) {
+            // Se não há novos itens mas há colaboradores, usa os originais
+            setColaboradoresLimpos(colaboradores);
+        }
+    }, [colaboradores]);
+
+    // Usa colaboradores limpos se disponível, senão usa os originais
+    const colaboradoresParaUsar = (colaboradoresLimpos && colaboradoresLimpos.length > 0) ? colaboradoresLimpos : (colaboradores || []);
+
     // Função para normalizar os dados recebidos (API)
     const normalizarColaboradores = useCallback((colaboradores) => {
         if (!colaboradores || !Array.isArray(colaboradores)) return [];
@@ -489,6 +592,8 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
         
         // Normaliza dados da API de férias
         const colaboradoresMap = {};
+        const colaboradoresOrder = []; // Para preservar a ordem original
+        
         colaboradores.forEach(item => {
             // Agora usa funcionario_id diretamente
             const funcionarioId = item.funcionario_id;
@@ -502,8 +607,11 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                     id: funcionarioId,
                     nome: item.funcionario_nome || 'Colaborador',
                     gestor: item.gestor || '', 
-                    ausencias: []
+                    ausencias: [],
+                    _isNewItem: item._isNewItem || false, // Preserva a marcação de novo item
+                    _originalIndex: colaboradoresOrder.length // Preserva ordem original
                 };
+                colaboradoresOrder.push(funcionarioId); // Adiciona à lista de ordem
             }
             
             // Adiciona férias como ausências
@@ -567,24 +675,21 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
             }
         });
         
-        // Filtra colaboradores inválidos antes de retornar
-        return Object.values(colaboradoresMap).filter(colab => {
-            if (!colab || !colab.id || !colab.nome) {
-                console.warn('Colaborador inválido filtrado:', colab);
-                return false;
-            }
-            return true;
-        });
+        // Retorna colaboradores na ordem original, filtrando os inválidos
+        return colaboradoresOrder
+            .map(funcionarioId => colaboradoresMap[funcionarioId])
+            .filter(colab => {
+                if (!colab || !colab.id || !colab.nome) {
+                    console.warn('Colaborador inválido filtrado:', colab);
+                    return false;
+                }
+                return true;
+            });
     }, []);
 
     // Usa a função para garantir o formato correto
-    const colabsReais = normalizarColaboradores(colaboradores || []);
-    const colabsFake = normalizarColaboradores(colaboradoresFake); // Dados fake para exemplos de renderização
-    
-    // Para usar dados fake em demonstrações, mude para: const allColabs = [...colabsReais, ...colabsFake];
-    // Para usar apenas dados reais: const allColabs = colabsReais;
-    const allColabs = colabsReais;
-
+    const allColabs = normalizarColaboradores(colaboradoresParaUsar || []);
+ 
     // Definir período do calendário: 1 ano atrás até 2 anos à frente do ano atual
     const currentYear = useMemo(() => new Date().getFullYear(), []);
     const minDate = useMemo(() => new Date(currentYear - 1, 0, 1), [currentYear]); // 01/01 do ano anterior
@@ -879,7 +984,25 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                             </WeekDaysRow>
                         )}
                     </CalendarTableHeader>
-                    {colabsFiltrados.map((colab, idx) => {
+                    {colabsFiltrados
+                    .sort((a, b) => {
+                        // Novos itens sempre vão para o final
+                        if (a._isNewItem && !b._isNewItem) return 1;
+                        if (!a._isNewItem && b._isNewItem) return -1;
+                        
+                        // Se ambos são novos ou ambos são antigos, mantém ordem original baseada no índice
+                        if (a._isNewItem === b._isNewItem) {
+                            // Se ambos têm _originalIndex, usa isso para manter a ordem
+                            if (typeof a._originalIndex === 'number' && typeof b._originalIndex === 'number') {
+                                return a._originalIndex - b._originalIndex;
+                            }
+                            // Fallback: mantém ordem alfabética se não há _originalIndex
+                            return (a.nome || '').localeCompare(b.nome || '');
+                        }
+                        
+                        return 0;
+                    })
+                    .map((colab, idx) => {
                         
                         // Verificação de segurança para garantir que colab tem dados necessários
                         if (!colab || !colab.id || !colab.nome) {
@@ -888,7 +1011,11 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                         }
                         
                         return (
-                        <EmployeeRow key={colab.nome}>
+                        <EmployeeRow 
+                            key={colab.nome} 
+                            $index={idx}
+                            className={colab._isNewItem ? 'new-item' : ''}
+                        >
                             <EmployeeCell>{colab.nome}</EmployeeCell>
                             <DaysBar style={{ minWidth: '100%', position: 'relative' }}>
                                 {/* Background grid */}

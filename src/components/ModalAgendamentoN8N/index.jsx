@@ -148,9 +148,16 @@ const ModalAgendamentoN8N = ({
         }
     };
 
+    const handleOverlayClick = (e) => {
+        // Só fecha o modal se o clique for diretamente no overlay (não nos elementos filhos)
+        if (e.target === e.currentTarget) {
+            handleClose();
+        }
+    };
+
     return (
-        <OverlayRight $opened={visible} onClick={handleClose}>
-            <DialogEstilizadoRight $opened={visible} $width="600px">
+        <OverlayRight $opened={visible} onClick={handleOverlayClick}>
+            <DialogEstilizadoRight $opened={visible} $width="600px" onClick={e => e.stopPropagation()}>
                 <ModalHeader>
                     <ModalTitle>
                         {editingData ? 'Editar Agendamento' : 'Novo Agendamento'}

@@ -425,8 +425,13 @@ function FeriasListagem() {
                 if (tab === 'calendario') {
                     // Para calendário com cursor pagination
                     if (isLoadMore) {
-                        setFerias(prev => [...(prev || []), ...newData]);
-                        console.log('✅ Dados adicionados ao calendário:', newData?.length, 'novos itens');
+                        // Marca novos itens para garantir que vão para o final do calendário
+                        const newDataWithMarker = newData.map(item => ({
+                            ...item,
+                            _isNewItem: true
+                        }));
+                        setFerias(prev => [...(prev || []), ...newDataWithMarker]);
+                        console.log('✅ Dados adicionados ao calendário:', newDataWithMarker?.length, 'novos itens');
                     } else {
                         setFerias(newData);
                         console.log('✅ Dados iniciais do calendário carregados:', newData?.length, 'itens');
