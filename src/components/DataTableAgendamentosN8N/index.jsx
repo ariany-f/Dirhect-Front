@@ -123,9 +123,9 @@ const DataTableAgendamentosN8N = ({
             lazy={paginator}
         >
             <Column field="nome" header="Nome" sortable style={{ width: '10%' }} />
-            <Column body={entidadeTemplate} header="Entidade" style={{ width: '12%' }} />
+            <Column body={entidadeTemplate} header="Entidade" style={{ width: '8%' }} />
             <Column body={tipoTemplate} header="Tipo" style={{ width: '12%' }} />
-            <Column body={statusTemplate} header="Status" style={{ width: '10%' }} />
+            <Column body={statusTemplate} header="Status" style={{ width: '8%' }} />
             <Column body={proximaExecucaoTemplate} header="Próxima Execução" style={{ width: '15%' }} />
             <Column body={ultimaExecucaoTemplate} header="Última Execução" style={{ width: '15%' }} />
             <Column field="tentativas_realizadas" header="Tentativas" style={{ width: '8%' }} />
