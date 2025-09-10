@@ -21,6 +21,7 @@ function useQuery() {
 
 function Publico() {
     const query = useQuery();
+    const location = useLocation();
     const { isMobile } = useResponsive();
 
     const {
@@ -39,44 +40,47 @@ function Publico() {
         BrandColors.applyBrandColorsWhenReady();
     }, []);
 
+    // Verificar se está em rota de login
+    const isLoginRoute = location.pathname.startsWith('/login') && location.pathname !== '/login';
+
     return (
         <>
-        {!usuarioEstaLogado ?
-            <>
-                <EstilosGlobais />
-                <MainSectionPublico>
-                    {isMobile ? 
-                        <Outlet />
-                    : (
-                        <>
-                            <RightContainer>
-                                <MainContainer>
-                                    <Outlet />
-                                    {import.meta.env.VITE_OPTIONS_WHITE_LABEL === 'true' && (
-                                        <img 
-                                            style={{ 
-                                                width: '70px', 
-                                                margin: '0px auto', 
-                                                filter: 'grayscale(1) brightness(0.8) opacity(0.8)', 
-                                                WebkitFilter: 'grayscale(1) brightness(0.8) opacity(0.8)',
-                                                mixBlendMode: 'multiply'
-                                            }} 
-                                            src={BrandColors.getPoweredByLogo()} 
-                                            alt="Powered by" 
-                                        />
-                                    )}
-                                </MainContainer>
-                            </RightContainer>
-                            <BannerMini />
-                        </>
-                    )}
-                    {import.meta.env.VITE_VERCEL_ENV && <Analytics />}
-                    {import.meta.env.VITE_VERCEL_ENV && <SpeedInsights />}
-                </MainSectionPublico>
-            </>
-        :  
-            <Navigate to="/" replace={true}/>
-        }
+            {(!usuarioEstaLogado) || isLoginRoute ?
+                <>
+                    <EstilosGlobais />
+                    <MainSectionPublico>
+                        {isMobile ? 
+                            <Outlet />
+                        : (
+                            <>
+                                <RightContainer>
+                                    <MainContainer>
+                                        <Outlet />
+                                        {import.meta.env.VITE_OPTIONS_WHITE_LABEL === 'true' && (
+                                            <img 
+                                                style={{ 
+                                                    width: '70px', 
+                                                    margin: '0px auto', 
+                                                    filter: 'grayscale(1) brightness(0.8) opacity(0.8)', 
+                                                    WebkitFilter: 'grayscale(1) brightness(0.8) opacity(0.8)',
+                                                    mixBlendMode: 'multiply'
+                                                }} 
+                                                src={BrandColors.getPoweredByLogo()} 
+                                                alt="Powered by" 
+                                            />
+                                        )}
+                                    </MainContainer>
+                                </RightContainer>
+                                <BannerMini />
+                            </>
+                        )}
+                        {import.meta.env.VITE_VERCEL_ENV && <Analytics />}
+                        {import.meta.env.VITE_VERCEL_ENV && <SpeedInsights />}
+                    </MainSectionPublico>
+                </>
+            : 
+                <Navigate to="/" replace={true}/>
+            }
         </>
     )
 }
