@@ -870,7 +870,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 camposVazios={isCampoEmErro('jornada') ? ['jornada'] : []}
                 name="jornada"
                 required={true}
-                label="Jornada (HHH:mm)"
+                label="Jornada (HHH:MM)"
                 valor={candidato.jornada || ''}
                 setValor={(valor) => {
                     setCampo('jornada', valor);
