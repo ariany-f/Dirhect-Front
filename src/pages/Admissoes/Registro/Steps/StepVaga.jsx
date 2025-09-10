@@ -259,7 +259,9 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                     
                     if (item) {
                         return {
-                            name: item.nome || item.descricao,
+                            name: item.id_origem 
+                                ? `${item.id_origem} - ${item.descricao || item.nome}` 
+                                : (item.descricao || item.nome),
                             code: item.id
                         };
                     }
@@ -279,7 +281,9 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                     
                     if (item) {
                         return {
-                            name: item.nome || item.descricao,
+                            name: item.id_origem 
+                                ? `${item.id_origem} - ${item.descricao || item.nome}` 
+                                : (item.descricao || item.nome),
                             code: item.id
                         };
                     }
@@ -443,7 +447,15 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
     const opcoesFiliais = useMemo(() => formatarOpcoes(filiais), [filiais, formatarOpcoes]);
     const opcoesSecoes = useMemo(() => formatarOpcoes(secoes), [secoes, formatarOpcoes]);
     const opcoesCentrosCusto = useMemo(() => formatarOpcoes(centros_custo), [centros_custo, formatarOpcoes]);
-    const opcoesHorarios = useMemo(() => formatarOpcoes(horarios, true), [horarios, formatarOpcoes]);
+    const opcoesHorarios = useMemo(() => {
+        if (!Array.isArray(horarios)) return [];
+        return horarios.map(opcao => ({
+            name: opcao.id_origem 
+                ? `${opcao.id_origem} - ${opcao.descricao || opcao.nome}` 
+                : (opcao.descricao || opcao.nome),
+            code: opcao.id
+        }));
+    }, [horarios]);
     const opcoesFuncoes = useMemo(() => formatarOpcoes(funcoes), [funcoes, formatarOpcoes]);
     const opcoesFuncaoConfianca = useMemo(() => formatarOpcoes(funcoes_confianca), [funcoes_confianca, formatarOpcoes]);
     const opcoesSindicatos = useMemo(() => formatarOpcoes(sindicatos, true), [sindicatos, formatarOpcoes]);
