@@ -335,6 +335,7 @@ function DataTableHorarios({
                 justifyContent: 'center'
             }}>
                 <Tooltip style={{fontSize: '10px'}} target=".edit" mouseTrack mouseTrackLeft={10} />
+                {ArmazenadorToken.hasPermission('change_horario') && (
                 <FaPen 
                     className="edit" 
                     data-pr-tooltip="Editar Horário" 
@@ -348,6 +349,7 @@ function DataTableHorarios({
                         color: 'var(--primaria)'
                     }}
                 />
+                )}
                 <Tooltip style={{fontSize: '10px'}} target=".colaboradores" mouseTrack mouseTrackLeft={10} />
                 {ArmazenadorToken.hasPermission('view_funcionario') && (
                     <FaUsers 

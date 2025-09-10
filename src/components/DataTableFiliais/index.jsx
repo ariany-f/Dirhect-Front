@@ -403,6 +403,7 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                 justifyContent: 'center'
             }}>
                  <Tooltip style={{fontSize: '10px'}} target=".edit" mouseTrack mouseTrackLeft={10} />
+                {ArmazenadorToken.hasPermission('change_filial') && (
                 <FaPen 
                     className="edit" 
                     data-pr-tooltip="Editar Filial" 
@@ -416,6 +417,7 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                         color: 'var(--primaria)'
                     }}
                 />
+                )}
                 <Tooltip style={{fontSize: '10px'}}  target=".colaboradores" mouseTrack mouseTrackLeft={10} />
                 {ArmazenadorToken.hasPermission('view_funcionario') && (
                     <FaUsers 

@@ -376,6 +376,7 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
                 justifyContent: 'center'
             }}>
                 <Tooltip style={{fontSize: '10px'}} target=".edit" mouseTrack mouseTrackLeft={10} />
+                {ArmazenadorToken.hasPermission('change_funcao') && (
                 <FaPen 
                     className="edit" 
                     data-pr-tooltip="Editar Função" 
@@ -389,6 +390,7 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
                         color: 'var(--primaria)'
                     }}
                 />
+                )}
                 <Tooltip style={{fontSize: '10px'}} target=".colaboradores" mouseTrack mouseTrackLeft={10} />
                 {ArmazenadorToken.hasPermission('view_funcionario') && (
                     <FaUsers 

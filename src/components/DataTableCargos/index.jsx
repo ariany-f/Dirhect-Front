@@ -320,6 +320,7 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
                 justifyContent: 'center'
             }}>
                 <Tooltip style={{fontSize: '10px'}} target=".edit" mouseTrack mouseTrackLeft={10} />
+                {ArmazenadorToken.hasPermission('change_cargo') && (
                 <FaPen 
                     className="edit" 
                     data-pr-tooltip="Editar Cargo" 
@@ -333,6 +334,7 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
                         color: 'var(--primaria)'
                     }}
                 />
+                )}
                 <Tooltip style={{fontSize: '10px'}} target=".colaboradores" mouseTrack mouseTrackLeft={10} />
                 {ArmazenadorToken.hasPermission('view_funcionario') && (
                     <FaUsers 
