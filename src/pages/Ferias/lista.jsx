@@ -353,7 +353,7 @@ function FeriasListagem() {
             }
             // Para calendário: usar cursor pagination
             url += `cursor`;
-            url += `&page_size=15`; // Páginas maiores para calendário
+            url += `&page_size=10`; // Páginas maiores para calendário
             url += `&periodo_aberto=true`;
             url += `&incluir_finalizadas=true`;
             
