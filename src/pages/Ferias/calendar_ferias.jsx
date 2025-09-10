@@ -231,7 +231,7 @@ const EventBar = styled.div`
     overflow: hidden;
     white-space: nowrap;
     
-    animation: fadeInSoft 0.4s ease-out forwards;
+    animation: fadeInSoft 0.2s ease-out forwards;
     animation-delay: 0s; /* Sem delay para novos itens */
     
     
