@@ -484,6 +484,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
     const [containerWidth, setContainerWidth] = useState(1200);
     const loadMoreTriggerRef = useRef(null);
     const lastScrollPosition = useRef(0);
+    const lastLoadTime = useRef(0); // Timestamp da última requisição
 
     // Sistema de preservação de scroll simplificado
 
@@ -507,15 +508,21 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
         const observer = new IntersectionObserver(
             (entries) => {
                 const target = entries[0];
-                if (target.isIntersecting && !isLoadingMore) {
+                const now = Date.now();
+                const timeSinceLastLoad = now - lastLoadTime.current;
+                
+                if (target.isIntersecting && !isLoadingMore && timeSinceLastLoad > 1000) { // Mínimo 1 segundo entre requisições
                     console.log('🔍 Trigger detectado, carregando mais dados...');
+                    lastLoadTime.current = now;
                     onLoadMore();
+                } else if (target.isIntersecting && timeSinceLastLoad <= 1000) {
+                    console.log('⏰ Trigger detectado, mas muito cedo. Aguardando...', timeSinceLastLoad + 'ms');
                 }
             },
             {
                 root: scrollRef.current, // Define o container de scroll como raiz
-                threshold: 0.1,
-                rootMargin: '200px' // Aumenta a margem para detectar antes
+                threshold: 0.5, // Reduzido para ser menos agressivo
+                rootMargin: '50px' // Reduzido para só carregar quando mais próximo
             }
         );
 
@@ -539,7 +546,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
             // Backup para lazy loading caso o Intersection Observer não funcione
             if (hasMore && !isLoadingMore) {
                 const { scrollTop, scrollHeight, clientHeight } = scrollElement;
-                const isNearBottom = scrollTop + clientHeight >= scrollHeight - 300; // 300px antes do final
+                const isNearBottom = scrollTop + clientHeight >= scrollHeight - 100; // Reduzido para 100px antes do final
                 
                 if (isNearBottom) {
                     console.log('🔄 Backup lazy loading ativado (scroll)');
