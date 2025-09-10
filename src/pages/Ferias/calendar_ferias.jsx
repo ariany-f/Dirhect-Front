@@ -508,12 +508,14 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
             (entries) => {
                 const target = entries[0];
                 if (target.isIntersecting && !isLoadingMore) {
+                    console.log('🔍 Trigger detectado, carregando mais dados...');
                     onLoadMore();
                 }
             },
             {
+                root: scrollRef.current, // Define o container de scroll como raiz
                 threshold: 0.1,
-                rootMargin: '100px'
+                rootMargin: '200px' // Aumenta a margem para detectar antes
             }
         );
 
@@ -526,13 +528,24 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
         };
     }, [onLoadMore, hasMore, isLoadingMore]);
 
-    // Effect para monitorar scroll e preservar posição
+    // Effect para monitorar scroll e preservar posição + lazy loading backup
     useEffect(() => {
         const scrollElement = scrollRef.current;
         if (!scrollElement) return;
 
         const handleScroll = () => {
             lastScrollPosition.current = scrollElement.scrollTop;
+            
+            // Backup para lazy loading caso o Intersection Observer não funcione
+            if (hasMore && !isLoadingMore) {
+                const { scrollTop, scrollHeight, clientHeight } = scrollElement;
+                const isNearBottom = scrollTop + clientHeight >= scrollHeight - 300; // 300px antes do final
+                
+                if (isNearBottom) {
+                    console.log('🔄 Backup lazy loading ativado (scroll)');
+                    onLoadMore();
+                }
+            }
         };
 
         scrollElement.addEventListener('scroll', handleScroll, { passive: true });
@@ -540,7 +553,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
         return () => {
             scrollElement.removeEventListener('scroll', handleScroll);
         };
-    }, []);
+    }, [hasMore, isLoadingMore, onLoadMore]);
 
     // Effect para lidar com novos dados sem quebrar o scroll
     useEffect(() => {
@@ -886,6 +899,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                         <p style={{ fontSize: '14px', marginTop: '8px' }}>Os dados aparecerão aqui quando houver férias registradas.</p>
                     </div>
                 ) : (
+                    <>
                     <CalendarGrid $totalDays={totalDays} $dayWidth={dayWidth} style={{position: 'relative', minHeight: '100%'}}>
                     {/* Fundo cinza para a coluna dos colaboradores */}
                     <div style={{
@@ -1212,30 +1226,35 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                         );
                     })}
                     
-                    {/* Trigger para lazy loading */}
-                    {hasMore && (
-                        <div ref={loadMoreTriggerRef} style={{ 
-                            height: '80px', 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            justifyContent: 'center',
-                            backgroundColor: '#f8f9fa',
-                            borderTop: '1px solid #e5e7eb',
-                            margin: '20px 0'
-                        }}>
-                            {isLoadingMore ? (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#666', fontSize: '14px' }}>
-                                    <FaRegClock style={{ animation: 'spin 1s linear infinite' }} />
-                                    Carregando mais dados...
-                                </div>
-                            ) : (
-                                <div style={{ color: '#999', fontSize: '12px', textAlign: 'center' }}>
-                                    Carregando automaticamente...
-                                </div>
-                            )}
-                        </div>
-                    )}
                 </CalendarGrid>
+                
+                {/* Trigger para lazy loading - movido para fora do CalendarGrid */}
+                {hasMore && (
+                    <div ref={loadMoreTriggerRef} style={{ 
+                        height: '80px', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        backgroundColor: '#f8f9fa',
+                        borderTop: '1px solid #e5e7eb',
+                        margin: '20px auto',
+                        width: '100%',
+                        position: 'relative',
+                        zIndex: 1
+                    }}>
+                        {isLoadingMore ? (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#666', fontSize: '14px' }}>
+                                <FaRegClock style={{ animation: 'spin 1s linear infinite' }} />
+                                Carregando mais dados...
+                            </div>
+                        ) : (
+                            <div style={{ color: '#999', fontSize: '12px', textAlign: 'center' }}>
+                                Carregando automaticamente...
+                            </div>
+                        )}
+                    </div>
+                )}
+                </>
                 )}
             </CalendarScrollArea>
             <ModalDetalhesFerias

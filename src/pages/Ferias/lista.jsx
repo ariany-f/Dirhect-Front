@@ -465,10 +465,21 @@ function FeriasListagem() {
 
     // Função para carregar mais dados (lazy loading)
     const loadMore = useCallback(() => {
+        console.log('🔄 loadMore chamado:', { 
+            tab, 
+            hasMore, 
+            isLoadingMore,
+            nextCursor: !!nextCursor,
+            currentDataLength: ferias?.length || 0
+        });
+        
         if (tab === 'calendario' && hasMore && !isLoadingMore) {
+            console.log('✅ Condições atendidas, carregando mais dados...');
             loadData(true);
+        } else {
+            console.log('❌ Condições não atendidas para loadMore');
         }
-    }, [tab, hasMore, isLoadingMore, loadData]);
+    }, [tab, hasMore, isLoadingMore, loadData, nextCursor, ferias?.length]);
 
     // Effect principal para carregar dados
     useEffect(() => {
