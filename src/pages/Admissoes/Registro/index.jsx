@@ -1608,7 +1608,7 @@ const CandidatoRegistro = () => {
                     
                     // Dados da vaga (apenas se não for self)
                     ...(self ? {} : {
-                        centro_custo: dadosVaga?.centro_custo_id ? dadosVaga.centro_custo_id : candidatoAtual.centro_custo,
+                        centro_custo: dadosVaga?.centro_custo ? dadosVaga.centro_custo : candidatoAtual.centro_custo,
                         filial: dadosVaga?.filial_id ? dadosVaga.filial_id : candidatoAtual.filial,
                         departamento: dadosVaga?.departamento_id ? dadosVaga.departamento_id : candidatoAtual.departamento,
                         id_secao: dadosVaga?.secao_id ? dadosVaga.secao_id : candidatoAtual.id_secao,
@@ -2690,7 +2690,7 @@ const CandidatoRegistro = () => {
                 id_secao: 'secao_id',
                 id_funcao: 'funcao_id',
                 id_horario: 'horario_id',
-                centro_custo: 'centro_custo_id',
+                centro_custo: 'centro_custo',
                 filial: 'filial_id'
             };
             const camposNaoPreenchidos = camposObrigatorios.filter(campo => {
@@ -3623,7 +3623,7 @@ const CandidatoRegistro = () => {
             funcao_confianca: candidato.funcao_confianca,
             // Dados da vaga - apenas se foram explicitamente selecionados pelo usuário
             // Para centro de custo, prioriza o campo direto do candidato, depois dados_vaga
-            ...(candidato.centro_custo ? { centro_custo: candidato.centro_custo } : (dadosVaga?.centro_custo_id ? { centro_custo: dadosVaga.centro_custo_id } : {})),
+            ...(candidato.centro_custo ? { centro_custo: candidato.centro_custo } : (dadosVaga?.centro_custo ? { centro_custo: dadosVaga.centro_custo } : {})),
             // Para filial, prioriza o campo direto do candidato, depois dados_vaga
             ...(candidato.filial ? { filial: candidato.filial } : (dadosVaga?.filial_id ? { filial: dadosVaga.filial_id } : {})),
             ...(dadosVaga?.departamento_id ? { departamento: dadosVaga.departamento_id } : {}),
