@@ -547,10 +547,15 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
             if (hasMore && !isLoadingMore) {
                 const { scrollTop, scrollHeight, clientHeight } = scrollElement;
                 const isNearBottom = scrollTop + clientHeight >= scrollHeight - 100; // Reduzido para 100px antes do final
+                const now = Date.now();
+                const timeSinceLastLoad = now - lastLoadTime.current;
                 
-                if (isNearBottom) {
+                if (isNearBottom && timeSinceLastLoad > 1000) { // Mínimo 1 segundo entre requisições
                     console.log('🔄 Backup lazy loading ativado (scroll)');
+                    lastLoadTime.current = now;
                     onLoadMore();
+                } else if (isNearBottom && timeSinceLastLoad <= 1000) {
+                    console.log('⏰ Scroll backup detectado, mas muito cedo. Aguardando...', timeSinceLastLoad + 'ms');
                 }
             }
         };
@@ -1238,13 +1243,13 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                 {/* Trigger para lazy loading - movido para fora do CalendarGrid */}
                 {hasMore && (
                     <div ref={loadMoreTriggerRef} style={{ 
-                        height: '80px', 
+                        height: '40px', // Reduzido para ser menos óbvio
                         display: 'flex', 
                         alignItems: 'center', 
                         justifyContent: 'center',
                         backgroundColor: '#f8f9fa',
                         borderTop: '1px solid #e5e7eb',
-                        margin: '20px auto',
+                        margin: '40px auto', // Aumenta a margem para afastar do conteúdo
                         width: '100%',
                         position: 'relative',
                         zIndex: 1

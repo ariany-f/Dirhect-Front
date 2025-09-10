@@ -411,6 +411,7 @@ function FeriasListagem() {
             setLoading(true);
         } else {
             setIsLoadingMore(true);
+            console.log('🔄 Iniciando carregamento de mais dados...');
         }
         
         try {
