@@ -178,7 +178,6 @@ function ColaboradorDemissao() {
 
                             <InfoRow>
                                 <InfoLabel>
-                                    <FaUser />
                                     Processo Relacionado
                                 </InfoLabel>
                                 <InfoValue><Link to={`/tarefas/detalhes/${demissao.processo}`}>Ir para detalhes do processo</Link></InfoValue>
@@ -186,7 +185,6 @@ function ColaboradorDemissao() {
 
                             <InfoRow>
                                 <InfoLabel>
-                                    <FaFileAlt />
                                     Tipo de Demissão
                                 </InfoLabel>
                                 <InfoValue>
@@ -206,7 +204,6 @@ function ColaboradorDemissao() {
 
                             <InfoRow>
                                 <InfoLabel>
-                                    <FaExclamationTriangle />
                                     Motivo
                                 </InfoLabel>
                                 <InfoValue>{demissao.motivo_descricao}</InfoValue>
@@ -234,7 +231,6 @@ function ColaboradorDemissao() {
 
                             <InfoRow>
                                 <InfoLabel>
-                                    <FaCheckCircle />
                                     Aviso Indenizado
                                 </InfoLabel>
                                 <InfoValue>
@@ -248,7 +244,6 @@ function ColaboradorDemissao() {
                             {demissao.observacao && (
                                 <InfoRow>
                                     <InfoLabel>
-                                        <FaFileAlt />
                                         Observações
                                     </InfoLabel>
                                     <InfoValue>{demissao.observacao}</InfoValue>
@@ -257,7 +252,6 @@ function ColaboradorDemissao() {
 
                             <InfoRow>
                                 <InfoLabel>
-                                    <FaClock />
                                     Criado em
                                 </InfoLabel>
                                 <InfoValue>{formatarDataHora(demissao.created_at)}</InfoValue>
