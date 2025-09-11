@@ -39,18 +39,16 @@ const StatusTag = styled(Tag)`
 `;
 
 const TipoAutenticacaoTag = styled(Tag)`
-    color: var(--white) !important;
-    background-color: ${props => props.tipo === 'api_key' ? '#28a745' :
-                        props.tipo === 'basic' ? '#1a73e8' :
-                        props.tipo === 'bearer' ? '#ffa000' :
-                        props.tipo === 'oauth' ? '#dc3545' :
-                        '#6c757d'} !important;
+    color: #374151 !important;
+    background-color: #f3f4f6 !important;
+    border: 1px solid #d1d5db !important;
     font-size: 13px !important;
     padding: 4px 12px !important;
+    border-radius: 6px !important;
     
     .p-tag-value {
-        color: var(--white) !important;
-        font-weight: 500 !important;
+        color: #374151 !important;
+        font-weight: 600 !important;
     }
 `;
 
@@ -158,27 +156,16 @@ function DataTableCredenciais({ credenciais, paginator, rows, totalRecords, firs
                         width: '40px',
                         height: '40px',
                         borderRadius: '6px',
-                        background: `linear-gradient(135deg, ${
-                            rowData.tipo_autenticacao === 'api_key' ? '#28a745' :
-                            rowData.tipo_autenticacao === 'basic' ? '#1a73e8' :
-                            rowData.tipo_autenticacao === 'bearer' ? '#ffa000' :
-                            rowData.tipo_autenticacao === 'oauth' ? '#dc3545' :
-                            '#6c757d'
-                        } 0%, ${
-                            rowData.tipo_autenticacao === 'api_key' ? '#20c997' :
-                            rowData.tipo_autenticacao === 'basic' ? '#1565c0' :
-                            rowData.tipo_autenticacao === 'bearer' ? '#f57c00' :
-                            rowData.tipo_autenticacao === 'oauth' ? '#c62828' :
-                            '#5a6268'
-                        } 100%)`,
+                        backgroundColor: '#f3f4f6 !important',
+                        background: '#f3f4f6 !important',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         fontSize: '14px',
                         fontWeight: 'bold',
-                        color: '#ffffff',
-                        border: '2px solid #f1f5f9',
-                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+                        color: '#6b7280 !important',
+                        border: '1px solid #d1d5db',
+                        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
                     }}>
                         {rowData.tipo_autenticacao === 'api_key' && <FaKey size={16} />}
                         {rowData.tipo_autenticacao === 'basic' && <FaUser size={16} />}
