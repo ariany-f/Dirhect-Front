@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
 import { Toast } from 'primereact/toast';
 import { useRef } from 'react';
 import Frame from '@components/Frame';
 import Titulo from '@components/Titulo';
 import Container from '@components/Container';
 import styled from 'styled-components';
+import QuestionCard from '@components/QuestionCard'
 import { FaCalendarAlt, FaUser, FaIdCard, FaFileAlt, FaClock, FaDollarSign, FaExclamationTriangle, FaCheckCircle } from 'react-icons/fa';
 import { Tag } from 'primereact/tag';
+import { AiFillQuestionCircle } from 'react-icons/ai';
 
 const DemissaoContainer = styled.div`
     display: flex;
@@ -156,53 +158,30 @@ function ColaboradorDemissao() {
         <Frame>
             <Toast ref={toast} />
             <Container gap="24px">
-                <Titulo>Demissão</Titulo>
+                
+                <Titulo>
+                    <QuestionCard alinhamento="start" element={<h6>Demissão</h6>}>
+                        <AiFillQuestionCircle className="question-icon" size={20} />
+                    </QuestionCard>
+                </Titulo>
                 
                 <DemissaoContainer>
                     {demissaoData.map((demissao, index) => (
                         <DemissaoCard key={demissao.id || index}>
-                            <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-                                <h3 style={{ 
-                                    margin: 0, 
-                                    color: '#1e293b', 
-                                    fontSize: '20px', 
-                                    fontWeight: '700',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px'
-                                }}>
-                                    <FaFileAlt color="#3b82f6" />
-                                    Solicitação de Demissão #{demissao.id}
-                                </h3>
-                                {demissao.processo && (
-                                    <ProcessoTag value={`Processo: ${demissao.processo}`} />
-                                )}
-                            </div>
-
-                            <InfoRow>
-                                <InfoLabel>
-                                    <FaUser />
-                                    Funcionário
-                                </InfoLabel>
-                                <InfoValue>{demissao.funcionario_nome}</InfoValue>
-                            </InfoRow>
-
-                            <InfoRow>
-                                <InfoLabel>
-                                    <FaIdCard />
-                                    CPF
-                                </InfoLabel>
-                                <InfoValue>
-                                    {demissao.funcionario_cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')}
-                                </InfoValue>
-                            </InfoRow>
-
                             <InfoRow>
                                 <InfoLabel>
                                     <FaCalendarAlt />
                                     Data da Demissão
                                 </InfoLabel>
                                 <InfoValue>{formatarData(demissao.data)}</InfoValue>
+                            </InfoRow>
+
+                            <InfoRow>
+                                <InfoLabel>
+                                    <FaUser />
+                                    Processo Relacionado
+                                </InfoLabel>
+                                <InfoValue><Link to={`/tarefas/detalhes/${demissao.processo}`}>Ir para detalhes do processo</Link></InfoValue>
                             </InfoRow>
 
                             <InfoRow>
@@ -282,14 +261,6 @@ function ColaboradorDemissao() {
                                     Criado em
                                 </InfoLabel>
                                 <InfoValue>{formatarDataHora(demissao.created_at)}</InfoValue>
-                            </InfoRow>
-
-                            <InfoRow>
-                                <InfoLabel>
-                                    <FaClock />
-                                    Atualizado em
-                                </InfoLabel>
-                                <InfoValue>{formatarDataHora(demissao.updated_at)}</InfoValue>
                             </InfoRow>
 
                             {demissao.anexo && (
