@@ -444,7 +444,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
           ) : <>&nbsp;</>}
         </div>
         <RightItems>
-            {isDesktop && (
+            {isDesktop && usuario.tipo !== 'Integração' && (
               <div className={styles.divisor}>
                 <MegaMenuWrapper 
                   ref={menuRef}
