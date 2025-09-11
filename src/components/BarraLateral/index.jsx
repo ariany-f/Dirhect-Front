@@ -553,6 +553,14 @@ function BarraLateral({ $sidebarOpened }) {
             icone: <FaSync size={20} className="icon" />,
             itemTitulo: 'Syync',
             permission: 'view_syync',
+        },
+        {
+            id: 24,
+            url: '/estrutura-organizacional',
+            pageTitulo: 'Estrutura Organizacional',
+            icone: <FaBuilding size={20} className="icon" />,
+            itemTitulo: 'Estrutura Organizacional',
+            permission: 'view_estrutura_organizacional',
         }
     ];
 
@@ -565,6 +573,8 @@ function BarraLateral({ $sidebarOpened }) {
         userPermissions.push('view_cadastro')
     } else if(userGroups.includes('Outsourcing')) {
         userPermissions.push('view_syync')
+    } else if(userGroups.includes('Integração')) {
+        userPermissions.push('view_estrutura_organizacional')
     }
 
 
