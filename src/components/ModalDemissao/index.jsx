@@ -483,8 +483,8 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                                             handleDataDemissaoChange('');
                                                         }
                                                     }}
-                                                    minDate={minDateDemissao}
-                                                    disabledDates={datasBloqueadas}
+                                                    //minDate={minDateDemissao}
+                                                    //disabledDates={datasBloqueadas}
                                                     placeholder="Selecione a data"
                                                     required
                                                 />
