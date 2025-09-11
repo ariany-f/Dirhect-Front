@@ -198,6 +198,7 @@ import Credenciais from '@pages/Credenciais'
 import Agendamentos from './pages/Agendamentos'
 import Syync from './pages/Syync'
 import SyyncTarefasLista from './pages/Tarefas/syync'
+import ColaboradorDemissao from './pages/Colaboradores/Detalhes/demissao'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
@@ -272,6 +273,7 @@ function AppRouter() {
                   <Route path="ferias" element={<ColabroadorFerias />} />
                   <Route path="ausencias" element={<ColaboradorAusencias />} />
                   <Route path="estabilidade" element={<ColaboradorEstabilidade />} />
+                  <Route path="demissao" element={<ColaboradorDemissao />} />
                   <Route path="esocial" element={<ColabroadorESocial />} />
                   <Route path="demissoes" element={<ColabroadorDemissoes />} />
                   <Route path="ciclos" element={<ColabroadorCiclos />} />

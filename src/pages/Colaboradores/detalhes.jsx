@@ -454,6 +454,7 @@ function ColaboradorDetalhes() {
     const [estabilidadeBloqueada, setEstabilidadeBloqueada] = useState(false);
     const [mensagemEstabilidade, setMensagemEstabilidade] = useState('');
     const [mostrarMotivoEstabilidade, setMostrarMotivoEstabilidade] = useState(false);
+    const [demissao, setDemissao] = useState(null);
 
     const {usuario} = useSessaoUsuarioContext()
 
@@ -467,6 +468,7 @@ function ColaboradorDetalhes() {
             { url: `/colaborador/detalhes/${id}/ferias`, permission: 'view_ferias' },
             { url: `/colaborador/detalhes/${id}/ausencias`, permission: 'view_ausencia' },
             { url: `/colaborador/detalhes/${id}/estabilidade`, permission: 'view_estabilidade' },
+            { url: `/colaborador/detalhes/${id}/demissao`, permission: 'view_demissao' },
             { url: `/colaborador/detalhes/${id}/ciclos`, permission: null, condition: () => usuario.tipo === 'cliente' || usuario.tipo === 'equipeFolhaPagamento' },
             { url: `/colaborador/detalhes/${id}/esocial`, permission: null, condition: () => usuario.tipo === 'cliente' || usuario.tipo === 'equipeFolhaPagamento' },
             { url: `/colaborador/detalhes/${id}/pedidos`, permission: null, condition: () => usuario.tipo === 'grupo_rh' || usuario.tipo === 'global' },
@@ -498,6 +500,7 @@ function ColaboradorDetalhes() {
             { url: `/colaborador/detalhes/${id}/ferias`, permission: 'view_ferias' },
             { url: `/colaborador/detalhes/${id}/ausencias`, permission: 'view_ausencia' },
             { url: `/colaborador/detalhes/${id}/estabilidade`, permission: 'view_estabilidade' },
+            { url: `/colaborador/detalhes/${id}/demissao`, permission: 'view_demissao' },
             { url: `/colaborador/detalhes/${id}/ciclos`, permission: null, condition: () => usuario.tipo === 'cliente' || usuario.tipo === 'equipeFolhaPagamento' },
             { url: `/colaborador/detalhes/${id}/esocial`, permission: null, condition: () => usuario.tipo === 'cliente' || usuario.tipo === 'equipeFolhaPagamento' },
             { url: `/colaborador/detalhes/${id}/pedidos`, permission: null, condition: () => usuario.tipo === 'grupo_rh' || usuario.tipo === 'global' },
@@ -813,11 +816,17 @@ function ColaboradorDetalhes() {
         // Chama a API de estabilidade e loga a resposta
         http.get(`estabilidade/verificar-estabilidade/${id}/`)
             .then(response => {
-                console.log('🔍 Estabilidade do colaborador:', response);
                 setEstabilidadeBloqueada(!!response.bloqueado);
                 setMensagemEstabilidade(response.mensagem || '');
             })
             .catch(erro => console.log('Erro ao verificar estabilidade:', erro));
+        
+        // Busca dados de demissão do funcionário
+        http.get(`demissao/por-funcionario/?funcionario_id=${id}`)
+            .then(response => {
+                setDemissao(response);
+            })
+            .catch(erro => console.log('Erro ao buscar demissão:', erro));
     }, [colaborador])
 
     const desativarColaborador = () => {
@@ -1316,6 +1325,10 @@ function ColaboradorDetalhes() {
                         <Link className={styles.link} to={`/colaborador/detalhes/${id}/estabilidade`}>
                             <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/estabilidade` ? 'black':''} size="small" tab>Estabilidade</Botao>
                         </Link>}
+                        {ArmazenadorToken.hasPermission('view_demissao') && demissao?.length > 0 &&
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/demissao`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/demissao` ? 'black':''} size="small" tab>Demissão</Botao>
+                        </Link>}
                         {ArmazenadorToken.hasPermission('view_ciclos') &&
                         <Link className={styles.link} to={`/colaborador/detalhes/${id}/ciclos`}>
                             <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ciclos` ? 'black':''} size="small" tab>Ciclos</Botao>
@@ -1333,7 +1346,7 @@ function ColaboradorDetalhes() {
                             <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/movimentos` ? 'black':''} size="small" tab>Movimentos</Botao>
                         </Link>}
                     </BotaoGrupo>
-                    <Outlet context={colaborador}/>
+                    <Outlet context={{colaborador, demissao}}/>
                     </Col8Vertical>
                     : <Container gap="8px">
                             <Skeleton variant="rectangular" width={'100%'} height={30} />
