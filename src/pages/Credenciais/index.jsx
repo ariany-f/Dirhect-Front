@@ -941,56 +941,138 @@ function Credenciais() {
     try {
       setSavingCredential(true);
 
-      // Preparar dados da credencial
-      const credentialData = {
-        nome_sistema: newCredential.nome_sistema,
-        descricao: newCredential.descricao,
-        logo: newCredential.logo,
-        url_endpoint: newCredential.url_endpoint,
-        tipo_autenticacao: newCredential.tipo_autenticacao,
-        timeout: newCredential.timeout,
-        ativo: newCredential.ativo,
-        observacoes: newCredential.observacoes
+      // Função para converter data URL em File
+      const dataURLtoFile = (dataurl, filename) => {
+        if (!dataurl || !dataurl.startsWith('data:')) return null;
+        
+        const arr = dataurl.split(',');
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        
+        while(n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        
+        return new File([u8arr], filename, { type: mime });
       };
 
-      console.log('🔍 Debug - Dados da credencial a serem enviados:', {
-        ...credentialData,
-        logo: credentialData.logo ? `Data URL com ${credentialData.logo.length} caracteres` : 'null'
-      });
-
-      // Adicionar campos específicos por tipo de autenticação
-      switch (newCredential.tipo_autenticacao) {
-        case 'basic':
-          credentialData.usuario = newCredential.usuario;
-          credentialData.senha = newCredential.senha;
-          break;
-        case 'api_key':
-          credentialData.api_key = newCredential.api_key;
-          break;
-        case 'bearer':
-          credentialData.bearer_token = newCredential.bearer_token;
-          break;
-        case 'oauth':
-          credentialData.client_id = newCredential.client_id;
-          credentialData.client_secret = newCredential.client_secret;
-          break;
+      // Verificar se há logo para enviar
+      const hasLogo = newCredential.logo && newCredential.logo.startsWith('data:');
+      let logoFile = null;
+      
+      if (hasLogo) {
+        logoFile = dataURLtoFile(newCredential.logo, 'logo.png');
+        console.log('🔍 Debug - Logo convertido para arquivo:', {
+          name: logoFile?.name,
+          type: logoFile?.type,
+          size: logoFile?.size
+        });
       }
 
-      // Adicionar headers adicionais se não estiver vazio
-      try {
-        const headers = JSON.parse(newCredential.headers_adicionais);
-        if (Object.keys(headers).length > 0) {
-          credentialData.headers_adicionais = headers;
+      // Preparar dados da credencial
+      let requestData;
+      let isFormData = false;
+
+      if (hasLogo && logoFile) {
+        // Usar FormData quando há logo
+        isFormData = true;
+        requestData = new FormData();
+        
+        // Adicionar campos básicos
+        requestData.append('nome_sistema', newCredential.nome_sistema);
+        requestData.append('descricao', newCredential.descricao || '');
+        requestData.append('logo', logoFile);
+        requestData.append('url_endpoint', newCredential.url_endpoint);
+        requestData.append('tipo_autenticacao', newCredential.tipo_autenticacao);
+        requestData.append('timeout', newCredential.timeout);
+        requestData.append('ativo', newCredential.ativo);
+        requestData.append('observacoes', newCredential.observacoes || '');
+
+        // Adicionar campos específicos por tipo de autenticação
+        switch (newCredential.tipo_autenticacao) {
+          case 'basic':
+            requestData.append('usuario', newCredential.usuario);
+            requestData.append('senha', newCredential.senha);
+            break;
+          case 'api_key':
+            requestData.append('api_key', newCredential.api_key);
+            break;
+          case 'bearer':
+            requestData.append('bearer_token', newCredential.bearer_token);
+            break;
+          case 'oauth':
+            requestData.append('client_id', newCredential.client_id);
+            requestData.append('client_secret', newCredential.client_secret);
+            break;
         }
-      } catch (e) {
-        // Se não for JSON válido, ignorar
+
+        // Adicionar headers adicionais se não estiver vazio
+        try {
+          const headers = JSON.parse(newCredential.headers_adicionais);
+          if (Object.keys(headers).length > 0) {
+            requestData.append('headers_adicionais', JSON.stringify(headers));
+          }
+        } catch (e) {
+          // Se não for JSON válido, ignorar
+        }
+
+        console.log('🔍 Debug - Enviando FormData com logo');
+      } else {
+        // Usar JSON quando não há logo
+        requestData = {
+          nome_sistema: newCredential.nome_sistema,
+          descricao: newCredential.descricao,
+          url_endpoint: newCredential.url_endpoint,
+          tipo_autenticacao: newCredential.tipo_autenticacao,
+          timeout: newCredential.timeout,
+          ativo: newCredential.ativo,
+          observacoes: newCredential.observacoes
+        };
+
+        // Adicionar campos específicos por tipo de autenticação
+        switch (newCredential.tipo_autenticacao) {
+          case 'basic':
+            requestData.usuario = newCredential.usuario;
+            requestData.senha = newCredential.senha;
+            break;
+          case 'api_key':
+            requestData.api_key = newCredential.api_key;
+            break;
+          case 'bearer':
+            requestData.bearer_token = newCredential.bearer_token;
+            break;
+          case 'oauth':
+            requestData.client_id = newCredential.client_id;
+            requestData.client_secret = newCredential.client_secret;
+            break;
+        }
+
+        // Adicionar headers adicionais se não estiver vazio
+        try {
+          const headers = JSON.parse(newCredential.headers_adicionais);
+          if (Object.keys(headers).length > 0) {
+            requestData.headers_adicionais = headers;
+          }
+        } catch (e) {
+          // Se não for JSON válido, ignorar
+        }
+
+        console.log('🔍 Debug - Enviando JSON sem logo');
       }
+
+      console.log('🔍 Debug - Dados a serem enviados:', {
+        isFormData,
+        hasLogo,
+        logoFileSize: logoFile?.size || 'N/A'
+      });
 
       let response;
       
       if (editingCredential) {
         // Atualizar credencial existente
-        response = await http.put(`/integracao-tenant/credenciais-externas/${editingCredential.id}/`, credentialData);
+        response = await http.put(`/integracao-tenant/credenciais-externas/${editingCredential.id}/`, requestData);
         
         // Excluir campos adicionais existentes
         if (editingCredential.campos_adicionais && editingCredential.campos_adicionais.length > 0) {
@@ -1021,7 +1103,7 @@ function Credenciais() {
         });
       } else {
         // Criar nova credencial
-        response = await http.post('/integracao-tenant/credenciais-externas/', credentialData);
+        response = await http.post('/integracao-tenant/credenciais-externas/', requestData);
         
         // Se há campos adicionais, criá-los
         if (additionalFields.length > 0) {
