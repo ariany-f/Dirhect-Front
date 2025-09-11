@@ -25,14 +25,16 @@ import { RadioButton } from 'primereact/radiobutton';
 import styled from 'styled-components';
 
 const StatusTag = styled(Tag)`
-    color: var(--black) !important;
-    background-color: var(--neutro-200) !important;
+    color: ${props => props.severity === 'success' ? '#16a34a' : '#dc2626'} !important;
+    background-color: ${props => props.severity === 'success' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)'} !important;
+    border: 1px solid ${props => props.severity === 'success' ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)'} !important;
     font-size: 13px !important;
     padding: 4px 12px !important;
+    border-radius: 6px !important;
     
     .p-tag-value {
-        color: var(--black) !important;
-        font-weight: 500 !important;
+        color: ${props => props.severity === 'success' ? '#16a34a' : '#dc2626'} !important;
+        font-weight: 600 !important;
     }
 `;
 
@@ -122,13 +124,40 @@ function DataTableCredenciais({ credenciais, paginator, rows, totalRecords, firs
 
     const representativeNomeTemplate = (rowData) => {
         return (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                {/* Ícone baseado no tipo de autenticação */}
-                <div style={{ flexShrink: 0 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <Texto weight={700} width={'100%'}>
+                    {rowData.nome_sistema}
+                </Texto>
+                {rowData.descricao && (
+                    <div style={{marginTop: '2px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                        <p style={{fontWeight: '400', color: 'var(--neutro-500)'}}>{rowData.descricao}</p>
+                    </div>
+                )}
+            </div>
+        );
+    }
+
+    const representativeLogoTemplate = (rowData) => {
+        return (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                {rowData.logo ? (
+                    <img 
+                        src={rowData.logo} 
+                        alt={`Logo ${rowData.nome_sistema}`}
+                        style={{
+                            width: '40px',
+                            height: '40px',
+                            objectFit: 'contain',
+                            borderRadius: '6px',
+                            border: '1px solid #e9ecef',
+                            background: '#f8f9fa'
+                        }}
+                    />
+                ) : (
                     <div style={{
-                        width: '36px',
-                        height: '36px',
-                        borderRadius: '50%',
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '6px',
                         background: `linear-gradient(135deg, ${
                             rowData.tipo_autenticacao === 'api_key' ? '#28a745' :
                             rowData.tipo_autenticacao === 'basic' ? '#1a73e8' :
@@ -157,19 +186,7 @@ function DataTableCredenciais({ credenciais, paginator, rows, totalRecords, firs
                         {rowData.tipo_autenticacao === 'oauth' && <FaCog size={16} />}
                         {!['api_key', 'basic', 'bearer', 'oauth'].includes(rowData.tipo_autenticacao) && <FaGlobe size={16} />}
                     </div>
-                </div>
-                
-                {/* Nome e descrição */}
-                <div style={{ flex: 1, minWidth: 0 }}>
-                    <Texto weight={700} width={'100%'}>
-                        {rowData.nome_sistema}
-                    </Texto>
-                    {rowData.descricao && (
-                        <div style={{marginTop: '6px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                            <p style={{fontWeight: '400', color: 'var(--neutro-500)'}}>{rowData.descricao}</p>
-                        </div>
-                    )}
-                </div>
+                )}
             </div>
         );
     }
@@ -408,13 +425,14 @@ function DataTableCredenciais({ credenciais, paginator, rows, totalRecords, firs
                     </ColumnGroup>
                 }
             >
-                <Column body={representativeNomeTemplate} field="nome_sistema" header="Nome do Sistema" sortable style={{ width: '25%' }}></Column>
+                <Column body={representativeLogoTemplate} header="Imagem" style={{ width: '8%', textAlign: 'center' }}></Column>
+                <Column body={representativeNomeTemplate} field="nome_sistema" header="Nome do Sistema" sortable style={{ width: '22%' }}></Column>
                 <Column body={representativeStatusTemplate} field="ativo" header="Status" sortable style={{ width: '8%' }}></Column>
                 <Column body={representativeTipoAutenticacaoTemplate} field="tipo_autenticacao" header="Tipo de Autenticação" sortable style={{ width: '15%' }}></Column>
-                <Column body={representativeUrlTemplate} field="url_endpoint" header="URL do Endpoint" sortable style={{ width: '20%', maxWidth: '200px', overflow: 'hidden' }}></Column>
+                <Column body={representativeUrlTemplate} field="url_endpoint" header="URL do Endpoint" sortable style={{ width: '19%', maxWidth: '200px', overflow: 'hidden' }}></Column>
                 <Column body={representativeStatusConexaoTemplate} field="status_conexao" header="Status da Conexão" style={{ width: '12%' }}></Column>
                 <Column body={representativeCamposAdicionaisTemplate} field="campos_adicionais.length" header="Campos Adicionais" style={{ width: '10%' }}></Column>
-                <Column header="Ações" style={{ width: '10%' }} body={representativeActionsTemplate}></Column>
+                <Column header="Ações" style={{ width: '6%' }} body={representativeActionsTemplate}></Column>
             </DataTable>
         </>
     )
