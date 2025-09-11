@@ -198,12 +198,27 @@ function DataTableCredenciais({ credenciais, paginator, rows, totalRecords, firs
 
     const representativeUrlTemplate = (rowData) => {
         return (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ 
+                display: 'flex', 
+                alignItems: 'flex-start',
+                width: '100%',
+                maxWidth: '200px',
+                overflow: 'hidden'
+            }}>
                 <Texto weight={500} style={{ 
                     fontFamily: 'monospace', 
-                    fontSize: '13px',
+                    fontSize: '12px',
                     wordBreak: 'break-all',
-                    maxWidth: '200px'
+                    overflowWrap: 'break-word',
+                    whiteSpace: 'normal',
+                    lineHeight: '1.3',
+                    width: '100%',
+                    maxHeight: '60px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: 'vertical'
                 }}>
                     {rowData.url_endpoint}
                 </Texto>
@@ -377,7 +392,10 @@ function DataTableCredenciais({ credenciais, paginator, rows, totalRecords, firs
                 onPage={onPage} 
                 onSort={onSort}
                 removableSort 
-                tableStyle={{ minWidth: '68vw' }}
+                tableStyle={{ 
+                    minWidth: '68vw',
+                    tableLayout: 'fixed'
+                }}
                 showGridlines
                 stripedRows
                 sortField={sortField}
@@ -391,11 +409,11 @@ function DataTableCredenciais({ credenciais, paginator, rows, totalRecords, firs
                 }
             >
                 <Column body={representativeNomeTemplate} field="nome_sistema" header="Nome do Sistema" sortable style={{ width: '25%' }}></Column>
-                <Column body={representativeStatusTemplate} field="ativo" header="Status" sortable style={{ width: '10%' }}></Column>
+                <Column body={representativeStatusTemplate} field="ativo" header="Status" sortable style={{ width: '8%' }}></Column>
                 <Column body={representativeTipoAutenticacaoTemplate} field="tipo_autenticacao" header="Tipo de Autenticação" sortable style={{ width: '15%' }}></Column>
-                <Column body={representativeUrlTemplate} field="url_endpoint" header="URL do Endpoint" sortable style={{ width: '20%' }}></Column>
+                <Column body={representativeUrlTemplate} field="url_endpoint" header="URL do Endpoint" sortable style={{ width: '20%', maxWidth: '200px', overflow: 'hidden' }}></Column>
                 <Column body={representativeStatusConexaoTemplate} field="status_conexao" header="Status da Conexão" style={{ width: '12%' }}></Column>
-                <Column body={representativeCamposAdicionaisTemplate} field="campos_adicionais.length" header="Campos Adicionais" style={{ width: '8%' }}></Column>
+                <Column body={representativeCamposAdicionaisTemplate} field="campos_adicionais.length" header="Campos Adicionais" style={{ width: '10%' }}></Column>
                 <Column header="Ações" style={{ width: '10%' }} body={representativeActionsTemplate}></Column>
             </DataTable>
         </>

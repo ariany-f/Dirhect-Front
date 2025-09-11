@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
 import { Checkbox } from 'primereact/checkbox';
 import { FaPlus, FaSave, FaTrash, FaPlusCircle, FaSearch, FaPen, FaKey, FaUser, FaGlobe, FaCog, FaInfo, FaShieldAlt } from 'react-icons/fa';
+import { RiUpload2Fill } from 'react-icons/ri';
+import { HiX } from 'react-icons/hi';
 import { GrAddCircle } from 'react-icons/gr';
 import http from '@http';
 import styled from 'styled-components';
@@ -16,6 +18,9 @@ import CampoTexto from '@components/CampoTexto';
 import DataTableCredenciais from '@components/DataTableCredenciais';
 import Loading from '@components/Loading';
 import ModalDetalhesCredencial from '@components/ModalDetalhesCredencial';
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
+import imageCompression from 'browser-image-compression';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -81,8 +86,144 @@ const AlertaOAuth = styled.div`
     gap: 12px;
 `;
 
+const ImageUploadContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin: 0;
+    padding-top: 20px;
+    padding-bottom: 20px;
+`;
 
+const UploadArea = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: ${props => props.$width || '120px'};
+    height: ${props => props.$height || '120px'};
+    border: 2px dashed var(--primaria);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: ${props => props.$hasImage ? 'transparent' : 'var(--neutro-50)'};
+    overflow: hidden;
+    &:hover {
+        border-color: var(--primaria-escuro);
+        background-color: var(--neutro-100);
+    }
+`;
 
+const UploadPreview = styled.img`
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+`;
+
+const UploadIcon = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--primaria);
+    & svg {
+        font-size: 32px;
+        margin-bottom: 8px;
+    }
+`;
+
+const UploadText = styled.span`
+    text-align: center;
+    color: var(--neutro-600);
+    padding: 0 8px;
+    font-size: 12px;
+`;
+
+const ImageContainer = styled.div`
+    position: relative;
+    width: ${props => props.$width || '120px'};
+    height: ${props => props.$height || '120px'};
+    background-color: var(--neutro-200);
+    border: 1px dashed var(--primaria);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    .hover-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        border-radius: 8px;
+    }
+    
+    &:hover .hover-overlay {
+        opacity: 1;
+    }
+`;
+
+const HoverIconButton = styled.button`
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+
+    svg {
+        font-size: 20px;
+    }
+
+    svg * {
+        fill: #e2e8f0;
+        transition: fill 0.2s ease-in-out;
+    }
+
+    &:hover {
+        transform: scale(1.1);
+        background: rgba(0, 0, 0, 0.9);
+    }
+
+    &:hover svg * {
+        fill: white;
+    }
+`;
+
+const RemoveButton = styled.button`
+    background: transparent;
+    border: none;
+    color: var(--neutro-500);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-top: 8px;
+    transition: all 0.2s ease;
+
+    &:hover {
+        color: #ef4444;
+        background: #fef2f2;
+    }
+`;
 
 
 function Credenciais() {
@@ -129,6 +270,37 @@ function Credenciais() {
   const [savingCredential, setSavingCredential] = useState(false);
   const [editingCredential, setEditingCredential] = useState(null);
   const [tiposAuthLoaded, setTiposAuthLoaded] = useState(false);
+
+  // Estados para upload de imagem (seguindo padrão do sistema.jsx)
+  const fileInputRef = useRef(null);
+  const [uploading, setUploading] = useState(false);
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imageSrc, setImageSrc] = useState('');
+  const [imageRef, setImageRef] = useState(null);
+  
+  // Estados para modal de logo
+  const [showLogoModal, setShowLogoModal] = useState(false);
+  const [showLogoPreview, setShowLogoPreview] = useState(false);
+  const [croppedLogoSrc, setCroppedLogoSrc] = useState('');
+  const [isLogoCropped, setIsLogoCropped] = useState(false);
+  const [hasLogoCropChanged, setHasLogoCropChanged] = useState(false);
+  const [showLogoCropSelection, setShowLogoCropSelection] = useState(false);
+  const [logoCrop, setLogoCrop] = useState({
+    unit: '%',
+    width: 50,
+    height: 50,
+    x: 25,
+    y: 25,
+  });
+
+  // Estados para configuração de logo
+  const [logoConfig, setLogoConfig] = useState({
+    format: 'png',
+    quality: 0.9,
+    maxSize: 1024,
+    preserveTransparency: true
+  });
 
   const toast = React.useRef();
 
@@ -267,6 +439,11 @@ function Credenciais() {
     // Definir que estamos editando
     setEditingCredential(credencial);
     
+    console.log('🔍 Debug - Editando credencial:', {
+      nome: credencial.nome_sistema,
+      logo: credencial.logo ? `Logo presente com ${credencial.logo.length} caracteres` : 'Logo não encontrada'
+    });
+    
     // Preencher o modal com os dados da credencial selecionada
     setNewCredential({
       nome_sistema: credencial.nome_sistema || '',
@@ -320,35 +497,310 @@ function Credenciais() {
     setSelectedCredencialForDetails(null);
   };
 
+  // Funções para manipulação de imagem (seguindo padrão do sistema.jsx)
+  const compressImage = async (file) => {
+    try {
+      console.log('Iniciando compressão da imagem:', {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        lastModified: file.lastModified
+      });
+      
+      const options = { 
+        maxSizeMB: 1, 
+        maxWidthOrHeight: logoConfig.maxSize, 
+        useWebWorker: true, 
+        fileType: `image/${logoConfig.format}`, 
+        quality: logoConfig.quality,
+        preserveExif: false
+      };
+      
+      console.log('Opções de compressão:', options);
+      
+      const compressedFile = await imageCompression(file, options);
+      
+      console.log('Imagem comprimida com sucesso:', {
+        name: compressedFile.name,
+        type: compressedFile.type,
+        size: compressedFile.size,
+        originalSize: file.size,
+        reduction: ((1 - compressedFile.size / file.size) * 100).toFixed(1) + '%'
+      });
+      
+      // Criar arquivo com o formato desejado
+      const finalFile = new File([compressedFile], `logo.${logoConfig.format}`, { 
+        type: `image/${logoConfig.format}`, 
+        lastModified: Date.now() 
+      });
+      
+      console.log('Arquivo final criado:', {
+        name: finalFile.name,
+        type: finalFile.type,
+        size: finalFile.size
+      });
+      
+      return finalFile;
+    } catch (error) {
+      console.error('Erro ao compactar imagem:', error);
+      toast.current.show({ 
+        severity: 'warn', 
+        summary: 'Aviso', 
+        detail: 'Não foi possível comprimir a imagem. Usando arquivo original.', 
+        life: 3000 
+      });
+      return file;
+    }
+  };
 
+  const handleImageUpload = (e) => {
+    console.log('🖼️ handleImageUpload chamado!', e);
+    console.log('🔍 Target:', e.target);
+    console.log('🔍 Files:', e.target.files);
+    
+    // Prevenir comportamento padrão do formulário
+    e.preventDefault();
+    e.stopPropagation();
+    
+    try {
+      const file = e.target.files?.[0];
+      if (!file) {
+        console.log('Nenhum arquivo selecionado');
+        return;
+      }
+      
+      if (!file.type.match('image.*')) {
+        toast.current.show({ 
+          severity: 'error', 
+          summary: 'Erro', 
+          detail: 'Por favor, selecione um arquivo de imagem válido.', 
+          life: 3000 
+        });
+        return;
+      }
+      
+      console.log('Arquivo selecionado:', file.name, file.type, file.size);
+      
+      console.log('📁 Arquivo selecionado, atualizando estado...');
+      setSelectedFile(file);
+      const reader = new FileReader();
+      reader.onload = () => {
+        console.log('📖 Arquivo lido, atualizando estados...');
+        setImageSrc(reader.result);
+        setLogoCrop({ unit: '%', width: 50, height: 50, x: 25, y: 25 });
+        setShowCropModal(true);
+        setShowLogoCropSelection(false);
+        setIsLogoCropped(false);
+        setCroppedLogoSrc('');
+        setHasLogoCropChanged(false);
+        console.log('✅ Estados atualizados, modal deve aparecer');
+      };
+      reader.onerror = () => {
+        console.error('Erro ao ler arquivo');
+        toast.current.show({ 
+          severity: 'error', 
+          summary: 'Erro', 
+          detail: 'Erro ao ler o arquivo de imagem.', 
+          life: 3000 
+        });
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Erro no handleImageUpload:', error);
+      toast.current.show({ 
+        severity: 'error', 
+        summary: 'Erro', 
+        detail: 'Erro ao processar a imagem. Tente novamente.', 
+        life: 3000 
+      });
+    }
+  };
 
+  const handleLogoCropChange = (crop, percentCrop) => {
+    setLogoCrop(percentCrop);
+    setHasLogoCropChanged(true);
+  };
 
+  const handleLogoCropComplete = (crop, percentCrop) => {
+    setLogoCrop(percentCrop);
+  };
 
+  const applyLogoCrop = async () => {
+    if (!hasLogoCropChanged) {
+      toast.current.show({ 
+        severity: 'info', 
+        summary: 'Aviso', 
+        detail: 'Mova ou redimensione a seleção para aplicar o corte.', 
+        life: 3000 
+      });
+      return;
+    }
 
+    if (!imageRef || !logoCrop.width || !logoCrop.height) {
+      return;
+    }
 
+    try {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      // Calcular dimensões reais da imagem
+      const naturalWidth = imageRef.naturalWidth;
+      const naturalHeight = imageRef.naturalHeight;
+      const displayWidth = imageRef.offsetWidth;
+      const displayHeight = imageRef.offsetHeight;
+      
+      // Calcular escala
+      const scaleX = naturalWidth / displayWidth;
+      const scaleY = naturalHeight / displayHeight;
+      
+      // Calcular dimensões do crop em pixels reais
+      const cropWidth = Math.round(logoCrop.width * scaleX);
+      const cropHeight = Math.round(logoCrop.height * scaleY);
+      const cropX = Math.round(logoCrop.x * scaleX);
+      const cropY = Math.round(logoCrop.y * scaleY);
+      
+      // Configurar canvas
+      canvas.width = cropWidth;
+      canvas.height = cropHeight;
+      
+      // Desenhar a área cortada
+      ctx.drawImage(
+        imageRef, 
+        cropX, cropY, cropWidth, cropHeight, 
+        0, 0, cropWidth, cropHeight
+      );
+      
+      canvas.toBlob((blob) => {
+        if (blob) {
+          setCroppedLogoSrc(URL.createObjectURL(blob));
+          setIsLogoCropped(true);
+          setShowLogoCropSelection(false);
+        }
+      }, selectedFile.type, logoConfig.quality);
+      
+    } catch (erro) {
+      console.error("Erro ao aplicar corte:", erro);
+      toast.current.show({ 
+        severity: 'error', 
+        summary: 'Erro', 
+        detail: 'Erro ao aplicar o corte. Tente novamente.', 
+        life: 3000 
+      });
+    }
+  };
 
+  const handleRemoveLogo = () => {
+    try {
+      console.log('🔄 Removendo logo...');
+      setNewCredential(prev => ({ ...prev, logo: null }));
+      
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Logo removida com sucesso!' });
+      console.log('✅ Logo removida com sucesso');
+    } catch (error) {
+      console.error('❌ Erro ao remover logo:', error);
+      toast.current.show({ 
+        severity: 'error', 
+        summary: 'Erro', 
+        detail: 'Erro ao remover logo: ' + error.message 
+      });
+    }
+  };
 
+  const handleCropImage = async () => {
+    try {
+      if (!imageRef || !logoCrop.width || !logoCrop.height) {
+        console.log('Dados de corte inválidos:', { imageRef: !!imageRef, logoCrop });
+        toast.current.show({ 
+          severity: 'error', 
+          summary: 'Erro', 
+          detail: 'Dados de corte inválidos. Tente novamente.', 
+          life: 3000 
+        });
+        return;
+      }
+      
+      setUploading(true);
+      console.log('Iniciando processamento da logo...');
 
+      let fileToProcess;
+      
+      if (isLogoCropped && croppedLogoSrc) {
+        // Usar imagem cortada
+        const response = await fetch(croppedLogoSrc);
+        const blob = await response.blob();
+        fileToProcess = new File([blob], `logo.${logoConfig.format}`, { type: `image/${logoConfig.format}` });
+      } else {
+        // Usar imagem original
+        fileToProcess = selectedFile;
+      }
+      
+      const compressedFile = await compressImage(fileToProcess);
+      
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        try {
+          console.log('🔄 Atualizando logo após processamento...');
+          const dataUrl = reader.result;
+          console.log('Data URL criado, tamanho:', dataUrl.length);
+          
+          // Atualizar logo na credencial
+          setNewCredential(prev => ({ ...prev, logo: dataUrl }));
+          
+          toast.current.show({ 
+            severity: 'success', 
+            summary: 'Sucesso', 
+            detail: `Logo salva em formato ${logoConfig.format.toUpperCase()} com sucesso!` 
+          });
+          handleCancelCrop();
+          console.log('✅ Logo atualizada com sucesso');
+        } catch (error) {
+          console.error('❌ Erro ao atualizar logo:', error);
+          toast.current.show({ 
+            severity: 'error', 
+            summary: 'Erro', 
+            detail: 'Erro ao atualizar logo: ' + error.message 
+          });
+        }
+      };
+      reader.onerror = () => {
+        console.error('Erro ao ler arquivo comprimido');
+        toast.current.show({ 
+          severity: 'error', 
+          summary: 'Erro', 
+          detail: 'Erro ao processar a imagem.', 
+          life: 3000 
+        });
+      };
+      reader.readAsDataURL(compressedFile);
+      
+    } catch (error) {
+      console.error('Erro no handleCropImage:', error);
+      toast.current.show({ 
+        severity: 'error', 
+        summary: 'Erro', 
+        detail: 'Erro ao processar a imagem. Tente novamente.', 
+        life: 3000 
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  const handleCancelCrop = () => {
+    console.log('Cancelando modal de corte...');
+    setShowCropModal(false);
+    setImageSrc('');
+    setSelectedFile(null);
+    setLogoCrop({ unit: '%', width: 50, height: 50, x: 25, y: 25 });
+    setIsLogoCropped(false);
+    setCroppedLogoSrc('');
+    setHasLogoCropChanged(false);
+    setShowLogoCropSelection(false);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+    console.log('Modal de corte fechado e estado limpo');
+  };
 
   // Iniciar criação de nova credencial
   const iniciarCriacaoCredencial = () => {
@@ -493,12 +945,18 @@ function Credenciais() {
       const credentialData = {
         nome_sistema: newCredential.nome_sistema,
         descricao: newCredential.descricao,
+        logo: newCredential.logo,
         url_endpoint: newCredential.url_endpoint,
         tipo_autenticacao: newCredential.tipo_autenticacao,
         timeout: newCredential.timeout,
         ativo: newCredential.ativo,
         observacoes: newCredential.observacoes
       };
+
+      console.log('🔍 Debug - Dados da credencial a serem enviados:', {
+        ...credentialData,
+        logo: credentialData.logo ? `Data URL com ${credentialData.logo.length} caracteres` : 'null'
+      });
 
       // Adicionar campos específicos por tipo de autenticação
       switch (newCredential.tipo_autenticacao) {
@@ -865,7 +1323,7 @@ function Credenciais() {
           setShowCreateCredentialModal(false);
           setEditingCredential(null);
         }}
-        style={{ width: '90vw', maxWidth: '1200px' }}
+        style={{ width: '90vw', maxWidth: '1200px', zIndex: 1000 }}
         modal
         closeOnEscape
         closable
@@ -1030,25 +1488,65 @@ function Credenciais() {
                   }}>
                     Logo/Imagem do Sistema
                   </label>
-                  <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '12px',
-                    padding: '12px',
-                    border: '2px dashed #dee2e6',
-                    borderRadius: '8px',
-                    background: '#f8f9fa'
-                  }}>
-                    <Button
-                      label="Escolher Arquivo"
-                      icon="pi pi-upload"
-                      className="p-button-outlined"
-                      style={{ fontSize: '14px', gap: '8px' }}
-                    />
-                    <span style={{ color: '#6c757d', fontSize: '14px' }}>
-                      Nenhum arquivo escolhido
-                    </span>
-                  </div>
+                  <ImageUploadContainer style={{ flexDirection: 'row', gap: 32 }}>
+                    {/* Logo */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        ref={fileInputRef}
+                        style={{ display: 'none' }}
+                        id="credencial-logo-upload"
+                        onClick={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => e.stopPropagation()}
+                      />
+                      {newCredential.logo ? (
+                        <>
+                          <ImageContainer $width="180px" $height="80px">
+                            <UploadPreview 
+                              src={newCredential.logo} 
+                              alt="Logo da credencial" 
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => setShowLogoModal(true)}
+                            />
+                            <div className="hover-overlay">
+                              <HoverIconButton 
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  fileInputRef.current.click();
+                                }}
+                              >
+                                <RiUpload2Fill />
+                              </HoverIconButton>
+                            </div>
+                          </ImageContainer>
+                          <RemoveButton onClick={handleRemoveLogo}><HiX size={12} /> Remover</RemoveButton>
+                        </>
+                      ) : (
+                        <UploadArea 
+                          $width="180px" 
+                          $height="80px"
+                          onClick={() => {
+                            console.log('🖱️ UploadArea clicado!');
+                            console.log('🔍 fileInputRef.current:', fileInputRef.current);
+                            if (fileInputRef.current) {
+                              console.log('🔄 Acionando click no input...');
+                              fileInputRef.current.click();
+                            } else {
+                              console.error('❌ fileInputRef.current é null!');
+                            }
+                          }}
+                        >
+                          <UploadIcon>
+                            <RiUpload2Fill size={'28px'} />
+                            <UploadText>Clique para adicionar uma logo</UploadText>
+                          </UploadIcon>
+                        </UploadArea>
+                      )}
+                    </div>
+                  </ImageUploadContainer>
                   <small style={{ color: '#6c757d', fontSize: '12px' }}>
                     Logo ou imagem representativa do sistema
                   </small>
@@ -1401,6 +1899,435 @@ function Credenciais() {
         }}
         onDelete={handleDelete}
       />
+
+      {/* Modal de visualização da logo */}
+      {showLogoModal && newCredential.logo && (
+        <div 
+          style={{ 
+            position: 'fixed', 
+            top: 0, 
+            left: 0, 
+            right: 0, 
+            bottom: 0, 
+            backgroundColor: 'rgba(0, 0, 0, 0.8)', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            zIndex: 9998,
+            padding: '20px'
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowLogoModal(false);
+            }
+          }}
+        >
+          <div style={{
+            background: '#fff', 
+            borderRadius: '12px', 
+            maxWidth: '90vw', 
+            maxHeight: '90vh', 
+            width: '600px',
+            display: 'flex', 
+            flexDirection: 'column', 
+            overflow: 'hidden'
+          }}>
+            {/* Header */}
+            <div style={{
+              padding: '16px 20px', 
+              borderBottom: '1px solid #e5e7eb',
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between'
+            }}>
+              <h3 style={{ margin: 0, color: '#374151', fontSize: '18px' }}>Logo da Credencial</h3>
+              <button 
+                onClick={() => setShowLogoModal(false)} 
+                style={{
+                  background: 'none', 
+                  border: 'none', 
+                  fontSize: '24px', 
+                  cursor: 'pointer',
+                  color: '#6b7280'
+                }}
+              >×</button>
+            </div>
+
+            {/* Content */}
+            <div style={{
+              padding: '20px', 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              gap: '20px'
+            }}>
+              <img 
+                src={newCredential.logo} 
+                alt="Logo da credencial" 
+                style={{ 
+                  maxWidth: '100%', 
+                  maxHeight: '400px', 
+                  objectFit: 'contain',
+                  borderRadius: '8px'
+                }} 
+              />
+              
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <Botao 
+                  estilo="vermilion" 
+                  size="small"
+                  aoClicar={() => {
+                    setShowLogoModal(false);
+                    fileInputRef.current.click();
+                  }}
+                >
+                  <RiUpload2Fill /> Alterar Logo
+                </Botao>
+                <Botao 
+                  estilo="neutro" 
+                  size="small"
+                  aoClicar={handleRemoveLogo}
+                >
+                  <HiX /> Remover Logo
+                </Botao>
+                <Botao 
+                  estilo="neutro" 
+                  size="small"
+                  aoClicar={() => setShowLogoModal(false)}
+                >
+                  Fechar
+                </Botao>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Corte */}
+      {showCropModal && imageSrc && selectedFile && (
+        <>
+          <style>
+            {`
+              @keyframes modalSlideIn {
+                from {
+                  opacity: 0;
+                  transform: scale(0.9) translateY(-20px);
+                }
+                to {
+                  opacity: 1;
+                  transform: scale(1) translateY(0);
+                }
+              }
+              
+              .modal-backdrop {
+                animation: backdropFadeIn 0.3s ease-out;
+              }
+              
+              @keyframes backdropFadeIn {
+                from {
+                  opacity: 0;
+                }
+                to {
+                  opacity: 1;
+                }
+              }
+            `}
+          </style>
+          <div 
+            className="modal-backdrop"
+            style={{ 
+              position: 'fixed', 
+              top: 0, 
+              left: 0, 
+              right: 0, 
+              bottom: 0, 
+              backgroundColor: 'rgba(0, 0, 0, 0.4)', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              zIndex: 9999,
+              backdropFilter: 'blur(1px)',
+              transition: 'all 0.3s ease'
+            }}
+          >
+            <div style={{ 
+              background: '#fff', 
+              borderRadius: '16px', 
+              maxWidth: '90vw', 
+              width: '900px', 
+              maxHeight: '90vh',
+              display: 'flex', 
+              flexDirection: 'column',
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              animation: 'modalSlideIn 0.3s ease-out',
+              transform: 'scale(1)',
+              opacity: 1
+            }}>
+              {/* Header do Modal */}
+              <div style={{ 
+                padding: '20px 24px', 
+                borderBottom: '1px solid #e5e7eb', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between',
+                background: 'linear-gradient(135deg, #f8fafc, #f1f5f9)',
+                borderTopLeftRadius: '16px',
+                borderTopRightRadius: '16px'
+              }}>
+                <h3 style={{ 
+                  margin: 0, 
+                  fontSize: '20px', 
+                  fontWeight: '600',
+                  color: '#1f2937'
+                }}>
+                  🖼️ Configurar Logo
+                </h3>
+                <button 
+                  onClick={handleCancelCrop} 
+                  style={{ 
+                    background: 'rgba(239, 68, 68, 0.1)', 
+                    border: '1px solid rgba(239, 68, 68, 0.2)', 
+                    borderRadius: '50%',
+                    width: '32px',
+                    height: '32px',
+                    fontSize: '18px', 
+                    cursor: 'pointer',
+                    color: '#dc2626',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+              
+              {/* Conteúdo do Modal */}
+              <div style={{ 
+                padding: '24px', 
+                display: 'flex', 
+                gap: '24px',
+                minHeight: '400px',
+                maxHeight: '60vh',
+                overflow: 'hidden'
+              }}>
+                {/* Imagem Original ou Cortada */}
+                <div style={{
+                  flex: showLogoCropSelection && !isLogoCropped ? 0.5 : 1,
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  background: '#f9fafb', 
+                  borderRadius: '12px', 
+                  padding: '20px', 
+                  minHeight: '400px'
+                }}>
+                  {isLogoCropped ? (
+                    <img src={croppedLogoSrc} alt="Logo Cortada" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                  ) : (
+                    <img ref={setImageRef} src={imageSrc} alt="Logo Original" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                  )}
+                </div>
+                
+                {/* Área de Seleção */}
+                {showLogoCropSelection && !isLogoCropped && (
+                  <div style={{
+                    flex: 0.5, 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    background: '#f0f9ff', 
+                    borderRadius: '12px', 
+                    padding: '20px', 
+                    minHeight: '400px',
+                    border: '2px dashed #0ea5e9'
+                  }}>
+                    <ReactCrop 
+                      crop={logoCrop} 
+                      onChange={handleLogoCropChange}
+                      onComplete={handleLogoCropComplete}
+                      minWidth={30}
+                      minHeight={30}
+                      keepSelection
+                      ruleOfThirds
+                      style={{
+                        maxWidth: '100%',
+                        maxHeight: '100%'
+                      }}
+                    >
+                      <img 
+                        src={imageSrc} 
+                        alt="Para Cortar" 
+                        style={{ 
+                          maxWidth: '100%',
+                          maxHeight: '100%',
+                          objectFit: 'contain',
+                          borderRadius: '8px'
+                        }}
+                      />
+                    </ReactCrop>
+                  </div>
+                )}
+
+                {/* Controles */}
+                <div style={{
+                  width: '250px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '16px'
+                }}>
+                  {!isLogoCropped ? (
+                    <>
+                      {!showLogoCropSelection ? (
+                        <button
+                          onClick={() => setShowLogoCropSelection(true)}
+                          style={{ 
+                            width: '100%', 
+                            background: '#374151', 
+                            border: 'none', 
+                            borderRadius: '6px', 
+                            padding: '12px', 
+                            cursor: 'pointer', 
+                            fontSize: '14px', 
+                            color: '#fff', 
+                            transition: 'all 0.2s ease' 
+                          }}
+                        >
+                          ✂️ Cortar
+                        </button>
+                      ) : (
+                        <>
+                          <button
+                            onClick={applyLogoCrop}
+                            disabled={!hasLogoCropChanged}
+                            style={{ 
+                              width: '100%', 
+                              background: !hasLogoCropChanged ? '#9ca3af' : '#059669', 
+                              border: 'none', 
+                              borderRadius: '6px', 
+                              padding: '12px', 
+                              cursor: !hasLogoCropChanged ? 'not-allowed' : 'pointer', 
+                              fontSize: '14px', 
+                              color: '#fff', 
+                              transition: 'all 0.2s ease' 
+                            }}
+                          >
+                            ✅ Aplicar Corte
+                          </button>
+                          <button
+                            onClick={() => setShowLogoCropSelection(false)}
+                            style={{ 
+                              width: '100%', 
+                              background: '#f3f4f6', 
+                              border: '1px solid #d1d5db', 
+                              borderRadius: '6px', 
+                              padding: '10px', 
+                              cursor: 'pointer', 
+                              fontSize: '14px', 
+                              transition: 'all 0.2s ease' 
+                            }}
+                          >
+                            🔄 Resetar Seleção
+                          </button>
+                        </>
+                      )}
+                      
+                      {/* Instruções */}
+                      <div style={{ 
+                        background: '#f8fafc', 
+                        border: '1px solid #e2e8f0', 
+                        borderRadius: '8px', 
+                        padding: '12px', 
+                        fontSize: '13px', 
+                        color: '#6b7280', 
+                        lineHeight: '1.5' 
+                      }}>
+                        <strong style={{ color: '#374151' }}>Como usar:</strong><br/>
+                        {!showLogoCropSelection ? 'Clique em "Cortar" para começar.' : 'Arraste para selecionar e clique em "Aplicar Corte".'}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => { 
+                          setIsLogoCropped(false); 
+                          setCroppedLogoSrc(''); 
+                          setShowLogoCropSelection(true); 
+                        }}
+                        style={{ 
+                          width: '100%', 
+                          background: '#f3f4f6', 
+                          border: '1px solid #d1d5db', 
+                          borderRadius: '6px', 
+                          padding: '10px', 
+                          cursor: 'pointer', 
+                          fontSize: '14px', 
+                          transition: 'all 0.2s ease' 
+                        }}
+                      >
+                        🔄 Voltar e Editar
+                      </button>
+                      <div style={{ 
+                        background: '#f8fafc', 
+                        border: '1px solid #e2e8f0', 
+                        borderRadius: '8px', 
+                        padding: '12px', 
+                        fontSize: '13px', 
+                        color: '#6b7280', 
+                        lineHeight: '1.5' 
+                      }}>
+                        <strong style={{ color: '#374151' }}>Pronto!</strong><br/>
+                        Clique em "Salvar" para finalizar ou volte para editar.
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+              
+              {/* Footer do Modal */}
+              <div style={{ 
+                padding: '20px 24px', 
+                borderTop: '1px solid #e5e7eb', 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center',
+                background: '#f9fafb',
+                borderBottomLeftRadius: '16px',
+                borderBottomRightRadius: '16px'
+              }}>
+                <div style={{
+                  fontSize: '14px',
+                  color: '#6b7280',
+                  fontStyle: 'italic'
+                }}>
+                  {uploading ? 'Processando logo...' : 'Configure sua logo como desejar'}
+                </div>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  <Botao 
+                    estilo="neutro" 
+                    aoClicar={handleCancelCrop}
+                    size="small"
+                  >
+                    ❌ Cancelar
+                  </Botao>
+                  <Botao 
+                    estilo="vermilion" 
+                    aoClicar={handleCropImage} 
+                    disabled={uploading || (showLogoCropSelection && !isLogoCropped)} 
+                    size="small"
+                  >
+                    {uploading ? '⏳ Processando...' : (showLogoCropSelection && !isLogoCropped) ? 'Aplique ou cancele o corte' : (isLogoCropped ? 'Salvar Logo Cortada' : 'Salvar Logo Original')}
+                  </Botao>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 }
