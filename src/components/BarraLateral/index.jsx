@@ -556,7 +556,7 @@ function BarraLateral({ $sidebarOpened }) {
         },
         {
             id: 24,
-            url: '/estrutura-organizacional',
+            url: '/estrutura',
             pageTitulo: 'Estrutura Organizacional',
             icone: <FaBuilding size={20} className="icon" />,
             itemTitulo: 'Estrutura Organizacional',
