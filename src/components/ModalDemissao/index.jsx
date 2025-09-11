@@ -561,7 +561,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                                 <input
                                                     id="anexo-input"
                                                     type="file"
-                                                    accept=".pdf,.jpg,.jpeg,.png"
+                                                    accept=".pdf,.jpg,.jpeg,.png,.zip"
                                                     onChange={(e) => {
                                                         const file = e.target.files[0];
                                                         console.log('Arquivo selecionado:', file); // Debug
