@@ -7,7 +7,7 @@ import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import { useNavigate, Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Real } from '@utils/formats'
 import { FaCalendarAlt, FaHistory, FaExternalLinkAlt } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
@@ -27,7 +27,6 @@ import { FaDownload } from 'react-icons/fa';
 import { GrAddCircle } from 'react-icons/gr';
 import styles from '@pages/Colaboradores/Colaboradores.module.css'
 import { formatCurrency, formatNumber } from '@utils/formats';
-import http from '@http';
 import { ArmazenadorToken } from '@utils';
 
 function DataTableAdmissao({ 
@@ -298,30 +297,10 @@ function DataTableAdmissao({
     };
 
     const representativeFilialTemplate = (rowData) => {
-        const [filialEfetivaNome, setFilialEfetivaNome] = useState(null);
-        const [carregandoFilial, setCarregandoFilial] = useState(false);
-        
         const filial_vaga_id = rowData?.dados_vaga?.filial_id;
         const filial_vaga_nome = rowData?.dados_vaga?.filial_nome;
         const filial_efetiva_id = rowData?.filial;
-        
-        useEffect(() => {
-            // Se a filial efetiva é diferente da filial da vaga, buscar o nome
-            if (filial_efetiva_id && filial_efetiva_id != filial_vaga_id) {
-                setCarregandoFilial(true);
-                http.get(`/filial/${filial_efetiva_id}/`)
-                    .then(response => {
-                        setFilialEfetivaNome(response.nome);
-                    })
-                    .catch(error => {
-                        console.error('Erro ao buscar filial:', error);
-                        setFilialEfetivaNome('Erro ao carregar');
-                    })
-                    .finally(() => {
-                        setCarregandoFilial(false);
-                    });
-            }
-        }, [filial_efetiva_id, filial_vaga_id]);
+        const filial_efetiva_nome = rowData?.filial_nome; // Nova chave que já vem na resposta
         
         if (!filial_vaga_nome) {
             return <span style={{ color: '#888', fontStyle: 'italic' }}>Não informado</span>;
@@ -336,11 +315,7 @@ function DataTableAdmissao({
                 return filial_vaga_nome;
             }
             
-            if (carregandoFilial) {
-                return 'Carregando...';
-            }
-            
-            return filialEfetivaNome || '----';
+            return filial_efetiva_nome || '----';
         };
         
         return (
