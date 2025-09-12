@@ -443,33 +443,38 @@ function FeriasListagem() {
                 if (tab === 'calendario') {
                     // Para calendário com cursor pagination
                     if (isLoadMore) {
-                        // Filtra apenas itens que não existem no calendário atual
-                        const existingIds = new Set((ferias || []).map(item => item.id));
-                        const newItemsOnly = newData.filter(item => !existingIds.has(item.id));
-                        
-                        if (newItemsOnly.length > 0) {
-                            // Marca novos itens para garantir que vão para o final do calendário
-                            const newDataWithMarker = newItemsOnly.map(item => ({
-                                ...item,
-                                _isNewItem: true
-                            }));
+                                                    // Filtra apenas itens que não existem no calendário atual
+                            const existingIds = new Set((ferias || []).map(item => item.id));
+                            const newItemsOnly = newData.filter(item => !existingIds.has(item.id));
                             
-                            // Sinaliza que está renderizando
-                            setIsRendering(true);
-                            setFerias(prev => [...(prev || []), ...newDataWithMarker]);
-                            console.log('✅ Dados adicionados ao calendário:', newDataWithMarker?.length, 'novos itens únicos');
-                            console.log('🚫 Duplicatas filtradas:', newData.length - newItemsOnly.length, 'itens');
-                            
-                            // Aguarda a renderização antes de finalizar loading
-                            setTimeout(() => {
+                            if (newItemsOnly.length > 0) {
+                                // Marca novos itens para garantir que vão para o final do calendário
+                                const newDataWithMarker = newItemsOnly.map(item => ({
+                                    ...item,
+                                    _isNewItem: true
+                                }));
+                                
+                                // Sinaliza que está renderizando
+                                setIsRendering(true);
+                                setFerias(prev => [...(prev || []), ...newDataWithMarker]);
+                                console.log('✅ Dados adicionados ao calendário:', newDataWithMarker?.length, 'novos itens únicos');
+                                console.log('🚫 Duplicatas filtradas:', newData.length - newItemsOnly.length, 'itens');
+                                
+                                // Aguarda o calendário processar os dados - timing mais conservador
+                                setTimeout(() => {
+                                    setIsRendering(false);
+                                    console.log('🔄 Renderização iniciada, mantendo loading...');
+                                    
+                                    // Aguarda mais tempo para garantir que o calendário processou completamente
+                                    setTimeout(() => {
+                                        setIsLoadingMore(false);
+                                        console.log('✅ Loading finalizado - dados processados no calendário');
+                                    }, 1200); // Tempo mais conservador para garantir renderização completa
+                                }, 300);
+                            } else {
+                                console.log('⚠️ Nenhum item novo encontrado - todos já existem no calendário');
                                 setIsLoadingMore(false);
-                                setIsRendering(false);
-                                console.log('✅ Renderização finalizada');
-                            }, 2000);
-                        } else {
-                            console.log('⚠️ Nenhum item novo encontrado - todos já existem no calendário');
-                            setIsLoadingMore(false);
-                        }
+                            }
                     } else {
                         setFerias(newData);
                         console.log('✅ Dados iniciais do calendário carregados:', newData?.length, 'itens');

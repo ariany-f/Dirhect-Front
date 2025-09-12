@@ -589,7 +589,9 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
     useEffect(() => {
         const hasNewItems = colaboradores?.some(item => item._isNewItem);
         if (hasNewItems) {
-            // Remove a marcação após 2 segundos (tempo suficiente para a animação)
+            console.log('📊 Calendário recebeu novos itens, processando...');
+            
+            // Aguarda o calendário processar os novos dados
             const timer = setTimeout(() => {
                 // Limpa as marcações _isNewItem localmente sem recarregar dados
                 const colaboradoresSemMarcacao = colaboradores.map(item => ({
@@ -597,7 +599,8 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                     _isNewItem: false
                 }));
                 setColaboradoresLimpos(colaboradoresSemMarcacao);
-            }, 2000);
+                console.log('✅ Novos itens processados e exibidos no calendário');
+            }, 100); // Tempo mínimo para processamento
             
             return () => clearTimeout(timer);
         } else if (colaboradores && colaboradores.length > 0) {
