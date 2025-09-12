@@ -42,6 +42,7 @@ function FilialDetalhes() {
         if(!filial) {
             http.get(`filial/${id}/?format=json`)
             .then(response => {
+                console.error('detalhes filial - filial')
                 setDepartamento(response)
             })
             .catch(erro => console.log(erro))

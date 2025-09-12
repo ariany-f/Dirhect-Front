@@ -466,14 +466,13 @@ function OperadorRegistroPermissoes () {
             const promises = response.map(async (cliente) => {
                 try {
                     const [tenantResponse, pessoaJuridicaResponse] = await Promise.all([
-                        http.get(`client_tenant/${cliente.id_tenant}/?format=json`),
-                        http.get(`pessoa_juridica/${cliente.pessoa_juridica}/?format=json`)
+                        http.get(`client_tenant/${cliente.id_tenant.id}/?format=json`),
                     ]);
 
                     return {
                         ...cliente,
                         tenant: tenantResponse || {},
-                        pessoaJuridica: pessoaJuridicaResponse || {}
+                        pessoaJuridica: cliente.pessoaJuridica || cliente.pessoa_juridica || {}
                     };
                 } catch (erro) {
                     console.error("Erro ao buscar dados do tenant:", erro);
@@ -484,7 +483,7 @@ function OperadorRegistroPermissoes () {
             const tenantsCompletos = await Promise.all(promises);
             setTenantsState(tenantsCompletos);
             setSourceTenants(tenantsCompletos.map(tenant => ({ 
-                id: tenant.id_tenant, 
+                id: tenant.id_tenant.id, 
                 label: tenant.tenant?.nome || 'Empresa',
                 data: tenant 
             })));

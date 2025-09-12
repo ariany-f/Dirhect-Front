@@ -62,7 +62,7 @@ function MeusDados() {
 
         if (usuario.companies && usuario.companies.length > 0) {
             const companyId = ArmazenadorToken.UserCompanyPublicId;
-            const selecionada = usuario.companies.find(c => String(c.id_tenant) === String(companyId)) || usuario.companies[0];
+            const selecionada = usuario.companies.find(c => String(c.id_tenant.id) === String(companyId)) || usuario.companies[0];
             
             if (selecionada?.pessoaJuridica) {
                 const pj = selecionada.pessoaJuridica;

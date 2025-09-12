@@ -48,7 +48,7 @@ function MeusDadosEndereco() {
             !endereco // só seta se ainda não tiver endereço
         ) {
             const selecionada = usuario.companies.find(
-                c => String(c.id_tenant) === String(ArmazenadorToken.UserCompanyPublicId)
+                c => String(c.id_tenant.id) === String(ArmazenadorToken.UserCompanyPublicId)
             ) || usuario.companies[0];
             const pj = selecionada.pessoaJuridica;
             setEndereco({

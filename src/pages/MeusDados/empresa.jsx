@@ -228,10 +228,10 @@ function MeusDadosEmpresa() {
         setLoading(true);
         if (usuario && usuario.companies && usuario.companies.length > 0) {
             
-            const selecionada = usuario.companies.find(c => String(c.id_tenant) === String(ArmazenadorToken.UserCompanyPublicId)) || usuario.companies[0];
+            const selecionada = usuario.companies.find(c => String(c.id_tenant.id) === String(ArmazenadorToken.UserCompanyPublicId)) || usuario.companies[0];
             
             // Load images from localStorage first, then fallback to the selected company context
-            const companySymbol = localStorage.getItem(`companySymbol_${selecionada.id_tenant}`) || selecionada.tenant?.simbolo || '';
+            const companySymbol = localStorage.getItem(`companySymbol_${selecionada.id_tenant.id}`) || selecionada.tenant?.simbolo || '';
             const companyLogo = localStorage.getItem('brandLogo') || selecionada.tenant?.logo || '';
             
             setEmpresa({ logo: companyLogo, symbol: companySymbol });
@@ -297,7 +297,7 @@ function MeusDadosEmpresa() {
 
         try {
             await http.put(`client_tenant/${usuario.company_public_id}/`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-
+            console.error('handleRemoveImage')
             if(imageType === 'logo') {
                 localStorage.removeItem('brandLogo');
                 setEmpresa(prev => ({ ...prev, logo: '' }));
@@ -335,6 +335,7 @@ function MeusDadosEmpresa() {
 
             try {
                 const response = await http.put(`client_tenant/${usuario.company_public_id}/`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+                console.error('handleCropImage')
                 const imageUrl = response[field];
                 
                 const reader = new FileReader();

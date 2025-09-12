@@ -44,7 +44,7 @@ function MeusDadosDadosFaturamento() {
     useEffect(() => {
         setLoading(true)
         if (usuario && usuario.companies && usuario.companies.length > 0) {
-            const selecionada = usuario.companies.find(c => String(c.id_tenant) === String(ArmazenadorToken.UserCompanyPublicId)) || usuario.companies[0];
+            const selecionada = usuario.companies.find(c => String(c.id_tenant.id) === String(ArmazenadorToken.UserCompanyPublicId)) || usuario.companies[0];
 
             const pj = selecionada.pessoaJuridica;
             setDados({

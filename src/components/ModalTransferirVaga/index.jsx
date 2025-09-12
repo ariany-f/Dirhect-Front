@@ -190,22 +190,23 @@ function ModalTransferirVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                 .then(async (response) => {
                     const clientesCompletos = await Promise.all(response.map(async (cliente) => {
                         try {
-                            const tenantResponse = await http.get(`client_tenant/${cliente.id_tenant}/?format=json`);
-                            const pessoaJuridicaResponse = await http.get(`pessoa_juridica/${cliente.pessoa_juridica}/?format=json`);
+                            const tenantResponse = await http.get(`client_tenant/${cliente.id_tenant.id}/?format=json`);
+
+                            const pessoaJuridica = cliente.pessoaJuridica || cliente.pessoa_juridica;
                             
                             return {
                                 ...cliente,
                                 name: tenantResponse.nome,
-                                code: cliente.id_tenant,
+                                code: cliente.id_tenant.id,
                                 tenant: tenantResponse,
-                                pessoaJuridica: pessoaJuridicaResponse
+                                pessoaJuridica: pessoaJuridica
                             };
                         } catch (erro) {
                             console.error("Erro ao buscar dados do cliente:", erro);
                             return { 
                                 ...cliente, 
                                 name: `Cliente ${cliente.id}`,
-                                code: cliente.id_tenant,
+                                code: cliente.id_tenant.id,
                                 tenant: {}, 
                                 pessoaJuridica: {} 
                             };
@@ -220,12 +221,12 @@ function ModalTransferirVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                 ...cliente,
                                 tenant: {
                                     ...cliente.tenant,
-                                    client_domain: domains.find(domain => domain.tenant === cliente.id_tenant)?.domain || null
+                                    client_domain: domains.find(domain => domain.tenant === cliente.id_tenant.id)?.domain || null
                                 }
                             }));
                             // Filtrar para não mostrar a empresa atual
                             const clientesFiltrados = clientesWithDomain.filter(cliente => 
-                                cliente.id_tenant != ArmazenadorToken.UserCompanyPublicId
+                                cliente.id_tenant.id != ArmazenadorToken.UserCompanyPublicId
                             );
 
                             setClientes(clientesFiltrados);

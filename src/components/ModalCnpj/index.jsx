@@ -127,13 +127,11 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                     const clientesCompletos = await Promise.all(clientes.map(async (cliente) => {
                         try {
                             // Buscar o tenant
-                            const tenantResponse = await http.get(`client_tenant/${cliente.id_tenant}/?format=json`);
+                            const tenantResponse = await http.get(`client_tenant/${cliente?.id_tenant?.id}/?format=json`);
+                            
                             const tenant = tenantResponse || {};
 
-                            // Buscar a pessoa jurídica
-                            const pessoaJuridicaResponse = await http.get(`pessoa_juridica/${cliente.pessoa_juridica}/?format=json`);
-                            const pessoaJuridica = pessoaJuridicaResponse || {};
-
+                            const pessoaJuridica = cliente.pessoaJuridica || cliente.pessoa_juridica;
 
                             // Retornar o objeto consolidado
                             return {
@@ -162,13 +160,13 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                         // Cruzar os dados: adicionar domains correspondentes a cada tenant
                     const tenantsWithDomain = tenants.map(tenant => ({
                         ...tenant,
-                        domain: domains.find(domain => domain.tenant === tenant.id_tenant)?.domain || null
+                        domain: domains.find(domain => domain.tenant === tenant.id_tenant.id)?.domain || null
                     }));
 
                     setEmpresas(tenantsWithDomain)
                     setCompanies(tenantsWithDomain)
 
-                    setSelected(ArmazenadorToken.UserCompanyPublicId ?? tenantsWithDomain[0].id_tenant)
+                    setSelected(ArmazenadorToken.UserCompanyPublicId ?? tenantsWithDomain[0].id_tenant.id)
                     
                 })
                 .catch(erro => {
@@ -179,7 +177,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
 
         if(empresas && empresas.length > 0 && (!tenants))
         {
-            setSelected(ArmazenadorToken.UserCompanyPublicId ?? empresas[0].id_tenant)
+            setSelected(ArmazenadorToken.UserCompanyPublicId ?? empresas[0].id_tenant.id)
         }
         
     }, [opened, empresas, tenants])
@@ -194,9 +192,9 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
 
         setSessionCompany(selected)
 
-        var comp = empresas.filter(company => company.id_tenant == selected)
+        var comp = empresas.filter(company => company.id_tenant.id == selected)
        
-        if(comp.length > 0 && comp[0].id_tenant)
+        if(comp.length > 0 && comp[0].id_tenant.id)
         {
             setCompanyDomain(comp[0].domain)
             setCompanySymbol(comp[0].tenant?.simbolo || '')
@@ -273,12 +271,12 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                                     return (
                                         <Item 
                                             key={idx} 
-                                            $active={selected === empresa.id_tenant}
-                                            onClick={id => handleSelectChange(empresa.id_tenant)}>
+                                            $active={selected === empresa.id_tenant.id}
+                                            onClick={id => handleSelectChange(empresa.id_tenant.id)}>
                                             <div className={styles.cardEmpresa}>
                                                 {empresa.tenant?.simbolo ?
                                                     <CustomImage src={empresa.tenant.simbolo} title={empresa.tenant?.nome || 'Empresa'} width={50} height={50} borderRadius={16} />
-                                                : (selected === empresa.id_tenant) ?
+                                                : (selected === empresa.id_tenant.id) ?
                                                     <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
                                                     : <RiBuildingLine className={styles.buildingIcon} size={20} />
                                                 }
@@ -288,8 +286,8 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                                                 </div>
                                             </div>
                                             <RadioButton
-                                                value={empresa.id_tenant}
-                                                checked={selected == empresa.id_tenant}
+                                                value={empresa.id_tenant.id}
+                                                checked={selected == empresa.id_tenant.id}
                                                 onSelected={(id) => handleSelectChange}
                                             />
                                         </Item>

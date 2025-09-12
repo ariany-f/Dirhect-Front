@@ -817,6 +817,7 @@ function DataTableAtividades({
                 // Se não encontrou no cache, buscar da API e atualizar cache
                 http.get(`/client_tenant/${rowData.tenant}/`)
                     .then(response => {
+                        console.error('datatable atividades')
                         setCliente(response);
                         // Atualizar cache se necessário
                         if (tenantsCache) {

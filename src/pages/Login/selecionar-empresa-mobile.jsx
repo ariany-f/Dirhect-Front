@@ -86,13 +86,11 @@ function SelecionarEmpresaMobile() {
                  const clientesCompletos = await Promise.all(clientes.map(async (cliente) => {
                      try {
                          // Buscar o tenant
-                         const tenantResponse = await http.get(`client_tenant/${cliente.id_tenant}/?format=json`);
+                         const tenantResponse = await http.get(`client_tenant/${cliente.id_tenant.id}/?format=json`);
+                         
                          const tenant = tenantResponse || {};
 
-                         // Buscar a pessoa jurídica
-                         const pessoaJuridicaResponse = await http.get(`pessoa_juridica/${cliente.pessoa_juridica}/?format=json`);
-                         const pessoaJuridica = pessoaJuridicaResponse || {};
-
+                         const pessoaJuridica = cliente.pessoaJuridica || cliente.pessoa_juridica;
 
                          // Retornar o objeto consolidado
                          return {
@@ -126,12 +124,12 @@ function SelecionarEmpresaMobile() {
                     // Cruzar os dados: adicionar domains correspondentes a cada tenant
                 const tenantsWithDomain = tenants.map(tenant => ({
                     ...tenant,
-                    domain: domains.find(domain => domain.tenant === tenant.id_tenant)?.domain || null
+                    domain: domains.find(domain => domain.tenant === tenant.id_tenant.id)?.domain || null
                 }));
                 
                 setEmpresas(tenantsWithDomain)
                 setCompanies(tenantsWithDomain)
-                setSelected(tenantsWithDomain[0].id_tenant)
+                setSelected(tenantsWithDomain[0].id_tenant.id)
                 setLoading(false)
             })
             .catch(erro => {
@@ -141,7 +139,7 @@ function SelecionarEmpresaMobile() {
         
         if(empresas && empresas.length > 0 && (!tenants))
         {
-            setSelected(empresas[0].id_tenant)
+            setSelected(empresas[0].id_tenant.id)
         }
 
     }, [empresas, tenants, setSessionCompany])
@@ -155,9 +153,9 @@ function SelecionarEmpresaMobile() {
         {
             setSessionCompany(selected)
 
-            var comp = empresas.filter(company => company.id_tenant == selected);
+            var comp = empresas.filter(company => company.id_tenant.id == selected);
            
-            if(comp.length > 0 && comp[0].id_tenant)
+            if(comp.length > 0 && comp[0].id_tenant.id)
             {
                 setCompanyDomain(comp[0].domain)
                 setCompanySymbol(comp[0].tenant.simbolo)
@@ -195,12 +193,12 @@ function SelecionarEmpresaMobile() {
                                 return (
                                     <Item 
                                         key={idx} 
-                                        $active={selected === empresa.id_tenant}
-                                        onClick={id_tenant => handleSelectChange(empresa.id_tenant)}>
+                                        $active={selected === empresa.id_tenant.id}
+                                        onClick={id_tenant => handleSelectChange(empresa.id_tenant.id)}>
                                         <div className={styles.cardEmpresa}>
                                             {empresa.tenant.simbolo ? 
                                                 <CustomImage src={empresa.tenant.simbolo} title={empresa.tenant.nome} width={50} height={50} borderRadius={16} />
-                                            : (selected === empresa.id_tenant) ?
+                                            : (selected === empresa.id_tenant.id) ?
                                                 <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
                                             : <RiBuildingLine className={styles.buildingIcon} size={20} />
                                             }
@@ -213,8 +211,8 @@ function SelecionarEmpresaMobile() {
                                         </div>
                                         <RadioButton
                                             name="selected_company"
-                                            value={empresa.id_tenant}
-                                            checked={selected === empresa.id_tenant}
+                                            value={empresa.id_tenant.id}
+                                            checked={selected === empresa.id_tenant.id}
                                             onSelected={(id_tenant) => handleSelectChange}
                                         />
                                     </Item>
