@@ -1,6 +1,5 @@
 import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import './DataTable.css';
+import { Column } from 'primereact/column';;
 import QuestionCard from '@components/QuestionCard';
 import BadgeGeral from '@components/BadgeGeral';
 import CampoTexto from '@components/CampoTexto';
@@ -262,7 +261,7 @@ function DataTableBeneficios({
         setModalOpened(true);
     };
 
-    const representativeStatusTemplate = (rowData) => {
+    const representativeTipoTemplate = (rowData) => {
         return tipos[rowData.tipo] || rowData.tipo;
     };
 
@@ -272,11 +271,32 @@ function DataTableBeneficios({
         );
     };
 
-    const representativeActionsTemplate = (rowData) => {
+    const representativeStatusTemplate = (rowData) => {
         // Determina qual status usar
         const statusAtual = beneficiosStatus[rowData.id] !== undefined
             ? beneficiosStatus[rowData.id]
             : (usuario?.tipo === 'global' ? rowData.ativo : rowData.ativo_tenant);
+        return (
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '16px'
+            }}>
+                <StatusTag $status={statusAtual}>
+                    {statusAtual ? "Ativo" : "Inativo"}
+                </StatusTag>
+                <SwitchInput
+                    checked={statusAtual}
+                    onChange={() => {
+                        atualizarStatus(rowData.id, !statusAtual);
+                    }}
+                    style={{ width: '36px' }}
+                />
+            </div>
+        );
+    };
+
+    const representativeActionsTemplate = (rowData) => {
         return (
             <div style={{ 
                 display: 'flex', 
@@ -284,22 +304,6 @@ function DataTableBeneficios({
                 alignItems: 'center',
                 justifyContent: 'center'
             }}>
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '16px'
-                }}>
-                    <StatusTag $status={statusAtual}>
-                        {statusAtual ? "Ativo" : "Inativo"}
-                    </StatusTag>
-                    <SwitchInput
-                        checked={statusAtual}
-                        onChange={() => {
-                            atualizarStatus(rowData.id, !statusAtual);
-                        }}
-                        style={{ width: '36px' }}
-                    />
-                </div>
                 <div style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -431,11 +435,12 @@ function DataTableBeneficios({
                 removableSort
             >
                 <Column sortable body={representativeDescriptionTemplate} field="descricao" header="Nome" style={{ width: '20%' }}/>
-                <Column sortable body={representativeStatusTemplate} field="tipo" header="Tipo Benefício" style={{ width: '20%' }}/>
+                <Column sortable body={representativeTipoTemplate} field="tipo" header="Tipo Benefício" style={{ width: '20%' }}/>
                 {usuario?.tipo !== 'global' && <Column body={renderMultiplosItens} field="multiplos_itens" sortable header="Múltiplos Itens" style={{ width: '15%' }}/>}
                 {usuario?.tipo !== 'global' && <Column body={renderMultiplasOperadoras} field="multiplos_operadoras" sortable header="Múltiplas Operadoras" style={{ width: '15%' }}/>}
                 {usuario?.tipo !== 'global' && <Column body={renderObrigatoriedade} field="obrigatoriedade" header="Obrigatório" style={{ width: '10%' }}/>}
-                <Column body={representativeActionsTemplate} header="" style={{ width: '20%'}}/>
+                <Column body={representativeStatusTemplate} header="Status" style={{ width: '15%' }}/>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '5%'}}/>
             </DataTable>
 
             <ModalBeneficios 

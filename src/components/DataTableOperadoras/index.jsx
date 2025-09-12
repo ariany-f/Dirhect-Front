@@ -1,7 +1,6 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode } from 'primereact/api';
 import { Column } from 'primereact/column';
-import './DataTable.css'
 import ContainerHorizontal from '@components/ContainerHorizontal';
 import CustomImage from '@components/CustomImage';
 import CampoTexto from '@components/CampoTexto';
@@ -80,6 +79,26 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
     const toast = useRef(null);
     const navegar = useNavigate();
     const { t } = useTranslation('common');
+
+    // Configuração de larguras das colunas
+    // Ordem: Nome, Ações
+    const larguraBase = [50, 50];
+    
+    // Calcula larguras redistribuídas (garante 100%)
+    const calcularLarguras = () => {
+        let larguras = [...larguraBase];
+        const totalAtual = larguras.reduce((acc, val) => acc + val, 0);
+        
+        // Se o total não for 100%, redistribui proporcionalmente
+        if (totalAtual !== 100) {
+            const fatorRedistribuicao = 100 / totalAtual;
+            larguras = larguras.map(largura => Math.round(largura * fatorRedistribuicao * 100) / 100);
+        }
+        
+        return larguras;
+    };
+    
+    const largurasColunas = calcularLarguras();
 
     useEffect(() => {
         if (operadoras && operadoras.length > 0) {
@@ -178,6 +197,7 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
             <div style={{ 
                 display: 'flex', 
                 gap: '12px',
+                width: '100%',
                 alignItems: 'center',
                 justifyContent: 'flex-end'
             }}>
@@ -262,12 +282,12 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
             >
                 <Column 
                     body={representativeNomeTemplate} 
-                    style={{ width: '50%' }}
+                    style={{ width: `${largurasColunas[0]}%` }}
                     field="nome"
                 />
                 <Column 
                     body={representativeActionsTemplate} 
-                    style={{ width: '50%' }}
+                    style={{ width: `${largurasColunas[1]}%` }}
                 />
             </DataTable>
         </div>

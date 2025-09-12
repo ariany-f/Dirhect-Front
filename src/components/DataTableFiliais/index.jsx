@@ -3,7 +3,6 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import http from '@http'
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
-import './DataTable.css'
 import { Toast } from 'primereact/toast'
 import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
@@ -40,6 +39,53 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
         integracao: { value: null, matchMode: FilterMatchMode.EQUALS }
     });
     const { metadadosDeveSerExibido } = useMetadadosPermission();
+
+    // Configuração de larguras das colunas
+    const exibeColunasOpcionais = {
+        checkbox: bulkIntegrationMode,
+        integracao: ((metadadosDeveSerExibido || bulkIntegrationMode) && ArmazenadorToken.hasPermission('change_filial'))
+    };
+    
+    // Larguras base quando todas as colunas estão visíveis
+    // Ordem: Checkbox, Filial, Cidade, Integração, Ações
+    const larguraBase = [5, 25, 15, 15, 20];
+    
+    // Calcula larguras redistribuídas
+    const calcularLarguras = () => {
+        let larguras = [...larguraBase];
+        let indicesRemover = [];
+        
+        // Remove checkbox se não está no modo bulk
+        if (!exibeColunasOpcionais.checkbox) {
+            indicesRemover.push(0); // índice da coluna checkbox
+        }
+        
+        // Remove integração se não deve ser exibida
+        if (!exibeColunasOpcionais.integracao) {
+            indicesRemover.push(3); // índice da coluna integração
+        }
+        
+        // Remove colunas opcionais e recalcula
+        const largurasFiltradas = larguras.filter((_, index) => !indicesRemover.includes(index));
+        const totalFiltrado = largurasFiltradas.reduce((acc, val) => acc + val, 0);
+        const fatorRedistribuicao = 100 / totalFiltrado;
+        
+        return largurasFiltradas.map(largura => Math.round(largura * fatorRedistribuicao * 100) / 100);
+    };
+    
+    const largurasColunas = calcularLarguras();
+
+    // Funções auxiliares para calcular índices das colunas
+    const getColumnIndex = (baseIndex) => {
+        let adjustedIndex = baseIndex;
+        if (!exibeColunasOpcionais.checkbox && baseIndex > 0) {
+            adjustedIndex -= 1;
+        }
+        if (!exibeColunasOpcionais.integracao && baseIndex > 3) {
+            adjustedIndex -= 1;
+        }
+        return adjustedIndex;
+    };
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && filiais) {
@@ -403,7 +449,7 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                 justifyContent: 'center'
             }}>
                  <Tooltip style={{fontSize: '10px'}} target=".edit" mouseTrack mouseTrackLeft={10} />
-                {ArmazenadorToken.hasPermission('change_filial') && (
+                {ArmazenadorToken.hasPermission('change_filial') && !bulkIntegrationMode && !metadadosDeveSerExibido && (
                 <FaPen 
                     className="edit" 
                     data-pr-tooltip="Editar Filial" 
@@ -505,7 +551,7 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                         minWidth: '500px',
                         borderRadius: '8px'
                 }}>
-                    {metadadosDeveSerExibido && !bulkIntegrationMode && filiais && filiais.length > 0 && (
+                    {metadadosDeveSerExibido && !bulkIntegrationMode && filiais && filiais.length > 0 && ArmazenadorToken.hasPermission('change_filial') && (
                         <Botao
                             size="small"
                             aoClicar={() => setBulkIntegrationMode(true)}
@@ -590,16 +636,16 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                 removableSort
                 tableStyle={{ minWidth: '68vw' }}
             >
-                {bulkIntegrationMode && (
-                    <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
+                {exibeColunasOpcionais.checkbox && (
+                    <Column selectionMode="multiple" style={{ width: `${largurasColunas[0]}%` }}></Column>
                 )}
-                <Column body={representativeNomeTemplate} field="nome" header="Filial" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '40%' }}></Column>
-                <Column field="cidade" body={representativeCidadeTemplate} header="Cidade" sortable style={{ width: '15%' }}></Column>
+                <Column body={representativeNomeTemplate} field="nome" header="Filial" sortable style={{ width: `${largurasColunas[getColumnIndex(1)]}%` }}></Column>
+                <Column field="cidade" body={representativeCidadeTemplate} header="Cidade" sortable style={{ width: `${largurasColunas[getColumnIndex(2)]}%` }}></Column>
                 {/* <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" sortable style={{ width: metadadosDeveSerExibido ? '15%' : '25%' }}></Column> */}
-                {(metadadosDeveSerExibido || bulkIntegrationMode) && (
-                    <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
+                {exibeColunasOpcionais.integracao && (
+                    <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: `${largurasColunas[getColumnIndex(3)]}%` }}></Column>
                 )}
-                <Column body={representativeActionsTemplate} header="" style={{ width: '20%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: `${largurasColunas[getColumnIndex(4)]}%` }}></Column>
             </DataTable>
             <ModalEditarFilial aoSalvar={editarFilial} filial={selectedFilial} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
             <ModalListaColaboradoresPorEstrutura 

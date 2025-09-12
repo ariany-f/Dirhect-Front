@@ -3,7 +3,6 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { ColumnGroup } from 'primereact/columngroup';
 import { Row } from 'primereact/row';
-import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
 import BotaoGrupo from '@components/BotaoGrupo';

@@ -4,7 +4,6 @@ import { Column } from 'primereact/column';
 import { ColumnGroup } from 'primereact/columngroup';
 import { Row } from 'primereact/row';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
-import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import { useNavigate, Link } from 'react-router-dom';
 import { useState } from 'react';
@@ -119,6 +118,36 @@ function DataTableAdmissao({
             admissao?.tarefas?.some(tarefa => tarefa.tipo_codigo === 'aguardar_lgpd')
         );
     };
+
+    // Configuração de larguras das colunas
+    const exibeColunasOpcionais = {
+        lgpd: algumaAdmissaoTemLGPD(),
+        acoes: true // sempre exibe ações
+    };
+    
+    // Larguras base quando todas as colunas estão visíveis
+    // Ordem: Vaga, Candidato, Preenchimento, Salário, Filial, LGPD, Ações
+    const larguraBase = [15, 30, 12, 10, 10, 8, 10];
+    
+    // Calcula larguras redistribuídas
+    const calcularLarguras = () => {
+        let larguras = [...larguraBase];
+        let indicesRemover = [];
+        
+        // Remove LGPD se não deve ser exibida
+        if (!exibeColunasOpcionais.lgpd) {
+            indicesRemover.push(5); // índice da coluna LGPD
+        }
+        
+        // Remove colunas opcionais e recalcula
+        const largurasFiltradas = larguras.filter((_, index) => !indicesRemover.includes(index));
+        const totalFiltrado = largurasFiltradas.reduce((acc, val) => acc + val, 0);
+        const fatorRedistribuicao = 100 / totalFiltrado;
+        
+        return largurasFiltradas.map(largura => Math.round(largura * fatorRedistribuicao * 100) / 100);
+    };
+    
+    const largurasColunas = calcularLarguras();
 
     const onGlobalFilterChange = (value) => {
         setGlobalFilterValue(value);
@@ -485,17 +514,8 @@ function DataTableAdmissao({
                         </span>
                     </div>
                 }
-                {/* <BotaoGrupo align="end" gap="8px">
-                    <BotaoSemBorda color="var(--terciaria)">
-                        <FaDownload/><Link onClick={() => setModalImportarPlanilhaOpened(true)} className={styles.link}>Importar planilha</Link>
-                    </BotaoSemBorda>
-                    <Link to="/colaborador/registro">
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Cadastrar Individualmente</Botao>
-                    </Link>
-                </BotaoGrupo>  */}
             </BotaoGrupo>
 
-           
             <DataTable 
                 value={vagas} 
                 emptyMessage="Não foram encontradas admissões pendentes" 
@@ -527,15 +547,15 @@ function DataTableAdmissao({
                     ) : null
                 }
             >
-                <Column body={vagaTemplate} header="Vaga" style={{ width: '15%' }} sortable sortField="vaga"></Column>
-                <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '30%' }} sortable sortField="nome"></Column>
-                <Column body={representativeStatusTemplate} header="Preenchimento" style={{ width: '12%' }}></Column>
-                <Column body={representativeSalarioTemplate} header="Salário" style={{ width: '10%' }} sortable sortField="salario"></Column>
-                <Column body={representativeFilialTemplate} header="Filial" style={{ width: '10%' }} sortable sortField="filial"></Column>
-                {algumaAdmissaoTemLGPD() && (
-                    <Column body={representativeLgpdTemplate} header="LGPD" style={{ width: '8%' }}></Column>
+                <Column body={vagaTemplate} header="Vaga" style={{ width: `${largurasColunas[0]}%` }} sortable sortField="vaga"></Column>
+                <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: `${largurasColunas[1]}%` }} sortable sortField="nome"></Column>
+                <Column body={representativeStatusTemplate} header="Preenchimento" style={{ width: `${largurasColunas[2]}%` }}></Column>
+                <Column body={representativeSalarioTemplate} header="Salário" style={{ width: `${largurasColunas[3]}%` }} sortable sortField="salario"></Column>
+                <Column body={representativeFilialTemplate} header="Filial" style={{ width: `${largurasColunas[4]}%` }} sortable sortField="filial"></Column>
+                {exibeColunasOpcionais.lgpd && (
+                    <Column body={representativeLgpdTemplate} header="LGPD" style={{ width: `${largurasColunas[5]}%` }}></Column>
                 )}
-                <Column body={representativeActionsTemplate} header="Ações" style={{ width: '10%' }}></Column>
+                <Column body={representativeActionsTemplate} header="Ações" style={{ width: `${largurasColunas[exibeColunasOpcionais.lgpd ? 6 : 5]}%` }}></Column>
             </DataTable>
 
             <ModalHistoricoAdmissao 

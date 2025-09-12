@@ -5,8 +5,7 @@ import CustomImage from '@components/CustomImage';
 import BadgeGeral from '@components/BadgeGeral';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { RiBusFill } from 'react-icons/ri';
-import './DataTable.css';
+import { RiBusFill } from 'react-icons/ri';;
 import { Real } from '@utils/formats'
 import noImage from '@imagens/operadora_sem_imagem.png'
 

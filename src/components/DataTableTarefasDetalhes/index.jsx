@@ -2,7 +2,6 @@ import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
-import './DataTable.css'
 import CampoArquivo from '@components/CampoArquivo';
 import Botao from '@components/Botao';
 import Texto from '@components/Texto';

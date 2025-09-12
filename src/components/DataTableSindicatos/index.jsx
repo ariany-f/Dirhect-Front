@@ -3,7 +3,6 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import http from '@http'
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
-import './DataTable.css'
 import { Toast } from 'primereact/toast'
 import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
@@ -301,7 +300,7 @@ function DataTableSindicatos({
                 justifyContent: 'center'
             }}>
                 <Tooltip style={{fontSize: '10px'}} target=".edit" mouseTrack mouseTrackLeft={10} />
-                {ArmazenadorToken.hasPermission('change_sindicato') && (
+                {ArmazenadorToken.hasPermission('change_sindicato') && !bulkIntegrationMode && !metadadosDeveSerExibido && (
                 <FaPen 
                     className="edit" 
                     data-pr-tooltip="Editar Sindicato" 

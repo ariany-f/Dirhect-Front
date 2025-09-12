@@ -2,7 +2,6 @@ import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MdSettings, MdSettingsSuggest } from 'react-icons/md'
-import './DataTable.css'
 import BadgeGeral from '@components/BadgeGeral';
 import BotaoGrupo from '@components/BotaoGrupo';
 import styles from '@pages/Contratos/Contratos.module.css'

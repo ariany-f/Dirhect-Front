@@ -8,7 +8,6 @@ import BadgeBeneficio from '@components/BadgeBeneficio'
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FaBan } from 'react-icons/fa';
-import './DataTable.css'
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md';
 
 const NumeroColaboradores = styled.p`

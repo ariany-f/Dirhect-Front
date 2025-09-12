@@ -1,7 +1,6 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
-import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import Frame from '@components/Frame';
 import { useNavigate } from 'react-router-dom';

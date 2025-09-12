@@ -1,6 +1,5 @@
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
-import './DataTable.css'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Botao from '@components/Botao'
 import Texto from '@components/Texto'

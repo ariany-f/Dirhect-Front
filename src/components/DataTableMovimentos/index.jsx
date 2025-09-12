@@ -2,7 +2,6 @@ import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight, MdPlaylistAddCheck, MdPlaylistRemove } from 'react-icons/md'
-import './DataTable.css'
 import Frame from '@components/Frame';
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
@@ -102,12 +101,12 @@ function DataTableMovimentos({ movimentos, colaborador = null }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
                 </span>
             </div>}
-            <DataTable value={movimentos} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados movimentos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10} tableStyle={{ minWidth: ((!colaborador) ? '68vw' : '48vw'), maxWidth: (colaborador ? '54vw' : 'initial')}}>
+            <DataTable value={movimentos} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados movimentos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10} tableStyle={{ minWidth: '68vw', maxWidth:  'initial'}}>
                 <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '25%' }}></Column>
                 <Column field="data_referencia" header="Referência" style={{ width: '15%' }}></Column>
                 <Column field="data" header="Data do Movimento" style={{ width: '15%' }}></Column>
-                <Column body={representativeConcluidoTemplate} field="total_colaboradores" header="Concluídos" style={{ width: '15%' }}></Column>
-                <Column body={representativeProgressTemplate} field="detalhes" header="Progresso" style={{ width: '25%' }}></Column>
+                <Column body={representativeConcluidoTemplate} field="total_colaboradores" header="Concluídos" style={{ width: '10%' }}></Column>
+                <Column body={representativeProgressTemplate} field="detalhes" header="Progresso" style={{ width: '20%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Movimento" style={{ width: '15%' }}></Column>
             </DataTable>
         </>

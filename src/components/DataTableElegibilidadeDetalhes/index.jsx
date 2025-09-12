@@ -2,7 +2,6 @@ import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MdOutlineFastfood, MdOutlineKeyboardArrowRight, MdOutlineMedicalServices, MdSecurity } from 'react-icons/md'
-import './DataTable.css'
 import BadgeGeral from '@components/BadgeGeral';
 import Texto from '@components/Texto';
 import Titulo from '@components/Titulo';

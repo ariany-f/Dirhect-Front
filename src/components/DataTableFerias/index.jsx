@@ -4,7 +4,6 @@ import { Column } from 'primereact/column';
 import { ColumnGroup } from 'primereact/columngroup';
 import { Row } from 'primereact/row';
 import { Tooltip } from 'primereact/tooltip';
-import './DataTable.css'
 import Texto from '@components/Texto';
 import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
@@ -691,6 +690,7 @@ function DataTableFerias({
                 onSelectionChange={(e) => verDetalhes(e.value)} 
                 onPage={onPageChange}
                 onSort={onSortChange}
+                stripedRows
                 sortField={sortField || null}
                 sortOrder={sortOrder === 'desc' ? -1 : sortOrder === 'asc' ? 1 : sortOrder ? 0 : null}
                 footerColumnGroup={

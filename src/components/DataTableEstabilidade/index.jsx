@@ -1,7 +1,6 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
-import './DataTable.css'
 import Texto from '@components/Texto';
 import { GrAddCircle } from 'react-icons/gr'
 import Botao from '@components/Botao'

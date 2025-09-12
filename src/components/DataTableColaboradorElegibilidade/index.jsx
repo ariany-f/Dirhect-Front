@@ -3,7 +3,6 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import http from '@http'
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
-import './DataTable.css'
 import { Toast } from 'primereact/toast'
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';

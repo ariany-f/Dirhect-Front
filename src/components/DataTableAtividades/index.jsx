@@ -4,7 +4,6 @@ import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight, MdFilterAltOff } from 'react-icons/md'
 import { FaUserPlus, FaSignOutAlt, FaUmbrellaBeach, FaFileInvoiceDollar, FaTimes, FaCheck, FaUser, FaCheckCircle } from 'react-icons/fa';
 import { RiExchangeFill } from 'react-icons/ri';
-import './DataTable.css'
 import CampoArquivo from '@components/CampoArquivo';
 import Botao from '@components/Botao';
 import Texto from '@components/Texto';

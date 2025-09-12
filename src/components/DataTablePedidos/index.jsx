@@ -4,7 +4,6 @@ import { Column } from 'primereact/column';
 import { ColumnGroup } from 'primereact/columngroup';
 import { Row } from 'primereact/row';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
-import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import BotaoGrupo from '@components/BotaoGrupo';
 import Botao from '@components/Botao';
@@ -128,15 +127,15 @@ function DataTablePedidos({ pedidos, colaborador = null }) {
                     </ColumnGroup>
                 }
             >
-                <Column body={representativeTipoTemplate} field="tipo" header="Benefício" style={{ width: '35%' }}></Column>
-                <Column field="data_referencia" header="Referência" style={{ width: '35%' }}></Column>
-                <Column field="data" header="Data de Pagamento" style={{ width: '35%' }}></Column>
-                <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '35%' }}></Column>
+                <Column body={representativeTipoTemplate} field="tipo" header="Benefício" style={{ width: '25%' }}></Column>
+                <Column field="data_referencia" header="Referência" style={{ width: '25%' }}></Column>
+                <Column field="data" header="Data de Pagamento" style={{ width: '25%' }}></Column>
+                <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '15%' }}></Column>
                 <Column 
                     body={representativeValorTemplate} 
                     field="valor" 
                     header="Valor Total" 
-                    style={{ width: '25%', textAlign: 'right' }}
+                    style={{ width: '10%', textAlign: 'right' }}
                 ></Column>
             </DataTable>
         </>

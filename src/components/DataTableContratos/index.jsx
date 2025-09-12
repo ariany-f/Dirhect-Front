@@ -3,7 +3,6 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { ColumnGroup } from 'primereact/columngroup';
 import { Row } from 'primereact/row';
-import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import BotaoGrupo from '@components/BotaoGrupo';
 import Botao from '@components/Botao';
@@ -60,6 +59,34 @@ function DataTableContratos({
     const toast = useRef(null)
     const navegar = useNavigate()
     const [contratoParaEditar, setContratoParaEditar] = useState(null);
+
+    // Configuração de larguras das colunas
+    // Ordem: Operadora, Observação, Data Início, Data Fim, Situação, Benefícios com Regras, Itens com Regras, Ações
+    const larguraBase = [18, 10, 10, 10, 10, 10, 10, 10, 10];
+    
+    // Verifica se há colunas condicionais (no caso atual, todas são sempre exibidas)
+    const exibeColunasOpcionais = {
+        // No momento todas as colunas são sempre exibidas
+        // Pode ser expandido no futuro se houver colunas condicionais
+    };
+    
+    // Calcula larguras redistribuídas
+    const calcularLarguras = () => {
+        // Por enquanto, como todas as colunas são sempre exibidas, retorna as larguras base
+        // Essa estrutura permite expansão futura se houver colunas condicionais
+        let larguras = [...larguraBase];
+        const totalAtual = larguras.reduce((acc, val) => acc + val, 0);
+        
+        // Se o total não for 100%, redistribui proporcionalmente
+        if (totalAtual !== 100) {
+            const fatorRedistribuicao = 100 / totalAtual;
+            larguras = larguras.map(largura => Math.round(largura * fatorRedistribuicao * 100) / 100);
+        }
+        
+        return larguras;
+    };
+    
+    const largurasColunas = calcularLarguras();
 
     useEffect(() => {
         if (contratos?.length > 0) {
@@ -358,6 +385,27 @@ function DataTableContratos({
         });
     }
 
+    const representativeStatusTemplate = (rowData) => {
+        const status = rowData.status === 'A';
+        return (
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '16px'
+            }}>
+                <StatusTag $status={status}>
+                    {status ? "Ativo" : "Inativo"}
+                </StatusTag>
+                <SwitchInput
+                    checked={status}
+                    onChange={() => {
+                        atualizarStatus(rowData.id, !status);
+                    }}
+                    style={{ width: '36px' }}
+                />
+            </div>
+        );
+    };
     const representativeActionsTemplate = (rowData) => {
         const status = rowData.status === 'A';
         return (
@@ -367,22 +415,7 @@ function DataTableContratos({
                 alignItems: 'center',
                 justifyContent: 'end'
             }}>
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '16px'
-                }}>
-                    <StatusTag $status={status}>
-                        {status ? "Ativo" : "Inativo"}
-                    </StatusTag>
-                    <SwitchInput
-                        checked={status}
-                        onChange={() => {
-                            atualizarStatus(rowData.id, !status);
-                        }}
-                        style={{ width: '36px' }}
-                    />
-                </div>
+                
                 <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
                 <FaPen
                     className="edit"
@@ -479,15 +512,17 @@ function DataTableContratos({
                     </ColumnGroup>
                 }
             >
-                <Column body={representativeNomeTemplate} header="Operadora" field="dados_operadora.nome" sortField="operadora" sortable style={{ width: '18%' }}></Column>
-                <Column field="observacao" sortable sortField="observacao" header="Observação" style={{ width: '10%' }}></Column>
+                <Column body={representativeNomeTemplate} header="Operadora" field="dados_operadora.nome" sortField="operadora" sortable style={{ width: `${largurasColunas[0]}%` }}></Column>
+                <Column field="observacao" sortable sortField="observacao" header="Observação" style={{ width: `${largurasColunas[1]}%` }}></Column>
                 {/* <Column field="num_contrato_origem" sortField="num_contrato_origem" sortable header="Número Contrato" style={{ width: '10%' }}></Column> */}
-                <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
-                <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
-                <Column body={representativSituacaoTemplate} header="Situação" style={{ width: '10%' }}></Column>
-                <Column body={representativeBeneficioRegraElegibilidadeTemplate} header="Benefícios com Regras" style={{ width: '10%', textAlign: 'center' }}></Column>
-                <Column body={representativeRegraElegibilidadeTemplate} header="Itens com Regras" style={{ width: '10%', textAlign: 'center' }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: '20%', textAlign: 'center' }}></Column>
+                <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: `${largurasColunas[2]}%` }}></Column>
+                <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: `${largurasColunas[3]}%` }}></Column>
+                <Column body={representativSituacaoTemplate} header="Situação" style={{ width: `${largurasColunas[4]}%` }}></Column>
+                <Column body={representativeBeneficioRegraElegibilidadeTemplate} header="Benefícios com Regras" style={{ width: `${largurasColunas[5]}%`, textAlign: 'center' }}></Column>
+                <Column body={representativeRegraElegibilidadeTemplate} header="Itens com Regras" style={{ width: `${largurasColunas[6]}%`, textAlign: 'center' }}></Column>
+                <Column body={representativeStatusTemplate} header="Status" style={{ width: `${largurasColunas[7]}%`, textAlign: 'center' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: `${largurasColunas[8]}%`, textAlign: 'center' }}></Column>
+                
             </DataTable>
             
             <ModalContratos 

@@ -2,7 +2,6 @@ import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MdSecurity } from 'react-icons/md'
-import './DataTable.css'
 import BadgeGeral from '@components/BadgeGeral';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';

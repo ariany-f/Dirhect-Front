@@ -3,7 +3,6 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { ColumnGroup } from 'primereact/columngroup';
 import { Row } from 'primereact/row';
-import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
 import BotaoGrupo from '@components/BotaoGrupo';
@@ -58,6 +57,29 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
 
     const navegar = useNavigate()
     const {usuario} = useSessaoUsuarioContext()
+
+    // Configuração de larguras das colunas
+    const exibeAcoes = usuario.tipo === 'cliente' || usuario.tipo === 'equipeFolhaPagamento';
+    
+    // Larguras base quando todas as colunas estão visíveis (incluindo ações)
+    const larguraBase = [8, 22, 8, 22, 8, 5, 12, 15]; // chapa, nome, filial, funcao, admissao, dep, situacao, acoes
+    
+    // Calcula larguras redistribuídas
+    const calcularLarguras = () => {
+        if (exibeAcoes) {
+            // Se exibe ações, usa as larguras normais
+            return larguraBase;
+        } else {
+            // Se não exibe ações, remove a última coluna e redistribui
+            const largurasSemAcoes = larguraBase.slice(0, -1); // Remove a última (ações)
+            const totalSemAcoes = largurasSemAcoes.reduce((acc, val) => acc + val, 0);
+            const fatorRedistribuicao = 100 / totalSemAcoes;
+            
+            return largurasSemAcoes.map(largura => Math.round(largura * fatorRedistribuicao * 100) / 100);
+        }
+    };
+    
+    const largurasColunas = calcularLarguras();
 
     const onGlobalFilterChange = (value) => {
         setGlobalFilterValue(value);
@@ -587,29 +609,29 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                     </ColumnGroup>
                 }
             >
-                <Column body={representativeChapaTemplate} field="chapa" header={t('registration')} sortable style={{ width: '8%' }}></Column>
-                <Column body={representativeNomeTemplate} field="funcionario_pessoa_fisica.nome" sortField="id_pessoafisica__nome" header={t('full_name')} sortable style={{ width: '22%' }}></Column>
+                <Column body={representativeChapaTemplate} field="chapa" header={t('registration')} sortable style={{ width: `${largurasColunas[0]}%` }}></Column>
+                <Column body={representativeNomeTemplate} field="funcionario_pessoa_fisica.nome" sortField="id_pessoafisica__nome" header={t('full_name')} sortable style={{ width: `${largurasColunas[1]}%` }}></Column>
                 <Column 
                     body={representativeFilialTemplate} 
                     field="filial" 
                     header={t('branch')}
                     sortable 
-                    style={{ width: '8%' }} 
+                    style={{ width: `${largurasColunas[2]}%` }} 
                     filter 
                     sortField="filial__nome" 
                     filterField="filial" 
                     filterElement={filialFilterTemplate} 
                     showFilterMenu={false} 
                 />
-                <Column body={representativeFuncaoTemplate} filter showFilterMenu={false} field="id_funcao" sortField="id_funcao_id" header={t('function')} style={{ width: '22%' }}></Column>
-                <Column body={representativeAdmissaoTemplate} field="dt_admissao" header={t('hire_date')} style={{ width: '8%' }}></Column>
-                {/* <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Nascimento" style={{ width: '8%' }}></Column> */}
-                <Column body={representativeNumeroDependentesTemplate} field="dependentes.length" header="Dep." style={{ width: '5%' }}></Column>
+                <Column body={representativeFuncaoTemplate} filter showFilterMenu={false} field="id_funcao" sortField="id_funcao_id" header={t('function')} style={{ width: `${largurasColunas[3]}%` }}></Column>
+                <Column body={representativeAdmissaoTemplate} field="dt_admissao" header={t('hire_date')} style={{ width: `${largurasColunas[4]}%` }}></Column>
+                {/* <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Nascimento" style={{ width: `${largurasColunas[4]}%` }}></Column> */}
+                <Column body={representativeNumeroDependentesTemplate} field="dependentes.length" header="Dep." style={{ width: `${largurasColunas[5]}%` }}></Column>
                 <Column 
                     body={representativSituacaoTemplate} 
                     field="situacao" 
                     header={t('situation')}
-                    style={{ width: '12%' }}
+                    style={{ width: `${largurasColunas[6]}%` }}
                     filter
                     filterField="situacao"
                     showFilterMenu={true}
@@ -621,8 +643,8 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                     filterClear={filterClearTemplate}
                     filterApply={filterApplyTemplate}
                 ></Column>
-                {usuario.tipo === 'cliente' || usuario.tipo === 'equipeFolhaPagamento' && 
-                    <Column header="" style={{ width: '15%' }} body={representativeActionsTemplate}></Column>
+                {exibeAcoes && 
+                    <Column header="" style={{ width: `${largurasColunas[7]}%` }} body={representativeActionsTemplate}></Column>
                 }
             </DataTable>
             <ModalDemissao opened={modalOpened} aoFechar={() => setModalOpened(false)}/>

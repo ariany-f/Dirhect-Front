@@ -8,6 +8,7 @@ import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import ModalCnpj from '@components/ModalCnpj'
 import { useEffect, useState } from "react"
+import '@components/Styles/DataTable.css'
 import Loading from '@components/Loading'
 import http from '@http'
 import { ArmazenadorToken } from "@utils"

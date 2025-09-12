@@ -1,6 +1,5 @@
 import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import './DataTable.css';
+import { Column } from 'primereact/column';;
 import QuestionCard from '@components/QuestionCard';
 import BadgeGeral from '@components/BadgeGeral';
 import CampoTexto from '@components/CampoTexto';

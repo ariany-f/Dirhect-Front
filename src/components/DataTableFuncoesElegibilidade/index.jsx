@@ -10,7 +10,6 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import BadgeBeneficio from '@components/BadgeBeneficio'
 import Texto from '@components/Texto';
-import './DataTable.css'
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);

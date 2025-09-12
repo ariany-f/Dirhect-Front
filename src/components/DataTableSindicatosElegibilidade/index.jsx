@@ -2,7 +2,6 @@ import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import http from '@http'
-import './DataTable.css'
 import { Toast } from 'primereact/toast'
 import CampoTexto from '@components/CampoTexto';
 import BadgeBeneficio from '@components/BadgeBeneficio'
