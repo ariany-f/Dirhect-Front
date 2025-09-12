@@ -886,7 +886,7 @@ function DataTableAtividades({
                     sortable 
                     field="prioridade" 
                     header="Prioridade" 
-                    style={{ width: '10%' }}
+                    style={{ width: '8%' }}
                 ></Column>
                 <Column 
                     body={representativeReferenciaTemplate}
@@ -904,7 +904,7 @@ function DataTableAtividades({
                     body={representativePrazoTemplate} 
                     field="agendado_para" 
                     header="Executar Até" 
-                    style={{ width: '12%' }}
+                    style={{ width: '8%' }}
                 ></Column>
                 <Column
                     body={representativeClienteTemplate}
