@@ -580,6 +580,9 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
             </BotaoGrupo>
             <DataTable 
                 key={key}
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} colaboradores"
                 selection={selectedCollaborator} 
                 onSelectionChange={(e) => verDetalhes(e.value)}
                 selectionMode="single"
@@ -601,13 +604,13 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 stripedRows
                 sortField={sortField}
                 sortOrder={sortOrder}
-                footerColumnGroup={
-                    <ColumnGroup>
-                        <Row>
-                            <Column footer={totalColaboradoresTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
-                        </Row>
-                    </ColumnGroup>
-                }
+                // footerColumnGroup={
+                //     <ColumnGroup>
+                //         <Row>
+                //             <Column footer={totalColaboradoresTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
+                //         </Row>
+                //     </ColumnGroup>
+                // }
             >
                 <Column body={representativeChapaTemplate} field="chapa" header={t('registration')} sortable style={{ width: `${largurasColunas[0]}%` }}></Column>
                 <Column body={representativeNomeTemplate} field="funcionario_pessoa_fisica.nome" sortField="id_pessoafisica__nome" header={t('full_name')} sortable style={{ width: `${largurasColunas[1]}%` }}></Column>
