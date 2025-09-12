@@ -644,7 +644,6 @@
 .p-datatable .p-datatable-tbody > tr > td p,
 .p-datatable .p-datatable-tbody > tr > td span:not(.p-tag) {
     margin: 0;
-    padding: 0;
     word-break: break-word;
     overflow-wrap: break-word;
     hyphens: auto;
