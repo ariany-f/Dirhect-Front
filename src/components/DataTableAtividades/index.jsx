@@ -892,7 +892,7 @@ function DataTableAtividades({
                     body={representativeReferenciaTemplate}
                     field="referencia"
                     header="Referência"
-                    style={{ width: '15%' }}
+                    style={{ width: '12%' }}
                 ></Column>
                 <Column 
                     body={representativeDescricaoTemplate} 
