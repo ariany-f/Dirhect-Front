@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { ColumnGroup } from 'primereact/columngroup';
+import { Row } from 'primereact/row';
 import { Button } from 'primereact/button';
 import { FaPen, FaTrash, FaEye } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
@@ -38,6 +40,11 @@ const DataTableEmails = ({ emails, onEdit, onDelete, onView, loading = false }) 
     };
     
     const largurasColunas = calcularLarguras();
+
+    // Template para o footer do total
+    const totalEmailsTemplate = () => {
+        return 'Total de Emails: ' + (emails?.length ?? 0);
+    };
 
     const actionBodyTemplate = (rowData) => {
         return (
@@ -181,6 +188,13 @@ const DataTableEmails = ({ emails, onEdit, onDelete, onView, loading = false }) 
                 removableSort
                 tableStyle={{ minWidth: '68vw' }}
                 loading={loading}
+                footerColumnGroup={
+                    <ColumnGroup>
+                        <Row>
+                            <Column footer={totalEmailsTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
+                        </Row>
+                    </ColumnGroup>
+                }
             >
                 <Column
                     field="name"
