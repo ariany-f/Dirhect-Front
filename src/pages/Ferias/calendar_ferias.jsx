@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components';
 import { format, addMonths, startOfMonth, endOfMonth, addDays, isMonday, getMonth, getYear, differenceInCalendarDays, isAfter, isBefore, isWithinInterval, format as formatDateFns } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaThLarge, FaThList, FaCalendarAlt } from 'react-icons/fa';
+import { FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaThLarge, FaThList, FaCalendarAlt, FaTh, FaExpandArrowsAlt } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import { Toast } from 'primereact/toast';
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
@@ -343,6 +343,8 @@ const StickyHeader = styled.div`
 
 const DAY_WIDTH_MENSAL = 90;
 const DAY_WIDTH_TRIMESTRAL = 40;
+const DAY_WIDTH_SEMESTRAL = 20;
+const DAY_WIDTH_ANUAL = 4;
 const DAYS_IN_YEAR = 365;
 
 const TrimestreHeader = styled.div`
@@ -457,7 +459,7 @@ const INITIAL_COLABS = 3;
 const COLABS_BATCH = 2;
 
 const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadingMore, isRendering }) => {
-    const [visualizacao, setVisualizacao] = useState('trimestral'); // 'mensal' ou 'trimestral'
+    const [visualizacao, setVisualizacao] = useState('trimestral'); // 'mensal', 'trimestral', 'semestral' ou 'anual'
     const [modalEvento, setModalEvento] = useState(null); // {colab, evento, tipo}
     const [isDragging, setIsDragging] = useState(false);
     const dragStartX = useRef(0);
@@ -756,8 +758,12 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
     const dayWidth = useMemo(() => {
         if (visualizacao === 'mensal') {
             return Math.max(24, Math.floor(containerWidth / 20) * 0.8); // 20% menor
-        } else {
+        } else if (visualizacao === 'trimestral') {
             return Math.max(12, Math.floor(containerWidth / 120)); // 4 meses (120 dias) visíveis
+        } else if (visualizacao === 'semestral') {
+            return Math.max(8, Math.floor(containerWidth / 200)); // 6-7 meses (200 dias) visíveis
+        } else { // anual
+            return Math.max(3, Math.floor(containerWidth / 380)); // ano completo (365 dias) visível
         }
     }, [visualizacao, containerWidth]);
 
@@ -905,6 +911,20 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                         >
                             <FaThList fill={visualizacao === 'trimestral' ? 'white' : 'black'} /> Trimestral
                         </ViewToggleOption>
+                        <ViewToggleOption
+                            $active={visualizacao === 'semestral'}
+                            onClick={() => setVisualizacao('semestral')}
+                            title="Visualização semestral"
+                        >
+                            <FaTh fill={visualizacao === 'semestral' ? 'white' : 'black'} /> Semestral
+                        </ViewToggleOption>
+                        <ViewToggleOption
+                            $active={visualizacao === 'anual'}
+                            onClick={() => setVisualizacao('anual')}
+                            title="Visualização anual"
+                        >
+                            <FaExpandArrowsAlt fill={visualizacao === 'anual' ? 'white' : 'black'} /> Anual
+                        </ViewToggleOption>
                     </ViewToggleSwitch>
                 </ViewToggleBar>
             </FixedHeader>
@@ -962,7 +982,10 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                         $end={endIdx}
                                         style={{ gridColumn: `${startIdx} / ${endIdx}` }}
                                     >
-                                        {format(m.start, 'MMMM yyyy', { locale: ptBR }).toUpperCase()}
+                                        {visualizacao === 'anual' ? 
+                                            ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'][m.start.getMonth()] :
+                                            format(m.start, 'MMMM yyyy', { locale: ptBR }).toUpperCase()
+                                        }
                                     </TrimestreMonthCell>
                                 );
                             })}
@@ -1002,7 +1025,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                     )
                                 ))}
                             </WeekDaysRow>
-                        ) : (
+                        ) : visualizacao === 'mensal' ? (
                             <WeekDaysRow $totalDays={totalDays}>
                                 <div style={{
                                     background: '#f5f5f5',
@@ -1021,7 +1044,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                     </WeekDay>
                                 ))}
                             </WeekDaysRow>
-                        )}
+                        ) : null}
                     </CalendarTableHeader>
                     {colabsFiltrados
                     .sort((a, b) => {
