@@ -125,8 +125,17 @@ function DataTableFerias({
     setCurrentPage,
     pageSize = 10,
     setPageSize,
-    onUpdate // nova prop para atualização
+    onUpdate, // nova prop para atualização
+    onSort, // nova prop para ordenação
+    sortField = '',
+    sortOrder = ''
 }) {
+    console.log('🔍 DataTableFerias - Props de ordenação recebidas:', { 
+        onSort: !!onSort, 
+        sortField, 
+        sortOrder,
+        hasOnSort: typeof onSort === 'function'
+    });
     const [colaboradores, setColaboradores] = useState(null)
     const [selectedFerias, setSelectedFerias] = useState(0);
     const [modalOpened, setModalOpened] = useState(false);
@@ -636,6 +645,20 @@ function DataTableFerias({
         setPageSize(newPageSize);
     };
 
+    // Função para lidar com ordenação
+    const onSortChange = (event) => {
+        console.log('🔄 DataTableFerias - Sort event completo:', event);
+        if (onSort) {
+            const { sortField, sortOrder } = event;
+            // Converter sortOrder do PrimeReact (1/-1) para string (asc/desc)
+            const orderString = sortOrder === 1 ? 'asc' : sortOrder === -1 ? 'desc' : '';
+            console.log('📤 DataTableFerias - Enviando sort:', { field: sortField, order: orderString, originalOrder: sortOrder });
+            onSort({ field: sortField, order: orderString });
+        } else {
+            console.warn('⚠️ DataTableFerias - onSort não definido');
+        }
+    };
+
     const totalFeriasTemplate = () => {
         return 'Total de Férias: ' + (totalRecords ?? 0);
     };
@@ -659,6 +682,10 @@ function DataTableFerias({
                 lazy
                 first={(currentPage - 1) * pageSize}
                 onPage={onPageChange}
+                onSort={onSortChange}
+                sortField={sortField}
+                sortOrder={sortOrder === 'desc' ? -1 : sortOrder === 'asc' ? 1 : 0}
+                removableSort
                 tableStyle={{ minWidth: (!colaborador ? '68vw' : '40vw') }}
                 footerColumnGroup={
                     <ColumnGroup>
@@ -668,20 +695,20 @@ function DataTableFerias({
                     </ColumnGroup>
                 }
             >
-                {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '15%' }}></Column>}
-                <Column body={representativeAquisicaoTemplate} field="fimperaquis" header="Aquisição" style={{ width: '18%' }}></Column>
-                <Column body={representativeInicioTemplate} field="data_inicio" header="Férias" style={{ width: '12%' }}></Column>
-                <Column body={representativePagamentoTemplate} field="datapagamento" header="Pagamento" style={{ width: '10%' }}></Column>
+                {!colaborador && <Column body={representativeColaboradorTemplate} sortable field="funcionario_nome" sortField="funcionario" header="Colaborador" style={{ width: '15%' }}></Column>}
+                <Column body={representativeAquisicaoTemplate} sortable field="fimperaquis" header="Aquisição" style={{ width: '18%' }}></Column>
+                <Column body={representativeInicioTemplate} sortable field="dt_inicio" header="Férias" style={{ width: '12%' }}></Column>
+                <Column body={representativePagamentoTemplate} sortable field="datapagamento" header="Pagamento" style={{ width: '10%' }}></Column>
                 {!colaborador && ( 
                     <>
-                        <Column body={representativeAvisoFeriasTemplate} field="aviso_ferias" header="Aviso" style={{ width: '8%' }}></Column>
+                        <Column body={representativeAvisoFeriasTemplate} sortable field="aviso_ferias" header="Aviso" style={{ width: '8%' }}></Column>
                     </>
                 )}
-                <Column field="nrodiasferias" header="Dias" style={{ width: '8%' }}></Column>
-                <Column field="nrodiasabono" header="Abono" style={{ width: '8%' }}></Column>
-                <Column body={representativ13Template} field="decimo" header="13º" style={{ width: '8%' }}></Column>
-                <Column body={representativeFeriasColetivasTemplate} field="ferias_coletivas" header="Coletiva" style={{ width: '8%' }}></Column>
-                <Column body={representativeSituacaoTemplate} field="situacaoferias" header="Situação" style={{ width: '18%' }}></Column>
+                <Column sortable field="nrodiasferias" header="Dias" style={{ width: '8%' }}></Column>
+                <Column sortable field="nrodiasabono" header="Abono" style={{ width: '8%' }}></Column>
+                <Column body={representativ13Template} sortable field="adiantar_13" header="13º" style={{ width: '8%' }}></Column>
+                <Column body={representativeFeriasColetivasTemplate} sortable field="ferias_coletivas" header="Coletiva" style={{ width: '8%' }}></Column>
+                <Column sortable body={representativeSituacaoTemplate} field="situacaoferias" header="Situação" style={{ width: '18%' }}></Column>
             </DataTable>
             <ModalDetalhesFerias opened={modalDetalhesFeriasOpened} evento={eventoSelecionado} aoFechar={fecharModal} isDemitido={eventoSelecionado?.colab?.funcionario_situacao_padrao === true} />
         </>

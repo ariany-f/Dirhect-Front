@@ -268,6 +268,10 @@ function FeriasListagem() {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
     
+    // Estados para ordenação
+    const [sortField, setSortField] = useState('');
+    const [sortOrder, setSortOrder] = useState('');
+    
     // Estados para cursor pagination (calendário)
     const [nextCursor, setNextCursor] = useState(null);
     const [hasMore, setHasMore] = useState(true);
@@ -305,6 +309,12 @@ function FeriasListagem() {
         { name: 'Apenas Fechados', value: false },
         { name: 'Todos os Períodos', value: null }
     ];
+
+    // Função para construir parâmetro de ordenação
+    const getSortParam = useCallback(() => {
+        if (!sortField) return '';
+        return `${sortOrder === 'desc' ? '-' : ''}${sortField}`;
+    }, [sortField, sortOrder]);
 
     // Função para construir URL baseada na aba
     const buildApiUrl = useCallback((isLoadMore = false) => {
@@ -373,6 +383,14 @@ function FeriasListagem() {
             }
             url += `page=${currentPage}&page_size=${pageSize}`;
             
+            // Ordenação
+            const sortParam = getSortParam();
+            console.log('🔍 buildApiUrl - sortParam:', sortParam, { sortField, sortOrder });
+            if (sortParam) {
+                url += `&ordering=${sortParam}`;
+                console.log('✅ buildApiUrl - URL com ordenação:', url);
+            }
+            
             // Filtro de ano
             if (anoSelecionado !== null && typeof anoSelecionado !== 'object') {
                 if (anoSelecionado === 'ultimos_2') {
@@ -396,7 +414,7 @@ function FeriasListagem() {
         }
         
         return url;
-    }, [tab, searchTerm, currentPage, pageSize, anoSelecionado, periodoAberto, nextCursor]);
+    }, [tab, searchTerm, currentPage, pageSize, anoSelecionado, periodoAberto, nextCursor, getSortParam]);
 
     // Função para carregar dados
     const loadData = useCallback(async (isLoadMore = false) => {
@@ -515,7 +533,7 @@ function FeriasListagem() {
         }
         
         loadData(false);
-    }, [tab, anoSelecionado, searchTerm, periodoAberto, currentPage, pageSize, forceUpdate]);
+    }, [tab, anoSelecionado, searchTerm, periodoAberto, currentPage, pageSize, forceUpdate, sortField, sortOrder]);
 
     // Cleanup: cancela requisições pendentes
     useEffect(() => {
@@ -531,7 +549,7 @@ function FeriasListagem() {
         if (tab === 'lista') {
             setCurrentPage(1);
         }
-    }, [anoSelecionado, searchTerm, periodoAberto, tab]);
+    }, [anoSelecionado, searchTerm, periodoAberto, tab, sortField, sortOrder]);
 
     // Função para lidar com mudança de aba
     const handleTabChange = useCallback((newTab) => {
@@ -606,6 +624,15 @@ function FeriasListagem() {
                 life: 3000 
             });
         }
+    }, []);
+
+    // Função para lidar com ordenação
+    const handleSort = useCallback((sortInfo) => {
+        console.log('📥 Lista - Recebendo sort:', sortInfo);
+        const { field, order } = sortInfo;
+        console.log('🔄 Lista - Atualizando estados:', { field, order });
+        setSortField(field);
+        setSortOrder(order);
     }, []);
 
     // Função para fechar modal com resultado
@@ -730,6 +757,9 @@ function FeriasListagem() {
                                 pageSize={pageSize}
                                 setPageSize={setPageSize}
                                 onUpdate={() => setForceUpdate(prev => prev + 1)}
+                                onSort={handleSort}
+                                sortField={sortField}
+                                sortOrder={sortOrder}
                             />
                         )}
                     </>
