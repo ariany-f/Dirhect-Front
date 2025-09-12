@@ -910,7 +910,7 @@ function DataTableAtividades({
                     body={representativeClienteTemplate}
                     field="cliente"
                     header="Cliente"
-                    style={{ width: '10%' }}
+                    style={{ width: '5%' }}
                 ></Column>
                 <Column 
                     body={representativeStatusTemplate} 

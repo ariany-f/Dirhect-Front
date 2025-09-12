@@ -70,6 +70,29 @@ function DataTableTarefas({
     const { t, i18n } = useTranslation('common');
     const [languageKey, setLanguageKey] = useState(i18n.language);
 
+    // Configuração de larguras das colunas
+    const exibeColunasOpcionais = {
+        // Todas as colunas são sempre exibidas neste DataTable
+    };
+    
+    // Larguras base quando todas as colunas estão visíveis
+    // Ordem: Tipo de Processo, Referência, Cliente, Data de Início, Data de Entrega, Concluído, Situação
+    const larguraBase = [15, 15, 8, 10, 10, 11, 14];
+    
+    // Calcula larguras redistribuídas
+    const calcularLarguras = () => {
+        let larguras = [...larguraBase];
+        
+        // Neste DataTable, todas as colunas são sempre exibidas
+        // mas mantemos a estrutura para consistência
+        const totalFiltrado = larguras.reduce((acc, val) => acc + val, 0);
+        const fatorRedistribuicao = 100 / totalFiltrado;
+        
+        return larguras.map(largura => Math.round(largura * fatorRedistribuicao * 100) / 100);
+    };
+    
+    const largurasColunas = calcularLarguras();
+
     // Escutar mudanças de idioma para forçar re-renderização
     useEffect(() => {
         const handleLanguageChange = (lng) => {
@@ -778,7 +801,7 @@ function DataTableTarefas({
                     body={tipoTarefaTagTemplate} 
                     field="processo_codigo" 
                     header="Tipo de Processo" 
-                    style={{ width: '15%' }}
+                    style={{ width: `${largurasColunas[0]}%` }}
                     sortable
                     sortField="processo_codigo"
                     filter
@@ -792,12 +815,12 @@ function DataTableTarefas({
                     filterClear={filterClearTemplate}
                     filterApply={filterApplyTemplate}
                 />
-                <Column body={pessoaTemplate} field="pessoa" header="Referência" style={{ width: '15%' }} />
+                <Column body={pessoaTemplate} field="pessoa" header="Referência" style={{ width: `${largurasColunas[1]}%` }} />
                 <Column 
                     body={clienteTemplate} 
                     field="client_nome" 
                     header="Cliente" 
-                    style={{ width: '8%' }}
+                    style={{ width: `${largurasColunas[2]}%` }}
                     sortable
                     sortField="tenant"
                 />
@@ -805,7 +828,7 @@ function DataTableTarefas({
                     body={dataInicioTemplate} 
                     field="created_at" 
                     header="Data de Início" 
-                    style={{width: '10%'}}
+                    style={{ width: `${largurasColunas[3]}%` }}
                     sortable
                     sortField="created_at"
                 />
@@ -813,16 +836,16 @@ function DataTableTarefas({
                     body={dataEntregaTemplate} 
                     field="data_entrega" 
                     header="Data de Entrega" 
-                    style={{width: '10%'}}
+                    style={{ width: `${largurasColunas[4]}%` }}
                     sortable
                     sortField="created_at"
                 />
-                <Column body={representativeTipoTemplate} field="tipo" header="Concluído" style={{ width: '11%' }}></Column>
+                <Column body={representativeTipoTemplate} field="tipo" header="Concluído" style={{ width: `${largurasColunas[5]}%` }}></Column>
                 <Column 
                     body={representativStatusTemplate} 
                     field="percentual_conclusao" 
                     header="Situação" 
-                    style={{ width: '14%' }}
+                    style={{ width: `${largurasColunas[6]}%` }}
                     sortable
                     sortField="percentual_conclusao"
                     filter
