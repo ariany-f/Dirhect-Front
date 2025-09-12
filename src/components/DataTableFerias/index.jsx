@@ -10,7 +10,7 @@ import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import Botao from '@components/Botao';
 import { FaUmbrellaBeach, FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaCalendarAlt, FaTimesCircle, FaClock, FaExclamationTriangle, FaLock, FaLockOpen, FaMoneyCheck } from 'react-icons/fa';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import { Tag } from 'primereact/tag';
 import { ArmazenadorToken } from '@utils';
@@ -130,12 +130,7 @@ function DataTableFerias({
     sortField = '',
     sortOrder = ''
 }) {
-    console.log('🔍 DataTableFerias - Props de ordenação recebidas:', { 
-        onSort: !!onSort, 
-        sortField, 
-        sortOrder,
-        hasOnSort: typeof onSort === 'function'
-    });
+
     const [colaboradores, setColaboradores] = useState(null)
     const [selectedFerias, setSelectedFerias] = useState(0);
     const [modalOpened, setModalOpened] = useState(false);
@@ -647,15 +642,11 @@ function DataTableFerias({
 
     // Função para lidar com ordenação
     const onSortChange = (event) => {
-        console.log('🔄 DataTableFerias - Sort event completo:', event);
         if (onSort) {
             const { sortField, sortOrder } = event;
             // Converter sortOrder do PrimeReact (1/-1) para string (asc/desc)
             const orderString = sortOrder === 1 ? 'asc' : sortOrder === -1 ? 'desc' : '';
-            console.log('📤 DataTableFerias - Enviando sort:', { field: sortField, order: orderString, originalOrder: sortOrder });
             onSort({ field: sortField, order: orderString });
-        } else {
-            console.warn('⚠️ DataTableFerias - onSort não definido');
         }
     };
 
@@ -663,30 +654,35 @@ function DataTableFerias({
         return 'Total de Férias: ' + (totalRecords ?? 0);
     };
 
+    // Memoizar configuração do DataTable para evitar re-renders
+    const dataTableConfig = useMemo(() => ({
+        scrollable: true,
+        scrollHeight: "65vh",
+        filters: filters,
+        globalFilterFields: ['colaborador_id'],
+        emptyMessage: "Não foram encontrados férias registradas",
+        selection: selectedFerias,
+        selectionMode: "single",
+        paginator: true,
+        rows: pageSize,
+        totalRecords: totalRecords,
+        lazy: true,
+        first: (currentPage - 1) * pageSize,
+        removableSort: true,
+        tableStyle: { minWidth: (!colaborador ? '68vw' : '40vw') }
+    }), [filters, selectedFerias, pageSize, totalRecords, currentPage, colaborador]);
+
     return (
         <>
             <Toast ref={toast} />
             <DataTable 
                 value={ferias || []} 
-                scrollable 
-                scrollHeight="65vh"
-                filters={filters} 
-                globalFilterFields={['colaborador_id']} 
-                emptyMessage="Não foram encontrados férias registradas" 
-                selection={selectedFerias} 
+                {...dataTableConfig}
                 onSelectionChange={(e) => verDetalhes(e.value)} 
-                selectionMode="single" 
-                paginator 
-                rows={pageSize}
-                totalRecords={totalRecords}
-                lazy
-                first={(currentPage - 1) * pageSize}
                 onPage={onPageChange}
                 onSort={onSortChange}
                 sortField={sortField}
                 sortOrder={sortOrder === 'desc' ? -1 : sortOrder === 'asc' ? 1 : 0}
-                removableSort
-                tableStyle={{ minWidth: (!colaborador ? '68vw' : '40vw') }}
                 footerColumnGroup={
                     <ColumnGroup>
                         <Row>

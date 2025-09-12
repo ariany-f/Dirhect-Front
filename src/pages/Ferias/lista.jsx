@@ -385,10 +385,8 @@ function FeriasListagem() {
             
             // Ordenação
             const sortParam = getSortParam();
-            console.log('🔍 buildApiUrl - sortParam:', sortParam, { sortField, sortOrder });
             if (sortParam) {
                 url += `&ordering=${sortParam}`;
-                console.log('✅ buildApiUrl - URL com ordenação:', url);
             }
             
             // Filtro de ano
@@ -417,7 +415,7 @@ function FeriasListagem() {
     }, [tab, searchTerm, currentPage, pageSize, anoSelecionado, periodoAberto, nextCursor, getSortParam]);
 
     // Função para carregar dados
-    const loadData = useCallback(async (isLoadMore = false) => {
+    const loadData = useCallback(async (isLoadMore = false, lightLoad = false) => {
         // Cancela requisição anterior se existir
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
@@ -426,9 +424,9 @@ function FeriasListagem() {
         // Cria novo AbortController
         abortControllerRef.current = new AbortController();
         
-        if (!isLoadMore) {
+        if (!isLoadMore && !lightLoad) {
             setLoading(true);
-        } else {
+        } else if (isLoadMore) {
             setIsLoadingMore(true);
             console.log('🔄 Iniciando carregamento de mais dados...');
         }
@@ -497,7 +495,9 @@ function FeriasListagem() {
             }
         } finally {
             if (!abortControllerRef.current.signal.aborted) {
-                setLoading(false);
+                if (!lightLoad) {
+                    setLoading(false);
+                }
                 // Para lazy loading, só finaliza se não estiver renderizando
                 if (!isLoadMore) {
                     setIsLoadingMore(false);
@@ -524,7 +524,7 @@ function FeriasListagem() {
         }
     }, [tab, hasMore, isLoadingMore, loadData, nextCursor, ferias?.length]);
 
-    // Effect principal para carregar dados
+    // Effect principal para carregar dados (sem ordenação)
     useEffect(() => {
         // Reset estados quando mudar de aba
         if (tab === 'calendario') {
@@ -533,7 +533,14 @@ function FeriasListagem() {
         }
         
         loadData(false);
-    }, [tab, anoSelecionado, searchTerm, periodoAberto, currentPage, pageSize, forceUpdate, sortField, sortOrder]);
+    }, [tab, anoSelecionado, searchTerm, periodoAberto, currentPage, pageSize, forceUpdate]);
+
+    // Effect separado para ordenação (não reseta loading completo)
+    useEffect(() => {
+        if (sortField || sortOrder) {
+            loadData(false, true); // lightLoad = true para ordenação
+        }
+    }, [sortField, sortOrder]);
 
     // Cleanup: cancela requisições pendentes
     useEffect(() => {
@@ -544,12 +551,12 @@ function FeriasListagem() {
         };
     }, []);
 
-    // Reset paginação quando filtros mudarem (apenas para lista)
+    // Reset paginação quando filtros mudarem (apenas para lista, exceto ordenação)
     useEffect(() => {
         if (tab === 'lista') {
             setCurrentPage(1);
         }
-    }, [anoSelecionado, searchTerm, periodoAberto, tab, sortField, sortOrder]);
+    }, [anoSelecionado, searchTerm, periodoAberto, tab]);
 
     // Função para lidar com mudança de aba
     const handleTabChange = useCallback((newTab) => {
@@ -628,9 +635,7 @@ function FeriasListagem() {
 
     // Função para lidar com ordenação
     const handleSort = useCallback((sortInfo) => {
-        console.log('📥 Lista - Recebendo sort:', sortInfo);
         const { field, order } = sortInfo;
-        console.log('🔄 Lista - Atualizando estados:', { field, order });
         setSortField(field);
         setSortOrder(order);
     }, []);
