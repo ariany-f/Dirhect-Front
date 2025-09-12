@@ -312,7 +312,7 @@ function FeriasListagem() {
 
     // Função para construir parâmetro de ordenação
     const getSortParam = useCallback(() => {
-        if (!sortField) return '';
+        if (!sortField || !sortOrder) return '';
         return `${sortOrder === 'desc' ? '-' : ''}${sortField}`;
     }, [sortField, sortOrder]);
 
@@ -537,10 +537,11 @@ function FeriasListagem() {
 
     // Effect separado para ordenação (não reseta loading completo)
     useEffect(() => {
-        if (sortField || sortOrder) {
+        // Recarrega sempre que sortField ou sortOrder mudar (incluindo quando são resetados)
+        if (ferias !== null) { // Só recarrega se já há dados carregados
             loadData(false, true); // lightLoad = true para ordenação
         }
-    }, [sortField, sortOrder]);
+    }, [sortField, sortOrder, loadData]);
 
     // Cleanup: cancela requisições pendentes
     useEffect(() => {
@@ -635,7 +636,9 @@ function FeriasListagem() {
 
     // Função para lidar com ordenação
     const handleSort = useCallback((sortInfo) => {
+        console.log('📥 Lista recebendo sort:', sortInfo);
         const { field, order } = sortInfo;
+        console.log('🔄 Atualizando estados:', { field, order });
         setSortField(field);
         setSortOrder(order);
     }, []);

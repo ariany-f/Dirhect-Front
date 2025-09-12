@@ -642,10 +642,20 @@ function DataTableFerias({
 
     // Função para lidar com ordenação
     const onSortChange = (event) => {
+        console.log('🔄 Sort change event:', event);
         if (onSort) {
             const { sortField, sortOrder } = event;
+            
+            // Se sortOrder é null ou undefined, significa que o sort foi removido
+            if (sortOrder === null || sortOrder === undefined) {
+                console.log('🗑️ Removendo ordenação');
+                onSort({ field: '', order: '' });
+                return;
+            }
+            
             // Converter sortOrder do PrimeReact (1/-1) para string (asc/desc)
             const orderString = sortOrder === 1 ? 'asc' : sortOrder === -1 ? 'desc' : '';
+            console.log('📤 Enviando sort:', { field: sortField, order: orderString });
             onSort({ field: sortField, order: orderString });
         }
     };
@@ -681,8 +691,8 @@ function DataTableFerias({
                 onSelectionChange={(e) => verDetalhes(e.value)} 
                 onPage={onPageChange}
                 onSort={onSortChange}
-                sortField={sortField}
-                sortOrder={sortOrder === 'desc' ? -1 : sortOrder === 'asc' ? 1 : 0}
+                sortField={sortField || null}
+                sortOrder={sortOrder === 'desc' ? -1 : sortOrder === 'asc' ? 1 : sortOrder ? 0 : null}
                 footerColumnGroup={
                     <ColumnGroup>
                         <Row>
