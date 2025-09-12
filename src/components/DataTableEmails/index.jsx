@@ -16,6 +16,29 @@ const DataTableEmails = ({ emails, onEdit, onDelete, onView, loading = false }) 
     const [selectedEmails, setSelectedEmails] = useState(null);
     const { t } = useTranslation('common');
 
+    // Configuração de larguras das colunas
+    const exibeColunasOpcionais = {
+        // Todas as colunas são sempre exibidas neste DataTable
+    };
+    
+    // Larguras base quando todas as colunas estão visíveis
+    // Ordem: Nome, Assunto, Corpo, Status, Ações
+    const larguraBase = [20, 25, 25, 10, 10];
+    
+    // Calcula larguras redistribuídas
+    const calcularLarguras = () => {
+        let larguras = [...larguraBase];
+        
+        // Neste DataTable, todas as colunas são sempre exibidas
+        // mas mantemos a estrutura para consistência
+        const totalFiltrado = larguras.reduce((acc, val) => acc + val, 0);
+        const fatorRedistribuicao = 100 / totalFiltrado;
+        
+        return larguras.map(largura => Math.round(largura * fatorRedistribuicao * 100) / 100);
+    };
+    
+    const largurasColunas = calcularLarguras();
+
     const actionBodyTemplate = (rowData) => {
         return (
             <div style={{ display: 'flex', gap: '8px' }}>
@@ -164,32 +187,32 @@ const DataTableEmails = ({ emails, onEdit, onDelete, onView, loading = false }) 
                     header="Nome"
                     body={nomeBodyTemplate}
                     sortable
-                    style={{ width: '20%' }}
+                    style={{ width: `${largurasColunas[0]}%` }}
                 />
                 <Column
                     field="subject"
                     header="Assunto"
                     body={assuntoBodyTemplate}
                     sortable
-                    style={{ width: '25%' }}
+                    style={{ width: `${largurasColunas[1]}%` }}
                 />
                 <Column
                     field="body_html"
                     header="Corpo"
                     body={corpoBodyTemplate}
-                    style={{ width: '25%' }}
+                    style={{ width: `${largurasColunas[2]}%` }}
                 />
                 <Column
                     field="is_active"
                     header="Status"
                     body={statusBodyTemplate}
                     sortable
-                    style={{ width: '10%' }}
+                    style={{ width: `${largurasColunas[3]}%` }}
                 />
                 <Column
                     body={actionBodyTemplate}
                     exportable={false}
-                    style={{ width: '10%' }}
+                    style={{ width: `${largurasColunas[4]}%` }}
                 />
             </DataTable>
         </>
