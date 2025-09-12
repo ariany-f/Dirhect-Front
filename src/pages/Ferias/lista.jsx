@@ -748,7 +748,28 @@ function FeriasListagem() {
             
             <Wrapper>
                 {loading ? (
-                    <></>
+                    tab === 'calendario' ? (
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            height: '400px',
+                            gap: '16px'
+                        }}>
+                            <div style={{
+                                width: '32px',
+                                height: '32px',
+                                border: '3px solid #e5e7eb',
+                                borderTop: '3px solid var(--primaria)',
+                                borderRadius: '50%',
+                                animation: 'spin 1s linear infinite'
+                            }}></div>
+                            <p style={{ color: '#666', fontSize: '16px', margin: 0 }}>
+                                Carregando dados do calendário...
+                            </p>
+                        </div>
+                    ) : <></>
                 ) : ferias ? (
                     <>
                         {tab === 'calendario' && (

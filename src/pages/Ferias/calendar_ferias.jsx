@@ -1296,7 +1296,14 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                 color: '#666', 
                                 fontSize: '14px' 
                             }}>
-                                <FaRegClock style={{ animation: 'spin 1s linear infinite' }} />
+                                <div style={{
+                                    width: '20px',
+                                    height: '20px',
+                                    border: '2px solid #e5e7eb',
+                                    borderTop: '2px solid var(--primaria)',
+                                    borderRadius: '50%',
+                                    animation: 'spin 1s linear infinite'
+                                }}></div>
                                 {isLoadingMore ? 'Carregando mais dados...' : 'Renderizando novos itens...'}
                             </div>
                         ) : (
@@ -1308,7 +1315,14 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                 fontSize: '12px',
                                 textAlign: 'center'
                             }}>
-                                <FaRegClock style={{ animation: 'spin 1s linear infinite' }} />
+                                <div style={{
+                                    width: '16px',
+                                    height: '16px',
+                                    border: '2px solid #f0f0f0',
+                                    borderTop: '2px solid #ccc',
+                                    borderRadius: '50%',
+                                    animation: 'spin 1s linear infinite'
+                                }}></div>
                                 Role para carregar mais
                             </div>
                         )}
