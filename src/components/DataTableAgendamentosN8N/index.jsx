@@ -2,29 +2,30 @@ import React from 'react';
 import styled from 'styled-components';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { ColumnGroup } from 'primereact/columngroup';
+import { Row } from 'primereact/row';
 import { Button } from 'primereact/button';
 import { FaPen, FaTrash, FaPlay, FaPause } from 'react-icons/fa';
 
-const StatusBadge = styled.span`
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
+const StatusTag = styled.span`
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
     font-weight: 500;
-    text-transform: uppercase;
     
     &.ativo {
-        background: #d4edda;
-        color: #155724;
+        background-color: rgba(0, 200, 83, 0.1);
+        color: var(--success);
     }
     
     &.inativo {
-        background: #f8d7da;
-        color: #721c24;
+        background-color: rgba(229, 115, 115, 0.1);
+        color: var(--error);
     }
     
     &.pausado {
-        background: #fff3cd;
-        color: #856404;
+        background-color: rgba(255, 167, 38, 0.1);
+        color: var(--warning);
     }
 `;
 
@@ -45,60 +46,6 @@ const ActionButtons = styled.div`
     justify-content: center;
 `;
 
-const StyledDataTable = styled(DataTable)`
-    .p-datatable-table {
-        table-layout: fixed;
-    }
-    
-    .p-datatable-thead > tr > th {
-        padding: 12px 8px;
-        font-weight: 600;
-        background: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-    }
-    
-    .p-datatable-tbody > tr > td {
-        padding: 12px 8px;
-        border-bottom: 1px solid #e9ecef;
-        word-wrap: break-word;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        vertical-align: middle;
-    }
-    
-    .p-datatable-tbody > tr:hover {
-        background: #f8f9fa;
-    }
-    
-    /* Correção para botões do PrimeReact */
-    .p-button {
-        line-height: 1 !important;
-        height: 32px !important;
-        width: 32px !important;
-        padding: 0 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        
-        .p-button-icon {
-            margin: 0 !important;
-        }
-    }
-    
-    /* Responsivo */
-    @media (max-width: 1200px) {
-        .p-datatable-thead > tr > th,
-        .p-datatable-tbody > tr > td {
-            padding: 8px 4px;
-            font-size: 13px;
-        }
-        
-        .p-button {
-            height: 28px !important;
-            width: 28px !important;
-        }
-    }
-`;
 
 const DataTableAgendamentosN8N = ({ 
     data, 
@@ -113,9 +60,36 @@ const DataTableAgendamentosN8N = ({
     first = 0
 }) => {
 
+    // Configuração de larguras das colunas
+    const exibeColunasOpcionais = {
+        // Todas as colunas são sempre exibidas neste DataTable
+    };
+    
+    // Larguras base quando todas as colunas estão visíveis
+    // Ordem: Nome, Entidade, Tipo, Status, Próxima Execução, Última Execução, Tentativas, Ações
+    const larguraBase = [18, 12, 12, 10, 15, 15, 6, 12];
+    
+    // Calcula larguras redistribuídas
+    const calcularLarguras = () => {
+        let larguras = [...larguraBase];
+        
+        // Neste DataTable, todas as colunas são sempre exibidas
+        // mas mantemos a estrutura para consistência
+        const totalFiltrado = larguras.reduce((acc, val) => acc + val, 0);
+        const fatorRedistribuicao = 100 / totalFiltrado;
+        
+        return larguras.map(largura => Math.round(largura * fatorRedistribuicao * 100) / 100);
+    };
+    
+    const largurasColunas = calcularLarguras();
+
+    // Template para o footer do total
+    const totalAgendamentosTemplate = () => {
+        return 'Total de Agendamentos: ' + (totalRecords ?? data?.length ?? 0);
+    };
 
     const statusTemplate = (rowData) => {
-        return <StatusBadge className={rowData.status}>{rowData.status_display}</StatusBadge>;
+        return <StatusTag className={rowData.status}>{rowData.status_display}</StatusTag>;
     };
 
     const tipoTemplate = (rowData) => {
@@ -167,7 +141,7 @@ const DataTableAgendamentosN8N = ({
     };
 
     return (
-        <StyledDataTable
+        <DataTable
             value={data}
             paginator={paginator}
             rows={rows}
@@ -175,21 +149,28 @@ const DataTableAgendamentosN8N = ({
             onPage={onPageChange}
             first={first}
             emptyMessage="Nenhum agendamento encontrado"
-            className="p-datatable-sm"
             loading={loading}
             lazy={paginator}
-            scrollable={false}
-            resizableColumns={false}
+            tableStyle={{ minWidth: '68vw' }}
+            footerColumnGroup={
+                paginator ? (
+                    <ColumnGroup>
+                        <Row>
+                            <Column footer={totalAgendamentosTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
+                        </Row>
+                    </ColumnGroup>
+                ) : null
+            }
         >
-            <Column field="nome" header="Nome" sortable style={{ width: '18%', minWidth: '150px' }} />
-            <Column body={entidadeTemplate} header="Entidade" style={{ width: '12%', minWidth: '100px' }} />
-            <Column body={tipoTemplate} header="Tipo" style={{ width: '12%', minWidth: '100px' }} />
-            <Column body={statusTemplate} header="Status" style={{ width: '10%', minWidth: '80px' }} />
-            <Column body={proximaExecucaoTemplate} header="Próxima Execução" style={{ width: '15%', minWidth: '140px' }} />
-            <Column body={ultimaExecucaoTemplate} header="Última Execução" style={{ width: '15%', minWidth: '140px' }} />
-            <Column field="tentativas_realizadas" header="Tent." style={{ width: '6%', minWidth: '50px', textAlign: 'center' }} />
-            <Column body={actionsTemplate} header="" style={{ width: '12%', minWidth: '100px' }} />
-        </StyledDataTable>
+            <Column field="nome" header="Nome" sortable style={{ width: `${largurasColunas[0]}%` }} />
+            <Column body={entidadeTemplate} header="Entidade" style={{ width: `${largurasColunas[1]}%` }} />
+            <Column body={tipoTemplate} header="Tipo" style={{ width: `${largurasColunas[2]}%` }} />
+            <Column body={statusTemplate} header="Status" style={{ width: `${largurasColunas[3]}%` }} />
+            <Column body={proximaExecucaoTemplate} header="Próxima Execução" style={{ width: `${largurasColunas[4]}%` }} />
+            <Column body={ultimaExecucaoTemplate} header="Última Execução" style={{ width: `${largurasColunas[5]}%` }} />
+            <Column field="tentativas_realizadas" header="Tent." style={{ width: `${largurasColunas[6]}%` }} />
+            <Column body={actionsTemplate} header="" style={{ width: `${largurasColunas[7]}%` }} />
+        </DataTable>
     );
 };
 
