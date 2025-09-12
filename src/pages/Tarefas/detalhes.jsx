@@ -163,7 +163,7 @@ function DetalhesTarefas() {
                 color = 'var(--error)';
                 label = 'Demissão';
                 id = tarefa?.objeto?.funcionario_detalhe?.id;
-                url = id ? `/colaborador/detalhes/${id}` : null;
+                url = id ? `/colaborador/detalhes/${id}/demissao` : null;
                 break;
             case 'ferias':
                 color = 'var(--green-500)';
