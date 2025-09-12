@@ -107,6 +107,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
 
     const [tenants, setTenants] = useState(null)
     const [empresas, setEmpresas] = useState(usuario.companies ?? null)
+    const [loading, setLoading] = useState(false)
 
     const [selected, setSelected] = useState(ArmazenadorToken.UserCompanyPublicId ?? '')
     const navegar = useNavigate()
@@ -118,6 +119,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
         {
             if((!tenants) && ((!empresas) || empresas.length == 0))
             {
+                setLoading(true);
                 // Buscar clientes
                 http.get(`cliente/?format=json`)
                 .then(async (response) => {
@@ -150,11 +152,15 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                 })
                 .catch(erro => {
                     console.error("Erro ao buscar clientes:", erro);
+                })
+                .finally(() => {
+                    setLoading(false);
                 });
             }
     
             if(((!empresas) || empresas.length == 0) && tenants)
             {
+                setLoading(true);
                 http.get(`client_domain/?format=json`)
                 .then(domains => {
                         // Cruzar os dados: adicionar domains correspondentes a cada tenant
@@ -170,7 +176,10 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                     
                 })
                 .catch(erro => {
-
+                    console.error("Erro ao buscar domains:", erro);
+                })
+                .finally(() => {
+                    setLoading(false);
                 })
             }
         }
@@ -254,48 +263,107 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
             {opened &&
             <Overlay style={{ zIndex: 10002 }}>
                 <DialogEstilizado id="modal-cnpj" open={opened}>
+                    <style>
+                        {`
+                            @keyframes spin {
+                                from {
+                                    transform: rotate(0deg);
+                                }
+                                to {
+                                    transform: rotate(360deg);
+                                }
+                            }
+                        `}
+                    </style>
                     <Frame gap="16px">
                         <Titulo>
                             <h6>{t('select_company')}</h6>
                         </Titulo>
-                        {empresas && empresas.length > 0 &&
-                        <>
-                            <CampoTexto
-                                validateError={false}
-                                valor={busca}
-                                setValor={valor => setBusca(valor)}
-                                placeholder="Buscar por nome ou CNPJ..."
-                            />
-                            <ListaEmpresas>
-                                {empresasFiltradas.map((empresa, idx) => {
-                                    return (
-                                        <Item 
-                                            key={idx} 
-                                            $active={selected === empresa.id_tenant.id}
-                                            onClick={id => handleSelectChange(empresa.id_tenant.id)}>
-                                            <div className={styles.cardEmpresa}>
-                                                {empresa.tenant?.simbolo ?
-                                                    <CustomImage src={empresa.tenant.simbolo} title={empresa.tenant?.nome || 'Empresa'} width={50} height={50} borderRadius={16} />
-                                                : (selected === empresa.id_tenant.id) ?
-                                                    <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
-                                                    : <RiBuildingLine className={styles.buildingIcon} size={20} />
-                                                }
-                                                <div className={styles.DadosEmpresa}>
-                                                    <h6>{empresa.tenant?.nome?.toUpperCase() || 'Empresa'}</h6>
-                                                    <div>{formataCNPJ(empresa.pessoaJuridica?.cnpj || empresa.pessoa_juridica?.cnpj || '')}</div>
+                        {loading ? (
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                minHeight: '300px',
+                                width: '100%',
+                                gap: '16px'
+                            }}>
+                                <div style={{
+                                    width: '32px',
+                                    height: '32px',
+                                    border: '3px solid #e5e7eb',
+                                    borderTop: '3px solid var(--primaria)',
+                                    borderRadius: '50%',
+                                    animation: 'spin 1s linear infinite'
+                                }}></div>
+                                <p style={{ 
+                                    color: '#666', 
+                                    fontSize: '14px', 
+                                    margin: 0,
+                                    textAlign: 'center'
+                                }}>
+                                    Carregando empresas...
+                                </p>
+                            </div>
+                        ) : empresas && empresas.length > 0 ? (
+                            <>
+                                <CampoTexto
+                                    validateError={false}
+                                    valor={busca}
+                                    setValor={valor => setBusca(valor)}
+                                    placeholder="Buscar por nome ou CNPJ..."
+                                />
+                                <ListaEmpresas>
+                                    {empresasFiltradas.map((empresa, idx) => {
+                                        return (
+                                            <Item 
+                                                key={idx} 
+                                                $active={selected === empresa.id_tenant.id}
+                                                onClick={id => handleSelectChange(empresa.id_tenant.id)}>
+                                                <div className={styles.cardEmpresa}>
+                                                    {empresa.tenant?.simbolo ?
+                                                        <CustomImage src={empresa.tenant.simbolo} title={empresa.tenant?.nome || 'Empresa'} width={50} height={50} borderRadius={16} />
+                                                    : (selected === empresa.id_tenant.id) ?
+                                                        <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
+                                                        : <RiBuildingLine className={styles.buildingIcon} size={20} />
+                                                    }
+                                                    <div className={styles.DadosEmpresa}>
+                                                        <h6>{empresa.tenant?.nome?.toUpperCase() || 'Empresa'}</h6>
+                                                        <div>{formataCNPJ(empresa.pessoaJuridica?.cnpj || empresa.pessoa_juridica?.cnpj || '')}</div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <RadioButton
-                                                value={empresa.id_tenant.id}
-                                                checked={selected == empresa.id_tenant.id}
-                                                onSelected={(id) => handleSelectChange}
-                                            />
-                                        </Item>
-                                    )
-                                })}
-                            </ListaEmpresas>
-                        </>
-                    }
+                                                <RadioButton
+                                                    value={empresa.id_tenant.id}
+                                                    checked={selected == empresa.id_tenant.id}
+                                                    onSelected={(id) => handleSelectChange}
+                                                />
+                                            </Item>
+                                        )
+                                    })}
+                                </ListaEmpresas>
+                            </>
+                        ) : !loading && (
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                minHeight: '300px',
+                                width: '100%',
+                                gap: '16px'
+                            }}>
+                                <RiBuildingLine size={48} style={{ color: '#ccc' }} />
+                                <p style={{ 
+                                    color: '#666', 
+                                    fontSize: '14px', 
+                                    margin: 0,
+                                    textAlign: 'center'
+                                }}>
+                                    Nenhuma empresa encontrada
+                                </p>
+                            </div>
+                        )}
                        <Frame alinhamento="center">
                             {ArmazenadorToken.hasPermission('add_cliente') && (
                                     <AdicionarCnpjBotao style={{opacity: 0.5, pointerEvents: 'none', userSelect: 'none'}} disabled>
