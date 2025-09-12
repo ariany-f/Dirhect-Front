@@ -60,6 +60,29 @@ function DataTableKitAdmissional({
     const navegar = useNavigate()
     const [contratoParaEditar, setContratoParaEditar] = useState(null);
 
+    // Configuração de larguras das colunas
+    const exibeColunasOpcionais = {
+        // Todas as colunas são sempre exibidas neste DataTable
+    };
+    
+    // Larguras base quando todas as colunas estão visíveis
+    // Ordem: Documento, Tipo, Observação, Data Início, Data Fim, Status, Ações
+    const larguraBase = [20, 10, 20, 10, 10, 15, 10];
+    
+    // Calcula larguras redistribuídas
+    const calcularLarguras = () => {
+        let larguras = [...larguraBase];
+        
+        // Neste DataTable, todas as colunas são sempre exibidas
+        // mas mantemos a estrutura para consistência
+        const totalFiltrado = larguras.reduce((acc, val) => acc + val, 0);
+        const fatorRedistribuicao = 100 / totalFiltrado;
+        
+        return larguras.map(largura => Math.round(largura * fatorRedistribuicao * 100) / 100);
+    };
+    
+    const largurasColunas = calcularLarguras();
+
     useEffect(() => {
         if (kits?.length > 0) {
             const statusInicial = {};
@@ -356,7 +379,6 @@ function DataTableKitAdmissional({
     }
 
     const representativeActionsTemplate = (rowData) => {
-        const status = rowData.status === 'A';
         return (
             <div style={{ 
                 display: 'flex', 
@@ -364,22 +386,6 @@ function DataTableKitAdmissional({
                 alignItems: 'center',
                 justifyContent: 'end'
             }}>
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '16px'
-                }}>
-                    <StatusTag $status={status}>
-                        {status ? "Ativo" : "Inativo"}
-                    </StatusTag>
-                    <SwitchInput
-                        checked={status}
-                        onChange={() => {
-                            atualizarStatus(rowData.id, !status);
-                        }}
-                        style={{ width: '36px' }}
-                    />
-                </div>
                 <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
                 <FaPen
                     className="edit"
@@ -424,15 +430,25 @@ function DataTableKitAdmissional({
         }
     };
     const representativeStatusTemplate = (rowData) => {
-        let status = rowData?.status;
-        switch (status) {
-            case 'A':
-                return <Tag severity="success" value="Ativo"></Tag>;
-            case 'I':
-                return <Tag severity="danger" value="Inativo"></Tag>;
-            default:
-                return status;
-        }
+        const status = rowData.status === 'A';
+        return (
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '16px'
+            }}>
+                <StatusTag $status={status}>
+                    {status ? "Ativo" : "Inativo"}
+                </StatusTag>
+                <SwitchInput
+                    checked={status}
+                    onChange={() => {
+                        atualizarStatus(rowData.id, !status);
+                    }}
+                    style={{ width: '36px' }}
+                />
+            </div>
+        )
     }
 
     const totalContratosTemplate = () => {
@@ -487,13 +503,13 @@ function DataTableKitAdmissional({
                     </ColumnGroup>
                 }
             >
-                <Column body={representativeNomeTemplate} header="Documento" field="nome" sortField="nome" sortable style={{ width: '20%' }}></Column>
-                <Column body={representativeTipoTemplate} header="Tipo" field="tipo" sortField="tipo" sortable style={{ width: '10%' }}></Column>
-                <Column body={representativeObservacaoTemplate} header="Observação" field="observacao" sortField="observacao" sortable style={{ width: '20%' }}></Column>
-                <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
-                <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
-                <Column body={representativeStatusTemplate} header="Status" style={{ width: '10%' }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: '20%', textAlign: 'center' }}></Column>
+                <Column body={representativeNomeTemplate} header="Documento" field="nome" sortField="nome" sortable style={{ width: `${largurasColunas[0]}%` }}></Column>
+                <Column body={representativeTipoTemplate} header="Tipo" field="tipo" sortField="tipo" sortable style={{ width: `${largurasColunas[1]}%` }}></Column>
+                <Column body={representativeObservacaoTemplate} header="Observação" field="observacao" sortField="observacao" sortable style={{ width: `${largurasColunas[2]}%` }}></Column>
+                <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: `${largurasColunas[3]}%` }}></Column>
+                <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: `${largurasColunas[4]}%` }}></Column>
+                <Column body={representativeStatusTemplate} header="Status" style={{ width: `${largurasColunas[5]}%` }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: `${largurasColunas[6]}%`, textAlign: 'center' }}></Column>
             </DataTable>
             
             <ModalKitAdmissional 
