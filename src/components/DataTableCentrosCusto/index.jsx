@@ -536,17 +536,17 @@ function DataTableCentrosCusto({ centros_custo, showSearch = true, pagination = 
                 onSort={handleSort}
                 tableStyle={{ minWidth: '68vw' }}
             >
-                {bulkIntegrationMode && (
-                    <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
+                {exibeColunasOpcionais.checkbox && (
+                    <Column selectionMode="multiple" style={{ width: `${largurasColunas[0]}%` }}></Column>
                 )}
-                <Column field="id" header="Id" sortable style={{ width: '10%' }}></Column>
-                <Column body={representativeCodigoTemplate} field="cc_origem" header="Código" sortable style={{ width: '10%' }}></Column>
-                <Column body={representativeNomeTemplate} field="nome" header="Nome" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
-                <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
-                {(metadadosDeveSerExibido || bulkIntegrationMode) && (
-                    <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
+                <Column field="id" header="Id" sortable style={{ width: `${largurasColunas[getColumnIndex(1)]}%` }}></Column>
+                <Column body={representativeCodigoTemplate} field="cc_origem" header="Código" sortable style={{ width: `${largurasColunas[getColumnIndex(2)]}%` }}></Column>
+                <Column body={representativeNomeTemplate} field="nome" header="Nome" sortable style={{ width: `${largurasColunas[getColumnIndex(3)]}%` }}></Column>
+                <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" sortable style={{ width: `${largurasColunas[getColumnIndex(4)]}%` }}></Column>
+                {exibeColunasOpcionais.integracao && (
+                    <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: `${largurasColunas[getColumnIndex(5)]}%` }}></Column>
                 )}
-                <Column body={representativeActionsTemplate} header="" style={{ width: '20%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: `${largurasColunas[getColumnIndex(6)]}%` }}></Column>
             </DataTable>
             <ModalListaColaboradoresPorEstrutura 
                 visible={modalColaboradoresOpened}

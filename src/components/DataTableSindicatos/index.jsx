@@ -65,6 +65,53 @@ function DataTableSindicatos({
     const [universalIntegrationValue, setUniversalIntegrationValue] = useState(false);
     const { metadadosDeveSerExibido } = useMetadadosPermission();
 
+    // Configuração de larguras das colunas
+    const exibeColunasOpcionais = {
+        checkbox: bulkIntegrationMode,
+        integracao: ((metadadosDeveSerExibido || bulkIntegrationMode) && ArmazenadorToken.hasPermission('change_sindicato'))
+    };
+    
+    // Larguras base quando todas as colunas estão visíveis
+    // Ordem: Checkbox, Id, Código, Descrição, Nome, Integração, Ações
+    const larguraBase = [5, 10, 10, 25, 25, 15, 20];
+    
+    // Calcula larguras redistribuídas
+    const calcularLarguras = () => {
+        let larguras = [...larguraBase];
+        let indicesRemover = [];
+        
+        // Remove checkbox se não está no modo bulk
+        if (!exibeColunasOpcionais.checkbox) {
+            indicesRemover.push(0); // índice da coluna checkbox
+        }
+        
+        // Remove integração se não deve ser exibida
+        if (!exibeColunasOpcionais.integracao) {
+            indicesRemover.push(5); // índice da coluna integração
+        }
+        
+        // Remove colunas opcionais e recalcula
+        const largurasFiltradas = larguras.filter((_, index) => !indicesRemover.includes(index));
+        const totalFiltrado = largurasFiltradas.reduce((acc, val) => acc + val, 0);
+        const fatorRedistribuicao = 100 / totalFiltrado;
+        
+        return largurasFiltradas.map(largura => Math.round(largura * fatorRedistribuicao * 100) / 100);
+    };
+    
+    const largurasColunas = calcularLarguras();
+
+    // Funções auxiliares para calcular índices das colunas
+    const getColumnIndex = (baseIndex) => {
+        let adjustedIndex = baseIndex;
+        if (!exibeColunasOpcionais.checkbox && baseIndex > 0) {
+            adjustedIndex -= 1;
+        }
+        if (!exibeColunasOpcionais.integracao && baseIndex > 5) {
+            adjustedIndex -= 1;
+        }
+        return adjustedIndex;
+    };
+
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && sindicatos) {
             const sindicatosSelecionados = sindicatos.filter(sindicato => selected.includes(sindicato.id));
@@ -476,17 +523,17 @@ function DataTableSindicatos({
                 removableSort
                 tableStyle={{ minWidth: '68vw' }}
             >
-                {bulkIntegrationMode && (
-                    <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
+                {exibeColunasOpcionais.checkbox && (
+                    <Column selectionMode="multiple" style={{ width: `${largurasColunas[0]}%` }}></Column>
                 )}
-                <Column field="id" header="Id" sortable style={{ width: '10%' }}></Column>
-                <Column body={representativeCodigoTemplate} field="id_origem" header="Código" sortable style={{ width: '10%' }}></Column>
-                <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
-                <Column body={representativeNomeTemplate} field="nome" header="Nome" sortable style={{ width: metadadosDeveSerExibido ? '25%' : '35%' }}></Column>
-                {(metadadosDeveSerExibido || bulkIntegrationMode) && (
-                    <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: '15%' }}></Column>
+                <Column field="id" header="Id" sortable style={{ width: `${largurasColunas[getColumnIndex(1)]}%` }}></Column>
+                <Column body={representativeCodigoTemplate} field="id_origem" header="Código" sortable style={{ width: `${largurasColunas[getColumnIndex(2)]}%` }}></Column>
+                <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" sortable style={{ width: `${largurasColunas[getColumnIndex(3)]}%` }}></Column>
+                <Column body={representativeNomeTemplate} field="nome" header="Nome" sortable style={{ width: `${largurasColunas[getColumnIndex(4)]}%` }}></Column>
+                {exibeColunasOpcionais.integracao && (
+                    <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: `${largurasColunas[getColumnIndex(5)]}%` }}></Column>
                 )}
-                <Column body={representativeActionsTemplate} header="" style={{ width: '20%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: `${largurasColunas[getColumnIndex(6)]}%` }}></Column>
             </DataTable>
             <ModalListaColaboradoresPorEstrutura 
                 visible={modalColaboradoresOpened}
