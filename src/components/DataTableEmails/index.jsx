@@ -170,16 +170,12 @@ const DataTableEmails = ({ emails, onEdit, onDelete, onView, loading = false }) 
     };
 
     const statusBodyTemplate = (rowData) => {
+        const status = rowData.is_active;
         return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Tag 
-                    value={rowData.is_active ? 'Ativo' : 'Inativo'} 
-                    style={{ 
-                        backgroundColor: rowData.is_active ? 'var(--green-500)' : 'var(--error)',
-                        color: 'white',
-                        fontWeight: '600'
-                    }} 
-                />
+                <StatusTag $status={status}>
+                    {status ? "Ativo" : "Inativo"}
+                </StatusTag>
             </div>
         );
     };
