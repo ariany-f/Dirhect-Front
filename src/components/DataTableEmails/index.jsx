@@ -12,6 +12,22 @@ import Texto from '@components/Texto';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast } from 'primereact/toast';
 import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
+
+const StatusTag = styled.span`
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    
+    ${props => props.$status === true ? `
+        background-color: rgba(0, 200, 83, 0.1);
+        color: var(--success);
+    ` : `
+        background-color: rgba(229, 115, 115, 0.1);
+        color: var(--error);
+    `}
+`;
 
 const DataTableEmails = ({ emails, onEdit, onDelete, onView, loading = false }) => {
     const toast = useRef(null);
