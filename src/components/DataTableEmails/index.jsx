@@ -187,6 +187,8 @@ const DataTableEmails = ({ emails, onEdit, onDelete, onView, loading = false }) 
                 value={emails}
                 paginator
                 rows={10}
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                // paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 // currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} emails"
                 selection={selectedEmails}
                 onSelectionChange={(e) => setSelectedEmails(e.value)}
