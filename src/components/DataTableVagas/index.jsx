@@ -228,12 +228,12 @@ function DataTableVagas({
             >
                 <Column body={representativeTituloTemplate} field="titulo" header="Titulo" style={{ width: '20%' }} sortable></Column>
                 <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" style={{ width: '22%' }} sortable></Column>
-                <Column body={representativeAberturaTemplate} sortable header="Abertura" style={{ width: '15%' }}></Column>
-                <Column body={representativeEncerramentoTemplate} header="Encerramento" style={{ width: '15%' }} sortable></Column>
-                <Column body={representativeStatusTemplate} header="Status" style={{ width: '15%' }}></Column>
-                <Column body={representativeNumeroColaboradoresTemplate} header="Candidatos" style={{ width: '10%' }}></Column>
-                <Column body={representativeAprovadosTemplate} header="Aprovados" style={{ width: '10%' }}></Column>
-                <Column body={representativeSalarioTemplate} header="Salário" style={{ width: '15%' }} sortable></Column>
+                <Column body={representativeAberturaTemplate} sortable field="dt_abertura" header="Abertura" style={{ width: '15%' }}></Column>
+                <Column body={representativeEncerramentoTemplate} field="dt_encerramento" header="Encerramento" style={{ width: '15%' }} sortable></Column>
+                <Column body={representativeStatusTemplate} field="status" header="Status" style={{ width: '15%' }}></Column>
+                <Column body={representativeNumeroColaboradoresTemplate} field="total_candidatos" header="Candidatos" style={{ width: '10%' }}></Column>
+                <Column body={representativeAprovadosTemplate} field="candidatos_aprovados" header="Aprovados" style={{ width: '10%' }}></Column>
+                <Column body={representativeSalarioTemplate} field="salario" header="Salário" style={{ width: '15%' }} sortable></Column>
             </DataTable>
         </>
     )
