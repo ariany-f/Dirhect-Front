@@ -537,11 +537,12 @@ function FeriasListagem() {
 
     // Effect separado para ordenação (não reseta loading completo)
     useEffect(() => {
-        // Recarrega sempre que sortField ou sortOrder mudar (incluindo quando são resetados)
-        if (ferias !== null) { // Só recarrega se já há dados carregados
+        // Só aplica na aba "lista" e se já há dados carregados
+        if (tab === 'lista' && ferias !== null) {
+            // Recarrega tanto quando há ordenação quanto quando é removida
             loadData(false, true); // lightLoad = true para ordenação
         }
-    }, [sortField, sortOrder, loadData]);
+    }, [sortField, sortOrder, tab, loadData]);
 
     // Cleanup: cancela requisições pendentes
     useEffect(() => {
@@ -564,6 +565,10 @@ function FeriasListagem() {
         setTab(newTab);
         if (newTab === 'lista') {
             setCurrentPage(1);
+        } else if (newTab === 'calendario') {
+            // Reset ordenação ao mudar para calendário
+            setSortField('');
+            setSortOrder('');
         }
     }, []);
 
