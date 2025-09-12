@@ -169,7 +169,7 @@ function DetalhesTarefas() {
                 color = 'var(--green-500)';
                 label = 'Férias';
                 id = tarefa?.objeto?.funcionario_detalhe?.id;
-                url = id ? `/colaborador/detalhes/${id}` : null;
+                url = id ? `/colaborador/detalhes/${id}/ferias` : null;
                 break;
             case 'envio_variaveis':
                 color = 'var(--primaria)';
