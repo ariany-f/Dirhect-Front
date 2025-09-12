@@ -43,6 +43,32 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, onDeleteBenef
     const navegar = useNavigate()
     const { t } = useTranslation('common');
 
+    // Configuração de larguras das colunas
+    const exibeColunasOpcionais = {
+        acoes: !!onDeleteBeneficio // Só exibe ações se pode deletar
+    };
+    
+    // Larguras base quando todas as colunas estão visíveis
+    // Ordem: Benefício, Tipo, Ações
+    const larguraBase = [45, 45, 10];
+    
+    // Calcula larguras redistribuídas
+    const calcularLarguras = () => {
+        let larguras = [...larguraBase];
+        
+        // Remove ações se não deve ser exibida
+        if (!exibeColunasOpcionais.acoes) {
+            larguras = larguras.slice(0, -1); // Remove última coluna (ações)
+        }
+        
+        const totalFiltrado = larguras.reduce((acc, val) => acc + val, 0);
+        const fatorRedistribuicao = 100 / totalFiltrado;
+        
+        return larguras.map(largura => Math.round(largura * fatorRedistribuicao * 100) / 100);
+    };
+    
+    const largurasColunas = calcularLarguras();
+
     useEffect(() => {
         setSelectedBeneficio(0)
         setSendData({})
@@ -127,9 +153,11 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, onDeleteBenef
             showGridlines
             stripedRows
         >
-            <Column body={representativeBeneficioTemplate} field="beneficio.descricao" style={{ width: '45%' }} />
-            <Column body={representativeTipoTemplate} field="beneficio.tipo.descricao" style={{ width: '45%' }} />
-            <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }} />
+            <Column body={representativeBeneficioTemplate} field="beneficio.descricao" style={{ width: `${largurasColunas[0]}%` }} />
+            <Column body={representativeTipoTemplate} field="beneficio.tipo.descricao" style={{ width: `${largurasColunas[1]}%` }} />
+            {exibeColunasOpcionais.acoes && (
+                <Column body={representativeActionsTemplate} header="" style={{ width: `${largurasColunas[2]}%` }} />
+            )}
         </DataTable>
     )
 }
