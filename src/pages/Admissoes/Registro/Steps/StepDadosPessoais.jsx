@@ -42,11 +42,18 @@ const SectionTitle = styled.div`
 const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], setClassInvalid, paises = [], modoLeitura = false, opcoesDominio = {}, nacionalidades = [] }) => {
     const { candidato, setCampo } = useCandidatoContext();
     const lastCepRef = useRef('');
+    // Estados existentes (manter)
     const [estados, setEstados] = useState([]);
     const [loadingEstados, setLoadingEstados] = useState(false);
     const [cidades, setCidades] = useState([]);
     const [loadingCidades, setLoadingCidades] = useState(false);
     const [estadosFiltrados, setEstadosFiltrados] = useState([]);
+
+    // Novos estados separados
+    const [estadosEndereco, setEstadosEndereco] = useState([]);
+    const [loadingEstadosEndereco, setLoadingEstadosEndereco] = useState(false);
+    const [estadosNatal, setEstadosNatal] = useState([]);
+    const [loadingEstadosNatal, setLoadingEstadosNatal] = useState(false);
 
     const formatarOpcoesDominio = useMemo(() => {
         return (opcoes) => {
@@ -243,20 +250,18 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
     // Função para buscar estados por país
     const buscarEstadosPorPais = async (paisId) => {
         if (!paisId) {
-            setEstadosFiltrados([]);
+            setEstadosEndereco([]);
             return;
         }
         
-        // Se for Brasil (código 76), busca os estados
         const paisSelecionado = paises.find(p => p.code === paisId);
         const isBrasil = paisSelecionado && (paisSelecionado.name === 'Brasil' || paisSelecionado.name === 'Brazil');
 
         if (isBrasil) {
-            setLoadingEstados(true);
+            setLoadingEstadosEndereco(true);
             try {
                 const response = await http.get('estado/?format=json');
                 
-                // Verifica se a resposta tem a estrutura esperada
                 let dados = response;
                 if (response && response.results && Array.isArray(response.results)) {
                     dados = response.results;
@@ -271,23 +276,106 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                         name: estado.nome || estado.descricao,
                         code: estado.sigla || estado.codigo
                     }));
-                    setEstados(estadosFormatados);
-                    setEstadosFiltrados(estadosFormatados);
+                    setEstadosEndereco(estadosFormatados);
                 } else {
-                    setEstados([]);
-                    setEstadosFiltrados([]);
+                    setEstadosEndereco([]);
                 }
             } catch (error) {
-                console.error('Erro ao buscar estados:', error);
-                setEstados([]);
-                setEstadosFiltrados([]);
+                console.error('Erro ao buscar estados para endereço:', error);
+                setEstadosEndereco([]);
             } finally {
-                setLoadingEstados(false);
+                setLoadingEstadosEndereco(false);
             }
         } else {
-            // Para outros países, deixa vazio para permitir digitação livre
-            setEstados([]);
-            setEstadosFiltrados([]);
+            setEstadosEndereco([]);
+        }
+    };
+
+    // Função para estados de endereço (baseado no país)
+    const buscarEstadosPorPaisEndereco = async (paisId) => {
+        if (!paisId) {
+            setEstadosEndereco([]);
+            return;
+        }
+        
+        const paisSelecionado = paises.find(p => p.code === paisId);
+        const isBrasil = paisSelecionado && (paisSelecionado.name === 'Brasil' || paisSelecionado.name === 'Brazil');
+
+        if (isBrasil) {
+            setLoadingEstadosEndereco(true);
+            try {
+                const response = await http.get('estado/?format=json');
+                
+                let dados = response;
+                if (response && response.results && Array.isArray(response.results)) {
+                    dados = response.results;
+                } else if (response && Array.isArray(response)) {
+                    dados = response;
+                } else {
+                    dados = [];
+                }
+                
+                if (dados.length > 0) {
+                    const estadosFormatados = dados.map(estado => ({
+                        name: estado.nome || estado.descricao,
+                        code: estado.sigla || estado.codigo
+                    }));
+                    setEstadosEndereco(estadosFormatados);
+                } else {
+                    setEstadosEndereco([]);
+                }
+            } catch (error) {
+                console.error('Erro ao buscar estados para endereço:', error);
+                setEstadosEndereco([]);
+            } finally {
+                setLoadingEstadosEndereco(false);
+            }
+        } else {
+            setEstadosEndereco([]);
+        }
+    };
+
+    // Função para estados natal (baseado na nacionalidade)
+    const buscarEstadosPorNacionalidade = async (nacionalidadeId) => {
+        if (!nacionalidadeId) {
+            setEstadosNatal([]);
+            return;
+        }
+        
+        const nacionalidadeSelecionada = nacionalidades.find(n => n.code === nacionalidadeId);
+        const isBrasil = nacionalidadeSelecionada && (nacionalidadeSelecionada.name === 'Brasil' || nacionalidadeSelecionada.name === 'Brazil');
+
+        if (isBrasil) {
+            setLoadingEstadosNatal(true);
+            try {
+                const response = await http.get('estado/?format=json');
+                
+                let dados = response;
+                if (response && response.results && Array.isArray(response.results)) {
+                    dados = response.results;
+                } else if (response && Array.isArray(response)) {
+                    dados = response;
+                } else {
+                    dados = [];
+                }
+                
+                if (dados.length > 0) {
+                    const estadosFormatados = dados.map(estado => ({
+                        name: estado.nome || estado.descricao,
+                        code: estado.sigla || estado.codigo
+                    }));
+                    setEstadosNatal(estadosFormatados);
+                } else {
+                    setEstadosNatal([]);
+                }
+            } catch (error) {
+                console.error('Erro ao buscar estados para estado natal:', error);
+                setEstadosNatal([]);
+            } finally {
+                setLoadingEstadosNatal(false);
+            }
+        } else {
+            setEstadosNatal([]);
         }
     };
 
@@ -316,6 +404,24 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
             setEstadosFiltrados([]);
         }
     }, [candidato?.pais]);
+
+    // useEffect para estados de endereço (baseado no país)
+    useEffect(() => {
+        if (candidato?.pais) {
+            buscarEstadosPorPais(candidato.pais);
+        } else {
+            setEstadosEndereco([]);
+        }
+    }, [candidato?.pais, paises]);
+
+    // useEffect para estados natal (baseado na nacionalidade)
+    useEffect(() => {
+        if (candidato?.nacionalidade) {
+            buscarEstadosPorNacionalidade(candidato.nacionalidade);
+        } else {
+            setEstadosNatal([]);
+        }
+    }, [candidato?.nacionalidade, nacionalidades]);
 
     // Monitora mudanças na nacionalidade para carregar estados quando selecionar Brasil
     useEffect(() => {
@@ -412,6 +518,20 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
             // Para outros países, retorna o valor como texto
             return { name: candidato.naturalidade, code: candidato.naturalidade };
         }
+    };
+
+    // Função para obter estado de endereço formatado
+    const getEstadoEnderecoFormatado = () => {
+        if (!candidato?.estado) return '';
+        const estadoEncontrado = estadosEndereco.find(e => e.code === candidato.estado);
+        return estadoEncontrado || '';
+    };
+
+    // Função para obter estado natal formatado
+    const getEstadoNatalFormatado = () => {
+        if (!candidato?.estado_natal) return '';
+        const estadoEncontrado = estadosNatal.find(e => e.code === candidato.estado_natal);
+        return estadoEncontrado || '';
     };
 
     return (
@@ -545,14 +665,14 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                         name="estado_natal"
                         required={true}
                         label="Estado Natal"
-                        valor={getEstadoFormatado('estado_natal')}
+                        valor={getEstadoNatalFormatado()}
                         setValor={valor => {
                             setCampo('estado_natal', valor.code);
                             removerErroCampo('estado_natal', valor);
                         }}
-                        options={estadosFiltrados}
-                        placeholder={loadingEstados ? "Carregando estados..." : "Selecione o estado natal"}
-                        disabled={modoLeitura || !candidato?.nacionalidade || loadingEstados}
+                        options={estadosNatal}
+                        placeholder={loadingEstadosNatal ? "Carregando estados..." : "Selecione o estado natal"}
+                        disabled={modoLeitura || !candidato?.nacionalidade || loadingEstadosNatal}
                         filter
                     />
                 ) : (
@@ -1037,16 +1157,16 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     camposVazios={isCampoEmErro('estado') ? ['estado'] : []}
                     $margin={'10px'}
                     required={true}
-                    valor={getEstadoFormatado('estado')}
+                    valor={getEstadoEnderecoFormatado()}
                     setValor={valor => {
                         setCampo('estado', valor.code);
                         removerErroCampo('estado', valor);
                     }}
-                    options={estadosFiltrados}
+                    options={estadosEndereco}
                     name="state"
                     label="Estado"
-                    placeholder={loadingEstados ? "Carregando estados..." : "Selecione o estado"}
-                    disabled={modoLeitura || !candidato?.pais || loadingEstados}
+                    placeholder={loadingEstadosEndereco ? "Carregando estados..." : "Selecione o estado"}
+                    disabled={modoLeitura || !candidato?.pais || loadingEstadosEndereco}
                     filter
                 />
             ) : (
