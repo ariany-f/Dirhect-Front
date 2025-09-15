@@ -863,12 +863,6 @@ const CandidatoRegistro = () => {
                             .sort((a, b) => a.name.localeCompare(b.name));
                         
                         setNacionalidades(nacionalidadesFormatadas);
-                    } else {
-                        // Se não há dados, pelo menos adiciona Brasil como padrão
-                        setNacionalidades([{
-                            name: 'Brasil',
-                            code: '76'
-                        }]);
                     }
                 } catch (error) {
                     console.error('Erro ao carregar nacionalidades:', error);
