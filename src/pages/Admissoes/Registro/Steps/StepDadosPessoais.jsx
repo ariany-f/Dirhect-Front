@@ -254,7 +254,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
             return;
         }
         
-        const paisSelecionado = paises.find(p => p.code === paisId);
+        const paisSelecionado = paises.find(p => p.code == paisId);
         const isBrasil = paisSelecionado && (paisSelecionado.name === 'Brasil' || paisSelecionado.name === 'Brazil');
 
         if (isBrasil) {
