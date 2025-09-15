@@ -456,9 +456,36 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
 
     const SituacaoFilterContent = ({ options, situacoesUnicas }) => {
         const [filtroSituacao, setFiltroSituacao] = useState('');
+        const [selectedSituacoes, setSelectedSituacoes] = useState([]);
 
-        const onSituacaoChange = (e) => {
-            options.filterCallback(e.value);
+        // Inicializar com o valor atual do filtro
+        useEffect(() => {
+            if (options.value) {
+                setSelectedSituacoes(Array.isArray(options.value) ? options.value : [options.value]);
+            } else {
+                setSelectedSituacoes([]);
+            }
+        }, [options.value]);
+
+        const onSituacaoChange = (situacaoValue, checked) => {
+            let newSelectedSituacoes;
+            
+            if (checked) {
+                // Adicionar à seleção
+                newSelectedSituacoes = [...selectedSituacoes, situacaoValue];
+            } else {
+                // Remover da seleção
+                newSelectedSituacoes = selectedSituacoes.filter(val => val !== situacaoValue);
+            }
+            
+            setSelectedSituacoes(newSelectedSituacoes);
+            
+            // Chamar o callback com o array de valores selecionados
+            if (newSelectedSituacoes.length === 0) {
+                options.filterCallback(null);
+            } else {
+                options.filterCallback(newSelectedSituacoes);
+            }
         };
 
         const situacoesOrdenadas = [...(situacoesUnicas || [])].sort((a, b) => a.label.localeCompare(b.label));
@@ -476,28 +503,18 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                     width="100%"
                 />
                 <div style={{ maxHeight: '250px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.75rem', paddingRight: '10px' }}>
-                    <div className="flex align-items-center">
-                        <RadioButton
-                            inputId="situacao-nenhuma"
-                            name="situacao"
-                            value={null}
-                            onChange={onSituacaoChange}
-                            checked={options.value === null}
-                        />
-                        <label htmlFor="situacao-nenhuma" style={{ marginLeft: '8px', cursor: 'pointer' }}>Nenhuma</label>
-                    </div>
                     {situacoesFiltradas.map(situacao => (
                         <div key={situacao.value} className="flex align-items-center">
-                            <RadioButton
-                                inputId={`situacao-${situacao.value}`}
-                                name="situacao"
-                                value={situacao.value}
-                                onChange={onSituacaoChange}
-                                checked={options.value === situacao.value}
+                            <input
+                                type="checkbox"
+                                id={`situacao-${situacao.value}`}
+                                checked={selectedSituacoes.includes(situacao.value)}
+                                onChange={(e) => onSituacaoChange(situacao.value, e.target.checked)}
+                                style={{ marginRight: '8px' }}
                             />
                             <label 
                                 htmlFor={`situacao-${situacao.value}`} 
-                                style={{ marginLeft: '8px', cursor: 'pointer' }}
+                                style={{ cursor: 'pointer', flex: 1 }}
                             >
                                 {situacao.label}
                             </label>

@@ -103,7 +103,6 @@ function DataTableAtividades({
 
     const handleRowClick = (e) => {
         const rowData = e.data;
-        console.log('rowData', rowData);
         if(rowData.objeto?.funcionario_detalhe?.id) {
             if(rowData.entidade_tipo == 'férias') {
                 navegar(`/colaborador/detalhes/${rowData.objeto.funcionario_detalhe.id}/ferias`);

@@ -73,7 +73,14 @@ function ColaboradoresCadastrados() {
 
         const situacaoFilter = currentFilters?.['situacao']?.value;
         if (situacaoFilter) {
-            url += `&tipo_situacao=${encodeURIComponent(situacaoFilter)}`;
+            if (Array.isArray(situacaoFilter)) {
+                // Múltiplos valores - usar __in
+                const situacoesString = situacaoFilter.join(',');
+                url += `&tipo_situacao__in=${encodeURIComponent(situacoesString)}`;
+            } else {
+                // Valor único
+                url += `&tipo_situacao=${encodeURIComponent(situacaoFilter)}`;
+            }
         }
 
 
