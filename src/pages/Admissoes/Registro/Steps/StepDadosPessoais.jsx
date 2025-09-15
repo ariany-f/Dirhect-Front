@@ -255,8 +255,10 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
         }
         
         const paisSelecionado = paises.find(p => p.code == paisId);
+        console.log('paisSelecionado', paisSelecionado);
+        console.log('paisId', paisId);
         const isBrasil = paisSelecionado && (paisSelecionado.name === 'Brasil' || paisSelecionado.name === 'Brazil');
-
+        console.log('isBrasil', isBrasil);
         if (isBrasil) {
             setLoadingEstadosEndereco(true);
             try {
