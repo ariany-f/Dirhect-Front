@@ -179,7 +179,6 @@ function Dashboard() {
                             .then(response => {
                                 console.log('Response do endpoint /tarefas/indicadores/:', response);
                                 setIndicadoresTarefas(response);
-                                // Definir colaboradores como array vazio para evitar loading infinito
                                 setColaboradores([]);
                             })
                             .catch(error => {
@@ -193,31 +192,41 @@ function Dashboard() {
                     }
                     return; // Sair da função para usuários Outsourcing
                 }
-                console.log(ArmazenadorToken.hasPermission('view_funcionario'))
-                // Para outros tipos de usuário, carregar todos os dados normalmente
-                // Carregar dados do dashboard de funcionários apenas se tiver permissão
+
+                // Para outros tipos de usuário, carregar dados do dashboard
                 if (ArmazenadorToken.hasPermission('view_funcionario')) {
                     console.log('Tem permissão para carregar dashboard de funcionários');
                     await http.get('funcionario/dashboard/')
                         .then(response => {
                             console.log('Response do dashboard de funcionários:', response);
                             setFuncionariosDashboard(response);
-                            // CORREÇÃO: Definir colaboradores como array vazio em vez de array com nulls
+                            
+                            // Usar dados do dashboard para popular os totais
+                            setTotalVagas(0); // Vagas não vem no dashboard ainda
+                            setTotalFerias(0); // Usar dados do dashboard quando necessário
+                            setTotalAdmissoes(response?.admissoes?.admissoes_andamento || 0);
+                            
                             setColaboradores([]);
                         })
                         .catch(error => {
                             console.error('Erro ao carregar dashboard de funcionários:', error);
                             setFuncionariosDashboard(null);
                             setColaboradores(null);
+                            setTotalVagas(0);
+                            setTotalFerias(0);
+                            setTotalAdmissoes(0);
                         });
                 } else {
                     // Se não tem permissão, definir valores padrão
                     setFuncionariosDashboard(null);
                     setColaboradores([]);
+                    setTotalVagas(0);
+                    setTotalFerias(0);
+                    setTotalAdmissoes(0);
                 }
                 
+                // Carregar apenas tarefas se tiver permissão
                 if(ArmazenadorToken.hasPermission('view_tarefa')) {
-                    // Carregar outras informações apenas se necessário
                     await http.get('tarefas/?format=json&status__in=pendente,em_andamento,aprovada,erro')
                         .then(response => {
                             setAtividadesRaw(response.results || [])
@@ -231,6 +240,7 @@ function Dashboard() {
                                 return acc;
                             }, {});
                             setAtividadesPorStatus(porStatus)
+                            
                             // Agrupar por tipo de atividade
                             const porTipo = openTasks.reduce((acc, atividade) => {
                                 const tipo = atividade.tipo_display || atividade.entidade_display || atividade.tipo_tarefa || atividade.tipo;
@@ -238,6 +248,7 @@ function Dashboard() {
                                 return acc;
                             }, {});
                             setAtividadesPorTipo(porTipo)
+                            
                             // Agrupar por SLA
                             const porSLA = openTasks.reduce((acc, atividade) => {
                                 const slaInfo = getSLAInfo(atividade);
@@ -245,6 +256,7 @@ function Dashboard() {
                                 return acc;
                             }, {});
                             setAtividadesPorSLA(porSLA)
+                            
                             // Agrupar por entidade
                             const porEntidade = openTasks.reduce((acc, atividade) => {
                                 const entidade = atividade.entidade_display || atividade.entidade_tipo || 'Outro';
@@ -269,29 +281,6 @@ function Dashboard() {
                     setAtividadesPorEntidade({})
                     setAtividadesRaw([])
                     setAtividadesAgrupadas([])
-                }
-                if(ArmazenadorToken.hasPermission('view_vagas')) {
-                    await http.get('vagas/').then(response => {
-                        setTotalVagas(Array.isArray(response) ? response.length : (response.count || 0));
-                    }).catch(() => setTotalVagas(0));
-                } else {
-                    setTotalVagas(0)
-                }
-                if(ArmazenadorToken.hasPermission('view_ferias')) {
-                    await http.get('ferias/').then(response => {
-                        setTotalFerias(Array.isArray(response) ? response.length : (response.count || 0));
-                    }).catch(() => setTotalFerias(0));
-                } else {
-                    setTotalFerias(0)
-                }
-                if(ArmazenadorToken.hasPermission('view_admissao')) {
-                    // Total de demissões agora vem do dashboard de funcionários
-                    // setTotalDemissoes será calculado usando dados do funcionariosDashboard
-                    await http.get('admissao/').then(response => {
-                        setTotalAdmissoes(Array.isArray(response) ? response.length : (response.count || 0));
-                    }).catch(() => setTotalAdmissoes(0));
-                } else {
-                    setTotalAdmissoes(0)
                 }
             }
         } finally {
@@ -387,18 +376,18 @@ function Dashboard() {
             return {
                 ...dashboardData,
                 destaque: 'Bem-vindo RH!',
-                totalAdmissoes: totalAdmissoes,
-                totalDemissoes: dadosCalculados.totalDemitidos,
-                totalFerias: totalFerias,
-                totalVagas: totalVagas,
+                totalAdmissoes: funcionariosDashboard?.admissoes?.admissoes_andamento || 0,
+                totalDemissoes: funcionariosDashboard?.total_demitidos || 0,
+                totalFerias: totalFerias, // Manter por enquanto
+                totalVagas: totalVagas, // Manter por enquanto
                 // Dados do dashboard de funcionários
-                totalColaboradores: dadosCalculados.totalFuncionarios,
-                funcionariosAtivos: dadosCalculados.funcionariosAtivos,
-                funcionariosMasculino: dadosCalculados.funcionariosMasculino,
-                funcionariosFeminino: dadosCalculados.funcionariosFeminino,
-                funcionariosOutrosGeneros: dadosCalculados.funcionariosOutrosGeneros,
-                admitidosNoMes: dadosCalculados.admitidosNoMes,
-                demitidosNoMes: dadosCalculados.demitidosNoMes
+                totalColaboradores: funcionariosDashboard?.total_funcionarios || 0,
+                funcionariosAtivos: funcionariosDashboard?.funcionarios_ativos || 0,
+                funcionariosMasculino: funcionariosDashboard?.funcionarios_masculino || 0,
+                funcionariosFeminino: funcionariosDashboard?.funcionarios_feminino || 0,
+                funcionariosOutrosGeneros: funcionariosDashboard?.funcionarios_outros_generos || 0,
+                admitidosNoMes: funcionariosDashboard?.admitidos_no_mes || 0,
+                demitidosNoMes: funcionariosDashboard?.demitidos_no_mes || 0
             };
         } else if (usuario?.tipo === 'Benefícios') {
             return {
@@ -406,22 +395,22 @@ function Dashboard() {
                 destaque: 'Bem-vindo ao módulo de Benefícios!',
                 saldoBeneficios: 15000,
                 pedidosPendentes: 4,
-                totalColaboradores: dadosCalculados.totalFuncionarios,
+                totalColaboradores: funcionariosDashboard?.total_funcionarios || 0,
             };
         } else if (usuario?.tipo === 'Outsourcing') {
             return {
                 ...dashboardData,
                 destaque: 'Bem-vindo Outsourcing!',
                 projetosAtivos: 5,
-                totalColaboradores: dadosCalculados.totalFuncionarios,
+                totalColaboradores: funcionariosDashboard?.total_funcionarios || 0,
             };
         } else {
             return {
                 ...dashboardData,
-                totalColaboradores: dadosCalculados.totalFuncionarios,
+                totalColaboradores: funcionariosDashboard?.total_funcionarios || 0,
             };
         }
-    }, [dashboardData, usuario?.tipo, totalAdmissoes, totalFerias, totalVagas, dadosCalculados]);
+    }, [dashboardData, usuario?.tipo, funcionariosDashboard, totalFerias, totalVagas]);
 
     // Otimizar DashboardCard com useMemo
     const dashboardCardMemo = useMemo(() => {
