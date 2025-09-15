@@ -52,7 +52,7 @@ function ColaboradorDadosPessoais() {
     useEffect(() => {
         if(context && (!colaborador))
         {
-            setColaborador(context);
+            setColaborador(context?.colaborador);
         }
     }, [colaborador, context])
 

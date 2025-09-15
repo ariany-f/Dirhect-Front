@@ -54,7 +54,7 @@ function ColaboradorDadosContratuais() {
     useEffect(() => {
         if(context && (!colaborador))
         {
-            setColaborador(context);
+            setColaborador(context?.colaborador);
             console.log(context)
         } else if(colaborador) {
            
