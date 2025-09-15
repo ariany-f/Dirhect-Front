@@ -526,6 +526,7 @@ const CandidatoRegistro = () => {
     const [sindicatos, setSindicatos] = useState([]);
     const [estados, setEstados] = useState([]);
     const [paises, setPaises] = useState([]);
+    const [nacionalidades, setNacionalidades] = useState([]);
     const [opcoesDominio, setOpcoesDominio] = useState({});
     const [availableDominioTables, setAvailableDominioTables] = useState([]);
     const [dadosCarregados, setDadosCarregados] = useState(false);
@@ -820,31 +821,62 @@ const CandidatoRegistro = () => {
                     if (dadosPaises.length > 0) {
                         const paisesFormatados = dadosPaises
                             .filter(pais => pais && pais.nome_por) // Filtra países válidos com nome
-                            .filter(pais => pais.nome_por !== 'Brasil') // Remove Brasil da lista
                             .map(pais => ({
                                 name: pais.nome_por || pais.nome_ing || pais.nome_esp,
-                                code: pais.sigla || pais.id
+                                code: pais.id
                             }))
                             .filter(pais => pais.name && pais.code) // Remove países sem nome ou código
                             .sort((a, b) => a.name.localeCompare(b.name)); // Ordena alfabeticamente
                         
-                        // Adiciona Brasil no início da lista
-                        paisesFormatados.unshift({
-                            name: 'Brasil',
-                            code: '76'
-                        });
+
                         
                         setPaises(paisesFormatados);
+                    }
+                } catch (error) {
+                    console.error('Erro ao carregar países:', error);
+                    setPaises([]);
+                }
+            }
+
+            // Carregar nacionalidades da tabela domínio
+            if (!nacionalidades.length) {
+                try {
+                    const nacionalidadesResponse = await http.get('tabela_dominio/nacionalidade/');
+                    
+                    let dadosNacionalidades = [];
+                    if (nacionalidadesResponse && nacionalidadesResponse.registros && Array.isArray(nacionalidadesResponse.registros)) {
+                        dadosNacionalidades = nacionalidadesResponse.registros;
+                    } else if (nacionalidadesResponse && Array.isArray(nacionalidadesResponse)) {
+                        dadosNacionalidades = nacionalidadesResponse;
                     } else {
-                        // Se não há dados, pelo menos adiciona Brasil
-                        setPaises([{
+                        dadosNacionalidades = [];
+                    }
+                    
+                    if (dadosNacionalidades.length > 0) {
+                        const nacionalidadesFormatadas = dadosNacionalidades
+                            .filter(nacionalidade => nacionalidade && nacionalidade.descricao)
+                            .map(nacionalidade => ({
+                                name: nacionalidade.descricao,
+                                code: nacionalidade.id_origem || nacionalidade.codigo || nacionalidade.id
+                            }))
+                            .filter(nacionalidade => nacionalidade.name && nacionalidade.code)
+                            .sort((a, b) => a.name.localeCompare(b.name));
+                        
+                        setNacionalidades(nacionalidadesFormatadas);
+                    } else {
+                        // Se não há dados, pelo menos adiciona Brasil como padrão
+                        setNacionalidades([{
                             name: 'Brasil',
                             code: '76'
                         }]);
                     }
                 } catch (error) {
-                    console.error('Erro ao carregar países:', error);
-                    setPaises([]);
+                    console.error('Erro ao carregar nacionalidades:', error);
+                    // Fallback para usar países se nacionalidades falharem
+                    setNacionalidades(paises.length > 0 ? paises : [{
+                        name: 'Brasil',
+                        code: '76'
+                    }]);
                 }
             }
 
@@ -4127,6 +4159,7 @@ const CandidatoRegistro = () => {
                             <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
                                 <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
                                     <StepDadosPessoais 
+                                        nacionalidades={nacionalidades}
                                         classError={classError} 
                                         setClassError={setClassError}
                                         classInvalid={classInvalid}
