@@ -493,6 +493,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         const situacoesFiltradas = situacoesOrdenadas.filter(situacao => 
             situacao.label.toLowerCase().includes(filtroSituacao.toLowerCase())
         );
+        
 
         return (
             <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>

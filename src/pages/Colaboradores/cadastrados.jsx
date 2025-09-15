@@ -83,7 +83,6 @@ function ColaboradoresCadastrados() {
             }
         }
 
-
         http.get(url)
             .then(response => {
                 setColaboradores(response.results);
@@ -103,16 +102,34 @@ function ColaboradoresCadastrados() {
             try {
                 const response = await http.get('tabela_dominio/tipo_situacao/');
                 const registros = response.registros || [];
-                const unicas = registros.map(s => ({ label: s.descricao, value: s.id }));
+                const unicas = registros.map(s => ({ 
+                    label: s.descricao, 
+                    value: s.id, 
+                    ativo: s.ativo 
+                }));
                 setSituacoesUnicas(unicas);
+                
+                // Definir filtro padrão com situações ativas apenas no carregamento inicial
+                const situacoesAtivas = unicas.filter(s => s.ativo === true).map(s => s.value);
+                if (situacoesAtivas.length > 0) {
+                    const defaultFilters = {
+                        'situacao': { value: situacoesAtivas, matchMode: 'custom' }
+                    };
+                    setFilters(defaultFilters);
+                    // Carregar dados iniciais com filtro padrão
+                    loadData(1, 10, '', '', defaultFilters);
+                } else {
+                    // Carregar dados iniciais sem filtro se não houver situações ativas
+                    loadData(1, 10, '', '', {});
+                }
             } catch (error) {
                 console.error("Erro ao buscar situações:", error);
+                // Carregar dados iniciais sem filtro em caso de erro
+                loadData(1, 10, '', '', {});
             }
         };
         
         fetchSituacoes();
-        // Carregar dados iniciais sem ordenação
-        loadData(1, 10, '', '', {});
     }, []);
      
     const onPage = (event) => {
