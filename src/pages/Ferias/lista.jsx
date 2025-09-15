@@ -367,6 +367,7 @@ function FeriasListagem() {
             url += `&page_size=10`; // Páginas maiores para calendário
             url += `&periodo_aberto=true`;
             url += `&incluir_finalizadas=true`;
+            url += `&ordering=fimperaquis`;
             
             // Filtrar por período aquisitivo
             const anoAtual = new Date().getFullYear();
