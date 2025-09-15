@@ -103,8 +103,15 @@ function DataTableAtividades({
 
     const handleRowClick = (e) => {
         const rowData = e.data;
+        console.log('rowData', rowData);
         if(rowData.objeto?.funcionario_detalhe?.id) {
-            navegar(`/colaborador/detalhes/${rowData.objeto.funcionario_detalhe.id}`);
+            if(rowData.entidade_tipo == 'férias') {
+                navegar(`/colaborador/detalhes/${rowData.objeto.funcionario_detalhe.id}/ferias`);
+            } else if (rowData.entidade_tipo == 'demissao') {
+                navegar(`/colaborador/detalhes/${rowData.objeto.funcionario_detalhe.id}/demissao`);
+            } else {
+                navegar(`/colaborador/detalhes/${rowData.objeto.funcionario_detalhe.id}`);
+            }
         } else if(rowData.objeto?.dados_candidato?.id) {
             navegar(`/admissao/registro/${rowData?.entidade_id}`);
         }
