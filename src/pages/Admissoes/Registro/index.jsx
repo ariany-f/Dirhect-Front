@@ -866,11 +866,6 @@ const CandidatoRegistro = () => {
                     }
                 } catch (error) {
                     console.error('Erro ao carregar nacionalidades:', error);
-                    // Fallback para usar países se nacionalidades falharem
-                    setNacionalidades(paises.length > 0 ? paises : [{
-                        name: 'Brasil',
-                        code: '76'
-                    }]);
                 }
             }
 
