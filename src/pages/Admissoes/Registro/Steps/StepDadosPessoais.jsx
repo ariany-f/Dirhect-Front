@@ -40,6 +40,7 @@ const SectionTitle = styled.div`
 `;
 
 const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], setClassInvalid, paises = [], modoLeitura = false, opcoesDominio = {}, nacionalidades = [] }) => {
+
     const { candidato, setCampo } = useCandidatoContext();
     const lastCepRef = useRef('');
     // Estados existentes (manter)
@@ -62,16 +63,6 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                 name: opcao.descricao,
                 code: opcao.id_origem || opcao.codigo
             }));
-            
-            // Se for nacionalidade, adiciona Brasil se não existir
-            if (opcoes.length > 0 && opcoes[0].descricao && opcoes[0].descricao.includes('nacionalidade')) {
-                const brasilExiste = opcoesFormatadas.some(op => 
-                    op.name === 'Brasil' || op.name === 'Brazil'
-                );
-                if (!brasilExiste) {
-                    
-                }
-            }
             
             return opcoesFormatadas;
         };
@@ -255,10 +246,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
         }
         
         const paisSelecionado = paises.find(p => p.code == paisId);
-        console.log('paisSelecionado', paisSelecionado);
-        console.log('paisId', paisId);
         const isBrasil = paisSelecionado && (paisSelecionado.name === 'Brasil' || paisSelecionado.name === 'Brazil');
-        console.log('isBrasil', isBrasil);
+        
         if (isBrasil) {
             setLoadingEstadosEndereco(true);
             try {
@@ -425,24 +414,6 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
         }
     }, [candidato?.nacionalidade, nacionalidades]);
 
-    // Monitora mudanças na nacionalidade para carregar estados quando selecionar Brasil
-    useEffect(() => {
-        if (candidato?.nacionalidade) {
-            // Verifica se a nacionalidade selecionada é Brasil
-            const nacionalidadeSelecionada = nacionalidades.find(n => n.code === candidato.nacionalidade);
-            if(nacionalidadeSelecionada) {
-                setCampo('nacionalidade', nacionalidadeSelecionada.code);
-            }
-        }
-
-        if(candidato?.pais) {
-            const paisSelecionado = paises.find(p => p.code === candidato.pais);
-            if(paisSelecionado) {
-                setCampo('pais', paisSelecionado.code);
-            }
-        }
-    }, [candidato?.nacionalidade, nacionalidades, candidato?.pais, setCampo]);
-
     // Função para buscar endereço pelo CEP
     const handleCepChange = async (valor) => {
         // Atualiza o campo CEP normalmente
@@ -500,7 +471,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
     // Função para obter o país formatado
     const getPaisFormatado = () => {
         if (!candidato?.pais) return '';
-        const paisEncontrado = paises.find(p => p.code === candidato.pais);
+        const paisEncontrado = paises.find(p => p.code == candidato.pais);
         return paisEncontrado || '';
     };
 
@@ -1151,7 +1122,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                 disabled={modoLeitura}
             />
             {(() => {
-                const paisSelecionado = paises.find(p => p.code === candidato?.pais);
+                const paisSelecionado = paises.find(p => p.code == candidato?.pais);
                 const isBrasil = paisSelecionado && (paisSelecionado.name === 'Brasil' || paisSelecionado.name === 'Brazil');
                 return isBrasil;
             })() ? (

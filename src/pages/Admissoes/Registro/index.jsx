@@ -823,7 +823,7 @@ const CandidatoRegistro = () => {
                             .filter(pais => pais && pais.nome_por) // Filtra países válidos com nome
                             .map(pais => ({
                                 name: pais.nome_por || pais.nome_ing || pais.nome_esp,
-                                code: pais.id
+                                code: parseInt(pais.id)
                             }))
                             .filter(pais => pais.name && pais.code) // Remove países sem nome ou código
                             .sort((a, b) => a.name.localeCompare(b.name)); // Ordena alfabeticamente
