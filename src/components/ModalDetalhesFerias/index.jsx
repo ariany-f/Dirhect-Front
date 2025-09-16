@@ -878,7 +878,13 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
     const diaDoMes = hoje.getDate();
 
     const isStatusPendente = eventoCompletado.evento?.status === 'E';
-    const podeAprovar = isStatusPendente && temPermissaoParaVerBotao;
+    
+    // Verificar se existe uma tarefa pendente com tipo aprovar_ferias
+    const temTarefaPendenteAprovarFerias = eventoCompletado.evento?.tarefas?.some(
+        t => t.status === 'pendente' && t.tipo_codigo === 'aprovar_ferias'
+    );
+    
+    const podeAprovar = isStatusPendente && temPermissaoParaVerBotao && temTarefaPendenteAprovarFerias;
 
     const limparDados = () => {
         setDataInicio('');
