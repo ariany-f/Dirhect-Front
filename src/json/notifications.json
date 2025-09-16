@@ -13,7 +13,7 @@
       "empresa": "Outsourcing BPO",
       "tipo": "ferias_aprovada"
     },
-    "link": "/ferias/123",
+    "link": "colaborador/detalhes/123/ferias",
     "user_type": "RH"
   },
   {
@@ -30,7 +30,7 @@
       "motivo": "Conflito com período de alta demanda",
       "tipo": "ferias_rejeitada"
     },
-    "link": "/ferias/124",
+    "link": "colaborador/detalhes/124/ferias",
     "user_type": "RH"
   },
   {
@@ -47,7 +47,7 @@
       "colaboradores_afetados": 15,
       "tipo": "ferias_lembrete"
     },
-    "link": "/ferias/periodos",
+    "link": "/ferias",
     "user_type": "RH"
   },
   {
@@ -65,7 +65,7 @@
       "periodo": "15/01 a 30/01",
       "tipo": "ferias_solicitacao"
     },
-    "link": "/ferias/aprovacoes/123",
+    "link": "/ferias",
     "user_type": "Outsourcing"
   },
   {
@@ -83,7 +83,7 @@
       "periodo": "20/02 a 05/03",
       "tipo": "ferias_solicitacao"
     },
-    "link": "/ferias/aprovacoes/124",
+    "link": "/ferias",
     "user_type": "Outsourcing"
   },
   {
@@ -100,7 +100,7 @@
       "periodo": "15/02 a 28/02",
       "tipo": "ferias_aprovada"
     },
-    "link": "/ferias/126",
+    "link": "/colaborador/detalhes/126/ferias",
     "user_type": "Outsourcing"
   },
   {
@@ -131,7 +131,7 @@
       "periodo": "15/01 a 30/01",
       "tipo": "ferias_aprovada"
     },
-    "link": "/ferias/123",
+    "link": "/colaborador/detalhes/123/ferias",
     "user_type": "Colaborador"
   },
   {
@@ -148,7 +148,7 @@
       "motivo": "Conflito com período de alta demanda",
       "tipo": "ferias_rejeitada"
     },
-    "link": "/ferias/124",
+    "link": "/colaborador/detalhes/124/ferias",
     "user_type": "Colaborador"
   },
   {
@@ -164,7 +164,7 @@
       "dias_restantes": 3,
       "tipo": "beneficio_data_corte"
     },
-    "link": "/beneficios/solicitacoes",
+    "link": "/beneficios",
     "user_type": "Benefícios"
   },
   {
@@ -178,9 +178,9 @@
     "data": {
       "colaboradores_pendentes": 5,
       "dias_pendentes": 7,
-      "tipo": "beneficio_obrigatorio"
+      "tipo": "beneficios"
     },
-    "link": "/beneficios/obrigatorios",
+    "link": "/beneficios",
     "user_type": "Benefícios"
   },
   {
@@ -198,7 +198,7 @@
       "operador": "João Silva",
       "tipo": "beneficio_ativado"
     },
-    "link": "/beneficios/colaborador/456",
+    "link": "/colaborador/detalhes/456/beneficios",
     "user_type": "Benefícios"
   },
   {
@@ -215,7 +215,7 @@
       "operadora": "Unimed",
       "tipo": "beneficio_auto_ativado"
     },
-    "link": "/beneficios/colaborador/789",
+    "link": "/colaborador/detalhes/789/beneficios",
     "user_type": "Benefícios"
   },
   {
@@ -231,7 +231,7 @@
       "dias_sem_config": 30,
       "tipo": "contrato_sem_elegibilidade"
     },
-    "link": "/beneficios/contratos",
+    "link": "/contratos",
     "user_type": "Benefícios"
   },
   {
@@ -247,7 +247,7 @@
       "operador": "Ana Costa",
       "tipo": "operadora_desativada"
     },
-    "link": "/beneficios/operadoras",
+    "link": "/operadoras",
     "user_type": "Benefícios"
   },
   {
@@ -264,7 +264,7 @@
       "categoria": "saúde",
       "tipo": "operadora_criada"
     },
-    "link": "/beneficios/operadoras/123",
+    "link": "/operadoras",
     "user_type": "Benefícios"
   },
   {
@@ -279,7 +279,7 @@
       "contrato": "Contrato 2024",
       "tipo": "contrato_configurado"
     },
-    "link": "/beneficios/contratos/456",
+    "link": "/contratos/detalhes/456",
     "user_type": "Benefícios"
   },
   {
@@ -295,7 +295,7 @@
       "dias_para_vencimento": 15,
       "tipo": "beneficio_vencendo"
     },
-    "link": "/beneficios/vencimentos",
+    "link": "/beneficios",
     "user_type": "Benefícios"
   },
   {
@@ -311,7 +311,7 @@
       "ano": "2023",
       "tipo": "relatorio_mensal"
     },
-    "link": "/beneficios/relatorios",
+    "link": "/beneficios",
     "user_type": "Benefícios"
   },
   {
@@ -328,7 +328,7 @@
       "motivo": "Pedido do colaborador",
       "tipo": "demissao_solicitacao"
     },
-    "link": "/demissoes/solicitacoes/123",
+    "link": "/colaborador/detalhes/789/demissao",
     "user_type": "Outsourcing"
   },
   {
@@ -344,7 +344,7 @@
       "data_saida": "2024-01-31",
       "tipo": "demissao_aprovada"
     },
-    "link": "/demissoes/456",
+    "link": "/colaborador/detalhes/789/demissao",
     "user_type": "RH"
   },
   {
@@ -360,7 +360,7 @@
       "motivo": "Período de alta demanda",
       "tipo": "demissao_rejeitada"
     },
-    "link": "/demissoes/789",
+    "link": "/colaborador/detalhes/789/demissao",
     "user_type": "RH"
   },
   {
@@ -377,7 +377,7 @@
       "data_admissao": "2024-02-01",
       "tipo": "admissao_incluida"
     },
-    "link": "/admissoes/123",
+    "link": "/admissao/registro/123",
     "user_type": "Outsourcing"
   },
   {
@@ -393,7 +393,7 @@
       "documentos_faltantes": 3,
       "tipo": "admissao_pendente_documentos"
     },
-    "link": "/admissoes/documentos/456",
+    "link": "/admissao/registro/456",
     "user_type": "RH"
   },
   {
@@ -409,7 +409,7 @@
       "data_inicio": "2024-02-15",
       "tipo": "admissao_aprovada"
     },
-    "link": "/admissoes/789",
+    "link": "/admissao/registro/789",
     "user_type": "RH"
   },
   {
@@ -425,7 +425,7 @@
       "dias_aguardando": 2,
       "tipo": "admissao_pendente_aprovacao"
     },
-    "link": "/admissoes/aprovacoes/101",
+    "link": "/admissao/registro/101",
     "user_type": "Outsourcing"
   },
   {
@@ -442,7 +442,7 @@
       "fonte": "Gupy",
       "tipo": "vaga_gupy"
     },
-    "link": "/vagas/202",
+    "link": "/vagas/detalhes/202",
     "user_type": "Outsourcing"
   },
   {
@@ -451,7 +451,7 @@
     "title": "Nova Vaga via Gupy",
     "message": "Nova vaga 'Analista de Sistemas' foi adicionada via Gupy.",
     "time": "2 dias atrás",
-    "isRead": true,
+    "isRead": false,
     "created_at": "2024-01-13T16:30:00Z",
     "data": {
       "vaga": "Analista de Sistemas",
@@ -459,7 +459,7 @@
       "fonte": "Gupy",
       "tipo": "vaga_gupy"
     },
-    "link": "/vagas/202",
+    "link": "/vagas/detalhes/202",
     "user_type": "RH"
   },
   {
@@ -475,7 +475,7 @@
       "status": "ativo",
       "tipo": "admissao_concluida"
     },
-    "link": "/colaboradores/303",
+    "link": "/colaborador/detalhes/303",
     "user_type": "RH"
   }
 ]

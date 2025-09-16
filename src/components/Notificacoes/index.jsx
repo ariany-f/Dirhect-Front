@@ -136,7 +136,7 @@ const NotificacoesList = styled.div`
   overflow-y: auto;
 `;
 
-// Item de notificação - borda esquerda colorida para não lidas
+// Item de notificação - diferenças mais visíveis
 const NotificacaoItem = styled.div`
   padding: 16px;
   border-bottom: 1px solid var(--neutro-100);
@@ -144,28 +144,61 @@ const NotificacaoItem = styled.div`
   align-items: flex-start;
   gap: 16px;
   cursor: pointer;
-  transition: background-color 0.2s;
-  background: ${({ $isRead }) => $isRead ? 'transparent' : 'var(--neutro-50)'};
-  position: relative;
-  border-left: ${({ $isRead, $type }) => 
-    $isRead ? 'none' : 
-    $type === 'success' ? '4px solid #10b981' :
-    $type === 'warning' ? '4px solid #f59e0b' :
-    $type === 'error' ? '4px solid #ef4444' :
-    $type === 'info' ? '4px solid #3b82f6' :
-    '4px solid #6b7280'
+  transition: all 0.2s ease;
+  background: ${({ $isRead }) => 
+    $isRead === true || $isRead === 'true' ? 
+    'transparent' : 
+    'linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)'
   };
+  position: relative;
+  border-left: ${({ $isRead, $type }) => {
+    const isRead = $isRead === true || $isRead === 'true';
+    if (isRead) return 'none';
+    
+    switch ($type) {
+      case 'success': return '4px solid #10b981';
+      case 'warning': return '4px solid #f59e0b';
+      case 'error': return '4px solid #ef4444';
+      case 'info': return '4px solid #3b82f6';
+      default: return '4px solid #6b7280';
+    }
+  }};
   
   &:hover {
-    background-color: var(--neutro-100);
+    background-color: ${({ $isRead }) => 
+      $isRead === true || $isRead === 'true' ? 
+      'var(--neutro-50)' : 
+      'var(--neutro-100)'
+    };
   }
   
   &:last-child {
     border-bottom: none;
   }
+  
+  // Indicador visual para não lidas
+  ${({ $isRead }) => {
+    const isRead = $isRead === true || $isRead === 'true';
+    if (!isRead) {
+      return `
+        &::before {
+          content: '';
+          position: absolute;
+          top: 20px;
+          right: 16px;
+          width: 8px;
+          height: 8px;
+          background: var(--primaria);
+          border-radius: 50%;
+          box-shadow: 0 0 0 2px white;
+        }
+      `;
+    }
+    return '';
+  }}
 `;
 
-// Ícone da notificação
+// Ícone da notificação - opacidade aumentada para lidas
 const NotificacaoIcon = styled.div`
   flex-shrink: 0;
   width: 32px;
@@ -176,15 +209,28 @@ const NotificacaoIcon = styled.div`
   justify-content: center;
   color: white;
   font-size: 14px;
-  background: ${({ $type }) => {
-    switch ($type) {
-      case 'success': return 'rgb(193, 212, 206)';
-      case 'warning': return 'rgb(221, 210, 192)';
-      case 'error': return 'rgb(214, 188, 188)';
-      case 'info': return 'rgb(185, 200, 224)';
-      default: return 'rgb(165, 168, 175)';
+  background: ${({ $type, $isRead }) => {
+    const isRead = $isRead === true || $isRead === 'true';
+    
+    if (isRead) {
+      // Para lidas: cinza uniforme
+      return '#6b7280';
+    } else {
+      // Para não lidas: cores vibrantes
+      switch ($type) {
+        case 'success': return '#10b981';
+        case 'warning': return '#f59e0b';
+        case 'error': return '#ef4444';
+        case 'info': return '#3b82f6';
+        default: return '#6b7280';
+      }
     }
   }};
+  opacity: ${({ $isRead }) => {
+    const isRead = $isRead === true || $isRead === 'true';
+    return isRead ? 0.8 : 1; // Aumentado de 0.5 para 0.7
+  }};
+  transition: all 0.2s ease;
 `;
 
 // Conteúdo da notificação
@@ -193,24 +239,51 @@ const NotificacaoContent = styled.div`
   min-width: 0;
 `;
 
+// Título da notificação - opacidade aumentada para lidas
 const NotificacaoTitle = styled.div`
   font-size: 14px;
-  font-weight: 600;
-  color: var(--black);
+  font-weight: ${({ $isRead }) => {
+    const isRead = $isRead === true || $isRead === 'true';
+    return isRead ? '500' : '700';
+  }};
+  color: ${({ $isRead }) => {
+    const isRead = $isRead === true || $isRead === 'true';
+    return isRead ? 'var(--neutro-600)' : 'var(--black)';
+  }};
   margin-bottom: 4px;
   line-height: 1.3;
+  opacity: ${({ $isRead }) => {
+    const isRead = $isRead === true || $isRead === 'true';
+    return 1; // Aumentado de 0.7 para 0.8
+  }};
 `;
 
+// Mensagem da notificação - opacidade aumentada para lidas
 const NotificacaoMessage = styled.div`
   font-size: 13px;
-  color: var(--neutro-600);
+  color: ${({ $isRead }) => {
+    const isRead = $isRead === true || $isRead === 'true';
+    return isRead ? 'var(--neutro-500)' : 'var(--neutro-600)';
+  }};
   line-height: 1.4;
   margin-bottom: 4px;
+  opacity: ${({ $isRead }) => {
+    const isRead = $isRead === true || $isRead === 'true';
+    return 1; // Aumentado de 0.6 para 0.75
+  }};
 `;
 
+// Tempo da notificação - opacidade aumentada para lidas
 const NotificacaoTime = styled.div`
   font-size: 11px;
-  color: var(--neutro-500);
+  color: ${({ $isRead }) => {
+    const isRead = $isRead === true || $isRead === 'true';
+    return isRead ? 'var(--neutro-300)' : 'var(--neutro-500)';
+  }};
+  opacity: ${({ $isRead }) => {
+    const isRead = $isRead === true || $isRead === 'true';
+    return isRead ? 0.7 : 1; // Aumentado de 0.5 para 0.7
+  }};
 `;
 
 // Botão de fechar notificação - mais discreto
@@ -284,7 +357,7 @@ const Notificacoes = () => {
       title: notification.title,
       message: notification.message,
       time: formatTimeAgo(notification.created_at),
-      isRead: notification.is_read || false,
+      isRead: notification.isRead || notification.is_read || false, // Corrigido para aceitar ambos os formatos
       created_at: notification.created_at,
       data: notification.data || {},
       link: notification.link || null,
@@ -456,12 +529,12 @@ const Notificacoes = () => {
     
     // Verificar se é uma notificação de admissão
     if (notif.title?.includes('Admissão') || notif.data?.tipo?.includes('admissao')) {
-      return <RiUser3Fill size={16} className="icon" />;
+      return <RiUser3Fill fill="white" size={16} className="icon" />;
     }
     
     // Verificar se é uma notificação de demissão
     if (notif.title?.includes('Demissão') || notif.data?.tipo?.includes('demissao')) {
-      return <FaUserTimes size={16} className="icon" />;
+      return <FaUserTimes size={16} fill="white" className="icon" />;
     }
     
     // Verificar se é uma notificação de benefícios
@@ -471,12 +544,12 @@ const Notificacoes = () => {
     
     // Verificar se é uma notificação de vagas
     if (notif.title?.includes('Vaga') || notif.data?.tipo?.includes('vaga')) {
-      return <RiFilePaperFill size={16} className="icon" />;
+      return <RiFilePaperFill size={16} fill="white" className="icon" />;
     }
     
     // Verificar se é uma notificação de contratos
     if (notif.title?.includes('Contrato') || notif.data?.tipo?.includes('contrato')) {
-      return <RiFileListFill size={16} className="icon" />;
+      return <RiFileListFill fill="white" size={16} className="icon" />;
     }
     
     // Verificar se é uma notificação de pedidos
@@ -514,25 +587,11 @@ const Notificacoes = () => {
       return <HiMiniNewspaper size={16} fill="white" />;
     }
     
-    // Verificar se é uma notificação de estrutura
-    if (notif.title?.includes('Estrutura') || notif.data?.tipo?.includes('estrutura')) {
-      return <FaBuilding size={16} className="icon" />;
-    }
-    
-    // Verificar se é uma notificação de credenciais
-    if (notif.title?.includes('Credencial') || notif.data?.tipo?.includes('credencial')) {
-      return <FaKey size={16} className="icon" />;
-    }
-    
     // Verificar se é uma notificação de agendamentos
     if (notif.title?.includes('Agendamento') || notif.data?.tipo?.includes('agendamento')) {
       return <FaClock size={16} className="icon" />;
     }
     
-    // Verificar se é uma notificação de metadados
-    if (notif.title?.includes('Metadado') || notif.data?.tipo?.includes('metadado')) {
-      return <FaInfo size={16} className="icon" />;
-    }
     
     // Verificar se é uma notificação de Syync
     if (notif.title?.includes('Syync') || notif.data?.tipo?.includes('syync')) {
@@ -541,11 +600,11 @@ const Notificacoes = () => {
     
     // Fallback para ícones baseados no tipo de notificação (success, warning, error, info)
     switch (notif.type) {
-      case 'success': return <FaCheckCircle fill="#10b981" />;
-      case 'warning': return <FaExclamationTriangle fill="#f59e0b" />;
-      case 'error': return <FaTimes fill="#ef4444" />;
-      case 'info': return <FaInfoCircle fill="#3b82f6" />;
-      default: return <FaInfoCircle fill="#6b7280" />;
+      case 'success': return <FaCheckCircle fill="white" />;
+      case 'warning': return <FaExclamationTriangle fill="white" />;
+      case 'error': return <FaTimes fill="white" />;
+      case 'info': return <FaInfoCircle fill="white" />;
+      default: return <FaInfoCircle fill="white" />;
     }
   };
 
@@ -644,14 +703,20 @@ const Notificacoes = () => {
                 onClick={() => handleNotificationClick(notif)}
                 style={{ cursor: notif.link ? 'pointer' : 'default' }}
               >
-                <NotificacaoIcon $type={notif.type}>
+                <NotificacaoIcon $type={notif.type} $isRead={notif.isRead}>
                   {getIconByNotificationType(notif)}
                 </NotificacaoIcon>
                 
                 <NotificacaoContent>
-                  <NotificacaoTitle>{notif.title}</NotificacaoTitle>
-                  <NotificacaoMessage>{notif.message}</NotificacaoMessage>
-                  <NotificacaoTime>{notif.time}</NotificacaoTime>
+                  <NotificacaoTitle $isRead={notif.isRead}>
+                    {notif.title}
+                  </NotificacaoTitle>
+                  <NotificacaoMessage $isRead={notif.isRead}>
+                    {notif.message}
+                  </NotificacaoMessage>
+                  <NotificacaoTime $isRead={notif.isRead}>
+                    {notif.time}
+                  </NotificacaoTime>
                 </NotificacaoContent>
 
                 <CloseButton 
