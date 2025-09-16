@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useOutletContext } from 'react-router-dom';
+import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import { Toast } from 'primereact/toast';
 import { useRef } from 'react';
 import Frame from '@components/Frame';
@@ -7,7 +7,7 @@ import Titulo from '@components/Titulo';
 import Container from '@components/Container';
 import styled from 'styled-components';
 import QuestionCard from '@components/QuestionCard'
-import { FaCalendarAlt, FaUser, FaIdCard, FaFileAlt, FaClock, FaDollarSign, FaExclamationTriangle, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { FaCalendarAlt, FaUser, FaIdCard, FaFileAlt, FaClock, FaDollarSign, FaExclamationTriangle, FaCheckCircle, FaTimesCircle, FaArrowRight } from 'react-icons/fa';
 import { Tag } from 'primereact/tag';
 import { AiFillQuestionCircle } from 'react-icons/ai';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
@@ -163,18 +163,49 @@ const BotaoReprovarCustom = styled(Botao)`
     }
 `;
 
-// Adicionar styled component para status de erro
+// Versão mais limpa e elegante para status de erro
 const StatusErro = styled.div`
-    background: #fef2f2;
-    color: #dc2626;
-    border-left: 4px solid #dc2626;
-    border-radius: 4px;
-    padding: 16px;
-    font-size: 14px;
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+    border-radius: 6px;
+    padding: 12px 16px;
     margin-top: 16px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+`;
+
+const StatusErroIcon = styled.div`
+    color: #e53e3e;
+    flex-shrink: 0;
+`;
+
+const StatusErroText = styled.div`
+    flex: 1;
+    font-size: 13px;
+    color: #742a2a;
+    line-height: 1.4;
+`;
+
+const StatusErroLink = styled.button`
+    background: none;
+    border: none;
+    color: #3182ce;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+    
+    &:hover {
+        color: #2c5282;
+    }
+    
+    &:disabled {
+        color: #a0aec0;
+        cursor: not-allowed;
+        text-decoration: none;
+    }
 `;
 
 function ColaboradorDemissao() {
@@ -182,6 +213,7 @@ function ColaboradorDemissao() {
     const { usuario } = useSessaoUsuarioContext();
     const toast = useRef(null);
     const [loading, setLoading] = useState({});
+    const navegar = useNavigate();
     
     // Usar dados reais da API
     const demissaoData = demissao || [];
@@ -401,11 +433,20 @@ function ColaboradorDemissao() {
                             {/* Status de erro da atividade */}
                             {(usuario?.tipo === 'Outsourcing' || usuario?.tipo === 'RH') && demissao.atividade_status === 'erro' && (
                                 <StatusErro>
-                                    <FaExclamationTriangle size={20} style={{ color: '#dc2626', flexShrink: 0 }}/>
-                                    <span>
-                                        <strong>Erro na atividade:</strong> Esta solicitação de demissão possui um erro no processo. 
-                                        Entre em contato com o administrador do sistema para resolver.
-                                    </span>
+                                    <StatusErroIcon>
+                                        <FaExclamationTriangle size={14} />
+                                    </StatusErroIcon>
+                                    
+                                    <StatusErroText>
+                                        Esta solicitação possui um erro no processo.
+                                    </StatusErroText>
+                                    
+                                    <StatusErroLink
+                                        onClick={() => navegar(`/tarefas/detalhes/${demissao.processo_id}`)}
+                                        disabled={loading[demissao.atividade_uid] || !demissao.processo_id}
+                                    >
+                                        Ver detalhes
+                                    </StatusErroLink>
                                 </StatusErro>
                             )}
 
