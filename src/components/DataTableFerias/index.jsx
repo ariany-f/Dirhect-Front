@@ -357,7 +357,12 @@ function DataTableFerias({
         if (resultado) {
             if (resultado.sucesso) {
                 toast.current.show({ severity: 'success', summary: 'Sucesso', detail: resultado.mensagem, life: 3000 });
-                if (onUpdate) onUpdate(); // Chama callback de atualização apenas em caso de sucesso
+
+                if (onUpdate) { 
+                    setTimeout(() => {
+                        onUpdate(); // Chama callback de atualização apenas em caso de sucesso
+                    }, 2000);
+                }
             } else if (resultado.erro) {
                 toast.current.show({ severity: 'error', summary: 'Erro', detail: resultado.mensagem, life: 3000 });
                 // Não chama onUpdate em caso de erro
