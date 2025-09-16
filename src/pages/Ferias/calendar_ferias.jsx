@@ -458,7 +458,7 @@ const DAYS_BATCH = 30; // Carrega mais 1 mês por vez
 const INITIAL_COLABS = 3;
 const COLABS_BATCH = 2;
 
-const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadingMore, isRendering }) => {
+const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadingMore, isRendering, situacoesUnicas = [] }) => {
     const [visualizacao, setVisualizacao] = useState('trimestral'); // 'mensal', 'trimestral', 'semestral' ou 'anual'
     const [modalEvento, setModalEvento] = useState(null); // {colab, evento, tipo}
     const [isDragging, setIsDragging] = useState(false);
@@ -891,6 +891,12 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
         }
     }, []);
 
+    // Função para buscar texto da situação na API
+    const getSituacaoTexto = useCallback((statusCode) => {
+        const situacaoEncontrada = situacoesUnicas.find(s => s.value === statusCode);
+        return situacaoEncontrada ? situacaoEncontrada.label : null;
+    }, [situacoesUnicas]);
+
     return (
         <CalendarContainer ref={containerRef}>
             <Toast ref={toast} />
@@ -1225,20 +1231,30 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                         if (type === 'aguardando') return null;
                                         
                                         let tooltip = `Início: ${format(parseDateAsLocal(aus.data_inicio), 'dd/MM/yyyy')}\nFim: ${format(parseDateAsLocal(aus.data_fim), 'dd/MM/yyyy')}`;
-                                        if (type === 'acontecendo') {
-                                            tooltip = 'Em curso';
-                                        } else if (type === 'solicitada') {
-                                            tooltip = 'Solicitada';
-                                        } else if (type === 'marcada') {
-                                            tooltip = 'Marcada';
-                                        } else if (type === 'aprovada') {
-                                            tooltip = 'Aprovada';
-                                        } else if (type === 'finalizada') {
-                                            tooltip = 'Finalizada';
-                                        } else if (type === 'paga') {
-                                            tooltip = 'Paga';
-                                        } else if (type === 'passada') {
-                                            tooltip = 'Concluída';
+                                        
+                                        // Tenta buscar o texto da situação na API primeiro
+                                        const textoSituacaoAPI = getSituacaoTexto(aus.status);
+                                        
+                                        if (textoSituacaoAPI) {
+                                            // Se encontrou na API, usa o texto da API
+                                            tooltip = textoSituacaoAPI;
+                                        } else {
+                                            // Fallback para textos hardcoded se não encontrar na API
+                                            if (type === 'acontecendo') {
+                                                tooltip = 'Em curso';
+                                            } else if (type === 'solicitada') {
+                                                tooltip = 'Solicitada';
+                                            } else if (type === 'marcada') {
+                                                tooltip = 'Marcada';
+                                            } else if (type === 'aprovada') {
+                                                tooltip = 'Aprovada';
+                                            } else if (type === 'finalizada') {
+                                                tooltip = 'Finalizada';
+                                            } else if (type === 'paga') {
+                                                tooltip = 'Paga';
+                                            } else if (type === 'passada') {
+                                                tooltip = 'Concluída';
+                                            }
                                         }
                                         
                                         // Adiciona período aquisitivo ao evento se não existir

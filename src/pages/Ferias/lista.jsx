@@ -996,6 +996,7 @@ function FeriasListagem() {
                                         hasMore={hasMore}
                                         isLoadingMore={isLoadingMore}
                                         isRendering={isRendering}
+                                        situacoesUnicas={situacoesFerias}
                                     />
                                 )}
                                 {loadingFiltroSituacao && (

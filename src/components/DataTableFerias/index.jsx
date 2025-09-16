@@ -471,80 +471,95 @@ function DataTableFerias({
         // Usa a função mapStatusToType para determinar o status
         const statusType = mapStatusToType(rowData.situacaoferias, rowData.dt_inicio, rowData.dt_fim);
         
-        // Mapeia o statusType para o texto oficial
+        // Busca o texto da situação na API primeiro
+        const situacaoEncontrada = situacoesUnicas.find(s => s.value === rowData.situacaoferias);
+        
+        // Mapeia o statusType para o texto oficial usando situacoesUnicas
         let statusText = '';
-        switch (statusType) {
-            case 'aSolicitar':
-                statusText = 'A solicitar';
-                break;
-            case 'solicitada':
-                statusText = 'Em análise';
-                break;
-            case 'marcada':
-                statusText = 'Marcada';
-                break;
-            case 'aprovada':
-                statusText = 'Aprovada';
-                break;
-            case 'finalizada':
-                statusText = 'Finalizada';
-                break;
-            case 'paga':
-                statusText = 'Paga';
-                break;
-            case 'acontecendo':
-                statusText = 'Em férias';
-                break;
-            case 'passada':
-                statusText = 'Concluída';
-                break;
-            case 'rejeitada':
-                statusText = 'Rejeitada';
-                break;
-            default:
-                statusText = 'N/A';
-                break;
+        if (situacaoEncontrada) {
+            // Se encontrou na API, usa o label da API
+            statusText = situacaoEncontrada.label;
+        } else {
+            // Fallback para casos onde a situação não está nas opções da API
+            switch (statusType) {
+                case 'aSolicitar':
+                    statusText = 'A solicitar';
+                    break;
+                case 'solicitada':
+                    statusText = 'Em análise';
+                    break;
+                case 'marcada':
+                    statusText = 'Marcada';
+                    break;
+                case 'aprovada':
+                    statusText = 'Aprovada';
+                    break;
+                case 'finalizada':
+                    statusText = 'Finalizada';
+                    break;
+                case 'paga':
+                    statusText = 'Paga';
+                    break;
+                case 'acontecendo':
+                    statusText = 'Em férias';
+                    break;
+                case 'passada':
+                    statusText = 'Concluída';
+                    break;
+                case 'rejeitada':
+                    statusText = 'Rejeitada';
+                    break;
+                default:
+                    statusText = 'N/A';
+                    break;
+            }
         }
 
-        // Mapeia o status original para texto
+        // Mapeia o status original para texto usando situacoesUnicas
         let statusOriginalText = '';
-        switch (rowData.situacaoferias) {
-            case 'A':
-                statusOriginalText = 'Aprovada';
-                break;
-            case 'M':
-                statusOriginalText = 'Marcada';
-                break;
-            case 'F':
-                statusOriginalText = 'Finalizada';
-                break;
-            case 'P':
-                statusOriginalText = 'Paga';
-                break;
-            case 'X':
-                statusOriginalText = 'Finalizada Próximo Mês';
-                break;
-            case 'I':
-                statusOriginalText = 'Iniciada Solicitação';
-                break;
-            case 'G':
-                statusOriginalText = 'Aguardando Gestor';
-                break;
-            case 'D':
-                statusOriginalText = 'Aguardando DP';
-                break;
-            case 'E':
-                statusOriginalText = 'Em Análise';
-                break;
-            case 'C':
-                statusOriginalText = 'Cancelada';
-                break;
-            case 'R':
-                statusOriginalText = 'Rejeitada';
-                break;
-            default:
-                statusOriginalText = 'N/A';
-                break;
+        if (situacaoEncontrada) {
+            // Se encontrou na API, usa o label da API
+            statusOriginalText = situacaoEncontrada.label;
+        } else {
+            // Fallback para casos onde a situação não está nas opções da API
+            switch (rowData.situacaoferias) {
+                case 'A':
+                    statusOriginalText = 'Aprovada';
+                    break;
+                case 'M':
+                    statusOriginalText = 'Marcada';
+                    break;
+                case 'F':
+                    statusOriginalText = 'Finalizada';
+                    break;
+                case 'P':
+                    statusOriginalText = 'Paga';
+                    break;
+                case 'X':
+                    statusOriginalText = 'Finalizada Próximo Mês';
+                    break;
+                case 'I':
+                    statusOriginalText = 'Iniciada Solicitação';
+                    break;
+                case 'G':
+                    statusOriginalText = 'Aguardando Gestor';
+                    break;
+                case 'D':
+                    statusOriginalText = 'Aguardando DP';
+                    break;
+                case 'E':
+                    statusOriginalText = 'Em Análise';
+                    break;
+                case 'C':
+                    statusOriginalText = 'Cancelada';
+                    break;
+                case 'R':
+                    statusOriginalText = 'Rejeitada';
+                    break;
+                default:
+                    statusOriginalText = 'N/A';
+                    break;
+            }
         }
 
         // Verifica se os textos são diferentes (normalizando singular/plural)
