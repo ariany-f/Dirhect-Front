@@ -165,8 +165,8 @@ const BotaoReprovarCustom = styled(Botao)`
 
 // Versão mais limpa e elegante para status de erro
 const StatusErro = styled.div`
-    background: #fff5f5;
-    border: 1px solid #fed7d7;
+    background:rgb(221, 191, 191);
+    border: 1px solidrgb(206, 162, 162);
     border-radius: 6px;
     padding: 12px 16px;
     margin-top: 16px;
@@ -183,14 +183,15 @@ const StatusErroIcon = styled.div`
 const StatusErroText = styled.div`
     flex: 1;
     font-size: 13px;
-    color: #742a2a;
+    color:rgb(143, 32, 32);
     line-height: 1.4;
+    font-weight: 500;
 `;
 
 const StatusErroLink = styled.button`
     background: none;
     border: none;
-    color: #3182ce;
+    color:rgb(19, 18, 18);
     font-size: 12px;
     font-weight: 500;
     cursor: pointer;
@@ -198,7 +199,7 @@ const StatusErroLink = styled.button`
     padding: 0;
     
     &:hover {
-        color: #2c5282;
+        color:var(--error);
     }
     
     &:disabled {
