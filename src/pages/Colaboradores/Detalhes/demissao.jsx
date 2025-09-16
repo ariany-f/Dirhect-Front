@@ -214,6 +214,31 @@ const StatusErroLink = styled.button`
     }
 `;
 
+// Adicionar styled component para status cancelado
+const StatusCancelado = styled.div`
+    background:rgb(228, 203, 178);
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+`;
+
+const StatusCanceladoIcon = styled.div`
+    color: var(--black);
+    flex-shrink: 0;
+`;
+
+const StatusCanceladoText = styled.div`
+    flex: 1;
+    font-size: 13px;
+    color: var(--black);
+    line-height: 1.4;
+    font-weight: 500;
+`;
+
 function ColaboradorDemissao() {
     const { colaborador, demissao } = useOutletContext();
     const { usuario } = useSessaoUsuarioContext();
@@ -269,7 +294,7 @@ function ColaboradorDemissao() {
         setLoading(prev => ({ ...prev, [atividadeId]: true }));
         
         try {
-            await http.post(`tarefas/${atividadeId}/rejeitar/`);
+            await http.post(`tarefas/${atividadeId}/cancelar/`);
             
             toast.current.show({
                 severity: 'success',
@@ -454,6 +479,19 @@ function ColaboradorDemissao() {
                                         Ver detalhes
                                     </StatusErroLink>
                                 </StatusErro>
+                            )}
+
+                            {/* Status cancelado da atividade */}
+                            {demissao.atividade_status === 'cancelada' && (
+                                <StatusCancelado>
+                                    <StatusCanceladoIcon>
+                                        <FaTimesCircle size={14} />
+                                    </StatusCanceladoIcon>
+                                    
+                                    <StatusCanceladoText>
+                                        Demissão cancelada
+                                    </StatusCanceladoText>
+                                </StatusCancelado>
                             )}
 
                             {/* Botões de ação para usuários Outsourcing - apenas se status for pendente */}
