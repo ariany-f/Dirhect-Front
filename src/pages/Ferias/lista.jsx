@@ -959,7 +959,7 @@ function FeriasListagem() {
                                             fontSize: '48px',
                                             color: '#9ca3af'
                                         }}>
-                                            📅
+                                            <img src={Management} />
                                         </div>
                                         <div style={{
                                             textAlign: 'center',
