@@ -1,9 +1,28 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { FaBell, FaCheck, FaTimes, FaExclamationTriangle, FaInfoCircle, FaCheckCircle } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import http from '@http';
 import { useNotificationsWebSocket } from '@ws';
+import mockNotificacoes from '@json/notifications.json';
+import { SessaoUsuarioContext } from '@contexts/SessaoUsuario';
+
+// Importar ícones do menu
+import { AiFillHome } from "react-icons/ai";
+import { HiMiniNewspaper, HiMiniShoppingBag } from "react-icons/hi2";
+import { RiHandCoinFill, RiFilePaperFill, RiUser3Fill, RiTrophyFill, RiTeamFill, RiBankCardFill, RiFileListFill, RiLogoutCircleLine, RiBlenderFill } from "react-icons/ri";
+import { BiBusSchool, BiCart, BiDrink, BiSolidDashboard } from "react-icons/bi";
+import { LuSparkles } from "react-icons/lu";
+import { FaBuilding, FaBusAlt, FaClock, FaInfo, FaKey, FaSync, FaUmbrellaBeach, FaUserTimes } from "react-icons/fa";
+import { FaUserGroup } from "react-icons/fa6";
+import { BsHourglassSplit } from "react-icons/bs";
+import { TbBeach, TbBusinessplan, TbTable, TbTableShare } from "react-icons/tb";
+import { MdAllInbox, MdBusiness, MdHandshake, MdShoppingCart, MdShoppingCartCheckout } from "react-icons/md";
+import { GoTasklist } from "react-icons/go";
+import { IoBusiness } from "react-icons/io5";
+import { PiHandshake } from "react-icons/pi";
+import { FaExchangeAlt } from 'react-icons/fa';
 
 // Container principal das notificações
 const NotificacoesContainer = styled.div`
@@ -117,16 +136,25 @@ const NotificacoesList = styled.div`
   overflow-y: auto;
 `;
 
-// Item de notificação
+// Item de notificação - borda esquerda colorida para não lidas
 const NotificacaoItem = styled.div`
-  padding: 12px 16px;
+  padding: 16px;
   border-bottom: 1px solid var(--neutro-100);
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 16px;
   cursor: pointer;
   transition: background-color 0.2s;
   background: ${({ $isRead }) => $isRead ? 'transparent' : 'var(--neutro-50)'};
+  position: relative;
+  border-left: ${({ $isRead, $type }) => 
+    $isRead ? 'none' : 
+    $type === 'success' ? '4px solid #10b981' :
+    $type === 'warning' ? '4px solid #f59e0b' :
+    $type === 'error' ? '4px solid #ef4444' :
+    $type === 'info' ? '4px solid #3b82f6' :
+    '4px solid #6b7280'
+  };
   
   &:hover {
     background-color: var(--neutro-100);
@@ -185,7 +213,7 @@ const NotificacaoTime = styled.div`
   color: var(--neutro-500);
 `;
 
-// Botão de fechar notificação
+// Botão de fechar notificação - mais discreto
 const CloseButton = styled.button`
   flex-shrink: 0;
   background: none;
@@ -195,10 +223,12 @@ const CloseButton = styled.button`
   padding: 4px;
   border-radius: 4px;
   transition: all 0.2s;
+  opacity: 0.6;
   
   &:hover {
     color: var(--neutro-600);
     background-color: var(--neutro-100);
+    opacity: 1;
   }
 `;
 
@@ -220,51 +250,9 @@ const EmptyText = styled.p`
   font-size: 14px;
 `;
 
-// Dados mockados para fallback
-const mockNotificacoes = [
-  {
-    id: 1,
-    type: 'success',
-    title: 'Férias Aprovadas',
-    message: 'Suas férias de 15/01 a 30/01 foram aprovadas pelo gestor.',
-    time: '2 horas atrás',
-    isRead: false,
-    created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    data: { ferias_id: 123, gestor: 'João Silva' }
-  },
-  {
-    id: 2,
-    type: 'warning',
-    title: 'Prazo de Solicitação',
-    message: 'Você tem 5 dias para solicitar férias do período aquisitivo 2023.',
-    time: '1 dia atrás',
-    isRead: false,
-    created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-    data: { dias_restantes: 5, periodo: '2023' }
-  },
-  {
-    id: 3,
-    type: 'info',
-    title: 'Nova Funcionalidade',
-    message: 'Agora você pode visualizar suas férias em formato de calendário.',
-    time: '3 dias atrás',
-    isRead: true,
-    created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    data: { feature: 'calendario_ferias' }
-  },
-  {
-    id: 4,
-    type: 'error',
-    title: 'Erro no Sistema',
-    message: 'Ocorreu um problema temporário. Tente novamente em alguns minutos.',
-    time: '1 semana atrás',
-    isRead: true,
-    created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    data: { error_code: 'SYSTEM_001' }
-  }
-];
-
 const Notificacoes = () => {
+  const navigate = useNavigate();
+  const { usuario } = useContext(SessaoUsuarioContext);
   const [isOpen, setIsOpen] = useState(false);
   const [notificacoes, setNotificacoes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -298,8 +286,24 @@ const Notificacoes = () => {
       time: formatTimeAgo(notification.created_at),
       isRead: notification.is_read || false,
       created_at: notification.created_at,
-      data: notification.data || {}
+      data: notification.data || {},
+      link: notification.link || null,
+      user_type: notification.user_type
     };
+  };
+
+  // Função para navegar quando clicar na notificação
+  const handleNotificationClick = (notif) => {
+    // Marcar como lida primeiro
+    markAsRead(notif.id);
+    
+    // Fechar o painel
+    setIsOpen(false);
+    
+    // Navegar se tiver link
+    if (notif.link) {
+      navigate(notif.link);
+    }
   };
 
   // Carregar notificações da API
@@ -308,27 +312,38 @@ const Notificacoes = () => {
       setLoading(true);
       setError(null);
       
-    //   const response = await http.get('notificacoes/');
+      // COMENTADO: Endpoint ainda não existe
+      // const response = await http.get('notificacoes/');
       
-    //   if (response && Array.isArray(response)) {
-    //     const processedNotifications = response.map(processNotification);
-    //     setNotificacoes(processedNotifications);
-    //   } else {
-    //     // Fallback para dados mockados se API não retornar dados
-    //     console.warn('API não retornou dados, usando fallback');
-    //     setNotificacoes(mockNotificacoes);
-    //   }
-    console.log('Usando dados mockados - endpoint notificacoes/ ainda não existe');
-    setNotificacoes(mockNotificacoes);
+      // if (response && Array.isArray(response)) {
+      //   const processedNotifications = response.map(processNotification);
+      //   setNotificacoes(processedNotifications);
+      // } else {
+      //   // Fallback para dados mockados se API não retornar dados
+      //   console.warn('API não retornou dados, usando fallback');
+      //   setNotificacoes(mockNotificacoes);
+      // }
+      
+      console.log('Usando dados mockados - endpoint notificacoes/ ainda não existe');
+      
+      // Filtrar notificações baseadas no tipo de usuário
+      const userNotifications = mockNotificacoes.filter(notif => 
+        notif.user_type === usuario?.tipo
+      );
+      setNotificacoes(userNotifications.map(processNotification));
+      
     } catch (error) {
       console.error('Erro ao carregar notificações:', error);
       setError('Erro ao carregar notificações');
       // Usar dados mockados em caso de erro
-      setNotificacoes(mockNotificacoes);
+      const userNotifications = mockNotificacoes.filter(notif => 
+        notif.user_type === usuario?.tipo
+      );
+      setNotificacoes(userNotifications.map(processNotification));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [usuario?.tipo]);
 
   // Conectar WebSocket
   const connectWebSocket = useCallback(async () => {
@@ -432,9 +447,100 @@ const Notificacoes = () => {
     await removeNotificationAPI(id);
   };
 
-  // Obter ícone baseado no tipo
-  const getIcon = (type) => {
-    switch (type) {
+  // Função para obter ícone baseado no tipo de notificação
+  const getIconByNotificationType = (notif) => {
+    // Verificar se é uma notificação de férias
+    if (notif.title?.includes('Férias') || notif.data?.tipo === 'ferias') {
+      return <FaUmbrellaBeach size={16} fill="white" />;
+    }
+    
+    // Verificar se é uma notificação de admissão
+    if (notif.title?.includes('Admissão') || notif.data?.tipo?.includes('admissao')) {
+      return <RiUser3Fill size={16} className="icon" />;
+    }
+    
+    // Verificar se é uma notificação de demissão
+    if (notif.title?.includes('Demissão') || notif.data?.tipo?.includes('demissao')) {
+      return <FaUserTimes size={16} className="icon" />;
+    }
+    
+    // Verificar se é uma notificação de benefícios
+    if (notif.title?.includes('Benefício') || notif.data?.tipo?.includes('beneficio')) {
+      return <LuSparkles size={16} className="icon" stroke="white" />;
+    }
+    
+    // Verificar se é uma notificação de vagas
+    if (notif.title?.includes('Vaga') || notif.data?.tipo?.includes('vaga')) {
+      return <RiFilePaperFill size={16} className="icon" />;
+    }
+    
+    // Verificar se é uma notificação de contratos
+    if (notif.title?.includes('Contrato') || notif.data?.tipo?.includes('contrato')) {
+      return <RiFileListFill size={16} className="icon" />;
+    }
+    
+    // Verificar se é uma notificação de pedidos
+    if (notif.title?.includes('Pedido') || notif.data?.tipo?.includes('pedido')) {
+      return <HiMiniShoppingBag size={16} fill="white" />;
+    }
+    
+    // Verificar se é uma notificação de processos/tarefas
+    if (notif.title?.includes('Processo') || notif.title?.includes('Tarefa') || notif.data?.tipo?.includes('processo')) {
+      return <GoTasklist size={16} fill="white" />;
+    }
+    
+    // Verificar se é uma notificação de colaboradores
+    if (notif.title?.includes('Colaborador') || notif.data?.tipo?.includes('colaborador')) {
+      return <BiSolidDashboard size={16} className="icon" />;
+    }
+    
+    // Verificar se é uma notificação de dependentes
+    if (notif.title?.includes('Dependente') || notif.data?.tipo?.includes('dependente')) {
+      return <FaUserGroup size={16} className="icon" />;
+    }
+    
+    // Verificar se é uma notificação de ausências
+    if (notif.title?.includes('Ausência') || notif.data?.tipo?.includes('ausencia')) {
+      return <BsHourglassSplit size={16} className="icon" />;
+    }
+    
+    // Verificar se é uma notificação de operadoras
+    if (notif.title?.includes('Operadora') || notif.data?.tipo?.includes('operadora')) {
+      return <FaBuilding size={16} className="icon" />;
+    }
+    
+    // Verificar se é uma notificação de relatórios
+    if (notif.title?.includes('Relatório') || notif.data?.tipo?.includes('relatorio')) {
+      return <HiMiniNewspaper size={16} fill="white" />;
+    }
+    
+    // Verificar se é uma notificação de estrutura
+    if (notif.title?.includes('Estrutura') || notif.data?.tipo?.includes('estrutura')) {
+      return <FaBuilding size={16} className="icon" />;
+    }
+    
+    // Verificar se é uma notificação de credenciais
+    if (notif.title?.includes('Credencial') || notif.data?.tipo?.includes('credencial')) {
+      return <FaKey size={16} className="icon" />;
+    }
+    
+    // Verificar se é uma notificação de agendamentos
+    if (notif.title?.includes('Agendamento') || notif.data?.tipo?.includes('agendamento')) {
+      return <FaClock size={16} className="icon" />;
+    }
+    
+    // Verificar se é uma notificação de metadados
+    if (notif.title?.includes('Metadado') || notif.data?.tipo?.includes('metadado')) {
+      return <FaInfo size={16} className="icon" />;
+    }
+    
+    // Verificar se é uma notificação de Syync
+    if (notif.title?.includes('Syync') || notif.data?.tipo?.includes('syync')) {
+      return <FaSync size={16} className="icon" />;
+    }
+    
+    // Fallback para ícones baseados no tipo de notificação (success, warning, error, info)
+    switch (notif.type) {
       case 'success': return <FaCheckCircle fill="#10b981" />;
       case 'warning': return <FaExclamationTriangle fill="#f59e0b" />;
       case 'error': return <FaTimes fill="#ef4444" />;
@@ -459,16 +565,34 @@ const Notificacoes = () => {
 
   // Carregar notificações e conectar WebSocket na montagem
   useEffect(() => {
-    loadNotifications();
-    connectWebSocket();
+    if (usuario?.tipo) {
+      loadNotifications();
+      connectWebSocket();
+    }
 
     return () => {
       disconnect();
     };
-  }, [loadNotifications, connectWebSocket, disconnect]);
+  }, [loadNotifications, connectWebSocket, disconnect, usuario?.tipo]);
 
   // Contar notificações não lidas
   const unreadCount = notificacoes.filter(n => !n.isRead).length;
+
+  // No componente Notificacoes, adicione o novo tipo de usuário
+  const getNotificationsByUserType = (userType) => {
+    switch (userType) {
+      case 'RH':
+        return mockNotificacoes.filter(notif => notif.user_type === 'RH');
+      case 'Outsourcing':
+        return mockNotificacoes.filter(notif => notif.user_type === 'Outsourcing');
+      case 'Colaborador':
+        return mockNotificacoes.filter(notif => notif.user_type === 'Colaborador');
+      case 'Beneficios':
+        return mockNotificacoes.filter(notif => notif.user_type === 'Beneficios');
+      default:
+        return [];
+    }
+  };
 
   return (
     <NotificacoesContainer ref={containerRef}>
@@ -488,9 +612,7 @@ const Notificacoes = () => {
 
       <NotificacoesPanel $isOpen={isOpen}>
         <PanelHeader>
-          <PanelTitle>
-            Notificações
-          </PanelTitle>
+          <PanelTitle>Notificações</PanelTitle>
           {unreadCount > 0 && (
             <MarkAllButton onClick={markAllAsRead}>
               Marcar todas como lidas
@@ -518,10 +640,12 @@ const Notificacoes = () => {
               <NotificacaoItem 
                 key={notif.id} 
                 $isRead={notif.isRead}
-                onClick={() => markAsRead(notif.id)}
+                $type={notif.type}
+                onClick={() => handleNotificationClick(notif)}
+                style={{ cursor: notif.link ? 'pointer' : 'default' }}
               >
                 <NotificacaoIcon $type={notif.type}>
-                  {getIcon(notif.type)}
+                  {getIconByNotificationType(notif)}
                 </NotificacaoIcon>
                 
                 <NotificacaoContent>

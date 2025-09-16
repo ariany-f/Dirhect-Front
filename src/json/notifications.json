@@ -1,0 +1,496 @@
+[
+  {
+    "id": 1,
+    "type": "success",
+    "title": "Férias Aprovadas",
+    "message": "As férias de João Silva (15/01 a 30/01) foram aprovadas pela empresa de outsourcing.",
+    "time": "2 horas atrás",
+    "isRead": false,
+    "created_at": "2024-01-15T10:30:00Z",
+    "data": {
+      "ferias_id": 123,
+      "colaborador": "João Silva",
+      "empresa": "Outsourcing BPO",
+      "tipo": "ferias_aprovada"
+    },
+    "link": "/ferias/123",
+    "user_type": "RH"
+  },
+  {
+    "id": 2,
+    "type": "warning",
+    "title": "Férias Rejeitadas",
+    "message": "As férias de Maria Santos foram rejeitadas pela empresa de outsourcing. Motivo: Conflito com período de alta demanda.",
+    "time": "4 horas atrás",
+    "isRead": false,
+    "created_at": "2024-01-15T08:15:00Z",
+    "data": {
+      "ferias_id": 124,
+      "colaborador": "Maria Santos",
+      "motivo": "Conflito com período de alta demanda",
+      "tipo": "ferias_rejeitada"
+    },
+    "link": "/ferias/124",
+    "user_type": "RH"
+  },
+  {
+    "id": 4,
+    "type": "info",
+    "title": "Lembrete de Período",
+    "message": "Lembrete: Período aquisitivo 2023 expira em 30 dias para 15 colaboradores.",
+    "time": "1 dia atrás",
+    "isRead": true,
+    "created_at": "2024-01-14T14:20:00Z",
+    "data": {
+      "periodo": "2023",
+      "dias_restantes": 30,
+      "colaboradores_afetados": 15,
+      "tipo": "ferias_lembrete"
+    },
+    "link": "/ferias/periodos",
+    "user_type": "RH"
+  },
+  {
+    "id": 5,
+    "type": "warning",
+    "title": "Solicitação Pendente",
+    "message": "João Silva (RH) solicitou férias de 15/01 a 30/01. Aguardando aprovação da empresa de outsourcing.",
+    "time": "2 horas atrás",
+    "isRead": false,
+    "created_at": "2024-01-15T10:30:00Z",
+    "data": {
+      "ferias_id": 123,
+      "colaborador": "João Silva",
+      "solicitante": "RH",
+      "periodo": "15/01 a 30/01",
+      "tipo": "ferias_solicitacao"
+    },
+    "link": "/ferias/aprovacoes/123",
+    "user_type": "Outsourcing"
+  },
+  {
+    "id": 6,
+    "type": "info",
+    "title": "Nova Solicitação",
+    "message": "Maria Santos (RH) solicitou férias de 20/02 a 05/03. Aguardando aprovação da empresa de outsourcing.",
+    "time": "4 horas atrás",
+    "isRead": false,
+    "created_at": "2024-01-15T08:15:00Z",
+    "data": {
+      "ferias_id": 124,
+      "colaborador": "Maria Santos",
+      "solicitante": "RH",
+      "periodo": "20/02 a 05/03",
+      "tipo": "ferias_solicitacao"
+    },
+    "link": "/ferias/aprovacoes/124",
+    "user_type": "Outsourcing"
+  },
+  {
+    "id": 7,
+    "type": "success",
+    "title": "Aprovação Concluída",
+    "message": "A empresa de outsourcing aprovou as férias de Ana Costa (15/02 a 28/02).",
+    "time": "6 horas atrás",
+    "isRead": true,
+    "created_at": "2024-01-15T06:30:00Z",
+    "data": {
+      "ferias_id": 126,
+      "colaborador": "Ana Costa",
+      "periodo": "15/02 a 28/02",
+      "tipo": "ferias_aprovada"
+    },
+    "link": "/ferias/126",
+    "user_type": "Outsourcing"
+  },
+  {
+    "id": 8,
+    "type": "error",
+    "title": "Erro no Sistema",
+    "message": "Ocorreu um problema temporário no sistema de aprovações. Tente novamente em alguns minutos.",
+    "time": "1 semana atrás",
+    "isRead": true,
+    "created_at": "2024-01-08T16:45:00Z",
+    "data": {
+      "error_code": "SYSTEM_001",
+      "tipo": "sistema_erro"
+    },
+    "link": null,
+    "user_type": "Outsourcing"
+  },
+  {
+    "id": 9,
+    "type": "success",
+    "title": "Férias Aprovadas",
+    "message": "Suas férias de 15/01 a 30/01 foram aprovadas pela empresa de outsourcing.",
+    "time": "2 horas atrás",
+    "isRead": false,
+    "created_at": "2024-01-15T10:30:00Z",
+    "data": {
+      "ferias_id": 123,
+      "periodo": "15/01 a 30/01",
+      "tipo": "ferias_aprovada"
+    },
+    "link": "/ferias/123",
+    "user_type": "Colaborador"
+  },
+  {
+    "id": 10,
+    "type": "warning",
+    "title": "Férias Rejeitadas",
+    "message": "Suas férias de 20/02 a 05/03 foram rejeitadas pela empresa de outsourcing. Motivo: Conflito com período de alta demanda.",
+    "time": "4 horas atrás",
+    "isRead": false,
+    "created_at": "2024-01-15T08:15:00Z",
+    "data": {
+      "ferias_id": 124,
+      "periodo": "20/02 a 05/03",
+      "motivo": "Conflito com período de alta demanda",
+      "tipo": "ferias_rejeitada"
+    },
+    "link": "/ferias/124",
+    "user_type": "Colaborador"
+  },
+  {
+    "id": 12,
+    "type": "info",
+    "title": "Nova Funcionalidade",
+    "message": "Agora você pode visualizar suas férias em formato de calendário.",
+    "time": "3 dias atrás",
+    "isRead": true,
+    "created_at": "2024-01-12T14:20:00Z",
+    "data": {
+      "feature": "calendario_ferias",
+      "tipo": "ferias_funcionalidade"
+    },
+    "link": "/ferias",
+    "user_type": "Colaborador"
+  },
+  {
+    "id": 13,
+    "type": "warning",
+    "title": "Data de Corte Próxima",
+    "message": "Data de corte para pedidos de benefícios: 25/01/2024. Restam 3 dias para finalizar solicitações.",
+    "time": "1 hora atrás",
+    "isRead": false,
+    "created_at": "2024-01-15T11:30:00Z",
+    "data": {
+      "data_corte": "2024-01-25",
+      "dias_restantes": 3,
+      "tipo": "beneficio_data_corte"
+    },
+    "link": "/beneficios/solicitacoes",
+    "user_type": "Benefícios"
+  },
+  {
+    "id": 14,
+    "type": "warning",
+    "title": "Benefícios Obrigatórios Pendentes",
+    "message": "5 colaboradores têm benefícios obrigatórios pendentes de ativação há mais de 7 dias.",
+    "time": "2 horas atrás",
+    "isRead": false,
+    "created_at": "2024-01-15T10:30:00Z",
+    "data": {
+      "colaboradores_pendentes": 5,
+      "dias_pendentes": 7,
+      "tipo": "beneficio_obrigatorio"
+    },
+    "link": "/beneficios/obrigatorios",
+    "user_type": "Benefícios"
+  },
+  {
+    "id": 15,
+    "type": "info",
+    "title": "Benefício Ativado",
+    "message": "João Silva ativou o benefício 'Vale Alimentação' (R$ 500,00) para o colaborador Maria Santos.",
+    "time": "3 horas atrás",
+    "isRead": true,
+    "created_at": "2024-01-15T09:30:00Z",
+    "data": {
+      "colaborador": "Maria Santos",
+      "beneficio": "Vale Alimentação",
+      "valor": "R$ 500,00",
+      "operador": "João Silva",
+      "tipo": "beneficio_ativado"
+    },
+    "link": "/beneficios/colaborador/456",
+    "user_type": "Benefícios"
+  },
+  {
+    "id": 16,
+    "type": "info",
+    "title": "Benefício Ativado por Colaborador",
+    "message": "Carlos Mendes ativou o benefício 'Plano de Saúde' (Unimed) para si mesmo.",
+    "time": "4 horas atrás",
+    "isRead": false,
+    "created_at": "2024-01-15T08:30:00Z",
+    "data": {
+      "colaborador": "Carlos Mendes",
+      "beneficio": "Plano de Saúde",
+      "operadora": "Unimed",
+      "tipo": "beneficio_auto_ativado"
+    },
+    "link": "/beneficios/colaborador/789",
+    "user_type": "Benefícios"
+  },
+  {
+    "id": 17,
+    "type": "error",
+    "title": "Contratos sem Elegibilidade",
+    "message": "3 contratos estão sem configuração de elegibilidade há mais de 30 dias.",
+    "time": "5 horas atrás",
+    "isRead": false,
+    "created_at": "2024-01-15T07:30:00Z",
+    "data": {
+      "contratos_sem_config": 3,
+      "dias_sem_config": 30,
+      "tipo": "contrato_sem_elegibilidade"
+    },
+    "link": "/beneficios/contratos",
+    "user_type": "Benefícios"
+  },
+  {
+    "id": 18,
+    "type": "warning",
+    "title": "Operadora Desativada",
+    "message": "A operadora 'SulAmérica' foi desativada por Ana Costa. Verifique colaboradores afetados.",
+    "time": "6 horas atrás",
+    "isRead": true,
+    "created_at": "2024-01-15T06:30:00Z",
+    "data": {
+      "operadora": "SulAmérica",
+      "operador": "Ana Costa",
+      "tipo": "operadora_desativada"
+    },
+    "link": "/beneficios/operadoras",
+    "user_type": "Benefícios"
+  },
+  {
+    "id": 19,
+    "type": "info",
+    "title": "Nova Operadora Criada",
+    "message": "Pedro Santos criou uma nova operadora 'Bradesco Saúde' para benefícios de saúde.",
+    "time": "1 dia atrás",
+    "isRead": true,
+    "created_at": "2024-01-14T14:30:00Z",
+    "data": {
+      "operadora": "Bradesco Saúde",
+      "operador": "Pedro Santos",
+      "categoria": "saúde",
+      "tipo": "operadora_criada"
+    },
+    "link": "/beneficios/operadoras/123",
+    "user_type": "Benefícios"
+  },
+  {
+    "id": 20,
+    "type": "success",
+    "title": "Configuração Concluída",
+    "message": "Configuração de elegibilidade do contrato 'Contrato 2024' foi concluída com sucesso.",
+    "time": "2 dias atrás",
+    "isRead": true,
+    "created_at": "2024-01-13T16:30:00Z",
+    "data": {
+      "contrato": "Contrato 2024",
+      "tipo": "contrato_configurado"
+    },
+    "link": "/beneficios/contratos/456",
+    "user_type": "Benefícios"
+  },
+  {
+    "id": 21,
+    "type": "warning",
+    "title": "Benefícios Vencendo",
+    "message": "12 benefícios de colaboradores vencem nos próximos 15 dias. Verifique renovações.",
+    "time": "3 dias atrás",
+    "isRead": false,
+    "created_at": "2024-01-12T10:30:00Z",
+    "data": {
+      "beneficios_vencendo": 12,
+      "dias_para_vencimento": 15,
+      "tipo": "beneficio_vencendo"
+    },
+    "link": "/beneficios/vencimentos",
+    "user_type": "Benefícios"
+  },
+  {
+    "id": 22,
+    "type": "info",
+    "title": "Relatório Mensal",
+    "message": "Relatório mensal de benefícios de dezembro/2023 está disponível para download.",
+    "time": "1 semana atrás",
+    "isRead": true,
+    "created_at": "2024-01-08T09:30:00Z",
+    "data": {
+      "mes": "dezembro",
+      "ano": "2023",
+      "tipo": "relatorio_mensal"
+    },
+    "link": "/beneficios/relatorios",
+    "user_type": "Benefícios"
+  },
+  {
+    "id": 23,
+    "type": "warning",
+    "title": "Nova Solicitação de Demissão",
+    "message": "João Silva (RH) solicitou demissão do colaborador Maria Santos. Motivo: Pedido do colaborador.",
+    "time": "1 hora atrás",
+    "isRead": false,
+    "created_at": "2024-01-15T11:30:00Z",
+    "data": {
+      "colaborador": "Maria Santos",
+      "solicitante": "João Silva",
+      "motivo": "Pedido do colaborador",
+      "tipo": "demissao_solicitacao"
+    },
+    "link": "/demissoes/solicitacoes/123",
+    "user_type": "Outsourcing"
+  },
+  {
+    "id": 24,
+    "type": "success",
+    "title": "Demissão Aprovada",
+    "message": "A demissão de Carlos Mendes foi aprovada pelo outsourcing. Data de saída: 31/01/2024.",
+    "time": "2 horas atrás",
+    "isRead": false,
+    "created_at": "2024-01-15T10:30:00Z",
+    "data": {
+      "colaborador": "Carlos Mendes",
+      "data_saida": "2024-01-31",
+      "tipo": "demissao_aprovada"
+    },
+    "link": "/demissoes/456",
+    "user_type": "RH"
+  },
+  {
+    "id": 25,
+    "type": "warning",
+    "title": "Demissão Rejeitada",
+    "message": "A demissão de Ana Costa foi rejeitada pelo outsourcing. Motivo: Período de alta demanda.",
+    "time": "3 horas atrás",
+    "isRead": true,
+    "created_at": "2024-01-15T09:30:00Z",
+    "data": {
+      "colaborador": "Ana Costa",
+      "motivo": "Período de alta demanda",
+      "tipo": "demissao_rejeitada"
+    },
+    "link": "/demissoes/789",
+    "user_type": "RH"
+  },
+  {
+    "id": 26,
+    "type": "info",
+    "title": "Nova Admissão Incluída",
+    "message": "RH incluiu novo colaborador: Pedro Santos - Cargo: Desenvolvedor - Data de admissão: 01/02/2024.",
+    "time": "4 horas atrás",
+    "isRead": false,
+    "created_at": "2024-01-15T08:30:00Z",
+    "data": {
+      "colaborador": "Pedro Santos",
+      "cargo": "Desenvolvedor",
+      "data_admissao": "2024-02-01",
+      "tipo": "admissao_incluida"
+    },
+    "link": "/admissoes/123",
+    "user_type": "Outsourcing"
+  },
+  {
+    "id": 27,
+    "type": "warning",
+    "title": "Admissão Pendente de Documentos",
+    "message": "Admissão de Maria Silva está pendente de envio de documentos. Faltam 3 documentos obrigatórios.",
+    "time": "5 horas atrás",
+    "isRead": false,
+    "created_at": "2024-01-15T07:30:00Z",
+    "data": {
+      "colaborador": "Maria Silva",
+      "documentos_faltantes": 3,
+      "tipo": "admissao_pendente_documentos"
+    },
+    "link": "/admissoes/documentos/456",
+    "user_type": "RH"
+  },
+  {
+    "id": 28,
+    "type": "success",
+    "title": "Admissão Aprovada",
+    "message": "A admissão de João Oliveira foi aprovada pelo outsourcing. Data de início: 15/02/2024.",
+    "time": "6 horas atrás",
+    "isRead": true,
+    "created_at": "2024-01-15T06:30:00Z",
+    "data": {
+      "colaborador": "João Oliveira",
+      "data_inicio": "2024-02-15",
+      "tipo": "admissao_aprovada"
+    },
+    "link": "/admissoes/789",
+    "user_type": "RH"
+  },
+  {
+    "id": 29,
+    "type": "warning",
+    "title": "Admissão Pendente de Aprovação",
+    "message": "Admissão de Ana Costa está aguardando aprovação do outsourcing há 2 dias.",
+    "time": "1 dia atrás",
+    "isRead": false,
+    "created_at": "2024-01-14T14:30:00Z",
+    "data": {
+      "colaborador": "Ana Costa",
+      "dias_aguardando": 2,
+      "tipo": "admissao_pendente_aprovacao"
+    },
+    "link": "/admissoes/aprovacoes/101",
+    "user_type": "Outsourcing"
+  },
+  {
+    "id": 30,
+    "type": "info",
+    "title": "Nova Vaga via Gupy",
+    "message": "Nova vaga 'Analista de Sistemas' foi adicionada via Gupy.",
+    "time": "2 dias atrás",
+    "isRead": true,
+    "created_at": "2024-01-13T16:30:00Z",
+    "data": {
+      "vaga": "Analista de Sistemas",
+      "candidatos": 15,
+      "fonte": "Gupy",
+      "tipo": "vaga_gupy"
+    },
+    "link": "/vagas/202",
+    "user_type": "Outsourcing"
+  },
+  {
+    "id": 31,
+    "type": "info",
+    "title": "Nova Vaga via Gupy",
+    "message": "Nova vaga 'Analista de Sistemas' foi adicionada via Gupy.",
+    "time": "2 dias atrás",
+    "isRead": true,
+    "created_at": "2024-01-13T16:30:00Z",
+    "data": {
+      "vaga": "Analista de Sistemas",
+      "candidatos": 15,
+      "fonte": "Gupy",
+      "tipo": "vaga_gupy"
+    },
+    "link": "/vagas/202",
+    "user_type": "RH"
+  },
+  {
+    "id": 32,
+    "type": "success",
+    "title": "Admissão Concluída",
+    "message": "Admissão de Carlos Mendes foi concluída com sucesso. Colaborador ativo no sistema.",
+    "time": "3 dias atrás",
+    "isRead": true,
+    "created_at": "2024-01-12T10:30:00Z",
+    "data": {
+      "colaborador": "Carlos Mendes",
+      "status": "ativo",
+      "tipo": "admissao_concluida"
+    },
+    "link": "/colaboradores/303",
+    "user_type": "RH"
+  }
+]
