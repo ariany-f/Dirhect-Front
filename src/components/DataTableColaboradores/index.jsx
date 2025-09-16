@@ -1,30 +1,23 @@
 import { DataTable } from 'primereact/datatable';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { ColumnGroup } from 'primereact/columngroup';
-import { Row } from 'primereact/row';
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
 import BotaoGrupo from '@components/BotaoGrupo';
 import Botao from '@components/Botao';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import ModalDemissao from '../ModalDemissao';
-import ModalImportarPlanilha from '@components/ModalImportarPlanilha'
 import ModalSelecionarColaborador from '../ModalSelecionarColaborador';
 import ModalEncaminharVaga from '@components/ModalEncaminharVaga';
 import { Tag } from 'primereact/tag';
-import { FaTrash, FaUserTimes, FaUmbrella, FaDownload, FaUmbrellaBeach, FaCheck, FaFileExcel } from 'react-icons/fa';
+import { FaUserTimes, FaUmbrellaBeach, FaCheck, FaFileExcel } from 'react-icons/fa';
 import { MdFilterAltOff } from 'react-icons/md';
 import { Tooltip } from 'primereact/tooltip';
-import { GrAddCircle } from 'react-icons/gr';
 import http from '@http';
 import { Dropdown } from 'primereact/dropdown';
 import { ArmazenadorToken } from '@utils';
 import { Toast } from 'primereact/toast';
-import CheckboxContainer from '@components/CheckboxContainer';
-import { RadioButton } from 'primereact/radiobutton';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 

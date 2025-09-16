@@ -3,14 +3,9 @@ import { useEffect, useState, useRef, useMemo } from 'react'
 import DashboardCard from '@components/DashboardCard'
 import Loading from '@components/Loading'
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario'
-import { Card } from 'primereact/card'
 import { Chart } from 'primereact/chart'
-import { Tag } from 'primereact/tag'
-import { FaUserPlus, FaUserMinus, FaUmbrellaBeach, FaArrowRight, FaUserTimes, FaCheckCircle, FaRegClock, FaSyncAlt, FaExclamationTriangle } from 'react-icons/fa';
-import { MdWork, MdBarChart, MdPieChart, MdTimeline } from 'react-icons/md';
+import { FaUserPlus, FaUmbrellaBeach, FaArrowRight, FaUserTimes, FaCheckCircle, FaRegClock, FaSyncAlt, FaExclamationTriangle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { IoMdSync } from 'react-icons/io';
-import { Tooltip } from 'primereact/tooltip';
 import '@pages/Dashboard/DashboardAtividades.css'
 import { ArmazenadorToken } from '@utils'
 

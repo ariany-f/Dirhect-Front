@@ -51,7 +51,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     const totalDemitidos = funcionariosDashboard?.total_demitidos || 0;
     const demitidosNoMes = funcionariosDashboard?.demitidos_no_mes || 0;
     const funcionariosPorMotivoDemissao = funcionariosDashboard?.funcionarios_por_motivo_demissao || [];
-    
+    const totalVagasAbertas = funcionariosDashboard?.total_vagas_abertas || 0; // Novo campo
+
     // Dados de teste para verificar se o problema é nos dados ou no processamento
     const dadosTesteMotivos = [
         {
@@ -295,14 +296,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
     const dadosDemissoesReais = processarDadosDemissoes();
     
-    // Contar vagas abertas
-    const contarVagasAbertas = () => {
-        if (!vagasData || vagasData.length === 0) return 0;
-        // Ajuste o filtro conforme o status real de vaga aberta
-        return vagasData.filter(vaga => vaga && (vaga.status === 'A' || vaga.status === 'aberta' || vaga.status === 'Aberta')).length;
-    };
-    const vagasAbertas = contarVagasAbertas();
-
     // Função para calcular o turnover real
     const calcularTurnover = () => {
         if (!totalColaboradores || totalColaboradores === 0) return 0;
@@ -380,7 +373,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         motivosDemissao: motivosDemissaoProcessados, // Usar motivos processados separadamente
         etapasDemissao: [],
         slaDemissao: dadosDemissoesReais.slaDemissao,
-        vagasAbertas,
+        vagasAbertas: totalVagasAbertas, // Usar o campo direto da API
 
         // Eficiência Operacional
         refacaoAdmissao: 12,
@@ -813,29 +806,15 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                             dadosRH.feriasAgendadas.map((ferias, index) => (
                                 <div key={index} className="ferias-item">
                                     <div className="ferias-info">
-                                        <div className="ferias-colaborador">{ferias.colaborador}</div>
+                                        <div className="ferias-colaborador">{ferias.nome_colaborador}</div>
                                         <div className="ferias-periodo">
-                                            {ferias.inicio && ferias.fim ? 
-                                                `${new Date(ferias.inicio).toLocaleDateString('pt-BR')} - ${new Date(ferias.fim).toLocaleDateString('pt-BR')} (${ferias.nrodiasferias} dias)` :
-                                                `${ferias.inicio} - ${ferias.fim} (${ferias.nrodiasferias} dias)`
+                                            {ferias.data_inicio && ferias.data_fim ? 
+                                                `${new Date(ferias.data_inicio).toLocaleDateString('pt-BR')} - ${new Date(ferias.data_fim).toLocaleDateString('pt-BR')} (${ferias.numero_dias} dias)` :
+                                                `${ferias.data_inicio} - ${ferias.data_fim} (${ferias.numero_dias} dias)`
                                             }
                                         </div>
                                     </div>
-                                    <Tag severity={getSeverity(ferias.situacaoferias)} value={
-                                        ferias.situacaoferias === 'G' ? 'Aguardando Gestor' : 
-                                        ferias.situacaoferias === 'D' ? 'Aguardando DP' : 
-                                        ferias.situacaoferias === 'M' ? 'Marcadas' : 
-                                        ferias.situacaoferias === 'P' ? 'Pagas' : 
-                                        ferias.situacaoferias === 'F' ? 'Finalizadas' : 
-                                        ferias.situacaoferias === 'X' ? 'Finalizadas Próximo Mês' : 
-                                        // Status antigos (mantidos para compatibilidade)
-                                        ferias.situacaoferias === 'A' ? 'Aprovada' : 
-                                        ferias.situacaoferias === 'S' ? 'Solicitada' : 
-                                        ferias.situacaoferias === 'E' ? 'Em Andamento' : 
-                                        ferias.situacaoferias === 'C' ? 'Cancelada' : 
-                                        ferias.situacaoferias === 'R' ? 'Rejeitada' : 
-                                        ferias.situacaoferias
-                                    } />
+                                    <Tag severity={getSeverity(ferias.status)} value={ferias.status} />
                                 </div>
                             ))
                         ) : (

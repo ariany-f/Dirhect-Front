@@ -747,7 +747,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
 
     // Ajusta para o início e fim do ano selecionado (dentro do período de 3 anos)
     const startDate = useMemo(() => startOfMonth(new Date(anoSelecionado, 0, 1)), [anoSelecionado]);
-    const endDate = useMemo(() => endOfMonth(new Date(anoSelecionado, 11, 1)), [anoSelecionado]);
+    const endDate = useMemo(() => endOfMonth(new Date(anoSelecionado, 22, 1)), [anoSelecionado]);
     const daysArray = useMemo(() => getDaysArray(startDate, endDate), [startDate, endDate]);
     const totalDays = useMemo(() => daysArray.length, [daysArray]);
     const monthsArray = useMemo(() => getMonthsInRange(startDate, endDate), [startDate, endDate]);
