@@ -152,21 +152,6 @@
     "user_type": "Colaborador"
   },
   {
-    "id": 12,
-    "type": "info",
-    "title": "Nova Funcionalidade",
-    "message": "Agora você pode visualizar suas férias em formato de calendário.",
-    "time": "3 dias atrás",
-    "isRead": true,
-    "created_at": "2024-01-12T14:20:00Z",
-    "data": {
-      "feature": "calendario_ferias",
-      "tipo": "ferias_funcionalidade"
-    },
-    "link": "/ferias",
-    "user_type": "Colaborador"
-  },
-  {
     "id": 13,
     "type": "warning",
     "title": "Data de Corte Próxima",
