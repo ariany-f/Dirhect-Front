@@ -273,6 +273,11 @@ function FeriasListagem() {
         'situacaoferias': { value: null, matchMode: 'custom' }
     });
     
+    // Estados para filtro de situação do calendário
+    const [situacaoCalendario, setSituacaoCalendario] = useState('');
+    const [situacoesDisponiveis, setSituacoesDisponiveis] = useState([]);
+    const [loadingFiltroSituacao, setLoadingFiltroSituacao] = useState(false);
+    
     // Estados para ordenação
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('');
@@ -296,6 +301,36 @@ function FeriasListagem() {
     const context = useOutletContext();
     const { usuario } = useSessaoUsuarioContext();
 
+    // Situações dinâmicas para filtro (busca da API)
+    const [situacoesFerias, setSituacoesFerias] = useState([]);
+
+    // Buscar situações disponíveis da API
+    useEffect(() => {
+        const fetchSituacoes = async () => {
+            try {
+                const response = await http.get('ferias/situacoes/');
+                // A resposta já vem no formato correto: [{value, label}, ...]
+                setSituacoesFerias(response || []);
+                setSituacoesDisponiveis(response || []);
+            } catch (error) {
+                console.error('Erro ao buscar situações de férias:', error);
+                // Fallback para as situações básicas se a API falhar
+                const situacoesFallback = [
+                    { value: 'I', label: 'Iniciada Solicitação' },
+                    { value: 'E', label: 'Em Análise' },
+                    { value: 'A', label: 'Aprovado' },
+                    { value: 'F', label: 'Finalizada' },
+                    { value: 'M', label: 'Marcada' },
+                    { value: 'P', label: 'Pagas' }
+                ];
+                setSituacoesFerias(situacoesFallback);
+                setSituacoesDisponiveis(situacoesFallback);
+            }
+        };
+
+        fetchSituacoes();
+    }, []);
+
     // Lista de anos disponíveis
     const anosDisponiveis = useMemo(() => [
         { name: 'Todos os anos', value: null },
@@ -313,19 +348,6 @@ function FeriasListagem() {
         { name: 'Apenas Abertos', value: true },
         { name: 'Apenas Fechados', value: false },
         { name: 'Todos os Períodos', value: null }
-    ];
-
-    // Situações únicas para filtro
-    const situacoesFerias = [
-        { label: 'A solicitar', value: 'aSolicitar' },
-        { label: 'Em análise', value: 'solicitada' },
-        { label: 'Marcada', value: 'marcada' },
-        { label: 'Aprovada', value: 'aprovada' },
-        { label: 'Em férias', value: 'acontecendo' },
-        { label: 'Finalizada', value: 'finalizada' },
-        { label: 'Paga', value: 'paga' },
-        { label: 'Concluída', value: 'passada' },
-        { label: 'Rejeitada', value: 'rejeitada' }
     ];
 
     // Função para construir parâmetro de ordenação
@@ -354,7 +376,6 @@ function FeriasListagem() {
                     finalUrl += `${separator}funcionario_nome=${encodeURIComponent(searchTerm.trim())}`;
                 }
                 
-                console.log('🔄 URL transformada:', nextCursor, '→', finalUrl);
                 return finalUrl;
             } catch (error) {
                 console.warn('Erro ao processar URL do cursor:', error);
@@ -393,6 +414,11 @@ function FeriasListagem() {
             fimAnoPassado.setMonth(fimAnoPassado.getMonth() + 22);
             url += `&fimperaquis__lte=${fimAnoPassado.toISOString().split('T')[0]}`;
             url += `&fimperaquis__gte=${new Date(CURRENT_YEAR, 0, 1).toISOString().split('T')[0]}`;
+            
+            // Filtro de situação (apenas para calendário)
+            if (situacaoCalendario && situacaoCalendario !== '') {
+                url += `&situacaoferias=${encodeURIComponent(situacaoCalendario)}`;
+            }
         } else {
             // Para lista: usar paginação tradicional
             if(!url.includes('?')) {
@@ -433,57 +459,15 @@ function FeriasListagem() {
 
             // Filtro de situação (apenas para lista)
             const situacaoFilter = filters?.['situacaoferias']?.value;
-            console.log('🔍 Filtro recebido:', situacaoFilter);
             if (situacaoFilter && Array.isArray(situacaoFilter) && situacaoFilter.length > 0) {
-                // Para múltiplos valores, precisamos mapear para os valores reais da API
-                const situacoesApiArray = [];
-                
-                situacaoFilter.forEach(situacao => {
-                    switch(situacao) {
-                        case 'aSolicitar': 
-                            situacoesApiArray.push('A'); 
-                            break;
-                        case 'solicitada': 
-                            situacoesApiArray.push('S', 'I', 'G', 'D', 'E'); 
-                            break;
-                        case 'marcada': 
-                            situacoesApiArray.push('M'); 
-                            break;
-                        case 'aprovada': 
-                            situacoesApiArray.push('A'); 
-                            break;
-                        case 'finalizada': 
-                            situacoesApiArray.push('F', 'X'); 
-                            break;
-                        case 'paga': 
-                            situacoesApiArray.push('P'); 
-                            break;
-                        case 'passada': 
-                            situacoesApiArray.push('C'); 
-                            break;
-                        case 'rejeitada': 
-                            situacoesApiArray.push('R'); 
-                            break;
-                        default: 
-                            situacoesApiArray.push(situacao);
-                            break;
-                    }
-                });
-                
-                // Remove duplicatas e cria string para __in
-                const situacoesUnicas = [...new Set(situacoesApiArray)];
-                const paramValue = situacoesUnicas.join(',');
+                // Usar diretamente os valores da API (I, E, A, F, M, P)
+                const paramValue = situacaoFilter.join(',');
                 url += `&situacaoferias__in=${encodeURIComponent(paramValue)}`;
-                console.log('🔍 Filtro de situação aplicado:', {
-                    selecionadas: situacaoFilter,
-                    mapeadas: situacoesUnicas,
-                    paramUrl: `situacaoferias__in=${paramValue}`
-                });
             }
         }
         
         return url;
-    }, [tab, searchTerm, currentPage, pageSize, anoSelecionado, periodoAberto, nextCursor, getSortParam, filters]);
+    }, [tab, searchTerm, currentPage, pageSize, anoSelecionado, periodoAberto, nextCursor, getSortParam, filters, situacaoCalendario]);
 
     // Função para carregar dados
     const loadData = useCallback(async (isLoadMore = false, lightLoad = false) => {
@@ -499,7 +483,6 @@ function FeriasListagem() {
             setLoading(true);
         } else if (isLoadMore) {
             setIsLoadingMore(true);
-            console.log('🔄 Iniciando carregamento de mais dados...');
         }
         
         try {
@@ -528,34 +511,27 @@ function FeriasListagem() {
                                 // Sinaliza que está renderizando
                                 setIsRendering(true);
                                 setFerias(prev => [...(prev || []), ...newDataWithMarker]);
-                                console.log('✅ Dados adicionados ao calendário:', newDataWithMarker?.length, 'novos itens únicos');
-                                console.log('🚫 Duplicatas filtradas:', newData.length - newItemsOnly.length, 'itens');
                                 
                                 // Aguarda o calendário processar os dados - timing mais conservador
                                 setTimeout(() => {
                                     setIsRendering(false);
-                                    console.log('🔄 Renderização iniciada, mantendo loading...');
                                     
                                     // Aguarda mais tempo para garantir que o calendário processou completamente
                                     setTimeout(() => {
                                         setIsLoadingMore(false);
-                                        console.log('✅ Loading finalizado - dados processados no calendário');
                                     }, 1200); // Tempo mais conservador para garantir renderização completa
                                 }, 300);
                             } else {
-                                console.log('⚠️ Nenhum item novo encontrado - todos já existem no calendário');
                                 setIsLoadingMore(false);
                             }
                     } else {
                         setFerias(newData);
-                        console.log('✅ Dados iniciais do calendário carregados:', newData?.length, 'itens');
                     }
                     
                     // Atualiza cursor e hasMore
                     // Para cursor pagination, armazena a URL completa do next
                     setNextCursor(response.next || null);
                     setHasMore(!!response.next);
-                    console.log('✅ Cursor atualizado:', !!response.next ? 'Há mais dados' : 'Fim dos dados');
                 } else {
                     // Para lista com paginação tradicional
                     setFerias(newData);
@@ -578,27 +554,18 @@ function FeriasListagem() {
                 if (!isLoadMore) {
                     setIsLoadingMore(false);
                 }
+                // Remove loading do filtro de situação se estava ativo
+                setLoadingFiltroSituacao(false);
             }
         }
     }, [buildApiUrl, tab]);
 
     // Função para carregar mais dados (lazy loading)
     const loadMore = useCallback(() => {
-        console.log('🔄 loadMore chamado:', { 
-            tab, 
-            hasMore, 
-            isLoadingMore,
-            nextCursor: !!nextCursor,
-            currentDataLength: ferias?.length || 0
-        });
-        
         if (tab === 'calendario' && hasMore && !isLoadingMore) {
-            console.log('✅ Condições atendidas, carregando mais dados...');
             loadData(true);
-        } else {
-            console.log('❌ Condições não atendidas para loadMore');
         }
-    }, [tab, hasMore, isLoadingMore, loadData, nextCursor, ferias?.length]);
+    }, [tab, hasMore, isLoadingMore, loadData]);
 
     // Effect principal para carregar dados (sem ordenação)
     useEffect(() => {
@@ -651,6 +618,7 @@ function FeriasListagem() {
                 'situacaoferias': { value: null, matchMode: 'custom' }
             };
             setFilters(resetFilters);
+            setSituacaoCalendario(''); // Reset filtro de situação do calendário
             
             // Força uma atualização para garantir que tudo seja resetado
             setTimeout(() => {
@@ -663,8 +631,73 @@ function FeriasListagem() {
             setSortOrder('');
             setNextCursor(null);
             setHasMore(true);
+            setSituacaoCalendario(''); // Reset filtro de situação do calendário
         }
     }, []);
+
+    // Função para lidar com mudança de situação no calendário
+    const handleSituacaoCalendarioChange = useCallback(async (novoValor) => {
+        setLoadingFiltroSituacao(true);
+        setSituacaoCalendario(novoValor);
+        
+        // Faz a requisição imediatamente com o novo valor
+        // Cancela requisição anterior se existir
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
+        
+        // Cria novo AbortController
+        abortControllerRef.current = new AbortController();
+        
+        try {
+            // Constrói URL com o novo valor de situação
+            let url = `ferias/`;
+            
+            if (searchTerm.trim()) {
+                url += `?funcionario_nome=${encodeURIComponent(searchTerm.trim())}`;
+            } else {
+                url += `?`;
+            }
+            
+            // Parâmetros do calendário
+            url += `cursor`;
+            url += `&page_size=10`;
+            url += `&periodo_aberto=true`;
+            url += `&incluir_finalizadas=true`;
+            url += `&ordering=fimperaquis`;
+            
+            // Filtrar por período aquisitivo
+            const anoAtual = new Date().getFullYear();
+            const fimAnoPassado = new Date(anoAtual - 1, 11, 31);
+            fimAnoPassado.setMonth(fimAnoPassado.getMonth() + 22);
+            url += `&fimperaquis__lte=${fimAnoPassado.toISOString().split('T')[0]}`;
+            url += `&fimperaquis__gte=${new Date(CURRENT_YEAR, 0, 1).toISOString().split('T')[0]}`;
+            
+            // Aplica o novo filtro de situação imediatamente
+            if (novoValor && novoValor !== '') {
+                url += `&situacaoferias=${encodeURIComponent(novoValor)}`;
+            }
+            
+            const response = await http.get(url, { 
+                signal: abortControllerRef.current.signal 
+            });
+            
+            if (!abortControllerRef.current.signal.aborted) {
+                const newData = response.results || response;
+                setFerias(newData);
+                setNextCursor(response.next || null);
+                setHasMore(!!response.next);
+            }
+        } catch (error) {
+            if (error.name !== 'AbortError') {
+                console.error('Erro ao aplicar filtro de situação:', error);
+            }
+        } finally {
+            if (!abortControllerRef.current.signal.aborted) {
+                setLoadingFiltroSituacao(false);
+            }
+        }
+    }, [searchTerm]);
 
     // Função para lidar com seleção de colaborador
     const handleColaboradorSelecionado = useCallback(async (colaborador) => {
@@ -828,6 +861,27 @@ function FeriasListagem() {
                         </>
                     )}
                     
+                    {tab === 'calendario' && (
+                        <ModernDropdown>
+                            <select 
+                                value={situacaoCalendario} 
+                                onChange={(e) => handleSituacaoCalendarioChange(e.target.value)}
+                                disabled={loadingFiltroSituacao}
+                                style={{ 
+                                    opacity: loadingFiltroSituacao ? 0.6 : 1,
+                                    cursor: loadingFiltroSituacao ? 'wait' : 'pointer'
+                                }}
+                            >
+                                <option value="">Todas as Situações</option>
+                                {situacoesDisponiveis.map((situacao) => (
+                                    <option key={situacao.value} value={situacao.value}>
+                                        {situacao.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </ModernDropdown>
+                    )}
+                    
                     <SearchContainer>
                         <BsSearch className="search-icon" />
                         <input
@@ -874,14 +928,59 @@ function FeriasListagem() {
                 ) : (
                     <>
                         {tab === 'calendario' && (
-                            <CalendarFerias 
-                                colaboradores={ferias || []} 
-                                onUpdate={() => setForceUpdate(prev => prev + 1)}
-                                onLoadMore={loadMore}
-                                hasMore={hasMore}
-                                isLoadingMore={isLoadingMore}
-                                isRendering={isRendering}
-                            />
+                            <div style={{ position: 'relative', width: '100%' }}>
+                                <CalendarFerias 
+                                    colaboradores={ferias || []} 
+                                    onUpdate={() => setForceUpdate(prev => prev + 1)}
+                                    onLoadMore={loadMore}
+                                    hasMore={hasMore}
+                                    isLoadingMore={isLoadingMore}
+                                    isRendering={isRendering}
+                                />
+                                {loadingFiltroSituacao && (
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        right: 0,
+                                        bottom: 0,
+                                        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        zIndex: 1000,
+                                        borderRadius: '8px'
+                                    }}>
+                                        <div style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            gap: '12px',
+                                            padding: '20px',
+                                            backgroundColor: '#ffffff',
+                                            borderRadius: '8px',
+                                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+                                        }}>
+                                            <div style={{
+                                                width: '32px',
+                                                height: '32px',
+                                                border: '3px solid #e5e7eb',
+                                                borderTop: '3px solid var(--primaria)',
+                                                borderRadius: '50%',
+                                                animation: 'spin 1s linear infinite'
+                                            }}></div>
+                                            <p style={{ 
+                                                color: '#666', 
+                                                fontSize: '14px', 
+                                                margin: 0,
+                                                fontWeight: '500'
+                                            }}>
+                                                Aplicando filtro...
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         )}
                         {tab === 'lista' && (
                             <DataTableFerias 

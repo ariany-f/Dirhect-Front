@@ -26,7 +26,7 @@ const SyyncTarefasLista = () => {
     const [sortField, setSortField] = useState('-id');
     const [sortOrder, setSortOrder] = useState('');
     const [filters, setFilters] = useState({
-        'processo_codigo': { value: null, matchMode: 'custom' },
+        'processo__codigo': { value: null, matchMode: 'custom' },
         'percentual_conclusao': { value: null, matchMode: 'custom' }
     });
 
@@ -43,12 +43,12 @@ const SyyncTarefasLista = () => {
         url += orderParam;
 
         // Adicionar filtro de processo_codigo (se houver filtro adicional)
-        const processoCodigoFilter = currentFilters?.['processo_codigo']?.value;
+        const processoCodigoFilter = currentFilters?.['processo__codigo']?.value;
         if (processoCodigoFilter) {
-            url += `&processo_codigo=${encodeURIComponent(processoCodigoFilter)}`;
+            url += `&processo__codigo=${encodeURIComponent(processoCodigoFilter)}`;
         } else {            
             // Filtro fixo para apenas processos Syync Segalas
-            url += `&processo_codigo__in=syync_segalas_ferias,syync_segalas_folha`;
+            url += `&processo__codigo__in=syync_segalas_ferias,syync_segalas_folha`;
         }
 
         // Adicionar filtro de percentual_conclusao
