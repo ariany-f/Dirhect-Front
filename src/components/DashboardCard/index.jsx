@@ -51,7 +51,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     const totalDemitidos = funcionariosDashboard?.total_demitidos || 0;
     const demitidosNoMes = funcionariosDashboard?.demitidos_no_mes || 0;
     const funcionariosPorMotivoDemissao = funcionariosDashboard?.funcionarios_por_motivo_demissao || [];
-    
+    const totalVagasAbertas = funcionariosDashboard?.total_vagas_abertas || 0; // Novo campo
+
     // Dados de teste para verificar se o problema é nos dados ou no processamento
     const dadosTesteMotivos = [
         {
@@ -295,14 +296,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
     const dadosDemissoesReais = processarDadosDemissoes();
     
-    // Contar vagas abertas
-    const contarVagasAbertas = () => {
-        if (!vagasData || vagasData.length === 0) return 0;
-        // Ajuste o filtro conforme o status real de vaga aberta
-        return vagasData.filter(vaga => vaga && (vaga.status === 'A' || vaga.status === 'aberta' || vaga.status === 'Aberta')).length;
-    };
-    const vagasAbertas = contarVagasAbertas();
-
     // Função para calcular o turnover real
     const calcularTurnover = () => {
         if (!totalColaboradores || totalColaboradores === 0) return 0;
@@ -380,7 +373,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         motivosDemissao: motivosDemissaoProcessados, // Usar motivos processados separadamente
         etapasDemissao: [],
         slaDemissao: dadosDemissoesReais.slaDemissao,
-        vagasAbertas,
+        vagasAbertas: totalVagasAbertas, // Usar o campo direto da API
 
         // Eficiência Operacional
         refacaoAdmissao: 12,
