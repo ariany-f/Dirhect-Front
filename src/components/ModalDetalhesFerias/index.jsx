@@ -148,7 +148,6 @@ function mapStatusToType(status, data_inicio, data_fim) {
             return 'paga';
         case 'X':
             return 'finalizada';
-        case 'S':
         case 'I':
         case 'G':
         case 'D':
