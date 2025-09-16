@@ -508,14 +508,14 @@ function ColaboradorDemissao() {
                                         >
                                             <FaCheckCircle /> Aprovar
                                         </BotaoAprovarCustom>
-                                        <BotaoReprovarCustom 
+                                        {/* <BotaoReprovarCustom 
                                             estilo="neutro"
                                             size="medium" 
                                             aoClicar={() => handleRejeitar(demissao.atividade_uid)}
                                             disabled={loading[demissao.atividade_uid]}
                                         >
                                             <FaTimesCircle /> Reprovar
-                                        </BotaoReprovarCustom>
+                                        </BotaoReprovarCustom> */}
                                     </BotaoGrupo>
                                 </ActionButtons>
                             )}
