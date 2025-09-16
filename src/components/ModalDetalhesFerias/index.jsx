@@ -842,6 +842,11 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
         ...evento,
         evento: {
             ...evento.evento,
+            data_pagamento: evento.evento?.data_pagamento || evento.evento?.datapagamento,
+            aviso_ferias: evento.evento?.aviso_ferias,
+            nrodiasabono: evento.evento?.nrodiasabono,
+            ferias_coletivas: evento.evento?.ferias_coletivas,
+            adiantar_13: evento.evento?.adiantar_13,
             data_inicio: evento.evento?.dt_inicio || evento.evento?.data_inicio,
             data_fim: evento.evento?.dt_fim || evento.evento?.data_fim,
         }
@@ -869,6 +874,11 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
             periodo_aquisitivo_inicio: eventoNormalizado.evento?.periodo_aquisitivo_inicio,
             periodo_aquisitivo_fim: eventoNormalizado.evento?.periodo_aquisitivo_fim,
             saldo_dias: saldoFinal,
+            data_pagamento: eventoNormalizado.evento?.data_pagamento,
+            aviso_ferias: eventoNormalizado.evento?.aviso_ferias,
+            nrodiasabono: eventoNormalizado.evento?.nrodiasabono,
+            ferias_coletivas: eventoNormalizado.evento?.ferias_coletivas,
+            adiantar_13: eventoNormalizado.evento?.adiantar_13,
             data_solicitacao: eventoNormalizado.evento?.data_solicitacao || eventoNormalizado.evento?.criado_em
         }
     };
@@ -1615,7 +1625,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
                                         <BotaoAprovarCustom size="medium" aoClicar={aprovarFerias} largura="100%">
                                             <FaCheckCircle fill="var(--secundaria)" /> Aprovar
                                         </BotaoAprovarCustom>
-                                        <BotaoReprovarCustom size="medium" aoClicar={reprovarFerias} largura="100%">
+                                        <BotaoReprovarCustom size="medium" estilo="neutro" aoClicar={reprovarFerias} largura="100%">
                                             <FaTimesCircle fill="var(--secundaria)" /> Reprovar
                                         </BotaoReprovarCustom>
                                     </BotaoGrupo>
