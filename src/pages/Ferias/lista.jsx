@@ -277,6 +277,7 @@ function FeriasListagem() {
     const [situacaoCalendario, setSituacaoCalendario] = useState('');
     const [situacoesDisponiveis, setSituacoesDisponiveis] = useState([]);
     const [loadingFiltroSituacao, setLoadingFiltroSituacao] = useState(false);
+    const [filtroSemResultados, setFiltroSemResultados] = useState(false);
     
     // Estados para ordenação
     const [sortField, setSortField] = useState('');
@@ -632,12 +633,14 @@ function FeriasListagem() {
             setNextCursor(null);
             setHasMore(true);
             setSituacaoCalendario(''); // Reset filtro de situação do calendário
+            setFiltroSemResultados(false); // Reset estado de sem resultados
         }
     }, []);
 
     // Função para lidar com mudança de situação no calendário
     const handleSituacaoCalendarioChange = useCallback(async (novoValor) => {
         setLoadingFiltroSituacao(true);
+        setFiltroSemResultados(false); // Reset estado anterior
         setSituacaoCalendario(novoValor);
         
         // Faz a requisição imediatamente com o novo valor
@@ -676,6 +679,9 @@ function FeriasListagem() {
             // Aplica o novo filtro de situação imediatamente
             if (novoValor && novoValor !== '') {
                 url += `&situacaoferias=${encodeURIComponent(novoValor)}`;
+            } else {
+                // Se removeu o filtro, reset o estado de sem resultados
+                setFiltroSemResultados(false);
             }
             
             const response = await http.get(url, { 
@@ -687,6 +693,13 @@ function FeriasListagem() {
                 setFerias(newData);
                 setNextCursor(response.next || null);
                 setHasMore(!!response.next);
+                
+                // Se não trouxe resultados e há um filtro ativo, mostra estado vazio específico
+                if ((!newData || newData.length === 0) && novoValor && novoValor !== '') {
+                    setFiltroSemResultados(true);
+                } else {
+                    setFiltroSemResultados(false);
+                }
             }
         } catch (error) {
             if (error.name !== 'AbortError') {
@@ -929,14 +942,62 @@ function FeriasListagem() {
                     <>
                         {tab === 'calendario' && (
                             <div style={{ position: 'relative', width: '100%' }}>
-                                <CalendarFerias 
-                                    colaboradores={ferias || []} 
-                                    onUpdate={() => setForceUpdate(prev => prev + 1)}
-                                    onLoadMore={loadMore}
-                                    hasMore={hasMore}
-                                    isLoadingMore={isLoadingMore}
-                                    isRendering={isRendering}
-                                />
+                                {filtroSemResultados ? (
+                                    <div style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        height: '400px',
+                                        gap: '16px',
+                                        backgroundColor: '#f9fafb',
+                                        borderRadius: '8px',
+                                        border: '2px dashed #d1d5db',
+                                        padding: '40px'
+                                    }}>
+                                        <div style={{
+                                            fontSize: '48px',
+                                            color: '#9ca3af'
+                                        }}>
+                                            📅
+                                        </div>
+                                        <div style={{
+                                            textAlign: 'center',
+                                            color: '#374151'
+                                        }}>
+                                            <h3 style={{
+                                                margin: '0 0 8px 0',
+                                                fontSize: '18px',
+                                                fontWeight: '600'
+                                            }}>
+                                                Nenhuma féria encontrada
+                                            </h3>
+                                            <p style={{
+                                                margin: 0,
+                                                fontSize: '14px',
+                                                color: '#6b7280'
+                                            }}>
+                                                Não há férias com a situação "{situacoesDisponiveis.find(s => s.value === situacaoCalendario)?.label || situacaoCalendario}"
+                                            </p>
+                                            <p style={{
+                                                margin: '8px 0 0 0',
+                                                fontSize: '13px',
+                                                color: '#9ca3af'
+                                            }}>
+                                                Tente selecionar uma situação diferente ou "Todas as Situações"
+                                            </p>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <CalendarFerias 
+                                        colaboradores={ferias || []} 
+                                        onUpdate={() => setForceUpdate(prev => prev + 1)}
+                                        onLoadMore={loadMore}
+                                        hasMore={hasMore}
+                                        isLoadingMore={isLoadingMore}
+                                        isRendering={isRendering}
+                                    />
+                                )}
                                 {loadingFiltroSituacao && (
                                     <div style={{
                                         position: 'absolute',
