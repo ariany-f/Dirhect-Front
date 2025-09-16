@@ -852,8 +852,8 @@ function FeriasListagem() {
                 <FiltersContainer>
                     {tab === 'calendario' && (
                         <>
-                            <Tooltip target=".info-icon" mouseTrack mouseTrackLeft={10} text="O calendário exibe apenas as férias do início do ano atual + 11 meses. Para ver todas as férias, use a lista." />
-                            <FaInfoCircle size={16} className="info-icon" style={{cursor: 'pointer'}}  data-pr-tooltip="O calendário exibe apenas as férias do início do ano atual + 11 meses. Para ver todas as férias, use a lista."/>
+                            <Tooltip target=".info-icon" mouseTrack mouseTrackLeft={10} text="O calendário exibe apenas as férias do ano atual Para ver todas as férias, use a lista." />
+                            <FaInfoCircle size={16} className="info-icon" style={{cursor: 'pointer'}}  data-pr-tooltip="O calendário exibe apenas as férias do ano atual. Para ver todas as férias, use a lista."/>
                         </>
                     )}
                     {tab === 'lista' && (
