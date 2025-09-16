@@ -31,6 +31,11 @@ const MarginContainer = styled.div`
     margin-right: 2vw;
     margin-top: 12vh;
     margin-bottom: 2vh;
+    
+    /* Adiciona padding-bottom no mobile para não esconder conteúdo atrás do BottomMenu */
+    @media (max-width: 760px) {
+        padding-bottom: 80px; /* 60px do menu + 20px de margem extra */
+    }
 `
 
 function Autenticado() {   

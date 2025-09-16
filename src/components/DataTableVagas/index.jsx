@@ -203,7 +203,10 @@ function DataTableVagas({
                 onSelectionChange={(e) => verDetalhes(e.value)}
                 selectionMode="single"
                 paginator={paginator}
-                lazy={paginator}
+                lazy={paginator}                
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} vagas"
                 rows={rows}
                 totalRecords={totalRecords}
                 first={first}
@@ -215,15 +218,6 @@ function DataTableVagas({
                 removableSort
                 showGridlines
                 stripedRows
-                footerColumnGroup={
-                    paginator ? (
-                        <ColumnGroup>
-                            <Row>
-                                <Column footer={totalVagasTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
-                            </Row>
-                        </ColumnGroup>
-                    ) : null
-                }
             >
                 <Column body={representativeTituloTemplate} field="titulo" header="Titulo" style={{ width: '20%' }} sortable></Column>
                 <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" style={{ width: '22%' }} sortable></Column>

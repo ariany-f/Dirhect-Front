@@ -880,31 +880,34 @@ function DataTableFerias({
                 onPage={onPageChange}
                 onSort={onSortChange}
                 stripedRows
+                className="auto-card mobile-hide-optional"
                 sortField={sortField || null}
                 rowsPerPageOptions={[5, 10, 25, 50]}
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords}"
                 sortOrder={sortOrder === 'desc' ? -1 : sortOrder === 'asc' ? 1 : sortOrder ? 0 : null}
+                rowClassName={(rowData) => `row-${rowData.id}`}
             >
-                {!colaborador && <Column body={representativeColaboradorTemplate} sortable field="funcionario_nome" sortField="funcionario" header="Colaborador" style={{ width: '15%' }}></Column>}
-                <Column body={representativeAquisicaoTemplate} sortable field="fimperaquis" header="Aquisição" style={{ width: '18%' }}></Column>
-                <Column body={representativeInicioTemplate} sortable field="dt_inicio" header="Férias" style={{ width: '12%' }}></Column>
-                <Column body={representativePagamentoTemplate} sortable field="datapagamento" header="Pagamento" style={{ width: '10%' }}></Column>
+                {!colaborador && <Column body={representativeColaboradorTemplate} sortable field="funcionario_nome" sortField="funcionario" header="Colaborador" style={{ width: '15%' }} className="col-colaborador"></Column>}
+                <Column body={representativeAquisicaoTemplate} sortable field="fimperaquis" header="Aquisição" style={{ width: '18%' }} className="col-aquisicao"></Column>
+                <Column body={representativeInicioTemplate} sortable field="dt_inicio" header="Férias" style={{ width: '12%' }} className="col-ferias"></Column>
+                <Column body={representativePagamentoTemplate} sortable field="datapagamento" header="Pagamento" style={{ width: '10%' }} className="col-pagamento"></Column>
                 {!colaborador && ( 
                     <>
-                        <Column body={representativeAvisoFeriasTemplate} sortable field="aviso_ferias" header="Aviso" style={{ width: '8%' }}></Column>
+                        <Column body={representativeAvisoFeriasTemplate} sortable field="aviso_ferias" header="Aviso" style={{ width: '8%' }} className="hide-mobile col-aviso"></Column>
                     </>
                 )}
-                <Column sortable field="nrodiasferias" header="Dias" style={{ width: '8%' }}></Column>
-                <Column sortable field="nrodiasabono" header="Abono" style={{ width: '8%' }}></Column>
-                <Column body={representativ13Template} sortable field="adiantar_13" header="13º" style={{ width: '8%' }}></Column>
-                <Column body={representativeFeriasColetivasTemplate} sortable field="ferias_coletivas" header="Coletiva" style={{ width: '8%' }}></Column>
+                <Column body={(rowData) => rowData.nrodiasferias} sortable field="nrodiasferias" header="Dias" style={{ width: '8%' }} className="col-dias"></Column>
+                <Column body={(rowData) => rowData.nrodiasabono} sortable field="nrodiasabono" header="Abono" style={{ width: '8%' }} className="hide-mobile col-abono"></Column>
+                <Column body={representativ13Template} sortable field="adiantar_13" header="13º" style={{ width: '8%' }} className="hide-mobile col-decimo"></Column>
+                <Column body={representativeFeriasColetivasTemplate} sortable field="ferias_coletivas" header="Coletiva" style={{ width: '8%' }} className="hide-mobile col-coletiva"></Column>
                 <Column 
                     sortable 
-                    body={representativeSituacaoTemplate} 
+                    body={representativeSituacaoTemplate}
                     field="situacaoferias" 
                     header="Situação" 
                     style={{ width: '18%' }}
+                    className="col-situacao"
                     filter
                     filterField="situacaoferias"
                     showFilterMenu={true}
