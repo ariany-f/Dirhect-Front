@@ -1,6 +1,6 @@
 import styles from './Vagas.module.css'
 import styled from "styled-components"
-import { Link, Outlet, useLocation, useParams } from "react-router-dom"
+import { Link, useLocation, useParams } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import Texto from '@components/Texto'
 import Frame from '@components/Frame'
@@ -20,12 +20,10 @@ import { Real } from '@utils/formats'
 import { Tag } from 'primereact/tag'
 import DataTableDocumentosVaga from '@components/DataTableDocumentosVaga'
 import ModalDocumentoVaga from '@components/ModalDocumentoVaga'
-import { GrAdd, GrAddCircle } from 'react-icons/gr'
+import { GrAddCircle } from 'react-icons/gr'
 import http from '@http'
 import ModalVaga from '@components/ModalVaga'
 import ModalTransferirVaga from '@components/ModalTransferirVaga'
-// import documentos from '@json/documentos_requeridos.json'
-import { unformatCurrency } from '@utils/formats'
 import ModalAdicionarCandidato from '@components/ModalAdicionarCandidato';
 import ModalEditarCandidato from '@components/ModalEditarCandidato';
 import { useTranslation } from 'react-i18next';

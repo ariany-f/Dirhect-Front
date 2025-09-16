@@ -1,29 +1,23 @@
 import http from '@http'
 import { useEffect, useState, useRef, useMemo, useCallback } from "react"
-import Botao from '@components/Botao'
-import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
-import { GrAddCircle } from 'react-icons/gr'
-import styles from './Contratos.module.css'
 import styled from "styled-components"
-import { Link, useOutletContext } from "react-router-dom"
-import Management from '@assets/Management.svg'
-import CampoTexto from '@components/CampoTexto'
+import { useOutletContext } from "react-router-dom"
 import DataTableFerias from '@components/DataTableFerias'
 import ModalSelecionarColaborador from '@components/ModalSelecionarColaborador'
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias'
-import { Calendar, Views, momentLocalizer } from 'react-big-calendar';
+import { momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import CalendarFerias from './calendar_ferias'
-import { FaListUl, FaRegCalendarAlt, FaUmbrellaBeach, FaSpinner, FaSearch, FaCalendarCheck, FaInfoCircle } from 'react-icons/fa';
+import { FaListUl, FaRegCalendarAlt, FaUmbrellaBeach, FaCalendarCheck, FaInfoCircle } from 'react-icons/fa';
 import Texto from '@components/Texto';
 import { BsSearch } from 'react-icons/bs'
 import { ArmazenadorToken } from '@utils';
-import DropdownItens from '@components/DropdownItens';
 import { Toast } from 'primereact/toast';
 import { Tooltip } from 'primereact/tooltip';
+
 const ConteudoFrame = styled.div`
     display: flex;
     flex-direction: column;
