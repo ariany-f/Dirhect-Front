@@ -239,6 +239,31 @@ const StatusCanceladoText = styled.div`
     font-weight: 500;
 `;
 
+// Adicionar styled component para status concluída
+const StatusConcluida = styled.div`
+    background: rgb(197, 233, 218);
+    border: 1px solid #86efac;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+`;
+
+const StatusConcluidaIcon = styled.div`
+    color: #059669;
+    flex-shrink: 0;
+`;
+
+const StatusConcluidaText = styled.div`
+    flex: 1;
+    font-size: 13px;
+    color: #047857;
+    line-height: 1.4;
+    font-weight: 500;
+`;
+
 function ColaboradorDemissao() {
     const { colaborador, demissao } = useOutletContext();
     const { usuario } = useSessaoUsuarioContext();
@@ -492,6 +517,19 @@ function ColaboradorDemissao() {
                                         Demissão cancelada
                                     </StatusCanceladoText>
                                 </StatusCancelado>
+                            )}
+
+                            {/* Status concluída da atividade */}
+                            {demissao.atividade_status === 'concluida' && (
+                                <StatusConcluida>
+                                    <StatusConcluidaIcon>
+                                        <FaCheckCircle size={14} />
+                                    </StatusConcluidaIcon>
+                                    
+                                    <StatusConcluidaText>
+                                        Concluída
+                                    </StatusConcluidaText>
+                                </StatusConcluida>
                             )}
 
                             {/* Botões de ação para usuários Outsourcing - apenas se status for pendente */}
