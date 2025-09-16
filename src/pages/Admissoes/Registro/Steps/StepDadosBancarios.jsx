@@ -180,7 +180,7 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
             const agenciasArray = response.results || response;
             const formattedAgencias = agenciasArray.map(ag => ({
                 code: ag.id,
-                name: `${ag.num_agencia} - ${ag.nome || 'Agência'}`
+                name: `${ag.dig_agencia ? ag.dig_agencia + ' - ' : ''}${ag.num_agencia} - ${ag.nome || 'Agência'}`
             }));
             setAgenciasCarregadas(formattedAgencias);
             setAgencias(formattedAgencias);
