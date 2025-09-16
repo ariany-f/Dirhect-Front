@@ -282,6 +282,28 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
         }
     };
 
+    const buscarEstadosParaDocumentos = async () => {
+        const response = await http.get('estado/?format=json');
+        let dados = response;
+        if (response && response.results && Array.isArray(response.results)) {
+            dados = response.results;
+        } else if (response && Array.isArray(response)) {
+            dados = response;
+        } else {
+            dados = [];
+        }
+
+        if (dados.length > 0) {
+            const estadosFormatados = dados.map(estado => ({
+                name: estado.nome || estado.descricao,
+                code: estado.sigla || estado.codigo
+            }));
+            setEstados(estadosFormatados);
+        } else {
+            setEstados([]);
+        }
+    }
+
     // Função para estados de endereço (baseado no país)
     const buscarEstadosPorPaisEndereco = async (paisId) => {
         if (!paisId) {
@@ -385,6 +407,11 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
 
     }, [candidato?.estado_natal, candidato?.nacionalidade, nacionalidades]);
 
+
+    // useEffect para carregar estados para documentos quando a tela carregar
+    useEffect(() => {
+        buscarEstadosParaDocumentos();
+    }, []);
 
 
     // Filtra estados quando o país muda
