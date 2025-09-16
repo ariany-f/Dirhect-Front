@@ -133,12 +133,15 @@ const ActionButtons = styled.div`
     margin-top: 16px;
     padding-top: 16px;
     border-top: 1px solid #f1f5f9;
+    justify-content: flex-end;
 `;
 
 const BotaoAprovarCustom = styled(Botao)`
     background: #e6f7f2 !important;
     color: #007a5a !important;
     border: none !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
 
     &:hover:not(:disabled) {
         background: #d1f0e8 !important;
@@ -153,6 +156,8 @@ const BotaoReprovarCustom = styled(Botao)`
     background: #fff1f0 !important;
     color: #d92d20 !important;
     border: none !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
 
     &:hover:not(:disabled) {
         background: #ffe2e0 !important;
@@ -459,14 +464,15 @@ function ColaboradorDemissao() {
                                 <ActionButtons>
                                     <BotaoGrupo>
                                         <BotaoAprovarCustom 
-                                            size="small" 
+                                            size="medium" 
                                             aoClicar={() => handleAprovar(demissao.atividade_uid)}
                                             disabled={loading[demissao.atividade_uid]}
                                         >
                                             <FaCheckCircle /> Aprovar
                                         </BotaoAprovarCustom>
                                         <BotaoReprovarCustom 
-                                            size="small" 
+                                            estilo="neutro"
+                                            size="medium" 
                                             aoClicar={() => handleRejeitar(demissao.atividade_uid)}
                                             disabled={loading[demissao.atividade_uid]}
                                         >
