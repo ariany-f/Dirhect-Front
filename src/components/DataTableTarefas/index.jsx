@@ -778,24 +778,18 @@ function DataTableTarefas({
                 selectionMode="single" 
                 paginator={paginator}
                 lazy={paginator}
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords}"
                 rows={rows} 
                 totalRecords={totalRecords}
                 first={first}
                 onPage={onPage}
                 tableStyle={{ minWidth: '68vw' }}
                 sortField={sortField}
-                sortOrder={sortOrder === 'desc' ? -1 : 1}
+                sortOrder={sortOrder === 'desc' ? -1 : sortOrder === 'asc' ? 1 : -1}
                 onSort={handleSort}
                 removableSort
-                footerColumnGroup={
-                    paginator ? (
-                        <ColumnGroup>
-                            <Row>
-                                <Column footer={totalTarefasTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
-                            </Row>
-                        </ColumnGroup>
-                    ) : null
-                }
             >
                 <Column 
                     body={tipoTarefaTagTemplate} 
@@ -803,9 +797,9 @@ function DataTableTarefas({
                     header="Tipo de Processo" 
                     style={{ width: `${largurasColunas[0]}%` }}
                     sortable
-                    sortField="processo_codigo"
+                    sortField="processo__codigo"
                     filter
-                    filterField="processo_codigo"
+                    filterField="processo__codigo"
                     showFilterMenu={true}
                     filterElement={tipoProcessoFilterTemplate}
                     filterMatchMode="custom"
@@ -827,7 +821,7 @@ function DataTableTarefas({
                 <Column 
                     body={dataInicioTemplate} 
                     field="created_at" 
-                    header="Data de Início" 
+                    header="Data de Criação" 
                     style={{ width: `${largurasColunas[3]}%` }}
                     sortable
                     sortField="created_at"

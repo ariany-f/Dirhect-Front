@@ -493,7 +493,35 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         const situacoesFiltradas = situacoesOrdenadas.filter(situacao => 
             situacao.label.toLowerCase().includes(filtroSituacao.toLowerCase())
         );
+
+        // Função para selecionar/deselecionar todos
+        const onSelecionarTodos = (checked) => {
+            let newSelectedSituacoes;
+            
+            if (checked) {
+                // Selecionar todas as situações filtradas
+                newSelectedSituacoes = situacoesFiltradas.map(situacao => situacao.value);
+            } else {
+                // Deselecionar todas
+                newSelectedSituacoes = [];
+            }
+            
+            setSelectedSituacoes(newSelectedSituacoes);
+            
+            // Chamar o callback
+            if (newSelectedSituacoes.length === 0) {
+                options.filterCallback(null);
+            } else {
+                options.filterCallback(newSelectedSituacoes);
+            }
+        };
+
+        // Verificar se todas as situações filtradas estão selecionadas
+        const todasSelecionadas = situacoesFiltradas.length > 0 && 
+            situacoesFiltradas.every(situacao => selectedSituacoes.includes(situacao.value));
         
+        // Verificar se algumas estão selecionadas (para estado indeterminado)
+        const algumasSelecionadas = situacoesFiltradas.some(situacao => selectedSituacoes.includes(situacao.value));
 
         return (
             <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -503,6 +531,40 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                     placeholder="Buscar situação..."
                     width="100%"
                 />
+                
+                {/* Opção Selecionar Todos */}
+                {situacoesFiltradas.length > 0 && (
+                    <div style={{ 
+                        borderBottom: '1px solid #e5e7eb', 
+                        paddingBottom: '0.75rem', 
+                        marginBottom: '0.5rem' 
+                    }}>
+                        <div className="flex align-items-center">
+                            <input
+                                type="checkbox"
+                                id="selecionar-todos"
+                                checked={todasSelecionadas}
+                                ref={(input) => {
+                                    if (input) input.indeterminate = algumasSelecionadas && !todasSelecionadas;
+                                }}
+                                onChange={(e) => onSelecionarTodos(e.target.checked)}
+                                style={{ marginRight: '8px' }}
+                            />
+                            <label 
+                                htmlFor="selecionar-todos" 
+                                style={{ 
+                                    cursor: 'pointer', 
+                                    flex: 1, 
+                                    fontWeight: '600', 
+                                    color: '#374151' 
+                                }}
+                            >
+                                Selecionar Todos
+                            </label>
+                        </div>
+                    </div>
+                )}
+                
                 <div style={{ maxHeight: '250px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.75rem', paddingRight: '10px' }}>
                     {situacoesFiltradas.map(situacao => (
                         <div key={situacao.value} className="flex align-items-center">

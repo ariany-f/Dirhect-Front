@@ -23,10 +23,10 @@ const TarefasLista = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [first, setFirst] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
-    const [sortField, setSortField] = useState('-id');
-    const [sortOrder, setSortOrder] = useState('');
+    const [sortField, setSortField] = useState('id');
+    const [sortOrder, setSortOrder] = useState('desc');
     const [filters, setFilters] = useState({
-        'processo_codigo': { value: null, matchMode: 'custom' },
+        'processo__codigo': { value: null, matchMode: 'custom' },
         'percentual_conclusao': { value: null, matchMode: 'custom' }
     });
 
@@ -42,12 +42,13 @@ const TarefasLista = () => {
         url += orderParam;
 
         // Adicionar filtro de processo_codigo
-        const processoCodigoFilter = currentFilters?.['processo_codigo']?.value;
+        const processoCodigoFilter = currentFilters?.['processo__codigo']?.value;
+        
         if (processoCodigoFilter) {
-            url += `&processo_codigo=${encodeURIComponent(processoCodigoFilter)}`;
+            url += `&processo__codigo=${encodeURIComponent(processoCodigoFilter)}`;
         } else {
             // Filtro fixo para apenas processos Syync Segalas
-            url += `&processo_codigo__not_in=syync_segalas_ferias,syync_segalas_folha`;
+            url += `&processo__codigo__not_in=syync_segalas_ferias,syync_segalas_folha`;
         }
 
         // Adicionar filtro de percentual_conclusao
@@ -100,14 +101,17 @@ const TarefasLista = () => {
     };
 
     const getSortParam = () => {
-        if (!sortField) return '';
+        if (!sortField || !sortOrder) return '-id'; // fallback para ordenação padrão
         return `${sortOrder === 'desc' ? '-' : ''}${sortField}`;
     };
 
     const onSort = ({ field, order }) => {
         setSortField(field);
         setSortOrder(order);
-        loadData(page, pageSize, searchTerm, `${order === 'desc' ? '-' : ''}${field}`, filters);
+        
+        // Usar a mesma lógica de getSortParam para construir o parâmetro de ordenação
+        const sortParam = `${order === 'desc' ? '-' : ''}${field}`;
+        loadData(page, pageSize, searchTerm, sortParam, filters);
     };
     
     const onFilter = (event) => {
@@ -115,7 +119,13 @@ const TarefasLista = () => {
         setFilters(newFilters);
         setPage(1);
         setFirst(0);
-        loadData(1, pageSize, searchTerm, getSortParam(), newFilters);
+        
+        // Usar os valores atuais de sortField e sortOrder para construir o parâmetro
+        const currentSortParam = sortField && sortOrder ? 
+            `${sortOrder === 'desc' ? '-' : ''}${sortField}` : 
+            getSortParam();
+            
+        loadData(1, pageSize, searchTerm, currentSortParam, newFilters);
     };
 
     const handleRefresh = () => {

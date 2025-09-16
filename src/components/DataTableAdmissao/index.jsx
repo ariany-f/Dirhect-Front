@@ -537,15 +537,9 @@ function DataTableAdmissao({
                     const isFinalizada = verificarFinalizada(data);
                     return `datatable-clickable-row ${(isModoLeitura || isFinalizada) ? 'datatable-readonly-row' : ''}`;
                 }}
-                footerColumnGroup={
-                    paginator ? (
-                        <ColumnGroup>
-                            <Row>
-                                <Column footer={totalAdmissoesTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
-                            </Row>
-                        </ColumnGroup>
-                    ) : null
-                }
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords}"
             >
                 <Column body={vagaTemplate} header="Vaga" style={{ width: `${largurasColunas[0]}%` }} sortable sortField="vaga"></Column>
                 <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: `${largurasColunas[1]}%` }} sortable sortField="nome"></Column>

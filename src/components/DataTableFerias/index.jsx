@@ -127,7 +127,10 @@ function DataTableFerias({
     onUpdate, // nova prop para atualização
     onSort, // nova prop para ordenação
     sortField = '',
-    sortOrder = ''
+    sortOrder = '',
+    onFilter, // nova prop para filtros
+    filtersProp = {}, // nova prop para estado dos filtros
+    situacoesUnicas = [] // nova prop para situações disponíveis
 }) {
 
     const [colaboradores, setColaboradores] = useState(null)
@@ -665,9 +668,9 @@ function DataTableFerias({
 
     // Memoizar configuração do DataTable para evitar re-renders
     const dataTableConfig = useMemo(() => ({
-        scrollable: true,
-        scrollHeight: "65vh",
-        filters: filters,
+        scrollable: false,
+        filters: filtersProp,
+        onFilter: onFilter,
         globalFilterFields: ['colaborador_id'],
         emptyMessage: "Não foram encontrados férias registradas",
         selection: selectedFerias,
@@ -679,7 +682,193 @@ function DataTableFerias({
         first: (currentPage - 1) * pageSize,
         removableSort: true,
         tableStyle: { minWidth: (!colaborador ? '68vw' : '40vw') }
-    }), [filters, selectedFerias, pageSize, totalRecords, currentPage, colaborador]);
+    }), [filtersProp, selectedFerias, pageSize, totalRecords, currentPage, colaborador, onFilter]);
+
+    // Templates para botões de filtro (igual ao DataTableColaboradores)
+    const filterClearTemplate = (options) => {
+        return (
+            <button 
+                type="button" 
+                onClick={options.filterClearCallback} 
+                style={{
+                    width: '2.5rem', 
+                    height: '2.5rem', 
+                    color: 'var(--white)',
+                    backgroundColor: 'var(--surface-600)',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+            >
+                <i className="pi pi-filter-slash" />
+            </button>
+        );
+    };
+
+    const filterApplyTemplate = (options) => {
+        return (
+            <button 
+                type="button" 
+                onClick={options.filterApplyCallback} 
+                style={{
+                    width: '2.5rem', 
+                    height: '2.5rem', 
+                    color: 'var(--white)',
+                    backgroundColor: 'var(--green-500)',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+            >
+                <i className="pi pi-check" />
+            </button>
+        );
+    };
+
+    // Template para filtro de situação (COPIA EXATA do DataTableColaboradores)
+    const SituacaoFilterContent = ({ options, situacoesUnicas }) => {
+        const [filtroSituacao, setFiltroSituacao] = useState('');
+        const [selectedSituacoes, setSelectedSituacoes] = useState([]);
+
+        // Inicializar com o valor atual do filtro
+        useEffect(() => {
+            if (options.value) {
+                setSelectedSituacoes(Array.isArray(options.value) ? options.value : [options.value]);
+            } else {
+                setSelectedSituacoes([]);
+            }
+        }, [options.value]);
+
+        const onSituacaoChange = (situacaoValue, checked) => {
+            let newSelectedSituacoes;
+            
+            if (checked) {
+                // Adicionar à seleção
+                newSelectedSituacoes = [...selectedSituacoes, situacaoValue];
+            } else {
+                // Remover da seleção
+                newSelectedSituacoes = selectedSituacoes.filter(val => val !== situacaoValue);
+            }
+            
+            setSelectedSituacoes(newSelectedSituacoes);
+            
+            // Chamar o callback com o array de valores selecionados
+            if (newSelectedSituacoes.length === 0) {
+                options.filterCallback(null);
+            } else {
+                options.filterCallback(newSelectedSituacoes);
+            }
+        };
+
+        const situacoesOrdenadas = [...(situacoesUnicas || [])].sort((a, b) => a.label.localeCompare(b.label));
+
+        const situacoesFiltradas = situacoesOrdenadas.filter(situacao => 
+            situacao.label.toLowerCase().includes(filtroSituacao.toLowerCase())
+        );
+
+        // Função para selecionar/deselecionar todos
+        const onSelecionarTodos = (checked) => {
+            let newSelectedSituacoes;
+            
+            if (checked) {
+                // Selecionar todas as situações filtradas
+                newSelectedSituacoes = situacoesFiltradas.map(situacao => situacao.value);
+            } else {
+                // Deselecionar todas
+                newSelectedSituacoes = [];
+            }
+            
+            setSelectedSituacoes(newSelectedSituacoes);
+            
+            // Chamar o callback
+            if (newSelectedSituacoes.length === 0) {
+                options.filterCallback(null);
+            } else {
+                options.filterCallback(newSelectedSituacoes);
+            }
+        };
+
+        // Verificar se todas as situações filtradas estão selecionadas
+        const todasSelecionadas = situacoesFiltradas.length > 0 && 
+            situacoesFiltradas.every(situacao => selectedSituacoes.includes(situacao.value));
+        
+        // Verificar se algumas estão selecionadas (para estado indeterminado)
+        const algumasSelecionadas = situacoesFiltradas.some(situacao => selectedSituacoes.includes(situacao.value));
+
+        return (
+            <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <CampoTexto
+                    valor={filtroSituacao}
+                    setValor={setFiltroSituacao}
+                    placeholder="Buscar situação..."
+                    width="100%"
+                />
+                
+                {/* Opção Selecionar Todos */}
+                {situacoesFiltradas.length > 0 && (
+                    <div style={{ 
+                        borderBottom: '1px solid #e5e7eb', 
+                        paddingBottom: '0.75rem', 
+                        marginBottom: '0.5rem' 
+                    }}>
+                        <div className="flex align-items-center">
+                            <input
+                                type="checkbox"
+                                id="selecionar-todos-ferias"
+                                checked={todasSelecionadas}
+                                ref={(input) => {
+                                    if (input) input.indeterminate = algumasSelecionadas && !todasSelecionadas;
+                                }}
+                                onChange={(e) => onSelecionarTodos(e.target.checked)}
+                                style={{ marginRight: '8px' }}
+                            />
+                            <label 
+                                htmlFor="selecionar-todos-ferias" 
+                                style={{ 
+                                    cursor: 'pointer', 
+                                    flex: 1, 
+                                    fontWeight: '600', 
+                                    color: '#374151' 
+                                }}
+                            >
+                                Selecionar Todos
+                            </label>
+                        </div>
+                    </div>
+                )}
+                
+                <div style={{ maxHeight: '250px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.75rem', paddingRight: '10px' }}>
+                    {situacoesFiltradas.map(situacao => (
+                        <div key={situacao.value} className="flex align-items-center">
+                            <input
+                                type="checkbox"
+                                id={`situacao-${situacao.value}`}
+                                checked={selectedSituacoes.includes(situacao.value)}
+                                onChange={(e) => onSituacaoChange(situacao.value, e.target.checked)}
+                                style={{ marginRight: '8px' }}
+                            />
+                            <label 
+                                htmlFor={`situacao-${situacao.value}`} 
+                                style={{ cursor: 'pointer', flex: 1 }}
+                            >
+                                {situacao.label}
+                            </label>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    };
+
+    const situacaoFilterTemplate = (options) => {
+        return <SituacaoFilterContent options={options} situacoesUnicas={situacoesUnicas} />;
+    };
 
     return (
         <>
@@ -692,14 +881,10 @@ function DataTableFerias({
                 onSort={onSortChange}
                 stripedRows
                 sortField={sortField || null}
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords}"
                 sortOrder={sortOrder === 'desc' ? -1 : sortOrder === 'asc' ? 1 : sortOrder ? 0 : null}
-                footerColumnGroup={
-                    <ColumnGroup>
-                        <Row>
-                            <Column footer={totalFeriasTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
-                        </Row>
-                    </ColumnGroup>
-                }
             >
                 {!colaborador && <Column body={representativeColaboradorTemplate} sortable field="funcionario_nome" sortField="funcionario" header="Colaborador" style={{ width: '15%' }}></Column>}
                 <Column body={representativeAquisicaoTemplate} sortable field="fimperaquis" header="Aquisição" style={{ width: '18%' }}></Column>
@@ -714,7 +899,23 @@ function DataTableFerias({
                 <Column sortable field="nrodiasabono" header="Abono" style={{ width: '8%' }}></Column>
                 <Column body={representativ13Template} sortable field="adiantar_13" header="13º" style={{ width: '8%' }}></Column>
                 <Column body={representativeFeriasColetivasTemplate} sortable field="ferias_coletivas" header="Coletiva" style={{ width: '8%' }}></Column>
-                <Column sortable body={representativeSituacaoTemplate} field="situacaoferias" header="Situação" style={{ width: '18%' }}></Column>
+                <Column 
+                    sortable 
+                    body={representativeSituacaoTemplate} 
+                    field="situacaoferias" 
+                    header="Situação" 
+                    style={{ width: '18%' }}
+                    filter
+                    filterField="situacaoferias"
+                    showFilterMenu={true}
+                    filterElement={situacaoFilterTemplate}
+                    filterMatchMode="custom"
+                    showFilterMatchModes={false}
+                    showFilterOperator={false}
+                    showAddButton={false}
+                    filterClear={filterClearTemplate}
+                    filterApply={filterApplyTemplate}
+                ></Column>
             </DataTable>
             <ModalDetalhesFerias opened={modalDetalhesFeriasOpened} evento={eventoSelecionado} aoFechar={fecharModal} isDemitido={eventoSelecionado?.colab?.funcionario_situacao_padrao === true} />
         </>

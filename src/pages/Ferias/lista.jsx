@@ -268,6 +268,11 @@ function FeriasListagem() {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
     
+    // Estados para filtro de situação
+    const [filters, setFilters] = useState({
+        'situacaoferias': { value: null, matchMode: 'custom' }
+    });
+    
     // Estados para ordenação
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('');
@@ -308,6 +313,19 @@ function FeriasListagem() {
         { name: 'Apenas Abertos', value: true },
         { name: 'Apenas Fechados', value: false },
         { name: 'Todos os Períodos', value: null }
+    ];
+
+    // Situações únicas para filtro
+    const situacoesFerias = [
+        { label: 'A solicitar', value: 'aSolicitar' },
+        { label: 'Em análise', value: 'solicitada' },
+        { label: 'Marcada', value: 'marcada' },
+        { label: 'Aprovada', value: 'aprovada' },
+        { label: 'Em férias', value: 'acontecendo' },
+        { label: 'Finalizada', value: 'finalizada' },
+        { label: 'Paga', value: 'paga' },
+        { label: 'Concluída', value: 'passada' },
+        { label: 'Rejeitada', value: 'rejeitada' }
     ];
 
     // Função para construir parâmetro de ordenação
@@ -388,6 +406,8 @@ function FeriasListagem() {
             const sortParam = getSortParam();
             if (sortParam) {
                 url += `&ordering=${sortParam}`;
+            } else {
+                url += `&ordering=fimperaquis`;
             }
             
             // Filtro de ano
@@ -410,10 +430,60 @@ function FeriasListagem() {
             if (periodoAberto !== null && typeof periodoAberto !== 'object') {
                 url += `&periodo_aberto=${periodoAberto}`;
             }
+
+            // Filtro de situação (apenas para lista)
+            const situacaoFilter = filters?.['situacaoferias']?.value;
+            console.log('🔍 Filtro recebido:', situacaoFilter);
+            if (situacaoFilter && Array.isArray(situacaoFilter) && situacaoFilter.length > 0) {
+                // Para múltiplos valores, precisamos mapear para os valores reais da API
+                const situacoesApiArray = [];
+                
+                situacaoFilter.forEach(situacao => {
+                    switch(situacao) {
+                        case 'aSolicitar': 
+                            situacoesApiArray.push('A'); 
+                            break;
+                        case 'solicitada': 
+                            situacoesApiArray.push('S', 'I', 'G', 'D', 'E'); 
+                            break;
+                        case 'marcada': 
+                            situacoesApiArray.push('M'); 
+                            break;
+                        case 'aprovada': 
+                            situacoesApiArray.push('A'); 
+                            break;
+                        case 'finalizada': 
+                            situacoesApiArray.push('F', 'X'); 
+                            break;
+                        case 'paga': 
+                            situacoesApiArray.push('P'); 
+                            break;
+                        case 'passada': 
+                            situacoesApiArray.push('C'); 
+                            break;
+                        case 'rejeitada': 
+                            situacoesApiArray.push('R'); 
+                            break;
+                        default: 
+                            situacoesApiArray.push(situacao);
+                            break;
+                    }
+                });
+                
+                // Remove duplicatas e cria string para __in
+                const situacoesUnicas = [...new Set(situacoesApiArray)];
+                const paramValue = situacoesUnicas.join(',');
+                url += `&situacaoferias__in=${encodeURIComponent(paramValue)}`;
+                console.log('🔍 Filtro de situação aplicado:', {
+                    selecionadas: situacaoFilter,
+                    mapeadas: situacoesUnicas,
+                    paramUrl: `situacaoferias__in=${paramValue}`
+                });
+            }
         }
         
         return url;
-    }, [tab, searchTerm, currentPage, pageSize, anoSelecionado, periodoAberto, nextCursor, getSortParam]);
+    }, [tab, searchTerm, currentPage, pageSize, anoSelecionado, periodoAberto, nextCursor, getSortParam, filters]);
 
     // Função para carregar dados
     const loadData = useCallback(async (isLoadMore = false, lightLoad = false) => {
@@ -539,7 +609,7 @@ function FeriasListagem() {
         }
         
         loadData(false);
-    }, [tab, anoSelecionado, searchTerm, periodoAberto, currentPage, pageSize, forceUpdate]);
+    }, [tab, anoSelecionado, searchTerm, periodoAberto, currentPage, pageSize, forceUpdate, filters]);
 
     // Effect separado para ordenação (não reseta loading completo)
     useEffect(() => {
@@ -564,17 +634,35 @@ function FeriasListagem() {
         if (tab === 'lista') {
             setCurrentPage(1);
         }
-    }, [anoSelecionado, searchTerm, periodoAberto, tab]);
+    }, [anoSelecionado, searchTerm, periodoAberto, tab, filters]);
 
     // Função para lidar com mudança de aba
     const handleTabChange = useCallback((newTab) => {
         setTab(newTab);
+        
         if (newTab === 'lista') {
+            // Reset completo dos estados da lista
             setCurrentPage(1);
-        } else if (newTab === 'calendario') {
-            // Reset ordenação ao mudar para calendário
             setSortField('');
             setSortOrder('');
+            
+            // Reset forçado dos filtros
+            const resetFilters = {
+                'situacaoferias': { value: null, matchMode: 'custom' }
+            };
+            setFilters(resetFilters);
+            
+            // Força uma atualização para garantir que tudo seja resetado
+            setTimeout(() => {
+                setForceUpdate(prev => prev + 1);
+            }, 100);
+            
+        } else if (newTab === 'calendario') {
+            // Reset estados do calendário
+            setSortField('');
+            setSortOrder('');
+            setNextCursor(null);
+            setHasMore(true);
         }
     }, []);
 
@@ -652,6 +740,13 @@ function FeriasListagem() {
         console.log('🔄 Atualizando estados:', { field, order });
         setSortField(field);
         setSortOrder(order);
+    }, []);
+
+    // Função para lidar com filtros
+    const handleFilter = useCallback((event) => {
+        const newFilters = { ...event.filters };
+        setFilters(newFilters);
+        setCurrentPage(1);
     }, []);
 
     // Função para fechar modal com resultado
@@ -776,11 +871,11 @@ function FeriasListagem() {
                             </p>
                         </div>
                     ) : <></>
-                ) : ferias ? (
+                ) : (
                     <>
                         {tab === 'calendario' && (
                             <CalendarFerias 
-                                colaboradores={ferias} 
+                                colaboradores={ferias || []} 
                                 onUpdate={() => setForceUpdate(prev => prev + 1)}
                                 onLoadMore={loadMore}
                                 hasMore={hasMore}
@@ -790,7 +885,7 @@ function FeriasListagem() {
                         )}
                         {tab === 'lista' && (
                             <DataTableFerias 
-                                ferias={ferias} 
+                                ferias={ferias || []} 
                                 totalRecords={totalRecords}
                                 currentPage={currentPage}
                                 setCurrentPage={setCurrentPage}
@@ -800,17 +895,12 @@ function FeriasListagem() {
                                 onSort={handleSort}
                                 sortField={sortField}
                                 sortOrder={sortOrder}
+                                onFilter={handleFilter}
+                                filtersProp={filters}
+                                situacoesUnicas={situacoesFerias}
                             />
                         )}
                     </>
-                ) : (
-                    <ContainerSemRegistro>
-                        <section className={styles.container}>
-                            <img src={Management} />
-                            <h6>Não há férias registrados</h6>
-                            <p>Aqui você verá todas as ausências registradas.</p>
-                        </section>
-                    </ContainerSemRegistro>
                 )}
             </Wrapper>
             
