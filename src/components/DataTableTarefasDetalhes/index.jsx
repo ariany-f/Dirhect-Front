@@ -172,7 +172,7 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = nul
                             severity={getButtonSeverity()}
                             size="small"
                             onClick={() => handleChange(true)}
-                            disabled={loadingAction || rowData.status === 'concluida' || rowData.status === 'aprovada' || rowData.status === 'em_andamento' || rowData.status === 'erro'}
+                            disabled={loadingAction || rowData.status === 'concluida' || rowData.status === 'aprovada' || rowData.status === 'rejeitada' || rowData.status === 'transferida' || rowData.status === 'pendente' || rowData.status === 'em_andamento' || rowData.status === 'erro'}
                             loading={loadingAction}
                             style={{ 
                                 fontSize: '12px', 

@@ -104,7 +104,7 @@ function DataTableAtividades({
     const handleRowClick = (e) => {
         const rowData = e.data;
         if(rowData.objeto?.funcionario_detalhe?.id) {
-            if(rowData.entidade_tipo == 'férias') {
+            if(rowData.entidade_tipo == 'ferias') {
                 navegar(`/colaborador/detalhes/${rowData.objeto.funcionario_detalhe.id}/ferias`);
             } else if (rowData.entidade_tipo == 'demissao') {
                 navegar(`/colaborador/detalhes/${rowData.objeto.funcionario_detalhe.id}/demissao`);
@@ -271,7 +271,7 @@ function DataTableAtividades({
                             label={getButtonText()}
                             severity={getButtonSeverity()}
                             size="small"
-                            disabled={rowData.status === 'concluida' || rowData.status === 'aprovada' || rowData.status === 'em_andamento' || rowData.status === 'erro'}
+                            disabled={rowData.status === 'concluida' || rowData.status === 'aprovada' || rowData.status === 'rejeitada' || rowData.status === 'transferida' || rowData.status === 'pendente' || rowData.status === 'em_andamento' || rowData.status === 'erro'}
                             onClick={() => handleChange(true)}
                             style={{ 
                                 fontSize: '12px', 
