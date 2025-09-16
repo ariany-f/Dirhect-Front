@@ -949,7 +949,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                     }}>
                         <FaCalendarCheck size={48} style={{ marginBottom: '16px', opacity: 0.5 }} />
                         <p>Não há dados de férias disponíveis para exibir no calendário.</p>
-                        <p style={{ fontSize: '14px', marginTop: '8px' }}>Os dados aparecerão aqui quando houver férias registradas.</p>
+                        <p style={{ fontSize: '14px', marginTop: '8px' }}>Tente usar outro filtro ou período.</p>
                     </div>
                 ) : (
                     <>

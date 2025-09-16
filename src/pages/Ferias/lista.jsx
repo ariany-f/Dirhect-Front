@@ -17,7 +17,7 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import CalendarFerias from './calendar_ferias'
-import { FaListUl, FaRegCalendarAlt, FaUmbrellaBeach, FaSpinner, FaSearch } from 'react-icons/fa';
+import { FaListUl, FaRegCalendarAlt, FaUmbrellaBeach, FaSpinner, FaSearch, FaCalendarCheck } from 'react-icons/fa';
 import Texto from '@components/Texto';
 import { BsSearch } from 'react-icons/bs'
 import { ArmazenadorToken } from '@utils';
@@ -405,8 +405,6 @@ function FeriasListagem() {
             // Para calendário: usar cursor pagination
             url += `cursor`;
             url += `&page_size=10`; // Páginas maiores para calendário
-            url += `&periodo_aberto=true`;
-            url += `&incluir_finalizadas=true`;
             url += `&ordering=fimperaquis`;
             
             // Filtrar por período aquisitivo
@@ -416,6 +414,14 @@ function FeriasListagem() {
             url += `&fimperaquis__lte=${fimAnoPassado.toISOString().split('T')[0]}`;
             url += `&fimperaquis__gte=${new Date(CURRENT_YEAR, 0, 1).toISOString().split('T')[0]}`;
             
+            // Filtro de período
+            if (!periodoAberto || periodoAberto === false || periodoAberto === 'false') {
+                url += `&incluir_finalizadas=true`;
+            }
+            if (periodoAberto !== null && typeof periodoAberto !== 'object') {
+                url += `&periodo_aberto=${periodoAberto}`;
+            }
+
             // Filtro de situação (apenas para calendário)
             if (situacaoCalendario && situacaoCalendario !== '') {
                 url += `&situacaoferias=${encodeURIComponent(situacaoCalendario)}`;
@@ -858,22 +864,8 @@ function FeriasListagem() {
                                     ))}
                                 </select>
                             </ModernDropdown>
-                            
-                            <ModernDropdown>
-                                <select 
-                                    value={periodoAberto === null ? '' : periodoAberto} 
-                                    onChange={(e) => setPeriodoAberto(e.target.value === '' ? null : e.target.value === 'true')}
-                                >
-                                    {opcoesPeriodoAberto.map((opcao) => (
-                                        <option key={opcao.value} value={opcao.value === null ? '' : opcao.value}>
-                                            {opcao.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </ModernDropdown>
                         </>
                     )}
-                    
                     {tab === 'calendario' && (
                         <ModernDropdown>
                             <select 
@@ -895,6 +887,18 @@ function FeriasListagem() {
                         </ModernDropdown>
                     )}
                     
+                    <ModernDropdown>
+                        <select 
+                            value={periodoAberto === null ? '' : periodoAberto} 
+                            onChange={(e) => setPeriodoAberto(e.target.value === '' ? null : e.target.value === 'true')}
+                        >
+                            {opcoesPeriodoAberto.map((opcao) => (
+                                <option key={opcao.value} value={opcao.value === null ? '' : opcao.value}>
+                                    {opcao.name}
+                                </option>
+                            ))}
+                        </select>
+                    </ModernDropdown>
                     <SearchContainer>
                         <BsSearch className="search-icon" />
                         <input
@@ -943,51 +947,19 @@ function FeriasListagem() {
                         {tab === 'calendario' && (
                             <div style={{ position: 'relative', width: '100%' }}>
                                 {filtroSemResultados ? (
-                                    <div style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        height: '400px',
-                                        gap: '16px',
-                                        backgroundColor: '#f9fafb',
-                                        borderRadius: '8px',
-                                        border: '2px dashed #d1d5db',
-                                        padding: '40px'
-                                    }}>
-                                        <div style={{
-                                            fontSize: '48px',
-                                            color: '#9ca3af'
-                                        }}>
-                                            <img src={Management} />
-                                        </div>
-                                        <div style={{
-                                            textAlign: 'center',
-                                            color: '#374151'
-                                        }}>
-                                            <h3 style={{
-                                                margin: '0 0 8px 0',
-                                                fontSize: '18px',
-                                                fontWeight: '600'
-                                            }}>
-                                                Não foram encontradas férias
-                                            </h3>
-                                            <p style={{
-                                                margin: 0,
-                                                fontSize: '14px',
-                                                color: '#6b7280'
-                                            }}>
-                                                Não há férias com a situação "{situacoesDisponiveis.find(s => s.value === situacaoCalendario)?.label || situacaoCalendario}"
-                                            </p>
-                                            <p style={{
-                                                margin: '8px 0 0 0',
-                                                fontSize: '13px',
-                                                color: '#9ca3af'
-                                            }}>
-                                                Tente selecionar uma situação diferente ou "Todas as Situações"
-                                            </p>
-                                        </div>
-                                    </div>
+                                   <div style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    height: '400px',
+                                    color: '#666',
+                                    fontSize: '16px'
+                                }}>
+                                    <FaCalendarCheck size={48} style={{ marginBottom: '16px', opacity: 0.5 }} />
+                                    <p>Não há dados de férias disponíveis para exibir no calendário.</p>
+                                    <p style={{ fontSize: '14px', marginTop: '8px' }}>Tente usar outro filtro ou período.</p>
+                                </div>
                                 ) : (
                                     <CalendarFerias 
                                         colaboradores={ferias || []} 
