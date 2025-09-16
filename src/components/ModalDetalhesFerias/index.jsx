@@ -878,7 +878,13 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
     const diaDoMes = hoje.getDate();
 
     const isStatusPendente = eventoCompletado.evento?.status === 'E';
-    const podeAprovar = isStatusPendente && temPermissaoParaVerBotao;
+    
+    // Verificar se existe uma tarefa pendente com tipo aprovar_ferias
+    const temTarefaPendenteAprovarFerias = eventoCompletado.evento?.tarefas?.some(
+        t => t.status === 'pendente' && t.tipo_codigo === 'aprovar_ferias'
+    );
+    
+    const podeAprovar = isStatusPendente && temPermissaoParaVerBotao && temTarefaPendenteAprovarFerias;
 
     const limparDados = () => {
         setDataInicio('');
@@ -1598,23 +1604,22 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
                                 </Frame>
                             )}
                             {podeAprovar && (
-                                <Frame style={{
+                                <div style={{
                                     backgroundColor: '#fff',
-                                    border: '1px solid #dee2e6',
-                                    boxShadow: '0 8px 16px rgba(0,0,0,0.05)',
                                     borderRadius: '12px',
                                     padding: '20px 20px 0px 0px',
-                                    marginBottom: '16px'
+                                    marginBottom: '16px',
+                                    marginTop: '16px'
                                 }}>
-                                    <BotaoGrupo style={{ marginTop: '12px' }}>
-                                        <BotaoAprovarCustom size="small" aoClicar={aprovarFerias} largura="100%">
-                                            <FaCheckCircle /> Aprovar
+                                    <BotaoGrupo>
+                                        <BotaoAprovarCustom size="medium" aoClicar={aprovarFerias} largura="100%">
+                                            <FaCheckCircle fill="var(--secundaria)" /> Aprovar
                                         </BotaoAprovarCustom>
-                                        <BotaoReprovarCustom size="small" aoClicar={reprovarFerias} largura="100%">
-                                            <FaTimesCircle /> Reprovar
+                                        <BotaoReprovarCustom size="medium" aoClicar={reprovarFerias} largura="100%">
+                                            <FaTimesCircle fill="var(--secundaria)" /> Reprovar
                                         </BotaoReprovarCustom>
                                     </BotaoGrupo>
-                                </Frame>
+                                </div>
                             )}
                         </AcoesContainer>
                     </ConteudoContainer>
