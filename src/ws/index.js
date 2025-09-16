@@ -47,14 +47,11 @@ class WebSocketService {
 
   // Conectar WebSocket
   connect() {
-    //  Verificar se WebSocket está habilitado
     if (!WEBSOCKET_ENABLED) {
-      console.log('WebSocket desabilitado via configuração');
-      return Promise.reject(new Error('WebSocket desabilitado'));
+      return Promise.resolve();
     }
 
     if (this.isConnecting || this.isConnected) {
-      console.log('WebSocket já está conectando ou conectado');
       return Promise.resolve();
     }
 
@@ -175,6 +172,10 @@ class WebSocketService {
 
   // Desconectar WebSocket
   disconnect() {
+    if (!WEBSOCKET_ENABLED) {
+      return;
+    }
+
     this.options.autoReconnect = false;
     this.stopHeartbeat();
     this.clearReconnectTimer();
@@ -191,12 +192,10 @@ class WebSocketService {
   // Enviar mensagem
   send(data) {
     if (!WEBSOCKET_ENABLED) {
-      console.log('WebSocket desabilitado - mensagem não enviada');
       return false;
     }
 
     if (!this.isConnected || !this.ws) {
-      console.warn('WebSocket não está conectado');
       return false;
     }
 
@@ -213,6 +212,10 @@ class WebSocketService {
 
   // Adicionar listener
   on(event, callback) {
+    if (!WEBSOCKET_ENABLED) {
+      return;
+    }
+
     if (!this.listeners.has(event)) {
       this.listeners.set(event, []);
     }
@@ -221,6 +224,10 @@ class WebSocketService {
 
   // Remover listener
   off(event, callback) {
+    if (!WEBSOCKET_ENABLED) {
+      return;
+    }
+
     if (!this.listeners.has(event)) return;
     
     const callbacks = this.listeners.get(event);
@@ -232,6 +239,10 @@ class WebSocketService {
 
   // Emitir evento
   emit(event, data) {
+    if (!WEBSOCKET_ENABLED) {
+      return;
+    }
+
     if (!this.listeners.has(event)) return;
     
     const callbacks = this.listeners.get(event);
@@ -247,12 +258,10 @@ class WebSocketService {
   // Agendar reconexão
   scheduleReconnect() {
     if (!WEBSOCKET_ENABLED) {
-      console.log('WebSocket desabilitado - reconexão cancelada');
       return;
     }
 
     if (reconnectInProgress || this.reconnectAttempts >= this.options.maxReconnectAttempts) {
-      console.log('Máximo de tentativas de reconexão atingido');
       this.emit('error', { type: 'max_reconnect_attempts' });
       return;
     }
@@ -314,7 +323,6 @@ class WebSocketService {
 // Função para criar conexão WebSocket
 export const createWebSocketConnection = (url, options = {}) => {
   if (!WEBSOCKET_ENABLED) {
-    console.log('WebSocket desabilitado - conexão não criada');
     return null;
   }
 
@@ -330,6 +338,10 @@ export const getWebSocketConnection = (url) => {
 
 // Função para fechar todas as conexões
 export const closeAllConnections = () => {
+  if (!WEBSOCKET_ENABLED) {
+    return;
+  }
+
   activeConnections.forEach(connection => {
     connection.disconnect();
   });
@@ -338,6 +350,10 @@ export const closeAllConnections = () => {
 
 // Função para obter status de todas as conexões
 export const getAllConnectionsStatus = () => {
+  if (!WEBSOCKET_ENABLED) {
+    return {};
+  }
+
   const status = {};
   activeConnections.forEach((connection, url) => {
     status[url] = connection.getStatus();
@@ -347,12 +363,20 @@ export const getAllConnectionsStatus = () => {
 
 // Função para resetar contador de erros
 export const resetConnectionErrorCount = () => {
+  if (!WEBSOCKET_ENABLED) {
+    return;
+  }
+
   connectionErrorCount = 0;
   console.log('Contador de erros WebSocket resetado');
 };
 
 // Função para obter status do contador de erros
 export const getConnectionErrorStatus = () => {
+  if (!WEBSOCKET_ENABLED) {
+    return { current: 0, max: 0, remaining: 0 };
+  }
+
   return {
     current: connectionErrorCount,
     max: MAX_CONNECTION_ERRORS,
@@ -363,10 +387,9 @@ export const getConnectionErrorStatus = () => {
 // Hook para notificações (específico para o componente)
 export const useNotificationsWebSocket = () => {
   if (!WEBSOCKET_ENABLED) {
-    console.log('WebSocket desabilitado - retornando mock');
     return {
       connection: null,
-      connect: () => Promise.reject(new Error('WebSocket desabilitado')),
+      connect: () => Promise.resolve(),
       disconnect: () => {},
       send: () => false,
       on: () => {},
