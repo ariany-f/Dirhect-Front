@@ -877,7 +877,6 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                 return 'paga';
             case 'X':
                 return 'finalizada';
-            case 'S':
             case 'I':
             case 'G':
             case 'D':

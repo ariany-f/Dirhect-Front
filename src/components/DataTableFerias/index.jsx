@@ -94,7 +94,6 @@ function mapStatusToType(status, data_inicio, data_fim) {
             return 'paga';
         case 'X':
             return 'finalizada';
-        case 'S':
         case 'I':
         case 'G':
         case 'D':
@@ -524,9 +523,6 @@ function DataTableFerias({
                 break;
             case 'X':
                 statusOriginalText = 'Finalizada Próximo Mês';
-                break;
-            case 'S':
-                statusOriginalText = 'Solicitada';
                 break;
             case 'I':
                 statusOriginalText = 'Iniciada Solicitação';
