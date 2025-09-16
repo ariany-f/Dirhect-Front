@@ -17,13 +17,13 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import CalendarFerias from './calendar_ferias'
-import { FaListUl, FaRegCalendarAlt, FaUmbrellaBeach, FaSpinner, FaSearch, FaCalendarCheck } from 'react-icons/fa';
+import { FaListUl, FaRegCalendarAlt, FaUmbrellaBeach, FaSpinner, FaSearch, FaCalendarCheck, FaInfoCircle } from 'react-icons/fa';
 import Texto from '@components/Texto';
 import { BsSearch } from 'react-icons/bs'
 import { ArmazenadorToken } from '@utils';
 import DropdownItens from '@components/DropdownItens';
 import { Toast } from 'primereact/toast';
-
+import { Tooltip } from 'primereact/tooltip';
 const ConteudoFrame = styled.div`
     display: flex;
     flex-direction: column;
@@ -850,6 +850,12 @@ function FeriasListagem() {
                 </TabPanel>
                 
                 <FiltersContainer>
+                    {tab === 'calendario' && (
+                        <>
+                            <Tooltip target=".info-icon" mouseTrack mouseTrackLeft={10} text="O calendário exibe apenas as férias do início do ano atual + 11 meses. Para ver todas as férias, use a lista." />
+                            <FaInfoCircle size={16} className="info-icon" style={{cursor: 'pointer'}}  data-pr-tooltip="O calendário exibe apenas as férias do início do ano atual + 11 meses. Para ver todas as férias, use a lista."/>
+                        </>
+                    )}
                     {tab === 'lista' && (
                         <>
                             <ModernDropdown>
