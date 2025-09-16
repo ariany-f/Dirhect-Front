@@ -1020,14 +1020,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
 
         const diasMinimosAntecedencia = parseInt(parametrosFerias.DIAS_MINIMOS_ANTECEDENCIA) || 45; // Fallback para 45 se não houver parâmetro
         
-        console.log('Debug solicitarFerias - validação antecedência:', {
-            userPerfil,
-            isPerfilEspecial,
-            diffDays,
-            diasMinimosAntecedencia,
-            podeAnalistaTenantAprovar
-        });
-        
+      
         if (diffDays < (diasMinimosAntecedencia + 1)) {
             if (!isPerfilEspecial) {
                 // Calcular a data mínima permitida

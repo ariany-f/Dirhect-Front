@@ -827,7 +827,9 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
             if (resultado.sucesso) {
                 toast.current.show({ severity: 'success', summary: 'Sucesso', detail: resultado.mensagem, life: 3000 });
                 if (onUpdate) {
-                    onUpdate();
+                    setTimeout(() => {
+                        onUpdate();
+                    }, 2000);
                 }
             } else if (resultado.erro) {
                 toast.current.show({ severity: 'error', summary: 'Erro', detail: resultado.mensagem, life: 3000 });
