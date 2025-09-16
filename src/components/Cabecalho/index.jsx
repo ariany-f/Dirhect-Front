@@ -5,15 +5,14 @@ import Frame from "@components/Frame";
 import Texto from "@components/Texto";
 import { Link, useLocation } from "react-router-dom";
 import { BsArrowLeftRight } from 'react-icons/bs';
-import { MdOutlineKeyboardArrowDown, MdShoppingCart } from 'react-icons/md';
+import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import Menu from "@components/Menu";
 import { useState, useRef, useEffect } from "react";
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
-import Notificacoes from '@components/Notificacoes';
-import { FaBuilding, FaBusAlt, FaDatabase } from "react-icons/fa";
+// import Notificacoes from '@components/Notificacoes';
+import { FaBuilding, FaBusAlt } from "react-icons/fa";
 import { FaBars } from "react-icons/fa6";
 import { TbLayoutSidebarLeftCollapseFilled } from "react-icons/tb";
-import { LuSparkles } from "react-icons/lu";
 import LanguageSelector from "../LanguageSelector";
 import { useTranslation } from 'react-i18next';
 import CustomImage from '@components/CustomImage';
@@ -558,7 +557,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
               {isDesktop && (usuario.tipo || 'Perfil')}
               {!temApenasUmPerfil && <BsArrowLeftRight />}
             </ItemPerfil>
-            <Notificacoes />
+            {/* <Notificacoes /> */}
             <LanguageSelector />
             <ItemUsuario onClick={toggleMenu}>
               <div className="user">
