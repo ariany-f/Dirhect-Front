@@ -9,6 +9,7 @@ import { MdOutlineKeyboardArrowDown, MdShoppingCart } from 'react-icons/md';
 import Menu from "@components/Menu";
 import { useState, useRef, useEffect } from "react";
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
+import Notificacoes from '@components/Notificacoes';
 import { FaBuilding, FaBusAlt, FaDatabase } from "react-icons/fa";
 import { FaBars } from "react-icons/fa6";
 import { TbLayoutSidebarLeftCollapseFilled } from "react-icons/tb";
@@ -557,6 +558,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
               {isDesktop && (usuario.tipo || 'Perfil')}
               {!temApenasUmPerfil && <BsArrowLeftRight />}
             </ItemPerfil>
+            <Notificacoes />
             <LanguageSelector />
             <ItemUsuario onClick={toggleMenu}>
               <div className="user">
