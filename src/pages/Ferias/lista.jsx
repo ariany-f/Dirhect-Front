@@ -970,7 +970,7 @@ function FeriasListagem() {
                                                 fontSize: '18px',
                                                 fontWeight: '600'
                                             }}>
-                                                Nenhuma féria encontrada
+                                                Não foram encontradas férias
                                             </h3>
                                             <p style={{
                                                 margin: 0,
