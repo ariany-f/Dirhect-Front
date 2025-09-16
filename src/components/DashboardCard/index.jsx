@@ -431,7 +431,26 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     usePointStyle: true,
                     pointStyle: 'circle',
                     boxWidth: 12,
-                    boxHeight: 12
+                    boxHeight: 12,
+                    generateLabels: function(chart) {
+                        const data = chart.data;
+                        if (data.labels.length && data.datasets.length) {
+                            return data.labels.map((label, i) => {
+                                const dataset = data.datasets[0];
+                                const value = dataset.data[i];
+                                return {
+                                    text: `${label}: ${value}`,
+                                    fillStyle: dataset.backgroundColor[i],
+                                    strokeStyle: dataset.backgroundColor[i],
+                                    lineWidth: 0,
+                                    pointStyle: 'circle',
+                                    hidden: false,
+                                    index: i
+                                };
+                            });
+                        }
+                        return [];
+                    }
                 }
             },
             tooltip: {
@@ -497,7 +516,26 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                 align: 'center',
                 labels: {
                     ...chartOptions.plugins.legend.labels,
-                    font: { size: 12, weight: 500 }
+                    font: { size: 12, weight: 500 },
+                    generateLabels: function(chart) {
+                        const data = chart.data;
+                        if (data.labels.length && data.datasets.length) {
+                            return data.labels.map((label, i) => {
+                                const dataset = data.datasets[0];
+                                const value = dataset.data[i];
+                                return {
+                                    text: `${label}: ${value}`,
+                                    fillStyle: dataset.backgroundColor[i],
+                                    strokeStyle: dataset.backgroundColor[i],
+                                    lineWidth: 0,
+                                    pointStyle: 'circle',
+                                    hidden: false,
+                                    index: i
+                                };
+                            });
+                        }
+                        return [];
+                    }
                 }
             }
         }
@@ -639,7 +677,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                             <div style={{fontWeight: 600, fontSize: 15, marginBottom: 8}}>{t("employee_type")}</div>
                             {dadosProntos && Object.keys(distribuicaoTipoFuncionario).length > 0 ? (
                                 <div className="chart-container" style={{width: '100%', height: '180px'}}>
-                                    <Chart type="bar" data={chartDataDepartamentos} options={chartOptionsNoLegend} style={{width: '100%', height: '100%'}} />
+                                    <Chart type="bar" data={chartDataDepartamentos} options={chartOptions} style={{width: '100%', height: '100%'}} />
                                 </div>
                             ) : dadosProntos ? (
                                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '180px', color: '#888', fontSize: '14px', fontStyle: 'italic'}}>
@@ -655,7 +693,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                             <div style={{fontWeight: 600, fontSize: 15, marginBottom: 8}}>Por Filial</div>
                             {dadosProntos && Object.keys(distribuicaoFilial).length > 0 ? (
                                 <div className="chart-container" style={{width: '100%', height: '180px'}}>
-                                    <Chart type="bar" data={chartDataFiliais} options={chartOptionsNoLegend} style={{width: '100%', height: '100%'}} />
+                                    <Chart type="bar" data={chartDataFiliais} options={chartOptions} style={{width: '100%', height: '100%'}} />
                                 </div>
                             ) : dadosProntos ? (
                                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '180px', color: '#888', fontSize: '14px', fontStyle: 'italic'}}>
@@ -801,13 +839,19 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     <Frame estilo="spaced">
                         <Titulo><h6>{t("next_scheduled_vacations")}</h6></Titulo>
                     </Frame>
-                    <div className="ferias-list">
+                    <div className="ferias-list" style={{textAlign: 'left'}}>
                         {dadosRH.feriasAgendadas.length > 0 ? (
                             dadosRH.feriasAgendadas.map((ferias, index) => (
-                                <div key={index} className="ferias-item">
-                                    <div className="ferias-info">
-                                        <div className="ferias-colaborador">{ferias.nome_colaborador}</div>
-                                        <div className="ferias-periodo">
+                                <div key={index} className="ferias-item" style={{
+                                    textAlign: 'left',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    width: '100%'
+                                }}>
+                                    <div className="ferias-info" style={{textAlign: 'left', flex: 1}}>
+                                        <div className="ferias-colaborador" style={{textAlign: 'left'}}>{ferias.nome_colaborador}</div>
+                                        <div className="ferias-periodo" style={{textAlign: 'left'}}>
                                             {ferias.data_inicio && ferias.data_fim ? 
                                                 `${new Date(ferias.data_inicio).toLocaleDateString('pt-BR')} - ${new Date(ferias.data_fim).toLocaleDateString('pt-BR')} (${ferias.numero_dias} dias)` :
                                                 `${ferias.data_inicio} - ${ferias.data_fim} (${ferias.numero_dias} dias)`
@@ -866,9 +910,9 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     <Frame estilo="spaced">
                         <Titulo><h6>{t("termination_reasons")}</h6></Titulo>
                     </Frame>
-                    <div className="chart-container" style={{height: '250px', width: '100%'}}>
+                    <div className="chart-container" style={{height: '250px', width: '100%', minWidth: '400px'}}>
                         {dadosProntos && Object.keys(dadosRH.motivosDemissao).length > 0 ? (
-                            <Chart type="bar" data={chartDataMotivos} options={chartOptionsNoLegend} />
+                            <Chart type="bar" data={chartDataMotivos} options={chartOptionsNoLegend} style={{width: '100%', height: '100%', minWidth: '400px'}} />
                         ) : dadosProntos ? (
                             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#888', fontSize: '14px', fontStyle: 'italic'}}>
                                 {t('no_data')}
