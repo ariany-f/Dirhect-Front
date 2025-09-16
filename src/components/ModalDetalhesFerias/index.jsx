@@ -878,7 +878,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
     const hoje = new Date();
     const diaDoMes = hoje.getDate();
 
-    const isStatusPendente = eventoCompletado.evento?.status === 'E' || eventoCompletado.evento?.status === 'S';
+    const isStatusPendente = eventoCompletado.evento?.status === 'E';
     const podeAprovar = isStatusPendente && temPermissaoParaVerBotao;
 
     const limparDados = () => {
