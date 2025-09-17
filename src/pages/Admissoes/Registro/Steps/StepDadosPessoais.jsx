@@ -862,7 +862,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     setCampo('identidade', valor);
                     removerErroCampo('identidade', valor);
                 }}
-                patternMask="99999999S"
+                //patternMask="99999999S"
+                maxCaracteres={15}
                 label={`Identidade (RG)${isCampoObrigatorio('identidade') ? '*' : ''}`}
                 placeholder="Digite o número do RG"
                 disabled={modoLeitura}
