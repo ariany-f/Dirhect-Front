@@ -58,6 +58,9 @@ function ColabroadorFerias() {
     const [tab, setTab] = useState('abertas') // 'abertas' ou 'fechadas'
     const [forceUpdate, setForceUpdate] = useState(0)
     const {usuario} = useSessaoUsuarioContext()
+    
+    // Situações dinâmicas para filtro (busca da API)
+    const [situacoesFerias, setSituacoesFerias] = useState([]);
 
     const colaborador = colaboradorDoContexto ? {
         ...colaboradorDoContexto
@@ -77,6 +80,32 @@ function ColabroadorFerias() {
             setLoading(false)
         })
     }, [id, tab, forceUpdate])
+
+
+    // Buscar situações disponíveis da API
+    useEffect(() => {
+        const fetchSituacoes = async () => {
+            try {
+                const response = await http.get('ferias/situacoes/');
+                // A resposta já vem no formato correto: [{value, label}, ...]
+                setSituacoesFerias(response || []);
+            } catch (error) {
+                console.error('Erro ao buscar situações de férias:', error);
+                // Fallback para as situações básicas se a API falhar
+                const situacoesFallback = [
+                    { value: 'I', label: 'Iniciada Solicitação' },
+                    { value: 'E', label: 'Em Análise' },
+                    { value: 'A', label: 'Aprovado' },
+                    { value: 'F', label: 'Finalizada' },
+                    { value: 'M', label: 'Marcada' },
+                    { value: 'P', label: 'Pagas' }
+                ];
+                setSituacoesFerias(situacoesFallback);
+            }
+        };
+
+        fetchSituacoes();
+    }, []);
 
     const handleTabChange = (newTab) => {
         setTab(newTab)
@@ -103,6 +132,7 @@ function ColabroadorFerias() {
             <DataTableFerias 
                 colaborador={id} 
                 ferias={ferias}
+                situacoesUnicas={situacoesFerias}
                 onUpdate={() => setForceUpdate(prev => prev + 1)}
             />
         </>
