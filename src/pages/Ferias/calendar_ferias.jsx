@@ -149,13 +149,13 @@ const CalendarGrid = styled.div`
 
 const WeekDaysRow = styled.div`
     display: grid;
-    grid-template-columns: 200px repeat(${({ $totalDays }) => $totalDays}, 1fr);
+    grid-template-columns: 280px repeat(${({ $totalDays }) => $totalDays}, 1fr);
     min-width: 100%;
 `;
 
 const WeekDayNameRow = styled.div`
     display: grid;
-    grid-template-columns: 200px repeat(${({ $totalDays }) => $totalDays}, 1fr);
+    grid-template-columns: 280px repeat(${({ $totalDays }) => $totalDays}, 1fr);
     min-width: 100%;
 `;
 
@@ -183,8 +183,8 @@ const EmployeeCell = styled.div`
     align-items: center;
     font-weight: bold;
     color: #333;
-    font-size: 14px;
-    padding-left: 8px;
+    font-size: 16px;
+    padding-left: 12px;
     background: #f5f5f5;
     border: 1px solid #eee;
     min-height: 44px;
@@ -197,7 +197,7 @@ const EmployeeCell = styled.div`
 
 const EmployeeRow = styled.div`
     display: grid;
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: 280px 1fr;
     align-items: center;
     min-height: 44px;
     margin: 0;
@@ -349,7 +349,7 @@ const DAYS_IN_YEAR = 365;
 
 const TrimestreHeader = styled.div`
     display: grid;
-    grid-template-columns: 200px repeat(${({ $totalDays }) => $totalDays}, 1fr);
+    grid-template-columns: 280px repeat(${({ $totalDays }) => $totalDays}, 1fr);
     margin-bottom: 0px;
     min-width: 100%;
 `;
@@ -963,8 +963,8 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                         position: 'absolute',
                         left: 0,
                         top: 0,
-                        width: '200px',
-                        minwidth: '200px',
+                        width: '280px',
+                        minwidth: '280px',
                         height: `${Math.max(colabsFiltrados.length * 44, 25 * 16)}px`,
                         background: '#f5f5f5',
                         borderRight: '1px solid #eee',
@@ -974,7 +974,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                     {monthsArray.map((m, idx) => {
                         if (idx === 0) return null; // não desenha antes do primeiro mês
                         const startIdx = differenceInCalendarDays(m.start, startDate); // índice do dia 1 do mês
-                        const leftPx = 200 + startIdx * dayWidth; // 200px da coluna fixa + dias * largura do dia
+                        const leftPx = 280 + startIdx * dayWidth; // 200px da coluna fixa + dias * largura do dia
                         return (
                             <MonthSeparator
                                 key={idx}
