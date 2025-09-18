@@ -328,13 +328,16 @@ const Notificacoes = () => {
   const { usuario } = useContext(SessaoUsuarioContext);
   const [isOpen, setIsOpen] = useState(false);
   const [notificacoes, setNotificacoes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Mudança: iniciar como false
   const [error, setError] = useState(null);
   const containerRef = useRef(null);
   
   // Usar o hook do WebSocket
   const { connection, connect, disconnect, on, off, getStatus } = useNotificationsWebSocket();
   const [wsStatus, setWsStatus] = useState(getStatus());
+
+  // Variável para controlar se WebSocket está habilitado
+  const WEBSOCKET_ENABLED = false; // Mudança: desabilitar WebSocket por enquanto
 
   // Função para formatar tempo relativo
   const formatTimeAgo = (dateString) => {
@@ -379,25 +382,14 @@ const Notificacoes = () => {
     }
   };
 
-  // Carregar notificações da API
+  // Carregar notificações da API - otimizado
   const loadNotifications = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       
-      // COMENTADO: Endpoint ainda não existe
-      // const response = await http.get('notificacoes/');
-      
-      // if (response && Array.isArray(response)) {
-      //   const processedNotifications = response.map(processNotification);
-      //   setNotificacoes(processedNotifications);
-      // } else {
-      //   // Fallback para dados mockados se API não retornar dados
-      //   console.warn('API não retornou dados, usando fallback');
-      //   setNotificacoes(mockNotificacoes);
-      // }
-      
-      console.log('Usando dados mockados - endpoint notificacoes/ ainda não existe');
+      // Usar dados mockados diretamente sem tentar API
+      console.log('Carregando notificações mockadas');
       
       // Filtrar notificações baseadas no tipo de usuário
       const userNotifications = mockNotificacoes.filter(notif => 
@@ -418,8 +410,13 @@ const Notificacoes = () => {
     }
   }, [usuario?.tipo]);
 
-  // Conectar WebSocket
+  // Conectar WebSocket - só se estiver habilitado
   const connectWebSocket = useCallback(async () => {
+    if (!WEBSOCKET_ENABLED) {
+      console.log('WebSocket desabilitado, usando apenas dados mockados');
+      return;
+    }
+
     try {
       await connect();
       
@@ -458,7 +455,7 @@ const Notificacoes = () => {
       console.error('Erro ao conectar WebSocket:', error);
       setError('Erro ao conectar WebSocket');
     }
-  }, [connect, on]);
+  }, [connect, on, WEBSOCKET_ENABLED]);
 
   // Marcar notificação como lida na API
   const markAsReadAPI = async (id) => {
@@ -622,17 +619,24 @@ const Notificacoes = () => {
     };
   }, []);
 
-  // Carregar notificações e conectar WebSocket na montagem
+  // Carregar notificações na montagem - otimizado
   useEffect(() => {
     if (usuario?.tipo) {
+      // Carregar notificações imediatamente
       loadNotifications();
-      connectWebSocket();
+      
+      // Só tentar conectar WebSocket se estiver habilitado
+      if (WEBSOCKET_ENABLED) {
+        connectWebSocket();
+      }
     }
 
     return () => {
-      disconnect();
+      if (WEBSOCKET_ENABLED) {
+        disconnect();
+      }
     };
-  }, [loadNotifications, connectWebSocket, disconnect, usuario?.tipo]);
+  }, [loadNotifications, connectWebSocket, disconnect, usuario?.tipo, WEBSOCKET_ENABLED]);
 
   // Contar notificações não lidas
   const unreadCount = notificacoes.filter(n => !n.isRead).length;
