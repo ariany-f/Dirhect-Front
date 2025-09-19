@@ -616,7 +616,7 @@ function DataTableFerias({
             <Texto weight={700} width={'100%'} style={{ fontSize: '14px', lineHeight: '1.1' }}>
                 {rowData?.dados_pessoa_fisica?.nome ?? rowData.funcionario_nome ?? 'Colaborador'}
             </Texto>
-            {rowData.funcionario_chapa || rowData.secao_nome && (
+            {(rowData.funcionario_chapa || rowData.secao_nome) && (
                 <Texto weight={400} width={'100%'} style={{ fontSize: '12px', color: '#666', lineHeight: '1.2' }}>
                     {rowData.funcionario_chapa ? `${rowData.funcionario_chapa} ` : ''} {rowData.secao_nome ? `${rowData.secao_nome}` : ''}
                 </Texto>

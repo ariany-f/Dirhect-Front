@@ -654,6 +654,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                     id: funcionarioId,
                     nome: item.funcionario_nome || 'Colaborador',
                     gestor: item.gestor || '',
+                    funcionario_chapa: item.funcionario_chapa || '',
                     secao_codigo: item.secao_codigo || '',
                     secao_nome: item.secao_nome || '',
                     ausencias: [],
@@ -1110,9 +1111,12 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                         >
                             <EmployeeCell>
                                 <EmployeeName>{colab.nome}</EmployeeName>
-                                {colab.funcionario_chapa || colab.secao_nome && (
-                                    <EmployeeSection>{colab.funcionario_chapa ? `${colab.funcionario_chapa} ` : ''} {colab.secao_nome ? `${colab.secao_nome}` : ''}</EmployeeSection>
-                                )}
+                              
+                                <EmployeeSection>
+                                    {colab.funcionario_chapa ? `${colab.funcionario_chapa} ` : ''} 
+                                    {colab.secao_nome ? `${colab.secao_nome}` : ''}
+                                </EmployeeSection>
+                            
                             </EmployeeCell>
                             <DaysBar style={{ minWidth: '100%', position: 'relative' }}>
                                 {/* Background grid */}
