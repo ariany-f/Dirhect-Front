@@ -180,7 +180,8 @@ const WeekDay = styled.div`
 
 const EmployeeCell = styled.div`
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
     font-weight: bold;
     color: #333;
     font-size: 16px;
@@ -193,6 +194,21 @@ const EmployeeCell = styled.div`
     left: 0;
     z-index: 3;
     box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+`;
+
+const EmployeeName = styled.div`
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    line-height: 1.2;
+`;
+
+const EmployeeSection = styled.div`
+    font-size: 12px;
+    font-weight: 400;
+    color: #666;
+    line-height: 1.2;
+    margin-top: 2px;
 `;
 
 const EmployeeRow = styled.div`
@@ -637,7 +653,9 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                 colaboradoresMap[funcionarioId] = {
                     id: funcionarioId,
                     nome: item.funcionario_nome || 'Colaborador',
-                    gestor: item.gestor || '', 
+                    gestor: item.gestor || '',
+                    secao_codigo: item.secao_codigo || '',
+                    secao_nome: item.secao_nome || '',
                     ausencias: [],
                     _isNewItem: item._isNewItem || false, // Preserva a marcação de novo item
                     _originalIndex: colaboradoresOrder.length // Preserva ordem original
@@ -1090,7 +1108,12 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                             $index={idx}
                             className={colab._isNewItem ? 'new-item' : ''}
                         >
-                            <EmployeeCell>{colab.nome}</EmployeeCell>
+                            <EmployeeCell>
+                                <EmployeeName>{colab.nome}</EmployeeName>
+                                {colab.secao_codigo && colab.secao_nome && (
+                                    <EmployeeSection>{colab.secao_codigo} - {colab.secao_nome}</EmployeeSection>
+                                )}
+                            </EmployeeCell>
                             <DaysBar style={{ minWidth: '100%', position: 'relative' }}>
                                 {/* Background grid */}
                                 <DaysBackgroundGrid $totalDays={totalDays}>
