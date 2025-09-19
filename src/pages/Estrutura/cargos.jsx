@@ -57,7 +57,7 @@ function CargosLista() {
     
     const loadData = (currentPage, currentPageSize, search = '', sort = '-id', order = '') => {
         setLoading(true);
-        const orderParam = (sort && order) ? `&ordering=${order === 'desc' ? '-' : ''}${sort}` : '';
+        const orderParam = (sort && order) ? `&ordering=${order === 'desc' ? '-' : ''}${sort}` : '&ordering=-id';
         http.get(`cargo/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`)
             .then(response => {
                 setCargos(response.results);

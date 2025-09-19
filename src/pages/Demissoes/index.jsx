@@ -40,7 +40,7 @@ const Demissoes = () => {
 
     const loadData = (currentPage, currentPageSize, search = '', sort = '-id') => {
         setLoading(true);
-        const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '';
+        const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '&ordering=-id';
         http.get(`funcionario/?format=json&situacao=D&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`)
             .then(response => {
                 setDemissoes(response.results);
