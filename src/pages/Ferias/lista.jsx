@@ -389,7 +389,8 @@ function FeriasListagem() {
             } else {
                 url += `&`;
             }
-            url += `funcionario_nome=${encodeURIComponent(searchTerm.trim())}`;
+            // Busca por nome do funcionário, nome da seção ou código da seção
+            url += `search=${encodeURIComponent(searchTerm.trim())}`;
         }
         
         if (tab === 'calendario') {
@@ -951,7 +952,7 @@ function FeriasListagem() {
                             type="text"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder="Buscar por colaborador"
+                            placeholder="Buscar por nome ou chapa"
                         />
                     </SearchContainer>
                     

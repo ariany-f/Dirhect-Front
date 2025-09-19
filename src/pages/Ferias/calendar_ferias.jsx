@@ -1110,8 +1110,8 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                         >
                             <EmployeeCell>
                                 <EmployeeName>{colab.nome}</EmployeeName>
-                                {colab.secao_codigo && colab.secao_nome && (
-                                    <EmployeeSection>{colab.secao_codigo} - {colab.secao_nome}</EmployeeSection>
+                                {colab.funcionario_chapa || colab.secao_nome && (
+                                    <EmployeeSection>{colab.funcionario_chapa ? `${colab.funcionario_chapa} ` : ''} {colab.secao_nome ? `${colab.secao_nome}` : ''}</EmployeeSection>
                                 )}
                             </EmployeeCell>
                             <DaysBar style={{ minWidth: '100%', position: 'relative' }}>
