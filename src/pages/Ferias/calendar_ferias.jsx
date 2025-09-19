@@ -1028,6 +1028,10 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
             border-radius: 4px !important;
             min-width: 300px !important;
         }
+
+        .p-dropdown-filter-icon {
+            top: calc(46px - 28px)!important;
+        }
         
         .p-dropdown:hover {
             border-color: var(--primaria) !important;
