@@ -197,10 +197,10 @@ const EmployeeCell = styled.div`
 `;
 
 const EmployeeName = styled.div`
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
     color: #333;
-    line-height: 1.2;
+    line-height: 1.1;
 `;
 
 const EmployeeSection = styled.div`
