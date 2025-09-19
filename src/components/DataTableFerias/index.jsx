@@ -171,6 +171,10 @@ const CustomDropdownStyles = styled.div`
         border-radius: 4px !important;
         min-width: 300px !important;
     }
+
+    .p-dropdown-filter-icon {
+        top: calc(46px - 28px)!important;
+    }
     
     .p-dropdown:hover {
         border-color: var(--primaria) !important;
