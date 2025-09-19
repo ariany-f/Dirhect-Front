@@ -1382,7 +1382,7 @@ const CandidatoRegistro = () => {
                 // Compara apenas os campos relevantes do step de dados bancários
                 const camposBancarios = [
                     'banco', 'agencia', 'agencia_nova', 'conta_corrente', 
-                    'tipo_conta', 'conta_operacao', 'pix', 'pix_tipo'
+                    'conta_operacao', 'pix', 'pix_tipo'
                 ];
                 
                 const candidatoBancario = {};
