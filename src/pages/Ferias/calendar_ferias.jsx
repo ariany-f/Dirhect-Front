@@ -474,7 +474,7 @@ const DAYS_BATCH = 30; // Carrega mais 1 mês por vez
 const INITIAL_COLABS = 3;
 const COLABS_BATCH = 2;
 
-const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadingMore, isRendering, situacoesUnicas = [] }) => {
+const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadingMore, isRendering, situacoesUnicas = [], onFilterChange, secaoFiltroAtual }) => {
     const [visualizacao, setVisualizacao] = useState('trimestral'); // 'mensal', 'trimestral', 'semestral' ou 'anual'
     const [modalEvento, setModalEvento] = useState(null); // {colab, evento, tipo}
     const [isDragging, setIsDragging] = useState(false);
@@ -487,6 +487,54 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
     const loadMoreTriggerRef = useRef(null);
     const lastScrollPosition = useRef(0);
     const lastLoadTime = useRef(0); // Timestamp da última requisição
+
+    // Estados para filtro de seção
+    const [secoes, setSecoes] = useState([]);
+    const [secaoSelecionada, setSecaoSelecionada] = useState(null);
+    const [loadingSecoes, setLoadingSecoes] = useState(false);
+
+    // Sincroniza o estado local com o filtro atual do componente pai
+    useEffect(() => {
+        setSecaoSelecionada(secaoFiltroAtual);
+    }, [secaoFiltroAtual]);
+
+    // Buscar seções da API
+    useEffect(() => {
+        const fetchSecoes = async () => {
+            setLoadingSecoes(true);
+            try {
+                const response = await http.get('secao/');
+                const secoesFormatadas = response.map(secao => ({
+                    label: `${secao.id_origem} - ${secao.descricao}`,
+                    value: secao.id_origem
+                }));
+                setSecoes(secoesFormatadas);
+            } catch (error) {
+                console.error('Erro ao buscar seções:', error);
+                toast.current?.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Erro ao carregar seções',
+                    life: 3000
+                });
+            } finally {
+                setLoadingSecoes(false);
+            }
+        };
+
+        fetchSecoes();
+    }, []);
+
+    // Função para lidar com mudança de seção
+    const handleSecaoChange = useCallback((event) => {
+        const novaSecao = event.value;
+        setSecaoSelecionada(novaSecao);
+        
+        // Chama callback para atualizar filtros no componente pai
+        if (onFilterChange) {
+            onFilterChange({ secao_codigo: novaSecao });
+        }
+    }, [onFilterChange]);
 
     // Sistema de preservação de scroll simplificado
 
@@ -920,13 +968,78 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
         return situacaoEncontrada ? situacaoEncontrada.label : null;
     }, [situacoesUnicas]);
 
+    const ModernDropdown = styled.div`
+        position: relative;
+        min-width: 200px;
+        
+        select {
+            appearance: none;
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            padding: 10px 16px;
+            padding-right: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 100%;
+            
+            &:hover {
+                border-color: #9ca3af;
+                background: #f9fafb;
+            }
+            
+            &:focus {
+                outline: none;
+                border-color: var(--primaria);
+            }
+        }
+        
+        &::after {
+            content: '▼';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            font-size: 12px;
+            pointer-events: none;
+            transition: transform 0.2s ease;
+        }
+        
+        &:hover::after {
+            color: #374151;
+        }
+    `;
+
     return (
         <CalendarContainer ref={containerRef}>
             <Toast ref={toast} />
             <Tooltip target=".event-bar" />
             <FixedHeader>
                 <ViewToggleBar>
-                    <div></div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <ModernDropdown>
+                            <select 
+                                value={secaoSelecionada || ''} 
+                                onChange={(e) => handleSecaoChange({ value: e.target.value === '' ? null : e.target.value })}
+                                disabled={loadingSecoes}
+                                style={{ 
+                                    opacity: loadingSecoes ? 0.6 : 1,
+                                    cursor: loadingSecoes ? 'wait' : 'pointer'
+                                }}
+                            >
+                                <option value="">Filtrar por seção</option>
+                                {secoes.map((secao) => (
+                                    <option key={secao.value} value={secao.value}>
+                                        {secao.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </ModernDropdown>
+                    </div>
                     <ViewToggleSwitch>
                         <ViewToggleOption
                             $active={visualizacao === 'mensal'}
