@@ -1,3 +1,4 @@
+import React from 'react';
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
@@ -9,13 +10,16 @@ import BotaoGrupo from '@components/BotaoGrupo';
 import CampoTexto from '@components/CampoTexto';
 import styles from '@pages/Dependentes/Dependentes.module.css'
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import http from '@http';
 import { Tag } from 'primereact/tag';
 import { GrAddCircle } from 'react-icons/gr';
 import ModalAdicionarDependente from '@components/ModalAdicionarDependente';
 import { DependenteProvider } from '@contexts/Dependente';
 import { useTranslation } from 'react-i18next';
+import { Toast } from 'primereact/toast';
+import { FaFileExcel } from 'react-icons/fa';
+import { ArmazenadorToken } from '@utils';
 
 function DataTableDependentes({ 
     dependentes, 
@@ -37,6 +41,8 @@ function DataTableDependentes({
     const [modalOpened, setModalOpened] = useState(false)
     const navegar = useNavigate()
     const { t } = useTranslation('common');
+    const [exportingExcel, setExportingExcel] = useState(false);
+    const toast = useRef(null);
 
     const onGlobalFilterChange = (value) => {
         if (onSearch) {
@@ -142,12 +148,57 @@ function DataTableDependentes({
         }
     }
 
+    // Função para exportar Excel
+    const exportarExcel = async () => {
+        setExportingExcel(true);
+        
+        try {
+            const response = await http.get('dependente/export-excel/', {
+                responseType: 'blob'
+            });
+            
+            // Criar URL do blob
+            const url = window.URL.createObjectURL(new Blob([response]));
+            const link = document.createElement('a');
+            link.href = url;
+            
+            // Nome do arquivo com timestamp
+            const timestamp = new Date().toISOString().split('T')[0];
+            link.setAttribute('download', `dependentes_${timestamp}.xlsx`);
+            
+            // Adicionar ao DOM, clicar e remover
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+            
+            toast.current.show({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: 'Arquivo Excel exportado com sucesso!',
+                life: 3000
+            });
+            
+        } catch (error) {
+            console.error('Erro ao exportar Excel:', error);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Erro ao exportar arquivo Excel. Tente novamente.',
+                life: 3000
+            });
+        } finally {
+            setExportingExcel(false);
+        }
+    };
+
     const totalDependentesTemplate = () => {
         return 'Total de Dependentes: ' + (totalRecords ?? 0);
     };
 
     return (
         <>
+            <Toast ref={toast} />
             <BotaoGrupo align="space-between">
                 {search && showSearch &&
                     <div className="flex justify-content-end">
@@ -156,6 +207,24 @@ function DataTableDependentes({
                         </span>
                     </div>
                 }
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    {ArmazenadorToken.hasPermission('view_funcionario') && (
+                        <Botao 
+                            aoClicar={exportarExcel} 
+                            estilo="vermilion" 
+                            size="small" 
+                            tab
+                            disabled={exportingExcel}
+                        >
+                            <FaFileExcel 
+                                fill={exportingExcel ? '#9ca3af' : 'var(--secundaria)'} 
+                                color={exportingExcel ? '#9ca3af' : 'var(--secundaria)'} 
+                                size={16}
+                            />
+                            {exportingExcel ? 'Exportando...' : 'Exportar Excel'}
+                        </Botao>
+                    )}
+                </div>
             </BotaoGrupo>
             
             <DataTable 
@@ -199,5 +268,6 @@ function DataTableDependentes({
         </>
     )
 }
+
 
 export default DataTableDependentes

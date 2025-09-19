@@ -11,12 +11,13 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import CalendarFerias from './calendar_ferias'
-import { FaListUl, FaRegCalendarAlt, FaUmbrellaBeach, FaCalendarCheck, FaInfoCircle } from 'react-icons/fa';
+import { FaListUl, FaRegCalendarAlt, FaUmbrellaBeach, FaCalendarCheck, FaInfoCircle, FaFileExcel } from 'react-icons/fa';
 import Texto from '@components/Texto';
 import { BsSearch } from 'react-icons/bs'
 import { ArmazenadorToken } from '@utils';
 import { Toast } from 'primereact/toast';
 import { Tooltip } from 'primereact/tooltip';
+import Botao from '@components/Botao';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -255,6 +256,7 @@ function FeriasListagem() {
     const [totalRecords, setTotalRecords] = useState(0);
     const [forceUpdate, setForceUpdate] = useState(0);
     const [tab, setTab] = useState('calendario');
+    const [exportingExcel, setExportingExcel] = useState(false);
     
     // Estados para filtros da lista
     const [anoSelecionado, setAnoSelecionado] = useState(null);
@@ -826,6 +828,50 @@ function FeriasListagem() {
         }
     }, []);
 
+    // Função para exportar Excel
+    const exportarExcel = async () => {
+        setExportingExcel(true);
+        
+        try {
+            const response = await http.get('ferias/export-excel/', {
+                responseType: 'blob'
+            });
+            
+            // Criar URL do blob
+            const url = window.URL.createObjectURL(new Blob([response]));
+            const link = document.createElement('a');
+            link.href = url;
+            
+            // Nome do arquivo com timestamp
+            const timestamp = new Date().toISOString().split('T')[0];
+            link.setAttribute('download', `ferias_${timestamp}.xlsx`);
+            
+            // Adicionar ao DOM, clicar e remover
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+            
+            toast.current.show({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: 'Arquivo Excel exportado com sucesso!',
+                life: 3000
+            });
+            
+        } catch (error) {
+            console.error('Erro ao exportar Excel:', error);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Erro ao exportar arquivo Excel. Tente novamente.',
+                life: 3000
+            });
+        } finally {
+            setExportingExcel(false);
+        }
+    };
+
     return (
         <ConteudoFrame>
             <Loading opened={loading} />
@@ -908,6 +954,23 @@ function FeriasListagem() {
                             placeholder="Buscar por colaborador"
                         />
                     </SearchContainer>
+                    
+                    {ArmazenadorToken.hasPermission('view_funcionario') && (
+                        <Botao 
+                            aoClicar={exportarExcel} 
+                            estilo="vermilion" 
+                            size="small" 
+                            tab
+                            disabled={exportingExcel}
+                        >
+                            <FaFileExcel 
+                                fill={exportingExcel ? '#9ca3af' : 'var(--secundaria)'} 
+                                color={exportingExcel ? '#9ca3af' : 'var(--secundaria)'} 
+                                size={16}
+                            />
+                            {exportingExcel ? 'Exportando...' : 'Exportar Excel'}
+                        </Botao>
+                    )}
                     
                     {(ArmazenadorToken.hasPermission('add_ferias') || usuario.tipo === 'colaborador') && (
                         <ActionButton onClick={() => setModalSelecaoColaboradorOpened(true)}>
