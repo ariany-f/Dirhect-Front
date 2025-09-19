@@ -612,10 +612,15 @@ function DataTableFerias({
             return <div>-</div>;
         }
        
-        return <div key={rowData.id}>
-            <Texto weight={700} width={'100%'}>
+        return <div key={rowData.id} style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+            <Texto weight={700} width={'100%'} style={{ fontSize: '14px', lineHeight: '1.1' }}>
                 {rowData?.dados_pessoa_fisica?.nome ?? rowData.funcionario_nome ?? 'Colaborador'}
             </Texto>
+            {rowData.secao_codigo && rowData.secao_nome && (
+                <Texto weight={400} width={'100%'} style={{ fontSize: '12px', color: '#666', lineHeight: '1.2' }}>
+                    {rowData.secao_codigo} - {rowData.secao_nome}
+                </Texto>
+            )}
         </div>
     }
 
