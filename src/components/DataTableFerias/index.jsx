@@ -891,6 +891,55 @@ function DataTableFerias({
         return <SituacaoFilterContent options={options} situacoesUnicas={situacoesUnicas} />;
     };
 
+    // Função para calcular larguras das colunas dinamicamente
+    const getColumnWidths = useMemo(() => {
+        // Definir as proporções originais (quando todas as colunas estão presentes)
+        const originalProportions = {
+            colaborador: 25,
+            aquisicao: 15,
+            ferias: 12,
+            pagamento: 12,
+            aviso: 8,
+            dias: 8,
+            abono: 8,
+            decimo: 8,
+            coletiva: 10,
+            situacao: 15
+        };
+        
+        // Determinar quais colunas estão presentes
+        const availableColumns = [];
+        
+        if (!colaborador) {
+            availableColumns.push('colaborador');
+        }
+        availableColumns.push('aquisicao', 'ferias', 'pagamento');
+        if (!colaborador) {
+            availableColumns.push('aviso');
+        }
+        availableColumns.push('dias', 'abono', 'decimo', 'coletiva', 'situacao');
+        
+        // Calcular a soma das proporções das colunas disponíveis
+        const totalProportion = availableColumns.reduce((sum, col) => sum + originalProportions[col], 0);
+        
+        // Calcular as larguras percentuais ajustadas
+        const widths = {};
+        let totalCalculated = 0;
+        
+        availableColumns.forEach((col, index) => {
+            if (index === availableColumns.length - 1) {
+                // Para a última coluna, usar o que falta para completar 100%
+                widths[col] = `${(100 - totalCalculated).toFixed(1)}%`;
+            } else {
+                const width = (originalProportions[col] / totalProportion * 100);
+                widths[col] = `${width.toFixed(1)}%`;
+                totalCalculated += parseFloat(width.toFixed(1));
+            }
+        });
+        
+        return widths;
+    }, [colaborador]);
+
     return (
         <>
             <Toast ref={toast} />
@@ -909,25 +958,25 @@ function DataTableFerias({
                 sortOrder={sortOrder === 'desc' ? -1 : sortOrder === 'asc' ? 1 : sortOrder ? 0 : null}
                 rowClassName={(rowData) => `row-${rowData.id}`}
             >
-                {!colaborador && <Column body={representativeColaboradorTemplate} sortable field="funcionario_nome" sortField="funcionario" header="Colaborador" style={{ width: '15%' }} className="col-colaborador"></Column>}
-                <Column body={representativeAquisicaoTemplate} field="fimperaquis" header="Aquisição" style={{ width: '18%' }} className="col-aquisicao"></Column>
-                <Column body={representativeInicioTemplate} field="dt_inicio" header="Férias" style={{ width: '12%' }} className="col-ferias"></Column>
-                <Column body={representativePagamentoTemplate} sortable field="datapagamento" header="Pagamento" style={{ width: '10%' }} className="col-pagamento"></Column>
+                {!colaborador && <Column body={representativeColaboradorTemplate} sortable field="funcionario_nome" sortField="funcionario" header="Colaborador" style={{ width: getColumnWidths.colaborador }} className="col-colaborador"></Column>}
+                <Column body={representativeAquisicaoTemplate} field="fimperaquis" header="Aquisição" style={{ width: getColumnWidths.aquisicao }} className="col-aquisicao"></Column>
+                <Column body={representativeInicioTemplate} field="dt_inicio" header="Férias" style={{ width: getColumnWidths.ferias }} className="col-ferias"></Column>
+                <Column body={representativePagamentoTemplate} sortable field="datapagamento" header="Pagamento" style={{ width: getColumnWidths.pagamento }} className="col-pagamento"></Column>
                 {!colaborador && ( 
                     <>
-                        <Column body={representativeAvisoFeriasTemplate} sortable field="aviso_ferias" header="Aviso" style={{ width: '8%' }} className="hide-mobile col-aviso"></Column>
+                        <Column body={representativeAvisoFeriasTemplate} sortable field="aviso_ferias" header="Aviso" style={{ width: getColumnWidths.aviso }} className="hide-mobile col-aviso"></Column>
                     </>
                 )}
-                <Column body={(rowData) => rowData.nrodiasferias} sortable field="nrodiasferias" header="Dias" style={{ width: '8%' }} className="col-dias"></Column>
-                <Column body={(rowData) => rowData.nrodiasabono} sortable field="nrodiasabono" header="Abono" style={{ width: '8%' }} className="hide-mobile col-abono"></Column>
-                <Column body={representativ13Template} sortable field="adiantar_13" header="13º" style={{ width: '8%' }} className="hide-mobile col-decimo"></Column>
-                <Column body={representativeFeriasColetivasTemplate} sortable field="ferias_coletivas" header="Coletiva" style={{ width: '8%' }} className="hide-mobile col-coletiva"></Column>
+                <Column body={(rowData) => rowData.nrodiasferias} sortable field="nrodiasferias" header="Dias" style={{ width: getColumnWidths.dias }} className="col-dias"></Column>
+                <Column body={(rowData) => rowData.nrodiasabono} sortable field="nrodiasabono" header="Abono" style={{ width: getColumnWidths.abono }} className="hide-mobile col-abono"></Column>
+                <Column body={representativ13Template} sortable field="adiantar_13" header="13º" style={{ width: getColumnWidths.decimo }} className="hide-mobile col-decimo"></Column>
+                <Column body={representativeFeriasColetivasTemplate} sortable field="ferias_coletivas" header="Coletiva" style={{ width: getColumnWidths.coletiva }} className="hide-mobile col-coletiva"></Column>
                 <Column 
                     sortable 
                     body={representativeSituacaoTemplate}
                     field="situacaoferias" 
                     header="Situação" 
-                    style={{ width: '18%' }}
+                    style={{ width: getColumnWidths.situacao }}
                     className="col-situacao"
                     filter
                     filterField="situacaoferias"
