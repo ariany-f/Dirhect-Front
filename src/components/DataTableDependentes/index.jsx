@@ -201,30 +201,32 @@ function DataTableDependentes({
             <Toast ref={toast} />
             <BotaoGrupo align="space-between">
                 {search && showSearch &&
+                <>
                     <div className="flex justify-content-end">
                         <span className="p-input-icon-left">
                             <CampoTexto  width={'320px'} valor={searchValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar dependente" />
                         </span>
                     </div>
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        {ArmazenadorToken.hasPermission('view_funcionario') && (
+                            <Botao 
+                                aoClicar={exportarExcel} 
+                                estilo="vermilion" 
+                                size="small" 
+                                tab
+                                disabled={exportingExcel}
+                            >
+                                <FaFileExcel 
+                                    fill={exportingExcel ? '#9ca3af' : 'var(--secundaria)'} 
+                                    color={exportingExcel ? '#9ca3af' : 'var(--secundaria)'} 
+                                    size={16}
+                                />
+                                {exportingExcel ? 'Exportando...' : 'Exportar Excel'}
+                            </Botao>
+                        )}
+                    </div>
+                </>
                 }
-                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                    {ArmazenadorToken.hasPermission('view_funcionario') && (
-                        <Botao 
-                            aoClicar={exportarExcel} 
-                            estilo="vermilion" 
-                            size="small" 
-                            tab
-                            disabled={exportingExcel}
-                        >
-                            <FaFileExcel 
-                                fill={exportingExcel ? '#9ca3af' : 'var(--secundaria)'} 
-                                color={exportingExcel ? '#9ca3af' : 'var(--secundaria)'} 
-                                size={16}
-                            />
-                            {exportingExcel ? 'Exportando...' : 'Exportar Excel'}
-                        </Botao>
-                    )}
-                </div>
             </BotaoGrupo>
             
             <DataTable 
