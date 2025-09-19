@@ -450,7 +450,7 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
                 camposInvalidos={classInvalid}
             />
 
-            <DropdownItens
+            {/* <DropdownItens
                 $margin={'10px'}
                 valor={candidato?.tipo_conta ? (tiposConta.find(t => t.code === candidato.tipo_conta) || null) : null}
                 setValor={valor => setCampo('tipo_conta', valor.code)}
@@ -459,7 +459,7 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
                 label="Tipo de Conta"
                 placeholder="Selecione o tipo de conta"
                 disabled={modoLeitura}
-            />
+            /> */}
 
             <SectionTitle>PIX (Opcional)</SectionTitle>
 

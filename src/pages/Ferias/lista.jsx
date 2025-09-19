@@ -277,6 +277,9 @@ function FeriasListagem() {
     
     // Estado para filtro de seção do calendário
     const [secaoCalendario, setSecaoCalendario] = useState('');
+    
+    // Estado para filtro de seção da lista
+    const [secaoLista, setSecaoLista] = useState('');
 
     // Estados para ordenação
     const [sortField, setSortField] = useState('');
@@ -361,6 +364,11 @@ function FeriasListagem() {
         if (filtros.secao_codigo !== undefined) {
             setSecaoCalendario(filtros.secao_codigo);
         }
+    }, []);
+
+    // Função para lidar com mudança de filtro de seção da lista
+    const handleListaSecaoFilterChange = useCallback((secao) => {
+        setSecaoLista(secao);
     }, []);
 
     // Função para construir URL baseada na aba
@@ -483,10 +491,15 @@ function FeriasListagem() {
                 const paramValue = situacaoFilter.join(',');
                 url += `&situacaoferias__in=${encodeURIComponent(paramValue)}`;
             }
+
+            // Filtro de seção (apenas para lista)
+            if (secaoLista && secaoLista !== '') {
+                url += `&secao_codigo=${encodeURIComponent(secaoLista)}`;
+            }
         }
         
         return url;
-    }, [tab, searchTerm, currentPage, pageSize, anoSelecionado, periodoAberto, nextCursor, getSortParam, filters, situacaoCalendario, secaoCalendario]);
+    }, [tab, searchTerm, currentPage, pageSize, anoSelecionado, periodoAberto, nextCursor, getSortParam, filters, situacaoCalendario, secaoCalendario, secaoLista]);
 
     // Função para carregar dados
     const loadData = useCallback(async (isLoadMore = false, lightLoad = false) => {
@@ -595,7 +608,7 @@ function FeriasListagem() {
         }
         
         loadData(false);
-    }, [tab, anoSelecionado, searchTerm, periodoAberto, currentPage, pageSize, forceUpdate, filters, secaoCalendario]);
+    }, [tab, anoSelecionado, searchTerm, periodoAberto, currentPage, pageSize, forceUpdate, filters, secaoCalendario, secaoLista]);
 
     // Effect separado para ordenação (não reseta loading completo)
     useEffect(() => {
@@ -639,6 +652,7 @@ function FeriasListagem() {
             setFilters(resetFilters);
             setSituacaoCalendario(''); // Reset filtro de situação do calendário
             setSecaoCalendario(''); // Reset filtro de seção do calendário
+            setSecaoLista(''); // Reset filtro de seção da lista
             
             // Força uma atualização para garantir que tudo seja resetado
             setTimeout(() => {
@@ -653,6 +667,7 @@ function FeriasListagem() {
             setHasMore(true);
             setSituacaoCalendario(''); // Reset filtro de situação do calendário
             setSecaoCalendario(''); // Reset filtro de seção do calendário
+            setSecaoLista(''); // Reset filtro de seção da lista
             setFiltroSemResultados(false); // Reset estado de sem resultados
         }
     }, []);
@@ -1098,6 +1113,7 @@ function FeriasListagem() {
                                 situacoesUnicas={situacoesFerias}
                                 onExportExcel={ArmazenadorToken.hasPermission('view_funcionario') ? exportarExcel : null}
                                 exportingExcel={exportingExcel}
+                                onSecaoFilterChange={handleListaSecaoFilterChange}
                             />
                         )}
                     </>

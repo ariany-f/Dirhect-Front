@@ -115,6 +115,52 @@ function formatarDataBr(data) {
     return `${dia}/${mes}/${ano}`;
 }
 
+const ModernDropdown = styled.div`
+    position: relative;
+    min-width: 200px;
+    
+    select {
+        appearance: none;
+        background: #ffffff;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        padding: 10px 16px;
+        padding-right: 40px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #374151;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        min-width: 100%;
+        
+        &:hover {
+            border-color: #9ca3af;
+            background: #f9fafb;
+        }
+        
+        &:focus {
+            outline: none;
+            border-color: var(--primaria);
+        }
+    }
+    
+    &::after {
+        content: '▼';
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+        font-size: 12px;
+        pointer-events: none;
+        transition: transform 0.2s ease;
+    }
+    
+    &:hover::after {
+        color: #374151;
+    }
+`;
+
 function DataTableFerias({ 
     ferias, 
     colaborador = null,
@@ -131,7 +177,8 @@ function DataTableFerias({
     filtersProp = {}, // nova prop para estado dos filtros
     situacoesUnicas = [], // nova prop para situações disponíveis
     onExportExcel, // nova prop para exportar Excel
-    exportingExcel = false // nova prop para estado de exportação
+    exportingExcel = false, // nova prop para estado de exportação
+    onSecaoFilterChange // nova prop para filtro de seção
 }) {
 
     const [colaboradores, setColaboradores] = useState(null)
@@ -146,6 +193,49 @@ function DataTableFerias({
     const navegar = useNavigate();
     const { usuario } = useSessaoUsuarioContext();
     const toast = useRef(null);
+
+    // Estados para filtro de seção
+    const [secoes, setSecoes] = useState([]);
+    const [secaoSelecionada, setSecaoSelecionada] = useState('');
+    const [loadingSecoes, setLoadingSecoes] = useState(false);
+
+    // Buscar seções da API
+    useEffect(() => {
+        const fetchSecoes = async () => {
+            setLoadingSecoes(true);
+            try {
+                const response = await http.get('secao/');
+                const secoesFormatadas = response.map(secao => ({
+                    label: `${secao.id_origem} - ${secao.descricao}`,
+                    value: secao.id_origem
+                }));
+                setSecoes(secoesFormatadas);
+            } catch (error) {
+                console.error('Erro ao buscar seções:', error);
+                toast.current?.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Erro ao carregar seções',
+                    life: 3000
+                });
+            } finally {
+                setLoadingSecoes(false);
+            }
+        };
+
+        fetchSecoes();
+    }, []);
+
+    // Função para lidar com mudança de seção
+    const handleSecaoChange = (event) => {
+        const novaSecao = event.target.value;
+        setSecaoSelecionada(novaSecao);
+        
+        // Chama callback para atualizar filtros no componente pai
+        if (onSecaoFilterChange) {
+            onSecaoFilterChange(novaSecao);
+        }
+    };
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -984,9 +1074,26 @@ function DataTableFerias({
                             width: '100%',
                             padding: '8px 0'
                         }}>
-                            <span style={{ fontSize: '18px', fontWeight: '600', color: '#374151' }}>
-                                Férias
-                            </span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                                <ModernDropdown>
+                                    <select 
+                                        value={secaoSelecionada} 
+                                        onChange={handleSecaoChange}
+                                        disabled={loadingSecoes}
+                                        style={{ 
+                                            opacity: loadingSecoes ? 0.6 : 1,
+                                            cursor: loadingSecoes ? 'wait' : 'pointer'
+                                        }}
+                                    >
+                                        <option value="">Filtrar por seção</option>
+                                        {secoes.map((secao) => (
+                                            <option key={secao.value} value={secao.value}>
+                                                {secao.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </ModernDropdown>
+                            </div>
                             <Botao 
                                 aoClicar={onExportExcel} 
                                 estilo="vermilion" 
@@ -1002,7 +1109,37 @@ function DataTableFerias({
                                 {exportingExcel ? 'Exportando...' : 'Exportar Excel'}
                             </Botao>
                         </div>
-                    ) : null
+                    ) : (
+                        <div style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: '16px',
+                            width: '100%',
+                            padding: '8px 0'
+                        }}>
+                            <span style={{ fontSize: '18px', fontWeight: '600', color: '#374151' }}>
+                                Férias
+                            </span>
+                            <ModernDropdown>
+                                <select 
+                                    value={secaoSelecionada} 
+                                    onChange={handleSecaoChange}
+                                    disabled={loadingSecoes}
+                                    style={{ 
+                                        opacity: loadingSecoes ? 0.6 : 1,
+                                        cursor: loadingSecoes ? 'wait' : 'pointer'
+                                    }}
+                                >
+                                    <option value="">Filtrar por seção</option>
+                                    {secoes.map((secao) => (
+                                        <option key={secao.value} value={secao.value}>
+                                            {secao.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </ModernDropdown>
+                        </div>
+                    )
                 }
             >
                 {!colaborador && <Column body={representativeColaboradorTemplate} sortable field="funcionario_nome" sortField="funcionario" header="Colaborador" style={{ width: getColumnWidths.colaborador }} className="col-colaborador"></Column>}
