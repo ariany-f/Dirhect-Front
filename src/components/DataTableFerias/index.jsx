@@ -616,9 +616,9 @@ function DataTableFerias({
             <Texto weight={700} width={'100%'} style={{ fontSize: '14px', lineHeight: '1.1' }}>
                 {rowData?.dados_pessoa_fisica?.nome ?? rowData.funcionario_nome ?? 'Colaborador'}
             </Texto>
-            {rowData.secao_codigo && rowData.secao_nome && (
+            {rowData.funcionario_chapa || rowData.secao_nome && (
                 <Texto weight={400} width={'100%'} style={{ fontSize: '12px', color: '#666', lineHeight: '1.2' }}>
-                    {rowData.secao_codigo} - {rowData.secao_nome}
+                    {rowData.funcionario_chapa ? `${rowData.funcionario_chapa} ` : ''} {rowData.secao_nome ? `${rowData.secao_nome}` : ''}
                 </Texto>
             )}
         </div>
@@ -910,8 +910,8 @@ function DataTableFerias({
                 rowClassName={(rowData) => `row-${rowData.id}`}
             >
                 {!colaborador && <Column body={representativeColaboradorTemplate} sortable field="funcionario_nome" sortField="funcionario" header="Colaborador" style={{ width: '15%' }} className="col-colaborador"></Column>}
-                <Column body={representativeAquisicaoTemplate} sortable field="fimperaquis" header="Aquisição" style={{ width: '18%' }} className="col-aquisicao"></Column>
-                <Column body={representativeInicioTemplate} sortable field="dt_inicio" header="Férias" style={{ width: '12%' }} className="col-ferias"></Column>
+                <Column body={representativeAquisicaoTemplate} field="fimperaquis" header="Aquisição" style={{ width: '18%' }} className="col-aquisicao"></Column>
+                <Column body={representativeInicioTemplate} field="dt_inicio" header="Férias" style={{ width: '12%' }} className="col-ferias"></Column>
                 <Column body={representativePagamentoTemplate} sortable field="datapagamento" header="Pagamento" style={{ width: '10%' }} className="col-pagamento"></Column>
                 {!colaborador && ( 
                     <>
