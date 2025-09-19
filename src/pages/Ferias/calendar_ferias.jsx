@@ -5,6 +5,7 @@ import { ptBR } from 'date-fns/locale';
 import { FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaThLarge, FaThList, FaCalendarAlt, FaTh, FaExpandArrowsAlt } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import { Toast } from 'primereact/toast';
+import { Dropdown } from 'primereact/dropdown';
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
 import DropdownItens from '@components/DropdownItens'
 import CampoTexto from '@components/CampoTexto';
@@ -492,6 +493,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
     const [secoes, setSecoes] = useState([]);
     const [secaoSelecionada, setSecaoSelecionada] = useState(null);
     const [loadingSecoes, setLoadingSecoes] = useState(false);
+    const [filtroSecao, setFiltroSecao] = useState('');
 
     // Sincroniza o estado local com o filtro atual do componente pai
     useEffect(() => {
@@ -821,10 +823,13 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
     const totalDays = useMemo(() => daysArray.length, [daysArray]);
     const monthsArray = useMemo(() => getMonthsInRange(startDate, endDate), [startDate, endDate]);
 
-    // Filtra colaboradores pelo nome
-    const colabsFiltrados = useMemo(() => allColabs.filter(colab =>
-        colab.nome.toLowerCase().includes(filtroColaborador.toLowerCase())
-    ), [allColabs, filtroColaborador]);
+    // Filtra colaboradores pelo nome, seção ou código da seção
+    const colabsFiltrados = useMemo(() => allColabs.filter(colab => {
+        const searchTerm = filtroColaborador.toLowerCase();
+        return colab.nome.toLowerCase().includes(searchTerm) ||
+               (colab.secao_nome && colab.secao_nome.toLowerCase().includes(searchTerm)) ||
+               (colab.secao_codigo && colab.secao_codigo.toLowerCase().includes(searchTerm));
+    }), [allColabs, filtroColaborador]);
 
     // Zoom dinâmico: calcula a largura do dia conforme a visualização e o tamanho do container
     const dayWidth = useMemo(() => {
@@ -1014,6 +1019,98 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
         }
     `;
 
+    // Custom styles for PrimeReact Dropdown to match the select design
+    const CustomDropdownStyles = styled.div`
+        /* Estilos mais diretos para sobrescrever o PrimeReact */
+        .p-dropdown {
+            background: #ffffff !important;
+            border: 1px solid #d1d5db !important;
+            border-radius: 4px !important;
+            min-width: 300px !important;
+        }
+        
+        .p-dropdown:hover {
+            border-color: var(--primaria) !important;
+            background: #f9fafb !important;
+        }
+        
+        .p-dropdown:focus-within {
+            border-color: var(--primaria) !important;
+        }
+        
+        .p-dropdown-label {
+            padding: 10px 16px !important;
+            padding-right: 60px !important;
+            font-size: 14px !important;
+            font-weight: 500 !important;
+            color: #374151 !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;
+        }
+        
+        .p-dropdown-trigger {
+            color: #6b7280 !important;
+            width: 2rem !important;
+        }
+        
+        .p-dropdown-trigger:hover {
+            color: #374151 !important;
+        }
+        
+        .p-dropdown-clear-icon {
+            position: absolute !important;
+            right: 2.5rem !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            color: #6b7280 !important;
+            font-size: 12px !important;
+            z-index: 10 !important;
+        }
+        
+        .p-dropdown-clear-icon:hover {
+            color: #374151 !important;
+        }
+        
+        .p-dropdown-panel {
+            border: 1px solid #d1d5db !important;
+            border-radius: 4px !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .p-dropdown-filter {
+            padding: 8px 12px !important;
+            border-bottom: 1px solid #e5e7eb !important;
+        }
+        
+        .p-dropdown-filter .p-inputtext {
+            border: 1px solid #d1d5db !important;
+            border-radius: 4px !important;
+            padding: 8px 12px !important;
+            font-size: 14px !important;
+        }
+        
+        .p-dropdown-filter .p-inputtext:focus {
+            border-color: var(--primaria) !important;
+            box-shadow: 0 0 0 1px var(--primaria) !important;
+        }
+        
+        .p-dropdown-items .p-dropdown-item {
+            padding: 8px 16px !important;
+            font-size: 14px !important;
+            color: #374151 !important;
+        }
+        
+        .p-dropdown-items .p-dropdown-item:hover {
+            background: #f3f4f6 !important;
+        }
+        
+        .p-dropdown-items .p-dropdown-item.p-highlight {
+            background: #f3f4f6 !important;
+            color: #374151 !important;
+        }
+    `;
+
     return (
         <CalendarContainer ref={containerRef}>
             <Toast ref={toast} />
@@ -1021,24 +1118,19 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
             <FixedHeader>
                 <ViewToggleBar>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <ModernDropdown>
-                            <select 
-                                value={secaoSelecionada || ''} 
-                                onChange={(e) => handleSecaoChange({ value: e.target.value === '' ? null : e.target.value })}
+                        <CustomDropdownStyles>
+                            <Dropdown
+                                value={secaoSelecionada}
+                                options={secoes}
+                                onChange={handleSecaoChange}
+                                placeholder="Filtrar por seção"
+                                filter
+                                filterBy="label"
+                                showClear={!!secaoSelecionada}
                                 disabled={loadingSecoes}
-                                style={{ 
-                                    opacity: loadingSecoes ? 0.6 : 1,
-                                    cursor: loadingSecoes ? 'wait' : 'pointer'
-                                }}
-                            >
-                                <option value="">Filtrar por seção</option>
-                                {secoes.map((secao) => (
-                                    <option key={secao.value} value={secao.value}>
-                                        {secao.label}
-                                    </option>
-                                ))}
-                            </select>
-                        </ModernDropdown>
+                                className="custom-dropdown"
+                            />
+                        </CustomDropdownStyles>
                     </div>
                     <ViewToggleSwitch>
                         <ViewToggleOption
