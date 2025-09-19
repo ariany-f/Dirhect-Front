@@ -6,7 +6,7 @@ import BadgeGeral from '@components/BadgeGeral'
 import SubTitulo from '@components/SubTitulo'
 import Container from '@components/Container'
 import Frame from '@components/Frame'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { 
     FaWallet, FaArrowRight, FaUser, FaFileAlt, FaUserPlus, FaUserMinus, 
     FaCalculator, FaLayerGroup, FaUmbrellaBeach, FaCheckCircle, FaCircle, 
@@ -43,6 +43,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     const [tarefasData, setTarefasData] = useState([]);
     const [dadosProntos, setDadosProntos] = useState(false);
     const { t } = useTranslation('common');
+    const navigate = useNavigate();
 
     // Definições de variáveis do dashboard de funcionários
     const totalColaboradores = funcionariosDashboard?.funcionarios_ativos || 0;
@@ -841,13 +842,15 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     <div className="ferias-list" style={{textAlign: 'left'}}>
                         {dadosRH.feriasAgendadas.length > 0 ? (
                             dadosRH.feriasAgendadas.map((ferias, index) => (
-                                <div key={index} className="ferias-item" style={{
-                                    textAlign: 'left',
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    width: '100%'
-                                }}>
+                                <div key={index} className="ferias-item" onClick={() => navigate(`/colaborador/detalhes/${ferias.funcionario_id}/ferias`)} style={{
+                                        textAlign: 'left',
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                        cursor: 'pointer'
+                                    }}
+                                >
                                     <div className="ferias-info" style={{textAlign: 'left', flex: 1}}>
                                         <div className="ferias-colaborador" style={{textAlign: 'left'}}>{ferias.nome_colaborador}</div>
                                         <div className="ferias-periodo" style={{textAlign: 'left'}}>
