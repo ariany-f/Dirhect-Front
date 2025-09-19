@@ -275,6 +275,12 @@ function FeriasListagem() {
     const [loadingFiltroSituacao, setLoadingFiltroSituacao] = useState(false);
     const [filtroSemResultados, setFiltroSemResultados] = useState(false);
     
+    // Estado para filtro de seção do calendário
+    const [secaoCalendario, setSecaoCalendario] = useState('');
+    
+    // Estado para filtro de seção da lista
+    const [secaoLista, setSecaoLista] = useState('');
+
     // Estados para ordenação
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('');
@@ -353,6 +359,18 @@ function FeriasListagem() {
         return `${sortOrder === 'desc' ? '-' : ''}${sortField}`;
     }, [sortField, sortOrder]);
 
+    // Função para lidar com mudança de filtros do calendário
+    const handleCalendarioFilterChange = useCallback((filtros) => {
+        if (filtros.secao_codigo !== undefined) {
+            setSecaoCalendario(filtros.secao_codigo);
+        }
+    }, []);
+
+    // Função para lidar com mudança de filtro de seção da lista
+    const handleListaSecaoFilterChange = useCallback((secao) => {
+        setSecaoLista(secao);
+    }, []);
+
     // Função para construir URL baseada na aba
     const buildApiUrl = useCallback((isLoadMore = false) => {
         if (tab === 'calendario' && isLoadMore && nextCursor) {
@@ -368,9 +386,9 @@ function FeriasListagem() {
                 }
                 
                 // Adiciona o termo de busca se houver e não estiver na URL
-                if (searchTerm.trim() && !finalUrl.includes('funcionario_nome=')) {
+                if (searchTerm.trim() && !finalUrl.includes('search=')) {
                     const separator = finalUrl.includes('?') ? '&' : '?';
-                    finalUrl += `${separator}funcionario_nome=${encodeURIComponent(searchTerm.trim())}`;
+                    finalUrl += `${separator}search=${encodeURIComponent(searchTerm.trim())}`;
                 }
                 
                 return finalUrl;
@@ -423,6 +441,11 @@ function FeriasListagem() {
             if (situacaoCalendario && situacaoCalendario !== '') {
                 url += `&situacaoferias=${encodeURIComponent(situacaoCalendario)}`;
             }
+
+            // Filtro de seção (apenas para calendário)
+            if (secaoCalendario && secaoCalendario !== '') {
+                url += `&secao_codigo=${encodeURIComponent(secaoCalendario)}`;
+            }
         } else {
             // Para lista: usar paginação tradicional
             if(!url.includes('?')) {
@@ -468,10 +491,15 @@ function FeriasListagem() {
                 const paramValue = situacaoFilter.join(',');
                 url += `&situacaoferias__in=${encodeURIComponent(paramValue)}`;
             }
+
+            // Filtro de seção (apenas para lista)
+            if (secaoLista && secaoLista !== '') {
+                url += `&secao_codigo=${encodeURIComponent(secaoLista)}`;
+            }
         }
         
         return url;
-    }, [tab, searchTerm, currentPage, pageSize, anoSelecionado, periodoAberto, nextCursor, getSortParam, filters, situacaoCalendario]);
+    }, [tab, searchTerm, currentPage, pageSize, anoSelecionado, periodoAberto, nextCursor, getSortParam, filters, situacaoCalendario, secaoCalendario, secaoLista]);
 
     // Função para carregar dados
     const loadData = useCallback(async (isLoadMore = false, lightLoad = false) => {
@@ -580,7 +608,7 @@ function FeriasListagem() {
         }
         
         loadData(false);
-    }, [tab, anoSelecionado, searchTerm, periodoAberto, currentPage, pageSize, forceUpdate, filters]);
+    }, [tab, anoSelecionado, searchTerm, periodoAberto, currentPage, pageSize, forceUpdate, filters, secaoCalendario, secaoLista]);
 
     // Effect separado para ordenação (não reseta loading completo)
     useEffect(() => {
@@ -623,6 +651,8 @@ function FeriasListagem() {
             };
             setFilters(resetFilters);
             setSituacaoCalendario(''); // Reset filtro de situação do calendário
+            setSecaoCalendario(''); // Reset filtro de seção do calendário
+            setSecaoLista(''); // Reset filtro de seção da lista
             
             // Força uma atualização para garantir que tudo seja resetado
             setTimeout(() => {
@@ -636,6 +666,8 @@ function FeriasListagem() {
             setNextCursor(null);
             setHasMore(true);
             setSituacaoCalendario(''); // Reset filtro de situação do calendário
+            setSecaoCalendario(''); // Reset filtro de seção do calendário
+            setSecaoLista(''); // Reset filtro de seção da lista
             setFiltroSemResultados(false); // Reset estado de sem resultados
         }
     }, []);
@@ -933,7 +965,6 @@ function FeriasListagem() {
                             </select>
                         </ModernDropdown>
                     )}
-                    
                     <ModernDropdown>
                         <select 
                             value={periodoAberto === null ? '' : periodoAberto} 
@@ -955,23 +986,6 @@ function FeriasListagem() {
                             placeholder="Buscar por nome ou chapa"
                         />
                     </SearchContainer>
-                    
-                    {ArmazenadorToken.hasPermission('view_funcionario') && (
-                        <Botao 
-                            aoClicar={exportarExcel} 
-                            estilo="vermilion" 
-                            size="small" 
-                            tab
-                            disabled={exportingExcel}
-                        >
-                            <FaFileExcel 
-                                fill={exportingExcel ? '#9ca3af' : 'var(--secundaria)'} 
-                                color={exportingExcel ? '#9ca3af' : 'var(--secundaria)'} 
-                                size={16}
-                            />
-                            {exportingExcel ? 'Exportando...' : 'Exportar Excel'}
-                        </Botao>
-                    )}
                     
                     {(ArmazenadorToken.hasPermission('add_ferias') || usuario.tipo === 'colaborador') && (
                         <ActionButton onClick={() => setModalSelecaoColaboradorOpened(true)}>
@@ -1033,6 +1047,8 @@ function FeriasListagem() {
                                         isLoadingMore={isLoadingMore}
                                         isRendering={isRendering}
                                         situacoesUnicas={situacoesFerias}
+                                        onFilterChange={handleCalendarioFilterChange}
+                                        secaoFiltroAtual={secaoCalendario}
                                     />
                                 )}
                                 {loadingFiltroSituacao && (
@@ -1095,6 +1111,9 @@ function FeriasListagem() {
                                 onFilter={handleFilter}
                                 filtersProp={filters}
                                 situacoesUnicas={situacoesFerias}
+                                onExportExcel={ArmazenadorToken.hasPermission('view_funcionario') ? exportarExcel : null}
+                                exportingExcel={exportingExcel}
+                                onSecaoFilterChange={handleListaSecaoFilterChange}
                             />
                         )}
                     </>
