@@ -39,6 +39,8 @@ function Dependentes() {
         
         if (sort && sort !== '-null') {
             url += `&ordering=${sort}`;
+        } else {
+            url += '&ordering=-id';
         }
 
         http.get(url)
