@@ -1117,7 +1117,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                     <CalendarTableHeader>
                         <TrimestreHeader $totalDays={totalDays}>
                             {monthsArray.map((m, idx) => {
-                                const startIdx = differenceInCalendarDays(m.start, startDate) + 1;
+                                const startIdx = differenceInCalendarDays(m.start, startDate) + 2;
                                 const endIdx = differenceInCalendarDays(m.end, startDate) + 2;
                                 return (
                                     <TrimestreMonthCell
