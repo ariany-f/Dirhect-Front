@@ -766,7 +766,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                                             }} />
                                             <span style={{fontWeight: 700, fontSize: 14, color: '#222', lineHeight: 1.1}}>{etapa.etapa}</span>
                                         </div>
-                                        <span style={{fontSize: 13, color: '#888', fontWeight: 500, marginLeft: 20}}>{t("completed")}</span>
                                     </div>
                                     <span style={{
                                         background: `${etapa.cor}10`,
