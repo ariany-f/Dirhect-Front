@@ -4,6 +4,7 @@ import { Column } from 'primereact/column';
 import { ColumnGroup } from 'primereact/columngroup';
 import { Row } from 'primereact/row';
 import { Tooltip } from 'primereact/tooltip';
+import { Dropdown } from 'primereact/dropdown';
 import Texto from '@components/Texto';
 import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
@@ -161,6 +162,98 @@ const ModernDropdown = styled.div`
     }
 `;
 
+// Custom styles for PrimeReact Dropdown to match the select design
+const CustomDropdownStyles = styled.div`
+    /* Estilos mais diretos para sobrescrever o PrimeReact */
+    .p-dropdown {
+        background: #ffffff !important;
+        border: 1px solid #d1d5db !important;
+        border-radius: 4px !important;
+        min-width: 300px !important;
+    }
+    
+    .p-dropdown:hover {
+        border-color: var(--primaria) !important;
+        background: #f9fafb !important;
+    }
+    
+    .p-dropdown:focus-within {
+        border-color: var(--primaria) !important;
+    }
+    
+    .p-dropdown-label {
+        padding: 10px 16px !important;
+        padding-right: 60px !important;
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        color: #374151 !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+    
+    .p-dropdown-trigger {
+        color: #6b7280 !important;
+        width: 2rem !important;
+    }
+    
+    .p-dropdown-trigger:hover {
+        color: #374151 !important;
+    }
+    
+    .p-dropdown-clear-icon {
+        position: absolute !important;
+        right: 2.5rem !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        color: #6b7280 !important;
+        font-size: 12px !important;
+        z-index: 10 !important;
+    }
+    
+    .p-dropdown-clear-icon:hover {
+        color: #374151 !important;
+    }
+    
+    .p-dropdown-panel {
+        border: 1px solid #d1d5db !important;
+        border-radius: 4px !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .p-dropdown-filter {
+        padding: 8px 12px !important;
+        border-bottom: 1px solid #e5e7eb !important;
+    }
+    
+    .p-dropdown-filter .p-inputtext {
+        border: 1px solid #d1d5db !important;
+        border-radius: 4px !important;
+        padding: 8px 12px !important;
+        font-size: 14px !important;
+    }
+    
+    .p-dropdown-filter .p-inputtext:focus {
+        border-color: var(--primaria) !important;
+        box-shadow: 0 0 0 1px var(--primaria) !important;
+    }
+    
+    .p-dropdown-items .p-dropdown-item {
+        padding: 8px 16px !important;
+        font-size: 14px !important;
+        color: #374151 !important;
+    }
+    
+    .p-dropdown-items .p-dropdown-item:hover {
+        background: #f3f4f6 !important;
+    }
+    
+    .p-dropdown-items .p-dropdown-item.p-highlight {
+        background: #f3f4f6 !important;
+        color: #374151 !important;
+    }
+`;
+
 function DataTableFerias({ 
     ferias, 
     colaborador = null,
@@ -198,6 +291,7 @@ function DataTableFerias({
     const [secoes, setSecoes] = useState([]);
     const [secaoSelecionada, setSecaoSelecionada] = useState('');
     const [loadingSecoes, setLoadingSecoes] = useState(false);
+    const [filtroSecao, setFiltroSecao] = useState('');
 
     // Buscar seções da API
     useEffect(() => {
@@ -228,7 +322,7 @@ function DataTableFerias({
 
     // Função para lidar com mudança de seção
     const handleSecaoChange = (event) => {
-        const novaSecao = event.target.value;
+        const novaSecao = event.value;
         setSecaoSelecionada(novaSecao);
         
         // Chama callback para atualizar filtros no componente pai
@@ -1075,24 +1169,19 @@ function DataTableFerias({
                             padding: '8px 0'
                         }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                                <ModernDropdown>
-                                    <select 
-                                        value={secaoSelecionada} 
+                                <CustomDropdownStyles>
+                                    <Dropdown
+                                        value={secaoSelecionada}
+                                        options={secoes}
                                         onChange={handleSecaoChange}
+                                        placeholder="Filtrar por seção"
+                                        filter
+                                        filterBy="label"
+                                        showClear={!!secaoSelecionada}
                                         disabled={loadingSecoes}
-                                        style={{ 
-                                            opacity: loadingSecoes ? 0.6 : 1,
-                                            cursor: loadingSecoes ? 'wait' : 'pointer'
-                                        }}
-                                    >
-                                        <option value="">Filtrar por seção</option>
-                                        {secoes.map((secao) => (
-                                            <option key={secao.value} value={secao.value}>
-                                                {secao.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </ModernDropdown>
+                                        className="custom-dropdown"
+                                    />
+                                </CustomDropdownStyles>
                             </div>
                             <Botao 
                                 aoClicar={onExportExcel} 
@@ -1120,24 +1209,19 @@ function DataTableFerias({
                             <span style={{ fontSize: '18px', fontWeight: '600', color: '#374151' }}>
                                 Férias
                             </span>
-                            <ModernDropdown>
-                                <select 
-                                    value={secaoSelecionada} 
+                            <CustomDropdownStyles>
+                                <Dropdown
+                                    value={secaoSelecionada}
+                                    options={secoes}
                                     onChange={handleSecaoChange}
+                                    placeholder="Filtrar por seção"
+                                    filter
+                                    filterBy="label"
+                                    showClear={!!secaoSelecionada}
                                     disabled={loadingSecoes}
-                                    style={{ 
-                                        opacity: loadingSecoes ? 0.6 : 1,
-                                        cursor: loadingSecoes ? 'wait' : 'pointer'
-                                    }}
-                                >
-                                    <option value="">Filtrar por seção</option>
-                                    {secoes.map((secao) => (
-                                        <option key={secao.value} value={secao.value}>
-                                            {secao.label}
-                                        </option>
-                                    ))}
-                                </select>
-                            </ModernDropdown>
+                                    className="custom-dropdown"
+                                />
+                            </CustomDropdownStyles>
                         </div>
                     )
                 }
