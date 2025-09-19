@@ -616,11 +616,19 @@ function DataTableFerias({
             <Texto weight={700} width={'100%'} style={{ fontSize: '14px', lineHeight: '1.1' }}>
                 {rowData?.dados_pessoa_fisica?.nome ?? rowData.funcionario_nome ?? 'Colaborador'}
             </Texto>
-            {(rowData.funcionario_chapa || rowData.secao_nome) && (
+            {rowData.secao_nome && (
                 <Texto weight={400} width={'100%'} style={{ fontSize: '12px', color: '#666', lineHeight: '1.2' }}>
-                    {rowData.funcionario_chapa ? `${rowData.funcionario_chapa} ` : ''} {rowData.secao_nome ? `${rowData.secao_nome}` : ''}
+                    {rowData.secao_codigo ? `${rowData.secao_codigo} ` : ''} {rowData.secao_nome ? `${rowData.secao_nome}` : ''}
                 </Texto>
             )}
+        </div>
+    }
+
+    const representativeChapaTemplate = (rowData) => {
+        return <div style={{ textAlign: 'left', width: '100%' }}>
+            <Texto weight={500} style={{ fontSize: '13px' }}>
+                {rowData.funcionario_chapa || '-'}
+            </Texto>
         </div>
     }
 
@@ -895,7 +903,8 @@ function DataTableFerias({
     const getColumnWidths = useMemo(() => {
         // Definir as proporções originais (quando todas as colunas estão presentes)
         const originalProportions = {
-            colaborador: 25,
+            colaborador: 20,
+            chapa: 8,
             aquisicao: 15,
             ferias: 12,
             pagamento: 12,
@@ -903,7 +912,7 @@ function DataTableFerias({
             dias: 8,
             abono: 8,
             decimo: 8,
-            coletiva: 10,
+            coletiva: 8,
             situacao: 15
         };
         
@@ -911,7 +920,7 @@ function DataTableFerias({
         const availableColumns = [];
         
         if (!colaborador) {
-            availableColumns.push('colaborador');
+            availableColumns.push('colaborador', 'chapa');
         }
         availableColumns.push('aquisicao', 'ferias', 'pagamento');
         if (!colaborador) {
@@ -959,6 +968,7 @@ function DataTableFerias({
                 rowClassName={(rowData) => `row-${rowData.id}`}
             >
                 {!colaborador && <Column body={representativeColaboradorTemplate} sortable field="funcionario_nome" sortField="funcionario" header="Colaborador" style={{ width: getColumnWidths.colaborador }} className="col-colaborador"></Column>}
+                {!colaborador && <Column body={representativeChapaTemplate} sortable field="funcionario_chapa" header="Chapa" style={{ width: getColumnWidths.chapa }} className="col-chapa"></Column>}
                 <Column body={representativeAquisicaoTemplate} field="fimperaquis" header="Aquisição" style={{ width: getColumnWidths.aquisicao }} className="col-aquisicao"></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Férias" style={{ width: getColumnWidths.ferias }} className="col-ferias"></Column>
                 <Column body={representativePagamentoTemplate} sortable field="datapagamento" header="Pagamento" style={{ width: getColumnWidths.pagamento }} className="col-pagamento"></Column>

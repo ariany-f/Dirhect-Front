@@ -1110,10 +1110,9 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                             className={colab._isNewItem ? 'new-item' : ''}
                         >
                             <EmployeeCell>
-                                <EmployeeName>{colab.nome}</EmployeeName>
-                              
+                                <EmployeeName>{colab.nome} {colab.funcionario_chapa ? ` (${colab.funcionario_chapa})` : ''}</EmployeeName>
                                 <EmployeeSection>
-                                    {colab.funcionario_chapa ? `${colab.funcionario_chapa} ` : ''} 
+                                    {colab.secao_codigo ? `${colab.secao_codigo} ` : ''}
                                     {colab.secao_nome ? `${colab.secao_nome}` : ''}
                                 </EmployeeSection>
                             
