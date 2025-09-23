@@ -421,17 +421,17 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                             </DetalhesContainer>
                             }
                             <AcoesContainer>
-                                {mostrarAviso && (
+                                {/* {mostrarAviso && (
                                     <AlertaAviso>
                                         <FaExclamationCircle size={24} style={{ color: '#856404', flexShrink: 0 }}/>
                                         <span>
-                                            {isAnalistaTenant 
-                                                ? "Como analista tenant, você só pode solicitar demissões entre o dia 1 e o dia 20 de cada mês. Para solicitações fora deste período, por favor, entre em contato com o responsável pelo processo."
-                                                : "A solicitação de demissão está sendo feita fora do período recomendado (do dia 1 ao dia 20). Por favor, prossiga com atenção."
-                                            }
-                                        </span>
-                                    </AlertaAviso>
-                                )}
+                                            {/* {isAnalistaTenant  */}
+                                                 {/* ? "Como analista tenant, você só pode solicitar demissões entre o dia 1 e o dia 20 de cada mês. Para solicitações fora deste período, por favor, entre em contato com o responsável pelo processo." */}
+                                                 {/* A solicitação de demissão está sendo feita fora do período recomendado (do dia 1 ao dia 20). Por favor, prossiga com atenção. */}
+                                            {/* } */}
+                                        {/* </span> */}
+                                    {/* </AlertaAviso> */}
+                                {/* )} */}
                                 {colaborador?.membro_cipa && (
                                     <AlertaCipa>
                                         <FaExclamationCircle size={24} style={{ color: '#721c24', flexShrink: 0 }}/>
