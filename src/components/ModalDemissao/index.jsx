@@ -219,7 +219,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
     const isPerfilEspecial = perfisEspeciais.includes(userPerfil);
 
     const mostrarAviso = foraDoPrazo && (isAnalistaTenant || isPerfilEspecial);
-    const bloquearFormulario = foraDoPrazo && isAnalistaTenant;
+    const bloquearFormulario = false;//foraDoPrazo && isAnalistaTenant;
 
     useEffect(() => {
         if (opened) {
