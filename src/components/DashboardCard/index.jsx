@@ -6,7 +6,7 @@ import BadgeGeral from '@components/BadgeGeral'
 import SubTitulo from '@components/SubTitulo'
 import Container from '@components/Container'
 import Frame from '@components/Frame'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { 
     FaWallet, FaArrowRight, FaUser, FaFileAlt, FaUserPlus, FaUserMinus, 
     FaCalculator, FaLayerGroup, FaUmbrellaBeach, FaCheckCircle, FaCircle, 
@@ -43,6 +43,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     const [tarefasData, setTarefasData] = useState([]);
     const [dadosProntos, setDadosProntos] = useState(false);
     const { t } = useTranslation('common');
+    const navigate = useNavigate();
 
     // Definições de variáveis do dashboard de funcionários
     const totalColaboradores = funcionariosDashboard?.funcionarios_ativos || 0;
@@ -51,7 +52,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     const totalDemitidos = funcionariosDashboard?.total_demitidos || 0;
     const demitidosNoMes = funcionariosDashboard?.demitidos_no_mes || 0;
     const funcionariosPorMotivoDemissao = funcionariosDashboard?.funcionarios_por_motivo_demissao || [];
-    
+    const totalVagasAbertas = funcionariosDashboard?.total_vagas_abertas || 0; // Novo campo
+
     // Dados de teste para verificar se o problema é nos dados ou no processamento
     const dadosTesteMotivos = [
         {
@@ -295,14 +297,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
     const dadosDemissoesReais = processarDadosDemissoes();
     
-    // Contar vagas abertas
-    const contarVagasAbertas = () => {
-        if (!vagasData || vagasData.length === 0) return 0;
-        // Ajuste o filtro conforme o status real de vaga aberta
-        return vagasData.filter(vaga => vaga && (vaga.status === 'A' || vaga.status === 'aberta' || vaga.status === 'Aberta')).length;
-    };
-    const vagasAbertas = contarVagasAbertas();
-
     // Função para calcular o turnover real
     const calcularTurnover = () => {
         if (!totalColaboradores || totalColaboradores === 0) return 0;
@@ -380,7 +374,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         motivosDemissao: motivosDemissaoProcessados, // Usar motivos processados separadamente
         etapasDemissao: [],
         slaDemissao: dadosDemissoesReais.slaDemissao,
-        vagasAbertas,
+        vagasAbertas: totalVagasAbertas, // Usar o campo direto da API
 
         // Eficiência Operacional
         refacaoAdmissao: 12,
@@ -438,7 +432,26 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     usePointStyle: true,
                     pointStyle: 'circle',
                     boxWidth: 12,
-                    boxHeight: 12
+                    boxHeight: 12,
+                    generateLabels: function(chart) {
+                        const data = chart.data;
+                        if (data.labels.length && data.datasets.length) {
+                            return data.labels.map((label, i) => {
+                                const dataset = data.datasets[0];
+                                const value = dataset.data[i];
+                                return {
+                                    text: `${label}: ${value}`,
+                                    fillStyle: dataset.backgroundColor[i],
+                                    strokeStyle: dataset.backgroundColor[i],
+                                    lineWidth: 0,
+                                    pointStyle: 'circle',
+                                    hidden: false,
+                                    index: i
+                                };
+                            });
+                        }
+                        return [];
+                    }
                 }
             },
             tooltip: {
@@ -504,7 +517,26 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                 align: 'center',
                 labels: {
                     ...chartOptions.plugins.legend.labels,
-                    font: { size: 12, weight: 500 }
+                    font: { size: 12, weight: 500 },
+                    generateLabels: function(chart) {
+                        const data = chart.data;
+                        if (data.labels.length && data.datasets.length) {
+                            return data.labels.map((label, i) => {
+                                const dataset = data.datasets[0];
+                                const value = dataset.data[i];
+                                return {
+                                    text: `${label}: ${value}`,
+                                    fillStyle: dataset.backgroundColor[i],
+                                    strokeStyle: dataset.backgroundColor[i],
+                                    lineWidth: 0,
+                                    pointStyle: 'circle',
+                                    hidden: false,
+                                    index: i
+                                };
+                            });
+                        }
+                        return [];
+                    }
                 }
             }
         }
@@ -646,7 +678,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                             <div style={{fontWeight: 600, fontSize: 15, marginBottom: 8}}>{t("employee_type")}</div>
                             {dadosProntos && Object.keys(distribuicaoTipoFuncionario).length > 0 ? (
                                 <div className="chart-container" style={{width: '100%', height: '180px'}}>
-                                    <Chart type="bar" data={chartDataDepartamentos} options={chartOptionsNoLegend} style={{width: '100%', height: '100%'}} />
+                                    <Chart type="bar" data={chartDataDepartamentos} options={chartOptions} style={{width: '100%', height: '100%'}} />
                                 </div>
                             ) : dadosProntos ? (
                                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '180px', color: '#888', fontSize: '14px', fontStyle: 'italic'}}>
@@ -662,7 +694,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                             <div style={{fontWeight: 600, fontSize: 15, marginBottom: 8}}>Por Filial</div>
                             {dadosProntos && Object.keys(distribuicaoFilial).length > 0 ? (
                                 <div className="chart-container" style={{width: '100%', height: '180px'}}>
-                                    <Chart type="bar" data={chartDataFiliais} options={chartOptionsNoLegend} style={{width: '100%', height: '100%'}} />
+                                    <Chart type="bar" data={chartDataFiliais} options={chartOptions} style={{width: '100%', height: '100%'}} />
                                 </div>
                             ) : dadosProntos ? (
                                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '180px', color: '#888', fontSize: '14px', fontStyle: 'italic'}}>
@@ -735,7 +767,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                                             }} />
                                             <span style={{fontWeight: 700, fontSize: 14, color: '#222', lineHeight: 1.1}}>{etapa.etapa}</span>
                                         </div>
-                                        <span style={{fontSize: 13, color: '#888', fontWeight: 500, marginLeft: 20}}>{t("completed")}</span>
                                     </div>
                                     <span style={{
                                         background: `${etapa.cor}10`,
@@ -808,34 +839,28 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     <Frame estilo="spaced">
                         <Titulo><h6>{t("next_scheduled_vacations")}</h6></Titulo>
                     </Frame>
-                    <div className="ferias-list">
+                    <div className="ferias-list" style={{textAlign: 'left'}}>
                         {dadosRH.feriasAgendadas.length > 0 ? (
                             dadosRH.feriasAgendadas.map((ferias, index) => (
-                                <div key={index} className="ferias-item">
-                                    <div className="ferias-info">
-                                        <div className="ferias-colaborador">{ferias.colaborador}</div>
-                                        <div className="ferias-periodo">
-                                            {ferias.inicio && ferias.fim ? 
-                                                `${new Date(ferias.inicio).toLocaleDateString('pt-BR')} - ${new Date(ferias.fim).toLocaleDateString('pt-BR')} (${ferias.nrodiasferias} dias)` :
-                                                `${ferias.inicio} - ${ferias.fim} (${ferias.nrodiasferias} dias)`
+                                <div key={index} className="ferias-item" onClick={() => navigate(`/colaborador/detalhes/${ferias.funcionario_id}/ferias`)} style={{
+                                        textAlign: 'left',
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    <div className="ferias-info" style={{textAlign: 'left', flex: 1}}>
+                                        <div className="ferias-colaborador" style={{textAlign: 'left'}}>{ferias.nome_colaborador}</div>
+                                        <div className="ferias-periodo" style={{textAlign: 'left'}}>
+                                            {ferias.data_inicio && ferias.data_fim ? 
+                                                `${new Date(ferias.data_inicio).toLocaleDateString('pt-BR')} - ${new Date(ferias.data_fim).toLocaleDateString('pt-BR')} (${ferias.numero_dias} dias)` :
+                                                `${ferias.data_inicio} - ${ferias.data_fim} (${ferias.numero_dias} dias)`
                                             }
                                         </div>
                                     </div>
-                                    <Tag severity={getSeverity(ferias.situacaoferias)} value={
-                                        ferias.situacaoferias === 'G' ? 'Aguardando Gestor' : 
-                                        ferias.situacaoferias === 'D' ? 'Aguardando DP' : 
-                                        ferias.situacaoferias === 'M' ? 'Marcadas' : 
-                                        ferias.situacaoferias === 'P' ? 'Pagas' : 
-                                        ferias.situacaoferias === 'F' ? 'Finalizadas' : 
-                                        ferias.situacaoferias === 'X' ? 'Finalizadas Próximo Mês' : 
-                                        // Status antigos (mantidos para compatibilidade)
-                                        ferias.situacaoferias === 'A' ? 'Aprovada' : 
-                                        ferias.situacaoferias === 'S' ? 'Solicitada' : 
-                                        ferias.situacaoferias === 'E' ? 'Em Andamento' : 
-                                        ferias.situacaoferias === 'C' ? 'Cancelada' : 
-                                        ferias.situacaoferias === 'R' ? 'Rejeitada' : 
-                                        ferias.situacaoferias
-                                    } />
+                                    <Tag severity={getSeverity(ferias.status)} value={ferias.status} />
                                 </div>
                             ))
                         ) : (
@@ -887,9 +912,9 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     <Frame estilo="spaced">
                         <Titulo><h6>{t("termination_reasons")}</h6></Titulo>
                     </Frame>
-                    <div className="chart-container" style={{height: '250px', width: '100%'}}>
+                    <div className="chart-container" style={{height: '250px', width: '100%', minWidth: '400px'}}>
                         {dadosProntos && Object.keys(dadosRH.motivosDemissao).length > 0 ? (
-                            <Chart type="bar" data={chartDataMotivos} options={chartOptionsNoLegend} />
+                            <Chart type="bar" data={chartDataMotivos} options={chartOptionsNoLegend} style={{width: '100%', height: '100%', minWidth: '400px'}} />
                         ) : dadosProntos ? (
                             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#888', fontSize: '14px', fontStyle: 'italic'}}>
                                 {t('no_data')}

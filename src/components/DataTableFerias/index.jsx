@@ -4,11 +4,12 @@ import { Column } from 'primereact/column';
 import { ColumnGroup } from 'primereact/columngroup';
 import { Row } from 'primereact/row';
 import { Tooltip } from 'primereact/tooltip';
+import { Dropdown } from 'primereact/dropdown';
 import Texto from '@components/Texto';
 import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import Botao from '@components/Botao';
-import { FaUmbrellaBeach, FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaCalendarAlt, FaTimesCircle, FaClock, FaExclamationTriangle, FaLock, FaLockOpen, FaMoneyCheck } from 'react-icons/fa';
+import { FaUmbrellaBeach, FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaCalendarAlt, FaTimesCircle, FaClock, FaExclamationTriangle, FaLock, FaLockOpen, FaMoneyCheck, FaFileExcel } from 'react-icons/fa';
 import { useEffect, useState, useRef, useMemo } from 'react';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import { Tag } from 'primereact/tag';
@@ -115,6 +116,148 @@ function formatarDataBr(data) {
     return `${dia}/${mes}/${ano}`;
 }
 
+const ModernDropdown = styled.div`
+    position: relative;
+    min-width: 200px;
+    
+    select {
+        appearance: none;
+        background: #ffffff;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        padding: 10px 16px;
+        padding-right: 40px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #374151;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        min-width: 100%;
+        
+        &:hover {
+            border-color: #9ca3af;
+            background: #f9fafb;
+        }
+        
+        &:focus {
+            outline: none;
+            border-color: var(--primaria);
+        }
+    }
+    
+    &::after {
+        content: '▼';
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+        font-size: 12px;
+        pointer-events: none;
+        transition: transform 0.2s ease;
+    }
+    
+    &:hover::after {
+        color: #374151;
+    }
+`;
+
+// Custom styles for PrimeReact Dropdown to match the select design
+const CustomDropdownStyles = styled.div`
+    /* Estilos mais diretos para sobrescrever o PrimeReact */
+    .p-dropdown {
+        background: #ffffff !important;
+        border: 1px solid #d1d5db !important;
+        border-radius: 4px !important;
+        min-width: 300px !important;
+    }
+
+    .p-dropdown-filter-icon {
+        top: calc(46px - 28px)!important;
+    }
+    
+    .p-dropdown:hover {
+        border-color: var(--primaria) !important;
+        background: #f9fafb !important;
+    }
+    
+    .p-dropdown:focus-within {
+        border-color: var(--primaria) !important;
+    }
+    
+    .p-dropdown-label {
+        padding: 10px 16px !important;
+        padding-right: 60px !important;
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        color: #374151 !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+    
+    .p-dropdown-trigger {
+        color: #6b7280 !important;
+        width: 2rem !important;
+    }
+    
+    .p-dropdown-trigger:hover {
+        color: #374151 !important;
+    }
+    
+    .p-dropdown-clear-icon {
+        position: absolute !important;
+        right: 2.5rem !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        color: #6b7280 !important;
+        font-size: 12px !important;
+        z-index: 10 !important;
+    }
+    
+    .p-dropdown-clear-icon:hover {
+        color: #374151 !important;
+    }
+    
+    .p-dropdown-panel {
+        border: 1px solid #d1d5db !important;
+        border-radius: 4px !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .p-dropdown-filter {
+        padding: 8px 12px !important;
+        border-bottom: 1px solid #e5e7eb !important;
+    }
+    
+    .p-dropdown-filter .p-inputtext {
+        border: 1px solid #d1d5db !important;
+        border-radius: 4px !important;
+        padding: 8px 12px !important;
+        font-size: 14px !important;
+    }
+    
+    .p-dropdown-filter .p-inputtext:focus {
+        border-color: var(--primaria) !important;
+        box-shadow: 0 0 0 1px var(--primaria) !important;
+    }
+    
+    .p-dropdown-items .p-dropdown-item {
+        padding: 8px 16px !important;
+        font-size: 14px !important;
+        color: #374151 !important;
+    }
+    
+    .p-dropdown-items .p-dropdown-item:hover {
+        background: #f3f4f6 !important;
+    }
+    
+    .p-dropdown-items .p-dropdown-item.p-highlight {
+        background: #f3f4f6 !important;
+        color: #374151 !important;
+    }
+`;
+
 function DataTableFerias({ 
     ferias, 
     colaborador = null,
@@ -129,7 +272,10 @@ function DataTableFerias({
     sortOrder = '',
     onFilter, // nova prop para filtros
     filtersProp = {}, // nova prop para estado dos filtros
-    situacoesUnicas = [] // nova prop para situações disponíveis
+    situacoesUnicas = [], // nova prop para situações disponíveis
+    onExportExcel, // nova prop para exportar Excel
+    exportingExcel = false, // nova prop para estado de exportação
+    onSecaoFilterChange // nova prop para filtro de seção
 }) {
 
     const [colaboradores, setColaboradores] = useState(null)
@@ -144,6 +290,50 @@ function DataTableFerias({
     const navegar = useNavigate();
     const { usuario } = useSessaoUsuarioContext();
     const toast = useRef(null);
+
+    // Estados para filtro de seção
+    const [secoes, setSecoes] = useState([]);
+    const [secaoSelecionada, setSecaoSelecionada] = useState('');
+    const [loadingSecoes, setLoadingSecoes] = useState(false);
+    const [filtroSecao, setFiltroSecao] = useState('');
+
+    // Buscar seções da API
+    useEffect(() => {
+        const fetchSecoes = async () => {
+            setLoadingSecoes(true);
+            try {
+                const response = await http.get('secao/');
+                const secoesFormatadas = response.map(secao => ({
+                    label: `${secao.id_origem} - ${secao.descricao}`,
+                    value: secao.id_origem
+                }));
+                setSecoes(secoesFormatadas);
+            } catch (error) {
+                console.error('Erro ao buscar seções:', error);
+                toast.current?.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Erro ao carregar seções',
+                    life: 3000
+                });
+            } finally {
+                setLoadingSecoes(false);
+            }
+        };
+
+        fetchSecoes();
+    }, []);
+
+    // Função para lidar com mudança de seção
+    const handleSecaoChange = (event) => {
+        const novaSecao = event.value;
+        setSecaoSelecionada(novaSecao);
+        
+        // Chama callback para atualizar filtros no componente pai
+        if (onSecaoFilterChange) {
+            onSecaoFilterChange(novaSecao);
+        }
+    };
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -357,7 +547,12 @@ function DataTableFerias({
         if (resultado) {
             if (resultado.sucesso) {
                 toast.current.show({ severity: 'success', summary: 'Sucesso', detail: resultado.mensagem, life: 3000 });
-                if (onUpdate) onUpdate(); // Chama callback de atualização apenas em caso de sucesso
+
+                if (onUpdate) { 
+                    setTimeout(() => {
+                        onUpdate(); // Chama callback de atualização apenas em caso de sucesso
+                    }, 2000);
+                }
             } else if (resultado.erro) {
                 toast.current.show({ severity: 'error', summary: 'Erro', detail: resultado.mensagem, life: 3000 });
                 // Não chama onUpdate em caso de erro
@@ -607,9 +802,22 @@ function DataTableFerias({
             return <div>-</div>;
         }
        
-        return <div key={rowData.id}>
-            <Texto weight={700} width={'100%'}>
+        return <div key={rowData.id} style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+            <Texto weight={700} width={'100%'} style={{ fontSize: '14px', lineHeight: '1.1' }}>
                 {rowData?.dados_pessoa_fisica?.nome ?? rowData.funcionario_nome ?? 'Colaborador'}
+            </Texto>
+            {rowData.secao_nome && (
+                <Texto weight={400} width={'100%'} style={{ fontSize: '12px', color: '#666', lineHeight: '1.2' }}>
+                    {rowData.secao_codigo ? `${rowData.secao_codigo} ` : ''} {rowData.secao_nome ? `${rowData.secao_nome}` : ''}
+                </Texto>
+            )}
+        </div>
+    }
+
+    const representativeChapaTemplate = (rowData) => {
+        return <div style={{ textAlign: 'left', width: '100%' }}>
+            <Texto weight={500} style={{ fontSize: '13px' }}>
+                {rowData.funcionario_chapa || '-'}
             </Texto>
         </div>
     }
@@ -692,7 +900,13 @@ function DataTableFerias({
         lazy: true,
         first: (currentPage - 1) * pageSize,
         removableSort: true,
-        tableStyle: { minWidth: (!colaborador ? '68vw' : '40vw') }
+        tableStyle: { 
+            minWidth: (!colaborador ? '68vw' : '40vw'),
+            borderCollapse: 'collapse',
+            borderSpacing: 0,
+            width: '100%',
+            tableLayout: 'fixed'
+        }
     }), [filtersProp, selectedFerias, pageSize, totalRecords, currentPage, colaborador, onFilter]);
 
     // Templates para botões de filtro (igual ao DataTableColaboradores)
@@ -881,6 +1095,56 @@ function DataTableFerias({
         return <SituacaoFilterContent options={options} situacoesUnicas={situacoesUnicas} />;
     };
 
+    // Função para calcular larguras das colunas dinamicamente
+    const getColumnWidths = useMemo(() => {
+        // Definir as proporções originais (quando todas as colunas estão presentes)
+        const originalProportions = {
+            colaborador: 22,
+            chapa: 12,
+            aquisicao: 12,
+            ferias: 10,
+            pagamento: 13,
+            aviso: 8,
+            dias: 8,
+            abono: 10,     // ✅ Aumentado de 8 para 10
+            decimo: 8,
+            coletiva: 11,
+            situacao: 15
+        };
+        
+        // Determinar quais colunas estão presentes
+        const availableColumns = [];
+        
+        if (!colaborador) {
+            availableColumns.push('colaborador', 'chapa');
+        }
+        availableColumns.push('aquisicao', 'ferias', 'pagamento');
+        if (!colaborador) {
+            availableColumns.push('aviso');
+        }
+        availableColumns.push('dias', 'abono', 'decimo', 'coletiva', 'situacao');
+        
+        // Calcular a soma das proporções das colunas disponíveis
+        const totalProportion = availableColumns.reduce((sum, col) => sum + originalProportions[col], 0);
+        
+        // Calcular as larguras percentuais ajustadas
+        const widths = {};
+        let totalCalculated = 0;
+        
+        availableColumns.forEach((col, index) => {
+            if (index === availableColumns.length - 1) {
+                // Para a última coluna, usar o que falta para completar 100%
+                widths[col] = `${(100 - totalCalculated).toFixed(1)}%`;
+            } else {
+                const width = (originalProportions[col] / totalProportion * 100);
+                widths[col] = `${width.toFixed(1)}%`;
+                totalCalculated += parseFloat(width.toFixed(1));
+            }
+        });
+        
+        return widths;
+    }, [colaborador]);
+
     return (
         <>
             <Toast ref={toast} />
@@ -898,27 +1162,128 @@ function DataTableFerias({
                 currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords}"
                 sortOrder={sortOrder === 'desc' ? -1 : sortOrder === 'asc' ? 1 : sortOrder ? 0 : null}
                 rowClassName={(rowData) => `row-${rowData.id}`}
+                style={{ borderCollapse: 'collapse', borderSpacing: 0 }}
+                header={
+                    onExportExcel ? (
+                        <div style={{ 
+                            display: 'flex', 
+                            justifyContent: 'space-between', 
+                            alignItems: 'center',
+                            width: '100%',
+                            padding: '8px 0'
+                        }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                                <CustomDropdownStyles>
+                                    <Dropdown
+                                        value={secaoSelecionada}
+                                        options={secoes}
+                                        onChange={handleSecaoChange}
+                                        placeholder="Filtrar por seção"
+                                        filter
+                                        filterBy="label"
+                                        showClear={!!secaoSelecionada}
+                                        disabled={loadingSecoes}
+                                        className="custom-dropdown"
+                                    />
+                                </CustomDropdownStyles>
+                            </div>
+                            <Botao 
+                                aoClicar={onExportExcel} 
+                                estilo="vermilion" 
+                                size="small" 
+                                tab
+                                disabled={exportingExcel}
+                            >
+                                <FaFileExcel 
+                                    fill={exportingExcel ? '#9ca3af' : 'var(--secundaria)'} 
+                                    color={exportingExcel ? '#9ca3af' : 'var(--secundaria)'} 
+                                    size={16}
+                                />
+                                {exportingExcel ? 'Exportando...' : 'Exportar Excel'}
+                            </Botao>
+                        </div>
+                    ) : (
+                        <div style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: '16px',
+                            width: '100%',
+                            padding: '8px 0'
+                        }}>
+                            <span style={{ fontSize: '18px', fontWeight: '600', color: '#374151' }}>
+                                Férias
+                            </span>
+                            <CustomDropdownStyles>
+                                <Dropdown
+                                    value={secaoSelecionada}
+                                    options={secoes}
+                                    onChange={handleSecaoChange}
+                                    placeholder="Filtrar por seção"
+                                    filter
+                                    filterBy="label"
+                                    showClear={!!secaoSelecionada}
+                                    disabled={loadingSecoes}
+                                    className="custom-dropdown"
+                                />
+                            </CustomDropdownStyles>
+                        </div>
+                    )
+                }
             >
-                {!colaborador && <Column body={representativeColaboradorTemplate} sortable field="funcionario_nome" sortField="funcionario" header="Colaborador" style={{ width: '15%' }} className="col-colaborador"></Column>}
-                <Column body={representativeAquisicaoTemplate} sortable field="fimperaquis" header="Aquisição" style={{ width: '18%' }} className="col-aquisicao"></Column>
-                <Column body={representativeInicioTemplate} sortable field="dt_inicio" header="Férias" style={{ width: '12%' }} className="col-ferias"></Column>
-                <Column body={representativePagamentoTemplate} sortable field="datapagamento" header="Pagamento" style={{ width: '10%' }} className="col-pagamento"></Column>
+                {!colaborador && <Column body={representativeColaboradorTemplate} sortable field="funcionario_nome" sortField="funcionario" header="Colaborador" style={{ width: getColumnWidths.colaborador }} className="col-colaborador"></Column>}
+                {!colaborador && <Column body={representativeChapaTemplate} sortable field="funcionario_chapa" header="Chapa" style={{ width: getColumnWidths.chapa }} className="col-chapa"></Column>}
+                <Column body={representativeAquisicaoTemplate} field="fimperaquis" header="Aquisição" style={{ width: getColumnWidths.aquisicao }} className="col-aquisicao"></Column>
+                <Column body={representativeInicioTemplate} field="dt_inicio" header="Férias" style={{ width: getColumnWidths.ferias }} className="col-ferias"></Column>
+                <Column 
+                    body={representativePagamentoTemplate} 
+                    sortable 
+                    field="datapagamento" 
+                    header="Pagamento" 
+                    style={{ width: getColumnWidths.pagamento }} 
+                    className="col-pagamento"
+                    headerStyle={{ fontSize: '11px' }}
+                ></Column>
                 {!colaborador && ( 
                     <>
-                        <Column body={representativeAvisoFeriasTemplate} sortable field="aviso_ferias" header="Aviso" style={{ width: '8%' }} className="hide-mobile col-aviso"></Column>
+                        <Column body={representativeAvisoFeriasTemplate} sortable field="aviso_ferias" header="Aviso" style={{ width: getColumnWidths.aviso }} className="hide-mobile col-aviso"></Column>
                     </>
                 )}
-                <Column body={(rowData) => rowData.nrodiasferias} sortable field="nrodiasferias" header="Dias" style={{ width: '8%' }} className="col-dias"></Column>
-                <Column body={(rowData) => rowData.nrodiasabono} sortable field="nrodiasabono" header="Abono" style={{ width: '8%' }} className="hide-mobile col-abono"></Column>
-                <Column body={representativ13Template} sortable field="adiantar_13" header="13º" style={{ width: '8%' }} className="hide-mobile col-decimo"></Column>
-                <Column body={representativeFeriasColetivasTemplate} sortable field="ferias_coletivas" header="Coletiva" style={{ width: '8%' }} className="hide-mobile col-coletiva"></Column>
+                <Column 
+                    body={(rowData) => rowData.nrodiasferias} 
+                    sortable 
+                    field="nrodiasferias" 
+                    header="Dias" 
+                    style={{ width: getColumnWidths.dias }} 
+                    className="col-dias"
+                    headerStyle={{ fontSize: '11px' }}
+                ></Column>
+                <Column 
+                    body={(rowData) => rowData.nrodiasabono} 
+                    sortable 
+                    field="nrodiasabono" 
+                    header="Abono" 
+                    style={{ width: getColumnWidths.abono }} 
+                    className="hide-mobile col-abono"
+                    headerStyle={{ fontSize: '11px' }}
+                ></Column>
+                <Column body={representativ13Template} sortable field="adiantar_13" header="13º" style={{ width: getColumnWidths.decimo }} className="hide-mobile col-decimo"></Column>
+                <Column 
+                    body={representativeFeriasColetivasTemplate} 
+                    sortable 
+                    field="ferias_coletivas" 
+                    header="Coletiva" 
+                    style={{ width: getColumnWidths.coletiva }} 
+                    className="hide-mobile col-coletiva"
+                    headerStyle={{ fontSize: '11px' }}
+                ></Column>
                 <Column 
                     sortable 
                     body={representativeSituacaoTemplate}
                     field="situacaoferias" 
                     header="Situação" 
-                    style={{ width: '18%' }}
+                    style={{ width: getColumnWidths.situacao }}
                     className="col-situacao"
+                    headerStyle={{ fontSize: '11px' }}
                     filter
                     filterField="situacaoferias"
                     showFilterMenu={true}

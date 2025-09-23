@@ -5,6 +5,7 @@ import { ptBR } from 'date-fns/locale';
 import { FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaThLarge, FaThList, FaCalendarAlt, FaTh, FaExpandArrowsAlt } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import { Toast } from 'primereact/toast';
+import { Dropdown } from 'primereact/dropdown';
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
 import DropdownItens from '@components/DropdownItens'
 import CampoTexto from '@components/CampoTexto';
@@ -149,13 +150,13 @@ const CalendarGrid = styled.div`
 
 const WeekDaysRow = styled.div`
     display: grid;
-    grid-template-columns: 200px repeat(${({ $totalDays }) => $totalDays}, 1fr);
+    grid-template-columns: 280px repeat(${({ $totalDays }) => $totalDays}, 1fr);
     min-width: 100%;
 `;
 
 const WeekDayNameRow = styled.div`
     display: grid;
-    grid-template-columns: 200px repeat(${({ $totalDays }) => $totalDays}, 1fr);
+    grid-template-columns: 280px repeat(${({ $totalDays }) => $totalDays}, 1fr);
     min-width: 100%;
 `;
 
@@ -180,11 +181,12 @@ const WeekDay = styled.div`
 
 const EmployeeCell = styled.div`
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
     font-weight: bold;
     color: #333;
-    font-size: 14px;
-    padding-left: 8px;
+    font-size: 16px;
+    padding-left: 12px;
     background: #f5f5f5;
     border: 1px solid #eee;
     min-height: 44px;
@@ -195,9 +197,24 @@ const EmployeeCell = styled.div`
     box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
 `;
 
+const EmployeeName = styled.div`
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    line-height: 1.1;
+`;
+
+const EmployeeSection = styled.div`
+    font-size: 12px;
+    font-weight: 400;
+    color: #666;
+    line-height: 1.2;
+    margin-top: 2px;
+`;
+
 const EmployeeRow = styled.div`
     display: grid;
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: 280px 1fr;
     align-items: center;
     min-height: 44px;
     margin: 0;
@@ -349,7 +366,7 @@ const DAYS_IN_YEAR = 365;
 
 const TrimestreHeader = styled.div`
     display: grid;
-    grid-template-columns: 200px repeat(${({ $totalDays }) => $totalDays}, 1fr);
+    grid-template-columns: 280px repeat(${({ $totalDays }) => $totalDays}, 1fr);
     margin-bottom: 0px;
     min-width: 100%;
 `;
@@ -458,7 +475,7 @@ const DAYS_BATCH = 30; // Carrega mais 1 mês por vez
 const INITIAL_COLABS = 3;
 const COLABS_BATCH = 2;
 
-const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadingMore, isRendering, situacoesUnicas = [] }) => {
+const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadingMore, isRendering, situacoesUnicas = [], onFilterChange, secaoFiltroAtual }) => {
     const [visualizacao, setVisualizacao] = useState('trimestral'); // 'mensal', 'trimestral', 'semestral' ou 'anual'
     const [modalEvento, setModalEvento] = useState(null); // {colab, evento, tipo}
     const [isDragging, setIsDragging] = useState(false);
@@ -471,6 +488,55 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
     const loadMoreTriggerRef = useRef(null);
     const lastScrollPosition = useRef(0);
     const lastLoadTime = useRef(0); // Timestamp da última requisição
+
+    // Estados para filtro de seção
+    const [secoes, setSecoes] = useState([]);
+    const [secaoSelecionada, setSecaoSelecionada] = useState(null);
+    const [loadingSecoes, setLoadingSecoes] = useState(false);
+    const [filtroSecao, setFiltroSecao] = useState('');
+
+    // Sincroniza o estado local com o filtro atual do componente pai
+    useEffect(() => {
+        setSecaoSelecionada(secaoFiltroAtual);
+    }, [secaoFiltroAtual]);
+
+    // Buscar seções da API
+    useEffect(() => {
+        const fetchSecoes = async () => {
+            setLoadingSecoes(true);
+            try {
+                const response = await http.get('secao/');
+                const secoesFormatadas = response.map(secao => ({
+                    label: `${secao.id_origem} - ${secao.descricao}`,
+                    value: secao.id_origem
+                }));
+                setSecoes(secoesFormatadas);
+            } catch (error) {
+                console.error('Erro ao buscar seções:', error);
+                toast.current?.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Erro ao carregar seções',
+                    life: 3000
+                });
+            } finally {
+                setLoadingSecoes(false);
+            }
+        };
+
+        fetchSecoes();
+    }, []);
+
+    // Função para lidar com mudança de seção
+    const handleSecaoChange = useCallback((event) => {
+        const novaSecao = event.value;
+        setSecaoSelecionada(novaSecao);
+        
+        // Chama callback para atualizar filtros no componente pai
+        if (onFilterChange) {
+            onFilterChange({ secao_codigo: novaSecao });
+        }
+    }, [onFilterChange]);
 
     // Sistema de preservação de scroll simplificado
 
@@ -637,7 +703,10 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                 colaboradoresMap[funcionarioId] = {
                     id: funcionarioId,
                     nome: item.funcionario_nome || 'Colaborador',
-                    gestor: item.gestor || '', 
+                    gestor: item.gestor || '',
+                    funcionario_chapa: item.funcionario_chapa || '',
+                    secao_codigo: item.secao_codigo || '',
+                    secao_nome: item.secao_nome || '',
                     ausencias: [],
                     _isNewItem: item._isNewItem || false, // Preserva a marcação de novo item
                     _originalIndex: colaboradoresOrder.length // Preserva ordem original
@@ -675,6 +744,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                     periodo_aberto: item.periodo_aberto || false,
                     periodo_perdido: item.periodo_perdido || false,
                     datapagamento: item.datapagamento || null,
+                    data_pagamento: item.data_pagamento || null,
                     data_minima_solicitacao: item.data_minima_solicitacao || null,
                     data_minima_solicitacao_formatada: item.data_minima_solicitacao_formatada || null,
                     dias_antecedencia_necessarios: item.dias_antecedencia_necessarios || 0,
@@ -708,6 +778,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                     ferias_coletivas: item.ferias_coletivas || false,
                     periodo_aberto: item.periodo_aberto || false,
                     datapagamento: item.datapagamento || null,
+                    data_pagamento: item.data_pagamento || null,
                     data_minima_solicitacao: item.data_minima_solicitacao || null,
                     data_minima_solicitacao_formatada: item.data_minima_solicitacao_formatada || null,
                     dias_antecedencia_necessarios: item.dias_antecedencia_necessarios || 0,
@@ -747,15 +818,18 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
 
     // Ajusta para o início e fim do ano selecionado (dentro do período de 3 anos)
     const startDate = useMemo(() => startOfMonth(new Date(anoSelecionado, 0, 1)), [anoSelecionado]);
-    const endDate = useMemo(() => endOfMonth(new Date(anoSelecionado, 11, 1)), [anoSelecionado]);
+    const endDate = useMemo(() => endOfMonth(new Date(anoSelecionado, 22, 1)), [anoSelecionado]);
     const daysArray = useMemo(() => getDaysArray(startDate, endDate), [startDate, endDate]);
     const totalDays = useMemo(() => daysArray.length, [daysArray]);
     const monthsArray = useMemo(() => getMonthsInRange(startDate, endDate), [startDate, endDate]);
 
-    // Filtra colaboradores pelo nome
-    const colabsFiltrados = useMemo(() => allColabs.filter(colab =>
-        colab.nome.toLowerCase().includes(filtroColaborador.toLowerCase())
-    ), [allColabs, filtroColaborador]);
+    // Filtra colaboradores pelo nome, seção ou código da seção
+    const colabsFiltrados = useMemo(() => allColabs.filter(colab => {
+        const searchTerm = filtroColaborador.toLowerCase();
+        return colab.nome.toLowerCase().includes(searchTerm) ||
+               (colab.secao_nome && colab.secao_nome.toLowerCase().includes(searchTerm)) ||
+               (colab.secao_codigo && colab.secao_codigo.toLowerCase().includes(searchTerm));
+    }), [allColabs, filtroColaborador]);
 
     // Zoom dinâmico: calcula a largura do dia conforme a visualização e o tamanho do container
     const dayWidth = useMemo(() => {
@@ -827,7 +901,9 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
             if (resultado.sucesso) {
                 toast.current.show({ severity: 'success', summary: 'Sucesso', detail: resultado.mensagem, life: 3000 });
                 if (onUpdate) {
-                    onUpdate();
+                    setTimeout(() => {
+                        onUpdate();
+                    }, 2000);
                 }
             } else if (resultado.erro) {
                 toast.current.show({ severity: 'error', summary: 'Erro', detail: resultado.mensagem, life: 3000 });
@@ -897,13 +973,169 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
         return situacaoEncontrada ? situacaoEncontrada.label : null;
     }, [situacoesUnicas]);
 
+    const ModernDropdown = styled.div`
+        position: relative;
+        min-width: 200px;
+        
+        select {
+            appearance: none;
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            padding: 10px 16px;
+            padding-right: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 100%;
+            
+            &:hover {
+                border-color: #9ca3af;
+                background: #f9fafb;
+            }
+            
+            &:focus {
+                outline: none;
+                border-color: var(--primaria);
+            }
+        }
+        
+        &::after {
+            content: '▼';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            font-size: 12px;
+            pointer-events: none;
+            transition: transform 0.2s ease;
+        }
+        
+        &:hover::after {
+            color: #374151;
+        }
+    `;
+
+    // Custom styles for PrimeReact Dropdown to match the select design
+    const CustomDropdownStyles = styled.div`
+        /* Estilos mais diretos para sobrescrever o PrimeReact */
+        .p-dropdown {
+            background: #ffffff !important;
+            border: 1px solid #d1d5db !important;
+            border-radius: 4px !important;
+            min-width: 300px !important;
+        }
+
+        .p-dropdown-filter-icon {
+            top: calc(46px - 28px)!important;
+        }
+        
+        .p-dropdown:hover {
+            border-color: var(--primaria) !important;
+            background: #f9fafb !important;
+        }
+        
+        .p-dropdown:focus-within {
+            border-color: var(--primaria) !important;
+        }
+        
+        .p-dropdown-label {
+            padding: 10px 16px !important;
+            padding-right: 60px !important;
+            font-size: 14px !important;
+            font-weight: 500 !important;
+            color: #374151 !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;
+        }
+        
+        .p-dropdown-trigger {
+            color: #6b7280 !important;
+            width: 2rem !important;
+        }
+        
+        .p-dropdown-trigger:hover {
+            color: #374151 !important;
+        }
+        
+        .p-dropdown-clear-icon {
+            position: absolute !important;
+            right: 2.5rem !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            color: #6b7280 !important;
+            font-size: 12px !important;
+            z-index: 10 !important;
+        }
+        
+        .p-dropdown-clear-icon:hover {
+            color: #374151 !important;
+        }
+        
+        .p-dropdown-panel {
+            border: 1px solid #d1d5db !important;
+            border-radius: 4px !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .p-dropdown-filter {
+            padding: 8px 12px !important;
+            border-bottom: 1px solid #e5e7eb !important;
+        }
+        
+        .p-dropdown-filter .p-inputtext {
+            border: 1px solid #d1d5db !important;
+            border-radius: 4px !important;
+            padding: 8px 12px !important;
+            font-size: 14px !important;
+        }
+        
+        .p-dropdown-filter .p-inputtext:focus {
+            border-color: var(--primaria) !important;
+            box-shadow: 0 0 0 1px var(--primaria) !important;
+        }
+        
+        .p-dropdown-items .p-dropdown-item {
+            padding: 8px 16px !important;
+            font-size: 14px !important;
+            color: #374151 !important;
+        }
+        
+        .p-dropdown-items .p-dropdown-item:hover {
+            background: #f3f4f6 !important;
+        }
+        
+        .p-dropdown-items .p-dropdown-item.p-highlight {
+            background: #f3f4f6 !important;
+            color: #374151 !important;
+        }
+    `;
+
     return (
         <CalendarContainer ref={containerRef}>
             <Toast ref={toast} />
             <Tooltip target=".event-bar" />
             <FixedHeader>
                 <ViewToggleBar>
-                    <div></div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <CustomDropdownStyles>
+                            <Dropdown
+                                value={secaoSelecionada}
+                                options={secoes}
+                                onChange={handleSecaoChange}
+                                placeholder="Filtrar por seção"
+                                filter
+                                filterBy="label"
+                                showClear={!!secaoSelecionada}
+                                disabled={loadingSecoes}
+                                className="custom-dropdown"
+                            />
+                        </CustomDropdownStyles>
+                    </div>
                     <ViewToggleSwitch>
                         <ViewToggleOption
                             $active={visualizacao === 'mensal'}
@@ -959,8 +1191,8 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                         position: 'absolute',
                         left: 0,
                         top: 0,
-                        width: '200px',
-                        minwidth: '200px',
+                        width: '280px',
+                        minwidth: '280px',
                         height: `${Math.max(colabsFiltrados.length * 44, 25 * 16)}px`,
                         background: '#f5f5f5',
                         borderRight: '1px solid #eee',
@@ -970,7 +1202,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                     {monthsArray.map((m, idx) => {
                         if (idx === 0) return null; // não desenha antes do primeiro mês
                         const startIdx = differenceInCalendarDays(m.start, startDate); // índice do dia 1 do mês
-                        const leftPx = 200 + startIdx * dayWidth; // 200px da coluna fixa + dias * largura do dia
+                        const leftPx = 280 + startIdx * dayWidth; // 200px da coluna fixa + dias * largura do dia
                         return (
                             <MonthSeparator
                                 key={idx}
@@ -981,7 +1213,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                     <CalendarTableHeader>
                         <TrimestreHeader $totalDays={totalDays}>
                             {monthsArray.map((m, idx) => {
-                                const startIdx = differenceInCalendarDays(m.start, startDate) + 1;
+                                const startIdx = differenceInCalendarDays(m.start, startDate) + 2;
                                 const endIdx = differenceInCalendarDays(m.end, startDate) + 2;
                                 return (
                                     <TrimestreMonthCell
@@ -1086,7 +1318,14 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                             $index={idx}
                             className={colab._isNewItem ? 'new-item' : ''}
                         >
-                            <EmployeeCell>{colab.nome}</EmployeeCell>
+                            <EmployeeCell>
+                                <EmployeeName>{colab.nome} {colab.funcionario_chapa ? ` (${colab.funcionario_chapa})` : ''}</EmployeeName>
+                                <EmployeeSection>
+                                    {colab.secao_codigo ? `${colab.secao_codigo} ` : ''}
+                                    {colab.secao_nome ? `${colab.secao_nome}` : ''}
+                                </EmployeeSection>
+                            
+                            </EmployeeCell>
                             <DaysBar style={{ minWidth: '100%', position: 'relative' }}>
                                 {/* Background grid */}
                                 <DaysBackgroundGrid $totalDays={totalDays}>

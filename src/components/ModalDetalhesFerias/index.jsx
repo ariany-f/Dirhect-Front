@@ -842,6 +842,11 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
         ...evento,
         evento: {
             ...evento.evento,
+            data_pagamento: evento.evento?.data_pagamento || evento.evento?.datapagamento,
+            aviso_ferias: evento.evento?.aviso_ferias,
+            nrodiasabono: evento.evento?.nrodiasabono,
+            ferias_coletivas: evento.evento?.ferias_coletivas,
+            adiantar_13: evento.evento?.adiantar_13,
             data_inicio: evento.evento?.dt_inicio || evento.evento?.data_inicio,
             data_fim: evento.evento?.dt_fim || evento.evento?.data_fim,
         }
@@ -869,6 +874,11 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
             periodo_aquisitivo_inicio: eventoNormalizado.evento?.periodo_aquisitivo_inicio,
             periodo_aquisitivo_fim: eventoNormalizado.evento?.periodo_aquisitivo_fim,
             saldo_dias: saldoFinal,
+            data_pagamento: eventoNormalizado.evento?.data_pagamento,
+            aviso_ferias: eventoNormalizado.evento?.aviso_ferias,
+            nrodiasabono: eventoNormalizado.evento?.nrodiasabono,
+            ferias_coletivas: eventoNormalizado.evento?.ferias_coletivas,
+            adiantar_13: eventoNormalizado.evento?.adiantar_13,
             data_solicitacao: eventoNormalizado.evento?.data_solicitacao || eventoNormalizado.evento?.criado_em
         }
     };
@@ -878,7 +888,13 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
     const diaDoMes = hoje.getDate();
 
     const isStatusPendente = eventoCompletado.evento?.status === 'E';
-    const podeAprovar = isStatusPendente && temPermissaoParaVerBotao;
+    
+    // Verificar se existe uma tarefa pendente com tipo aprovar_ferias
+    const temTarefaPendenteAprovarFerias = eventoCompletado.evento?.tarefas?.some(
+        t => t.status === 'pendente' && t.tipo_codigo === 'aprovar_ferias'
+    );
+    
+    const podeAprovar = isStatusPendente && temPermissaoParaVerBotao && temTarefaPendenteAprovarFerias;
 
     const limparDados = () => {
         setDataInicio('');
@@ -1020,14 +1036,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
 
         const diasMinimosAntecedencia = parseInt(parametrosFerias.DIAS_MINIMOS_ANTECEDENCIA) || 45; // Fallback para 45 se não houver parâmetro
         
-        console.log('Debug solicitarFerias - validação antecedência:', {
-            userPerfil,
-            isPerfilEspecial,
-            diffDays,
-            diasMinimosAntecedencia,
-            podeAnalistaTenantAprovar
-        });
-        
+      
         if (diffDays < (diasMinimosAntecedencia + 1)) {
             if (!isPerfilEspecial) {
                 // Calcular a data mínima permitida
@@ -1605,23 +1614,22 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
                                 </Frame>
                             )}
                             {podeAprovar && (
-                                <Frame style={{
+                                <div style={{
                                     backgroundColor: '#fff',
-                                    border: '1px solid #dee2e6',
-                                    boxShadow: '0 8px 16px rgba(0,0,0,0.05)',
                                     borderRadius: '12px',
                                     padding: '20px 20px 0px 0px',
-                                    marginBottom: '16px'
+                                    marginBottom: '16px',
+                                    marginTop: '16px'
                                 }}>
-                                    <BotaoGrupo style={{ marginTop: '12px' }}>
-                                        <BotaoAprovarCustom size="small" aoClicar={aprovarFerias} largura="100%">
-                                            <FaCheckCircle /> Aprovar
+                                    <BotaoGrupo>
+                                        <BotaoAprovarCustom size="medium" aoClicar={aprovarFerias} largura="100%">
+                                            <FaCheckCircle fill="var(--secundaria)" /> Aprovar
                                         </BotaoAprovarCustom>
-                                        <BotaoReprovarCustom size="small" aoClicar={reprovarFerias} largura="100%">
-                                            <FaTimesCircle /> Reprovar
+                                        <BotaoReprovarCustom size="medium" estilo="neutro" aoClicar={reprovarFerias} largura="100%">
+                                            <FaTimesCircle fill="var(--secundaria)" /> Reprovar
                                         </BotaoReprovarCustom>
                                     </BotaoGrupo>
-                                </Frame>
+                                </div>
                             )}
                         </AcoesContainer>
                     </ConteudoContainer>

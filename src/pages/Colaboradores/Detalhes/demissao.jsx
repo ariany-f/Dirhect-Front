@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useOutletContext } from 'react-router-dom';
+import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import { Toast } from 'primereact/toast';
 import { useRef } from 'react';
 import Frame from '@components/Frame';
@@ -7,9 +7,14 @@ import Titulo from '@components/Titulo';
 import Container from '@components/Container';
 import styled from 'styled-components';
 import QuestionCard from '@components/QuestionCard'
-import { FaCalendarAlt, FaUser, FaIdCard, FaFileAlt, FaClock, FaDollarSign, FaExclamationTriangle, FaCheckCircle } from 'react-icons/fa';
+import { FaCalendarAlt, FaUser, FaIdCard, FaFileAlt, FaClock, FaDollarSign, FaExclamationTriangle, FaCheckCircle, FaTimesCircle, FaArrowRight } from 'react-icons/fa';
 import { Tag } from 'primereact/tag';
 import { AiFillQuestionCircle } from 'react-icons/ai';
+import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
+import { ArmazenadorToken } from '@utils';
+import http from '@http';
+import Botao from '@components/Botao';
+import BotaoGrupo from '@components/BotaoGrupo';
 
 const DemissaoContainer = styled.div`
     display: flex;
@@ -121,9 +126,150 @@ const EmptyState = styled.div`
     }
 `;
 
+// Adicionar styled components para os botões
+const ActionButtons = styled.div`
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #f1f5f9;
+    justify-content: flex-end;
+`;
+
+const BotaoAprovarCustom = styled(Botao)`
+    background: #e6f7f2 !important;
+    color: #007a5a !important;
+    border: none !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+
+    &:hover:not(:disabled) {
+        background: #d1f0e8 !important;
+    }
+
+    svg {
+        fill: #007a5a !important;
+    }
+`;
+
+const BotaoReprovarCustom = styled(Botao)`
+    background: #fff1f0 !important;
+    color: #d92d20 !important;
+    border: none !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+
+    &:hover:not(:disabled) {
+        background: #ffe2e0 !important;
+    }
+
+    svg {
+        fill: #d92d20 !important;
+    }
+`;
+
+// Versão mais limpa e elegante para status de erro
+const StatusErro = styled.div`
+    background:rgb(221, 191, 191);
+    border: 1px solidrgb(206, 162, 162);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+`;
+
+const StatusErroIcon = styled.div`
+    color: #e53e3e;
+    flex-shrink: 0;
+`;
+
+const StatusErroText = styled.div`
+    flex: 1;
+    font-size: 13px;
+    color:rgb(143, 32, 32);
+    line-height: 1.4;
+    font-weight: 500;
+`;
+
+const StatusErroLink = styled.button`
+    background: none;
+    border: none;
+    color:rgb(19, 18, 18);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+    
+    &:hover {
+        color:var(--error);
+    }
+    
+    &:disabled {
+        color: #a0aec0;
+        cursor: not-allowed;
+        text-decoration: none;
+    }
+`;
+
+// Adicionar styled component para status cancelado
+const StatusCancelado = styled.div`
+    background:rgb(228, 203, 178);
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+`;
+
+const StatusCanceladoIcon = styled.div`
+    color: var(--black);
+    flex-shrink: 0;
+`;
+
+const StatusCanceladoText = styled.div`
+    flex: 1;
+    font-size: 13px;
+    color: var(--black);
+    line-height: 1.4;
+    font-weight: 500;
+`;
+
+// Adicionar styled component para status concluída
+const StatusConcluida = styled.div`
+    background: rgb(197, 233, 218);
+    border: 1px solid #86efac;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+`;
+
+const StatusConcluidaIcon = styled.div`
+    color: #059669;
+    flex-shrink: 0;
+`;
+
+const StatusConcluidaText = styled.div`
+    flex: 1;
+    font-size: 13px;
+    color: #047857;
+    line-height: 1.4;
+    font-weight: 500;
+`;
+
 function ColaboradorDemissao() {
     const { colaborador, demissao } = useOutletContext();
+    const { usuario } = useSessaoUsuarioContext();
     const toast = useRef(null);
+    const [loading, setLoading] = useState({});
+    const navegar = useNavigate();
     
     // Usar dados reais da API
     const demissaoData = demissao || [];
@@ -136,6 +282,66 @@ function ColaboradorDemissao() {
     const formatarDataHora = (dataHora) => {
         if (!dataHora) return 'Não informado';
         return new Date(dataHora).toLocaleDateString('pt-BR') + ' às ' + new Date(dataHora).toLocaleTimeString('pt-BR');
+    };
+
+    // Função para aprovar demissão
+    const handleAprovar = async (atividadeId) => {
+        setLoading(prev => ({ ...prev, [atividadeId]: true }));
+        
+        try {
+            await http.post(`tarefas/${atividadeId}/aprovar/`);
+            
+            toast.current.show({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: 'Demissão aprovada com sucesso!',
+                life: 3000
+            });
+            
+            // Recarregar a página para atualizar os dados
+            window.location.reload();
+            
+        } catch (error) {
+            console.error('Erro ao aprovar demissão:', error);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Erro ao aprovar demissão. Tente novamente.',
+                life: 3000
+            });
+        } finally {
+            setLoading(prev => ({ ...prev, [atividadeId]: false }));
+        }
+    };
+
+    // Função para rejeitar demissão
+    const handleRejeitar = async (atividadeId) => {
+        setLoading(prev => ({ ...prev, [atividadeId]: true }));
+        
+        try {
+            await http.post(`tarefas/${atividadeId}/cancelar/`);
+            
+            toast.current.show({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: 'Demissão rejeitada com sucesso!',
+                life: 3000
+            });
+            
+            // Recarregar a página para atualizar os dados
+            window.location.reload();
+            
+        } catch (error) {
+            console.error('Erro ao rejeitar demissão:', error);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Erro ao rejeitar demissão. Tente novamente.',
+                life: 3000
+            });
+        } finally {
+            setLoading(prev => ({ ...prev, [atividadeId]: false }));
+        }
     };
 
     if (!demissaoData || demissaoData.length === 0) {
@@ -278,6 +484,78 @@ function ColaboradorDemissao() {
                                         </a>
                                     </InfoValue>
                                 </InfoRow>
+                            )}
+
+                            {/* Status de erro da atividade */}
+                            {(usuario?.tipo === 'Outsourcing' || usuario?.tipo === 'RH') && demissao.atividade_status === 'erro' && (
+                                <StatusErro>
+                                    <StatusErroIcon>
+                                        <FaExclamationTriangle size={14} />
+                                    </StatusErroIcon>
+                                    
+                                    <StatusErroText>
+                                        Esta solicitação possui um erro no processo.
+                                    </StatusErroText>
+                                    
+                                    <StatusErroLink
+                                        onClick={() => navegar(`/tarefas/detalhes/${demissao.processo_id}`)}
+                                        disabled={loading[demissao.atividade_uid] || !demissao.processo_id}
+                                    >
+                                        Ver detalhes
+                                    </StatusErroLink>
+                                </StatusErro>
+                            )}
+
+                            {/* Status cancelado da atividade */}
+                            {demissao.atividade_status === 'cancelada' && (
+                                <StatusCancelado>
+                                    <StatusCanceladoIcon>
+                                        <FaTimesCircle size={14} />
+                                    </StatusCanceladoIcon>
+                                    
+                                    <StatusCanceladoText>
+                                        Demissão cancelada
+                                    </StatusCanceladoText>
+                                </StatusCancelado>
+                            )}
+
+                            {/* Status concluída da atividade */}
+                            {demissao.atividade_status === 'concluida' && (
+                                <StatusConcluida>
+                                    <StatusConcluidaIcon>
+                                        <FaCheckCircle size={14} />
+                                    </StatusConcluidaIcon>
+                                    
+                                    <StatusConcluidaText>
+                                        Concluída
+                                    </StatusConcluidaText>
+                                </StatusConcluida>
+                            )}
+
+                            {/* Botões de ação para usuários Outsourcing - apenas se status for pendente */}
+                            {demissao.atividade_uid && 
+                             demissao.atividade_status === 'pendente' && 
+                             usuario?.tipo === 'Outsourcing' && 
+                             ArmazenadorToken.hasPermission('change_tarefa') && (
+                                <ActionButtons>
+                                    <BotaoGrupo>
+                                        <BotaoAprovarCustom 
+                                            size="medium" 
+                                            aoClicar={() => handleAprovar(demissao.atividade_uid)}
+                                            disabled={loading[demissao.atividade_uid]}
+                                        >
+                                            <FaCheckCircle /> Aprovar
+                                        </BotaoAprovarCustom>
+                                        {/* <BotaoReprovarCustom 
+                                            estilo="neutro"
+                                            size="medium" 
+                                            aoClicar={() => handleRejeitar(demissao.atividade_uid)}
+                                            disabled={loading[demissao.atividade_uid]}
+                                        >
+                                            <FaTimesCircle /> Reprovar
+                                        </BotaoReprovarCustom> */}
+                                    </BotaoGrupo>
+                                </ActionButtons>
                             )}
                         </DemissaoCard>
                     ))}

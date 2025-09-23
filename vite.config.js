@@ -34,6 +34,7 @@ export default defineConfig({
       { find: '@common', replacement: path.resolve(__dirname, './src/common') },
       { find: '@json', replacement: path.resolve(__dirname, './src/json') },
       { find: '@http', replacement: path.resolve(__dirname, './src/http') },
+      { find: '@ws', replacement: path.resolve(__dirname, './src/ws') },
       { find: '@utils', replacement: path.resolve(__dirname, './src/utils') },
       { find: '@locales', replacement: path.resolve(__dirname, './src/locales') },
       { find: '@hooks', replacement: path.resolve(__dirname, './src/hooks') },

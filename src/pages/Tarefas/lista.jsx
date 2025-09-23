@@ -38,7 +38,7 @@ const TarefasLista = () => {
             url += `&search=${search}`;
         }
         
-        const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '';
+        const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '&ordering=-id';
         url += orderParam;
 
         // Adicionar filtro de processo_codigo

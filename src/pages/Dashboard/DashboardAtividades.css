@@ -277,7 +277,8 @@
 }
 
 .ferias-list {
-  padding: 0 16px;
+  padding: 4px 32px;
+  width: 100%;
 }
 
 .ferias-item {

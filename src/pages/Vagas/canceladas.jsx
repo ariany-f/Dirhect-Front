@@ -20,7 +20,7 @@ function VagasCanceladas() {
 
     const loadData = (currentPage, currentPageSize, search = '', sort = '-id') => {
         setLoading(true);
-        const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '';
+        const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '&ordering=-id';
         http.get(`vagas/?format=json&status=F&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`)
             .then(response => {
                 setVagas(response.results || response);
