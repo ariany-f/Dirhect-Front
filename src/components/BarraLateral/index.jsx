@@ -826,7 +826,8 @@ function BarraLateral({ $sidebarOpened }) {
                                         {menusOrdenados.filter(menu => 
                                             menu.itemTitulo !== t('home') && 
                                             menu.itemTitulo !== t('processes') && 
-                                            menu.itemTitulo !== t('activities')
+                                            menu.itemTitulo !== t('activities') &&
+                                            menu.itemTitulo !== t('performance')
                                         ).map((item) => (
                                             <StyledLink 
                                                 key={item.id} 

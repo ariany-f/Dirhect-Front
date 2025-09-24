@@ -334,6 +334,7 @@ function AppRouter() {
               <Route path="credenciais" element={<Credenciais />} />
               <Route path="agendamentos" element={<Agendamentos />} />
               <Route path="syync" element={<Syync />} />
+              <Route path="estatisticas" element={<Estatisticas />} />
 
               <Route path="estrutura" element={<EstruturaOrganizacional />} >
                 <Route index element={<FiliaisLista />} />
