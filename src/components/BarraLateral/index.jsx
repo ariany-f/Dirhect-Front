@@ -10,7 +10,7 @@ import "./BarraLateral.css"
 import { Link, useLocation } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
-import { FaBuilding, FaBusAlt, FaClock, FaInfo, FaKey, FaSync, FaUmbrellaBeach, FaUserTimes } from "react-icons/fa"
+import { FaBuilding, FaBusAlt, FaChartLine, FaClock, FaInfo, FaKey, FaSync, FaUmbrellaBeach, FaUserTimes } from "react-icons/fa"
 import { FaUserGroup } from "react-icons/fa6"
 import { FaBars } from "react-icons/fa"
 import { BreadCrumb } from "primereact/breadcrumb"
@@ -555,6 +555,14 @@ function BarraLateral({ $sidebarOpened }) {
             permission: 'view_syync',
         },
         {
+            id: 25,
+            url: '/tarefas/estatisticas',
+            pageTitulo: t('performance'),
+            icone: <FaChartLine size={20} className="icon" />,
+            itemTitulo: t('performance'),
+            permission: 'view_estatisticas',
+        },
+        {
             id: 24,
             url: '/estrutura',
             pageTitulo: 'Estrutura Organizacional',
@@ -572,6 +580,9 @@ function BarraLateral({ $sidebarOpened }) {
     } else if(userGroups.includes('Colaborador')) {
         userPermissions.push('view_cadastro')
     } else if(userGroups.includes('Outsourcing')) {
+        if(userPermissions.includes('view_tarefa'))  {
+            userPermissions.push('view_estatisticas')
+        }
         userPermissions.push('view_syync')
     } else if(userGroups.includes('Integração')) {
         userPermissions.push('view_estrutura_organizacional')
@@ -666,6 +677,7 @@ function BarraLateral({ $sidebarOpened }) {
       t('activities'),
       t('external_credentials'),
       'Metadados',
+      t('performance'),
       'Lançtos de Folha'
     ];
 
@@ -829,16 +841,18 @@ function BarraLateral({ $sidebarOpened }) {
                                             </StyledLink>
                                         ))}
                                         
-                                        {/* Seção Global - Processos e Atividades */}
+                                        {/* Seção Global - Processos, Atividades e Estatísticas */}
                                         {(menusOrdenados.find(menu => menu.itemTitulo === t('processes')) || 
-                                          menusOrdenados.find(menu => menu.itemTitulo === t('activities'))) && (
+                                          menusOrdenados.find(menu => menu.itemTitulo === t('activities')) ||
+                                          menusOrdenados.find(menu => menu.itemTitulo === t('performance'))) && (
                                             <>
                                                 <NavTitulo style={{ marginTop: '10px', marginBottom: '5px' }}>
                                                     Global
                                                 </NavTitulo>
                                                 {menusOrdenados.filter(menu => 
                                                     menu.itemTitulo === t('processes') || 
-                                                    menu.itemTitulo === t('activities')
+                                                    menu.itemTitulo === t('activities') ||
+                                                    menu.itemTitulo === t('performance')
                                                 ).map((item) => (
                                                     <StyledLink 
                                                         key={item.id} 
