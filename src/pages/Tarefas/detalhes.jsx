@@ -508,7 +508,7 @@ function DetalhesTarefas() {
                       <div style={{display: 'flex', alignItems: 'center', gap: 14, minWidth: 220, justifyContent: 'flex-end'}}>
                         {cliente ? (
                           <>
-                            <CustomImage src={cliente.simbolo} alt={cliente.nome} width="38px" height="38px" style={{borderRadius: '50%', border: '2px solid #eee'}} />
+                            <CustomImage src={cliente.simbolo} title={cliente.nome} alt={cliente.nome} width="38px" height="38px" style={{borderRadius: '50%', border: '2px solid #eee'}} />
                             <div>
                               <Texto weight={700} size={14} style={{textAlign: 'right'}}>{cliente.nome}</Texto>
                             </div>

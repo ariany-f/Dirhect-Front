@@ -207,7 +207,7 @@ function DataTableTarefas({
         if (!option.value) return <span>{option.label}</span>;
         return (
             <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <CustomImage src={option.simbolo} width={20} height={20} />
+                <CustomImage title={option.label} src={option.simbolo} width={20} height={20} />
                 {option.label}
             </span>
         );
@@ -656,7 +656,7 @@ function DataTableTarefas({
             <>
                 <Tooltip target=".cliente" mouseTrack mouseTrackLeft={10} />
                 <div data-pr-tooltip={cliente.nome || '-'} className="cliente">
-                    <CustomImage src={cliente.simbolo} width={36} height={36} />
+                    <CustomImage title={cliente.nome} src={cliente.simbolo} width={36} height={36} />
                 </div>
             </>
         );

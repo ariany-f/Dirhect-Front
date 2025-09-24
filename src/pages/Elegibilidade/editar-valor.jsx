@@ -148,7 +148,7 @@ function ElegibilidadeEditarValor() {
                                     style={{ width: '20%' }}
                                     body={(rowData) => (
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <CustomImage src={rowData.beneficio.image_operadora} alt={rowData.beneficio.nome_operadora} width={24} height={24} />
+                                            <CustomImage src={rowData.beneficio.image_operadora} alt={rowData.beneficio.nome_operadora} title={rowData.beneficio.nome_operadora} width={24} height={24} />
                                             <Texto>{rowData.beneficio.nome_operadora}</Texto>
                                         </div>
                                     )}

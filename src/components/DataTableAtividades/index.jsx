@@ -910,7 +910,7 @@ function DataTableAtividades({
             <>
                 <Tooltip target=".cliente" mouseTrack mouseTrackLeft={10} />
                 <div data-pr-tooltip={cliente.nome || '-'} className="cliente">
-                    <CustomImage src={cliente.simbolo} width={36} height={36} />
+                    <CustomImage title={cliente.nome} src={cliente.simbolo} width={36} height={36} />
                 </div>
             </>
         );
