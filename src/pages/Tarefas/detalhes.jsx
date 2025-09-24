@@ -73,7 +73,15 @@ function DetalhesTarefas() {
                             setCliente(clienteResponse);
                             // Atualizar cache se necessário
                             if (tenantsCache) {
-                                const novoCache = [...tenantsCache, clienteResponse];
+                                const novoCache = tenantsCache.map(tenant => {
+                                    if (tenant?.tenant?.id === response.tenant) {
+                                        return {
+                                            ...tenant,
+                                            tenant: clienteResponse
+                                        };
+                                    }
+                                    return tenant;
+                                });
                                 ArmazenadorToken.salvarTenantsCache(novoCache);
                             }
                         })

@@ -22,6 +22,8 @@ import { Tooltip } from 'primereact/tooltip';
 import { Dropdown } from 'primereact/dropdown';
 import { Skeleton } from 'primereact/skeleton';
 import { ArmazenadorToken } from '@utils';
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
+import { useCompanyContext } from '@contexts/CompanyContext';
 
 
 function DataTableAtividades({ 
@@ -40,7 +42,7 @@ function DataTableAtividades({
         filtroSituacao,
         atualizarFiltroSituacao,
         filtroSLA,
-        atualizarFiltroSLA
+        atualizarFiltroSLA // Nova prop do contexto
     } = useOutletContext();
     
     // console.log('DataTableAtividades - atualizarFiltroSLA:', atualizarFiltroSLA);
@@ -55,6 +57,18 @@ function DataTableAtividades({
         status: { value: filtroSituacao, matchMode: FilterMatchMode.EQUALS }
     })
     const navegar = useNavigate()
+
+    const {
+        usuario,
+        setUser,
+        setCompanyDomain,
+        setSessionCompany,
+        setCompanySymbol,
+        setCompanyLogo
+    } = useSessaoUsuarioContext()
+
+   
+    const { changeCompany } = useCompanyContext();
 
     // Atualiza os filtros quando os valores mudarem
     useEffect(() => {
@@ -103,6 +117,44 @@ function DataTableAtividades({
 
     const handleRowClick = (e) => {
         const rowData = e.data;
+        if(rowData.tenant != ArmazenadorToken.UserCompanyPublicId) {
+           
+            let tenantsCache = ArmazenadorToken.getTenantsCache();
+            
+            let tenant = tenantsCache.find(tenant => tenant.id_tenant.id == rowData.tenant);
+           
+            if(tenant) {
+                // Usar a função changeCompany do Autenticado
+                changeCompany(tenant.id_tenant.id);
+                
+                setCompanyDomain(tenant.domain_url.split('.')[0] || '')
+                setCompanySymbol(tenant.tenant?.simbolo || '')
+                setCompanyLogo(tenant.tenant?.logo || '')
+                setSessionCompany(tenant.id_tenant.id);
+
+                ArmazenadorToken.definirCompany(
+                    tenant.id_tenant.id, 
+                    tenant.domain_url.split('.')[0] || '', 
+                    tenant.tenant.simbolo, 
+                    tenant.tenant.logo
+                );
+               
+                localStorage.removeItem('layoutColors');
+
+                setUser(usuario);
+
+                // Navegar após a mudança de empresa
+                setTimeout(() => {
+                    navegarParaColaborador(rowData);
+                }, 1000);
+
+            }
+            return;
+        }
+        navegarParaColaborador(rowData);
+    };
+
+    const navegarParaColaborador = (rowData) => {
         if(rowData.objeto?.funcionario_detalhe?.id) {
             if(rowData.entidade_tipo == 'ferias') {
                 navegar(`/colaborador/detalhes/${rowData.objeto.funcionario_detalhe.id}/ferias`);
@@ -114,7 +166,7 @@ function DataTableAtividades({
         } else if(rowData.objeto?.dados_candidato?.id) {
             navegar(`/admissao/registro/${rowData?.entidade_id}`);
         }
-    };
+    }
 
     const representativeCheckTemplate = (rowData) => {
         if (rowData.atividade_automatica) {
@@ -810,7 +862,7 @@ function DataTableAtividades({
             if (rowData.tenant) {
                 // Buscar do cache primeiro
                 const tenantsCache = ArmazenadorToken.getTenantsCache();
-                console.log(tenantsCache)
+                
                 if (tenantsCache) {
                     const clienteEncontrado = tenantsCache.find(tenant => tenant?.tenant?.id === rowData.tenant);
                     if (clienteEncontrado) {
@@ -822,11 +874,18 @@ function DataTableAtividades({
                 // Se não encontrou no cache, buscar da API e atualizar cache
                 http.get(`/client_tenant/${rowData.tenant}/`)
                     .then(response => {
-                        console.error('datatable atividades')
                         setCliente(response);
                         // Atualizar cache se necessário
                         if (tenantsCache) {
-                            const novoCache = [...tenantsCache, response];
+                            const novoCache = tenantsCache.map(tenant => {
+                                if (tenant?.tenant?.id === rowData.tenant) {
+                                    return {
+                                        ...tenant,
+                                        tenant: response
+                                    };
+                                }
+                                return tenant;
+                            });
                             ArmazenadorToken.salvarTenantsCache(novoCache);
                         }
                     })

@@ -623,7 +623,15 @@ function DataTableTarefas({
                         setCliente(response);
                         // Atualizar cache se necessário
                         if (tenantsCache) {
-                            const novoCache = [...tenantsCache, response];
+                            const novoCache = tenantsCache.map(tenant => {
+                                if (tenant?.tenant?.id === rowData.tenant) {
+                                    return {
+                                        ...tenant,
+                                        tenant: response
+                                    };
+                                }
+                                return tenant;
+                            });
                             ArmazenadorToken.salvarTenantsCache(novoCache);
                         }
                     })
