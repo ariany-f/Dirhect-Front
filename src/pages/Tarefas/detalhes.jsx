@@ -1,6 +1,6 @@
 import styles from './Tarefas.module.css'
 import styled from "styled-components"
-import { Link, Outlet, useLocation, useParams } from "react-router-dom"
+import { Link, Outlet, useLocation, useParams, useNavigate } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import Texto from '@components/Texto'
 import Frame from '@components/Frame'
@@ -23,6 +23,8 @@ import { FaExternalLinkAlt, FaSync } from 'react-icons/fa'
 import http from '@http'
 import CustomImage from '@components/CustomImage'
 import { ArmazenadorToken } from '@utils'
+import { useCompanyContext } from '@contexts/CompanyContext';
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -48,6 +50,17 @@ function DetalhesTarefas() {
     const [cliente, setCliente] = useState(null)
     const toast = useRef(null)
     const [loading, setLoading] = useState(true)
+    const { changeCompany } = useCompanyContext();
+    const navegar = useNavigate();
+
+    const {
+        usuario,
+        setUser,
+        setCompanyDomain,
+        setSessionCompany,
+        setCompanySymbol,
+        setCompanyLogo
+    } = useSessaoUsuarioContext()
    
     const carregarDados = () => {
         setLoading(true);
@@ -102,6 +115,85 @@ function DetalhesTarefas() {
             .finally(() => {
                 setLoading(false);
             });
+    };
+
+    // Função para navegar com verificação de contexto
+    const navegarComContexto = (url, tipo, idColaborador) => {
+        // Verificar se o tenant da tarefa é diferente do contexto atual
+        if (tarefa?.tenant && tarefa.tenant !== ArmazenadorToken.UserCompanyPublicId) {
+            // Buscar dados do tenant no cache
+            const tenantsCache = ArmazenadorToken.getTenantsCache();
+            if (tenantsCache) {
+                const tenantEncontrado = tenantsCache.find(tenant => tenant?.id_tenant?.id === tarefa.tenant);
+                if (tenantEncontrado) {
+                    // Usar a função changeCompany do Autenticado
+                    changeCompany(tenantEncontrado.id_tenant.id);
+                    
+                    // Fazer as mudanças manuais também
+                    setCompanyDomain(tenantEncontrado.domain_url?.split('.')[0] || '')
+                    setCompanySymbol(tenantEncontrado.tenant?.simbolo || '')
+                    setCompanyLogo(tenantEncontrado.tenant?.logo || '')
+                    setSessionCompany(tenantEncontrado.id_tenant.id);
+
+                    ArmazenadorToken.definirCompany(
+                        tenantEncontrado.id_tenant.id, 
+                        tenantEncontrado.domain_url?.split('.')[0] || '', 
+                        tenantEncontrado.tenant.simbolo, 
+                        tenantEncontrado.tenant.logo
+                    );
+                   
+                    localStorage.removeItem('layoutColors');
+
+                    setUser(usuario);
+                    
+                    // Navegar após a mudança de contexto
+                    setTimeout(() => {
+                        navegar(url);
+                    }, 1000);
+                    return;
+                }
+            }
+        }
+        
+        // Se for o mesmo contexto ou não encontrou o tenant, navegar normalmente
+        navegar(url);
+    };
+
+    // Função para navegar para colaborador com verificação de contexto
+    const navegarParaColaborador = (tipo, idColaborador) => {
+        // Verificar se o tenant da tarefa é diferente do contexto atual
+        if (tarefa?.tenant && tarefa.tenant !== ArmazenadorToken.UserCompanyPublicId) {
+            // Buscar dados do tenant no cache
+            const tenantsCache = ArmazenadorToken.getTenantsCache();
+            if (tenantsCache) {
+                const tenantEncontrado = tenantsCache.find(tenant => tenant?.id_tenant?.id === tarefa.tenant);
+                if (tenantEncontrado) {
+                    // Mudar o contexto para o tenant da tarefa
+                    changeCompany(tenantEncontrado.id_tenant.id);
+                    
+                    // Navegar após a mudança de contexto
+                    setTimeout(() => {
+                        if (tipo === 'ferias') {
+                            navegar(`/colaborador/detalhes/${idColaborador}/ferias`);
+                        } else if (tipo === 'demissao') {
+                            navegar(`/colaborador/detalhes/${idColaborador}/demissao`);
+                } else {
+                            navegar(`/colaborador/detalhes/${idColaborador}`);
+                        }
+                    }, 100);
+                    return;
+                }
+            }
+        }
+        
+        // Se for o mesmo contexto ou não encontrou o tenant, navegar normalmente
+        if (tipo === 'ferias') {
+            navegar(`/colaborador/detalhes/${idColaborador}/ferias`);
+        } else if (tipo === 'demissao') {
+            navegar(`/colaborador/detalhes/${idColaborador}/demissao`);
+                } else {
+            navegar(`/colaborador/detalhes/${idColaborador}`);
+        }
     };
 
     useEffect(() => {
@@ -203,9 +295,24 @@ function DetalhesTarefas() {
             <span style={{display: 'flex', alignItems: 'center', gap: 6}}>
                 <Tag value={label} style={{ backgroundColor: color, color: 'white', fontWeight: 600, fontSize: 14, borderRadius: 8, padding: '6px 18px' }} />
                 {url && (
-                    <a href={url} rel="noopener noreferrer" style={{marginLeft: 2, color: color, display: 'flex', alignItems: 'center'}}>
+                    <button 
+                        onClick={(e) => {
+                            e.preventDefault();
+                            navegarComContexto(url, tarefa.processo_codigo, id);
+                        }}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            color: color, 
+                            display: 'flex', 
+                            alignItems: 'center',
+                            cursor: 'pointer',
+                            padding: '2px'
+                        }}
+                        title="Ir para detalhes"
+                    >
                         <FaExternalLinkAlt size={14} />
-                    </a>
+                    </button>
                 )}
             </span>
         );
