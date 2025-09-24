@@ -757,6 +757,36 @@ function BarraLateral({ $sidebarOpened }) {
             </BarraLateralEstilizada>
         );
     }
+    
+
+    // Função para verificar se um menu deve estar ativo
+    const isMenuActive = (menuUrl) => {
+        if (menuUrl === "/") {
+            return location.pathname === "/";
+        }
+        
+        const currentPath = location.pathname;
+        
+        // Se a URL atual é exatamente igual ao menu, seleciona
+        if (currentPath === menuUrl) {
+            return true;
+        }
+        
+        // Se a URL atual começa com o menu URL, verifica se não há um menu mais específico
+        if (currentPath.startsWith(menuUrl)) {
+            // Busca por TODOS os menus que também começam com o mesmo prefixo
+            const menusComMesmoPrefix = menusOrdenados.filter(menu => 
+                menu.url !== menuUrl && 
+                menu.url.startsWith(menuUrl) &&
+                currentPath.startsWith(menu.url)
+            );
+            
+            // Se não há menus mais específicos, seleciona este
+            return menusComMesmoPrefix.length === 0;
+        }
+        
+        return false;
+    };
 
     return (
         <>
@@ -834,7 +864,7 @@ function BarraLateral({ $sidebarOpened }) {
                                                 className="link p-ripple" 
                                                 to={item.url}
                                                 onClick={() => window.innerWidth <= 760 && setBarraLateralOpened(false)}>
-                                                <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
+                                                <ItemNavegacao ativo={isMenuActive(item.url)}>
                                                     {item.icone}
                                                     {item.itemTitulo}
                                                 </ItemNavegacao>
@@ -860,7 +890,7 @@ function BarraLateral({ $sidebarOpened }) {
                                                         className="link p-ripple" 
                                                         to={item.url}
                                                         onClick={() => window.innerWidth <= 760 && setBarraLateralOpened(false)}>
-                                                        <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
+                                                        <ItemNavegacao ativo={isMenuActive(item.url)}>
                                                             {item.icone}
                                                             {item.itemTitulo}
                                                         </ItemNavegacao>
