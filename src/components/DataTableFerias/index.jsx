@@ -1213,19 +1213,21 @@ function DataTableFerias({
                             <span style={{ fontSize: '18px', fontWeight: '600', color: '#374151' }}>
                                 Férias
                             </span>
-                            <CustomDropdownStyles>
-                                <Dropdown
-                                    value={secaoSelecionada}
-                                    options={secoes}
-                                    onChange={handleSecaoChange}
-                                    placeholder="Filtrar por seção"
-                                    filter
-                                    filterBy="label"
-                                    showClear={!!secaoSelecionada}
-                                    disabled={loadingSecoes}
-                                    className="custom-dropdown"
-                                />
-                            </CustomDropdownStyles>
+                            {!colaborador && (
+                                <CustomDropdownStyles>
+                                    <Dropdown
+                                        value={secaoSelecionada}
+                                        options={secoes}
+                                        onChange={handleSecaoChange}
+                                        placeholder="Filtrar por seção"
+                                        filter
+                                        filterBy="label"
+                                        showClear={!!secaoSelecionada}
+                                        disabled={loadingSecoes}
+                                        className="custom-dropdown"
+                                    />
+                                </CustomDropdownStyles>
+                            )}
                         </div>
                     )
                 }
