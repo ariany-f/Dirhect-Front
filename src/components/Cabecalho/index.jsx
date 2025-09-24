@@ -324,6 +324,10 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
     ArmazenadorToken.UserGroups.filter(grupo => !grupo.startsWith('_')) : [];
   const temApenasUmPerfil = gruposValidos.length <= 1;
 
+  // Verificar se está em telas de processos/tarefas
+  const isInProcessesScreen = location.pathname.startsWith('/tarefas') || 
+                             location.pathname.startsWith('/atividades');
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -500,7 +504,8 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
             )}
           
           <div className={styles.divisor}>
-            {ArmazenadorToken.hasPermission('view_clienttenant') && (
+            {/* Só mostra a opção de trocar empresa se NÃO estiver em telas de processos/tarefas */}
+            {ArmazenadorToken.hasPermission('view_clienttenant') && !isInProcessesScreen && (
               <ItemEmpresa onClick={aoClicar}>
                 {simbolo && simbolo !== null && simbolo !== 'null' ? 
                   <>

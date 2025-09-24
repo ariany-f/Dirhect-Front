@@ -170,7 +170,7 @@ function Dashboard() {
                 // Se for usuário Outsourcing, carregar apenas os indicadores
                 if (usuario?.tipo === 'Outsourcing') {
                     if(ArmazenadorToken.hasPermission('view_tarefa')) {
-                        await http.get('tarefas/indicadores/')
+                        await http.get('tarefas/indicadores/?tenant=' + ArmazenadorToken.UserCompanyPublicId)
                             .then(response => {
                                 console.log('Response do endpoint /tarefas/indicadores/:', response);
                                 setIndicadoresTarefas(response);
@@ -298,7 +298,7 @@ function Dashboard() {
             isMounted.current = false;
             clearTimeout(timer); // Limpar o timer se o componente for desmontado
         };
-    }, [usuarioEstaLogado]); // Removido colaboradores das dependências
+    }, [usuarioEstaLogado, usuario?.company_public_id]); // Removido colaboradores das dependências
 
     const getSLAInfo = (atividade) => {
         if (atividade.status === 'concluida') {

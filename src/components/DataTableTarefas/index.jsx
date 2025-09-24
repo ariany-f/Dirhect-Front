@@ -735,7 +735,7 @@ function DataTableTarefas({
                             model="filled"
                             aoClicar={() => setModalSyyncOpened(true)}
                         >
-                            <GrAddCircle className={styles.icon} fill="var(--secundaria)" stroke="white" color="white"/>{t('add')}
+                            <GrAddCircle fill="var(--secundaria)" stroke="var(--secundaria)" color="var(--secundaria)"/>{t('add')}
                         </Botao>
                     )}
                     {onRefresh && (

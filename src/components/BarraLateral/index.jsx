@@ -809,20 +809,52 @@ function BarraLateral({ $sidebarOpened }) {
                                         <span style={{ marginLeft: '10px', color: 'var(--secundaria)' }}>Carregando...</span>
                                     </div>
                                 ) : (
-                                    // Só mostra outros menus quando não estiver carregando
-                                    menusOrdenados.filter(menu => menu.itemTitulo !== t('home')).map((item) => (
-                                        <StyledLink 
-                                            key={item.id} 
-                                            className="link p-ripple" 
-                                            to={item.url}
-                                            onClick={() => window.innerWidth <= 760 && setBarraLateralOpened(false)}>
-                                            <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
-                                                {item.icone}
-                                                {item.itemTitulo}
-                                            </ItemNavegacao>
-                                            <Ripple />
-                                        </StyledLink>
-                                    ))
+                                    <>
+                                        {/* Menus regulares */}
+                                        {menusOrdenados.filter(menu => 
+                                            menu.itemTitulo !== t('home') && 
+                                            menu.itemTitulo !== t('processes') && 
+                                            menu.itemTitulo !== t('activities')
+                                        ).map((item) => (
+                                            <StyledLink 
+                                                key={item.id} 
+                                                className="link p-ripple" 
+                                                to={item.url}
+                                                onClick={() => window.innerWidth <= 760 && setBarraLateralOpened(false)}>
+                                                <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
+                                                    {item.icone}
+                                                    {item.itemTitulo}
+                                                </ItemNavegacao>
+                                                <Ripple />
+                                            </StyledLink>
+                                        ))}
+                                        
+                                        {/* Seção Global - Processos e Atividades */}
+                                        {(menusOrdenados.find(menu => menu.itemTitulo === t('processes')) || 
+                                          menusOrdenados.find(menu => menu.itemTitulo === t('activities'))) && (
+                                            <>
+                                                <NavTitulo style={{ marginTop: '10px', marginBottom: '5px' }}>
+                                                    Global
+                                                </NavTitulo>
+                                                {menusOrdenados.filter(menu => 
+                                                    menu.itemTitulo === t('processes') || 
+                                                    menu.itemTitulo === t('activities')
+                                                ).map((item) => (
+                                                    <StyledLink 
+                                                        key={item.id} 
+                                                        className="link p-ripple" 
+                                                        to={item.url}
+                                                        onClick={() => window.innerWidth <= 760 && setBarraLateralOpened(false)}>
+                                                        <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
+                                                            {item.icone}
+                                                            {item.itemTitulo}
+                                                        </ItemNavegacao>
+                                                        <Ripple />
+                                                    </StyledLink>
+                                                ))}
+                                            </>
+                                        )}
+                                    </>
                                 )}
                                 </div>
                             {whiteLabel && (
