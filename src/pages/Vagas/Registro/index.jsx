@@ -483,7 +483,9 @@ const VagasRegistro = () => {
                                 valor={horario}
                                 setValor={setHorario} 
                                 options={horarios.map(horario => ({
-                                    name: `${horario.id_origem} - ${horario.descricao}`,
+                                    name: horario.id_origem 
+                                    ? `${horario.id_origem} - ${horario.descricao || horario.nome}` 
+                                    : (horario.descricao || horario.nome),
                                     code: horario.id
                                 }))} 
                                 filter

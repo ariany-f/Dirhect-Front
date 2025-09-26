@@ -799,6 +799,18 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                 label={`Data de Emissão da CTPS${isCampoObrigatorio('data_emissao_ctps') ? '*' : ''}`}
                 disabled={modoLeitura}
             />
+            <CampoTexto
+                camposVazios={isCampoObrigatorio('data_venc_ctps') && isCampoEmErro('data_venc_ctps') ? ['data_venc_ctps'] : []}
+                name="data_venc_ctps"
+                valor={candidato?.data_venc_ctps ?? ''}
+                setValor={valor => {
+                    setCampo('data_venc_ctps', valor);
+                    removerErroCampo('data_venc_ctps', valor);
+                }}
+                type="date"
+                label={`Data de Vencimento da CTPS${isCampoObrigatorio('data_venc_ctps') ? '*' : ''}`}
+                disabled={modoLeitura}
+            />
             
             <SectionTitle>CNH</SectionTitle>
             
@@ -975,7 +987,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                 filter
             />
             
-            <SectionTitle>Documento Estrangeiro/RNM</SectionTitle>
+            <SectionTitle>Passaporte</SectionTitle>
 
             <CampoTexto
                 camposVazios={isCampoObrigatorio('numero_passaporte') && isCampoEmErro('numero_passaporte') ? ['numero_passaporte'] : []}
@@ -1025,6 +1037,72 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                 label={`Data de Validade do Passaporte${isCampoObrigatorio('data_validade_passaporte') ? '*' : ''}`}
                 disabled={modoLeitura}
             />
+
+            <SectionTitle>Documento Estrangeiro/RNM</SectionTitle>
+
+            <CampoTexto
+                camposVazios={isCampoObrigatorio('rnm') && isCampoEmErro('rnm') ? ['rnm'] : []}
+                name="rnm"
+                valor={candidato?.rnm ?? ''}
+                setValor={valor => {
+                    setCampo('rnm', valor);
+                    removerErroCampo('rnm', valor);
+                }}
+                label={`Número do RNM${isCampoObrigatorio('rnm') ? '*' : ''}`}
+                placeholder="Digite o número do rnm"
+                disabled={modoLeitura}
+            />
+            <CampoTexto
+                camposVazios={isCampoObrigatorio('decreto_imigracao') && isCampoEmErro('decreto_imigracao') ? ['decreto_imigracao'] : []}
+                name="decreto_imigracao"
+                valor={candidato?.decreto_imigracao ?? ''}
+                setValor={valor => {
+                    setCampo('decreto_imigracao', valor);
+                    removerErroCampo('decreto_imigracao', valor);
+                }}
+                label={`Decreto de Imigração${isCampoObrigatorio('decreto_imigracao') ? '*' : ''}`}
+                placeholder="Digite o número do decreto de imigração"
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                camposVazios={isCampoObrigatorio('uf_emissor_rnm') && isCampoEmErro('uf_emissor_rnm') ? ['uf_emissor_rnm'] : []}
+                name="uf_emissor_rnm"
+                label={`UF Emissor do RNM${isCampoObrigatorio('uf_emissor_rnm') ? '*' : ''}`}
+                valor={getEstadoFormatado('uf_emissor_rnm')}
+                setValor={valor => {
+                    setCampo('uf_emissor_rnm', valor.code);
+                    removerErroCampo('uf_emissor_rnm', valor);
+                }}
+                options={estados}
+                placeholder="Selecione o estado"
+                disabled={modoLeitura}
+                filter
+            />
+            <CampoTexto
+                camposVazios={isCampoObrigatorio('data_emissao_rnm') && isCampoEmErro('data_emissao_rnm') ? ['data_emissao_rnm'] : []}
+                name="data_emissao_rnm"
+                valor={candidato?.data_emissao_rnm ?? ''}
+                setValor={valor => {
+                    setCampo('data_emissao_rnm', valor);
+                    removerErroCampo('data_emissao_rnm', valor);
+                }}
+                type="date"
+                label={`Data de Emissão do RNM${isCampoObrigatorio('data_emissao_rnm') ? '*' : ''}`}
+                disabled={modoLeitura}
+            />
+            <CampoTexto
+                camposVazios={isCampoObrigatorio('data_vencimento_rnm') && isCampoEmErro('data_vencimento_rnm') ? ['data_vencimento_rnm'] : []}
+                name="data_vencimento_rnm"
+                valor={candidato?.data_vencimento_rnm ?? ''}
+                setValor={valor => {
+                    setCampo('data_vencimento_rnm', valor);
+                    removerErroCampo('data_vencimento_rnm', valor);
+                }}
+                type="date"
+                label={`Data de Vencimento do RNM${isCampoObrigatorio('data_vencimento_rnm') ? '*' : ''}`}
+                disabled={modoLeitura}
+            />
+
             
             <SectionTitle>Endereço</SectionTitle>
             

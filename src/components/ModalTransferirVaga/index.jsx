@@ -13,6 +13,7 @@ import axios from 'axios';
 import { ArmazenadorToken } from '@utils';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { FaBuilding } from 'react-icons/fa';
+import { Toast } from 'primereact/toast';
 
 const Col12 = styled.div`
     display: flex;
@@ -196,9 +197,10 @@ function ModalTransferirVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                             
                             return {
                                 ...cliente,
-                                name: tenantResponse.nome,
+                                name: cliente.id_tenant.nome,
                                 code: cliente.id_tenant.id,
-                                tenant: tenantResponse,
+                                tenant: cliente.id_tenant,
+                                domain_url: cliente.domain_url,
                                 pessoaJuridica: pessoaJuridica
                             };
                         } catch (erro) {
@@ -213,28 +215,12 @@ function ModalTransferirVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                         }
                     }));
 
-                    // Buscar client_domains
-                    http.get(`client_domain/?format=json`)
-                        .then(domains => {
-                            // Cruzar os dados: adicionar domains correspondentes a cada cliente
-                            const clientesWithDomain = clientesCompletos.map(cliente => ({
-                                ...cliente,
-                                tenant: {
-                                    ...cliente.tenant,
-                                    client_domain: domains.find(domain => domain.tenant === cliente.id_tenant.id)?.domain || null
-                                }
-                            }));
-                            // Filtrar para não mostrar a empresa atual
-                            const clientesFiltrados = clientesWithDomain.filter(cliente => 
-                                cliente.id_tenant.id != ArmazenadorToken.UserCompanyPublicId
-                            );
+                    // Filtrar para não mostrar a empresa atual
+                    const clientesFiltrados = clientesCompletos.filter(cliente => 
+                        cliente.id_tenant.id != ArmazenadorToken.UserCompanyPublicId
+                    );
 
-                            setClientes(clientesFiltrados);
-                        })
-                        .catch(error => {
-                            console.error('Erro ao carregar client_domains:', error);
-                            setClientes(clientesCompletos);
-                        });
+                    setClientes(clientesFiltrados);
                 })
                 .catch(error => {
                     console.error('Erro ao carregar clientes:', error);
@@ -291,8 +277,10 @@ function ModalTransferirVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
     }, [opened]);
 
     useEffect(() => {
-        if (clienteSelecionado && clienteSelecionado.tenant?.client_domain) {
-            const clientDomain = clienteSelecionado.tenant.client_domain;
+        if (clienteSelecionado && clienteSelecionado.domain_url) {
+        // if (clienteSelecionado && clienteSelecionado.tenant?.client_domain) {
+            console.log(clienteSelecionado)
+            const clientDomain = clienteSelecionado.domain_url;
             
             setLoadingDados(true);
             
@@ -444,6 +432,7 @@ function ModalTransferirVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
     return (
         opened &&
         <OverlayRight $opened={opened}>
+            <Toast ref={toast} />
             <DialogEstilizadoRight $opened={opened} $align="flex-start" $width="65vw" $minWidth="80vw" open={opened}>
                 <Frame>
                     <Titulo>
@@ -563,7 +552,9 @@ function ModalTransferirVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                                 valor={horario}
                                                 setValor={setHorario} 
                                                 options={(horarios || []).map(horario => ({
-                                                    name: `${horario.codigo} - ${horario.descricao}`,
+                                                    name: horario.id_origem 
+                                                    ? `${horario.id_origem} - ${horario.descricao || horario.nome}` 
+                                                    : (horario.descricao || horario.nome),
                                                     code: horario.id
                                                 }))} 
                                                 placeholder="Horário" />

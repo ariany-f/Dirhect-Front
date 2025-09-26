@@ -1015,7 +1015,7 @@ function ColaboradorDetalhes() {
                                     </div>
                                 </div>
                                 
-                                {colaborador?.tipo_situacao_descricao == 'Ativo' && 
+                                {(colaborador?.tipo_situacao_descricao == 'Ativo' || colaborador?.tipo_situacao_descricao == 'Férias') && 
                                  ArmazenadorToken.hasPermission('add_demissao') && 
                                  !colaborador.marcado_demissao && (
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

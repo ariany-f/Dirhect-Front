@@ -324,6 +324,10 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
     ArmazenadorToken.UserGroups.filter(grupo => !grupo.startsWith('_')) : [];
   const temApenasUmPerfil = gruposValidos.length <= 1;
 
+  // Verificar se está em telas de processos/tarefas
+  const isInProcessesScreen = location.pathname.startsWith('/tarefas') || 
+                             location.pathname.startsWith('/atividades');
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -378,11 +382,31 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
     { "id": 25, "url": "atividades", "pageTitulo": t("activities") },
     { "id": 26, "url": "tabelas-de-sistema", "pageTitulo": t("system_tables") },
     { "id": 27, "url": "syync", "pageTitulo": "Syync" },
+    { "id": 28, "url": "estatisticas", "pageTitulo": t("performance") },
   ];
 
-  const titulo = titulos.find(item => 
-    item.url === location.pathname.split("/")[1]
-  )?.pageTitulo || BrandColors.getBrandName();
+  // Lógica para determinar o título baseado na URL
+  const getTitulo = () => {
+    const pathSegments = location.pathname.split("/").filter(Boolean);
+    
+    // Caso especial para /tarefas/estatisticas
+    if (pathSegments[0] === 'tarefas' && pathSegments[1] === 'estatisticas') {
+      return t("performance");
+    }
+
+    if (pathSegments[0] === 'tarefas' && pathSegments[1] === 'syync') {
+      return t("Syync");
+    }
+    
+    // Lógica padrão para outras rotas
+    const titulo = titulos.find(item => 
+      item.url === pathSegments[0]
+    )?.pageTitulo || BrandColors.getBrandName();
+    
+    return titulo;
+  };
+
+  const titulo = getTitulo();
 
   function toggleMenu() {
     setMenuOpened(!menuOpened);
@@ -500,7 +524,8 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
             )}
           
           <div className={styles.divisor}>
-            {ArmazenadorToken.hasPermission('view_clienttenant') && (
+            {/* Só mostra a opção de trocar empresa se NÃO estiver em telas de processos/tarefas */}
+            {ArmazenadorToken.hasPermission('view_clienttenant') && !isInProcessesScreen && (
               <ItemEmpresa onClick={aoClicar}>
                 {simbolo && simbolo !== null && simbolo !== 'null' ? 
                   <>

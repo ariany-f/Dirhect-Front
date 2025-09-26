@@ -1427,7 +1427,8 @@ const CandidatoRegistro = () => {
                     'data_venc_ctps', 'nit', 'carteira_motorista', 'tipo_carteira_habilit',
                     'data_venc_habilit', 'data_emissao_cnh', 'identidade', 'uf_identidade',
                     'dt_opcao_fgts', 'codigo_situacao_fgts', 'numero_cartao_sus', 'certificado_reservista',
-                    'numero_passaporte', 'data_emissao_passaporte', 'data_validade_passaporte',
+                    'numero_passaporte', 'data_emissao_passaporte', 'data_validade_passaporte', 'rnm',
+                    'uf_emissor_rnm', 'data_emissao_rnm', 'data_vencimento_rnm', 'decreto_imigracao',
                     'registro_profissional', 'uf_registro_profissional', 'data_emissao_registro_profissional',
                     'tipo_sanguineo', 'circunscricao_militar', 'orgao_expedicao', 'regiao_militar',
                     'situacao_militar', 'telefone1', 'telefone2', 'email_pessoal'
@@ -1631,6 +1632,11 @@ const CandidatoRegistro = () => {
                     numero_passaporte: candidatoAtual.numero_passaporte,
                     data_emissao_passaporte: candidatoAtual.data_emissao_passaporte,
                     data_validade_passaporte: candidatoAtual.data_validade_passaporte,
+                    rnm: candidatoAtual.rnm,
+                    uf_emissor_rnm: candidatoAtual.uf_emissor_rnm,
+                    data_emissao_rnm: candidatoAtual.data_emissao_rnm,
+                    data_vencimento_rnm: candidatoAtual.data_vencimento_rnm,
+                    decreto_imigracao: candidatoAtual.decreto_imigracao,
                     registro_profissional: candidatoAtual.registro_profissional,
                     uf_registro_profissional: candidatoAtual.uf_registro_profissional,
                     data_emissao_registro_profissional: candidatoAtual.data_emissao_registro_profissional,
@@ -2093,7 +2099,12 @@ const CandidatoRegistro = () => {
                     numero_passaporte: 'Número do Passaporte',
                     pais_origem: 'País de Origem',
                     data_emissao_passaporte: 'Data de Emissão do Passaporte',
-                    data_validade_passaporte: 'Data de Validade do Passaporte'
+                    data_validade_passaporte: 'Data de Validade do Passaporte',
+                    rnm: 'NRM',
+                    uf_emissor_rnm: 'UF Emissor do RNM',
+                    data_emissao_rnm: 'Data de Emissão do RNM',
+                    data_vencimento_rnm: 'Data de Vencimento do RNM',
+                    decreto_imigracao: 'Decreto de Imigração',
                 };
 
                 Object.entries(camposRequeridos).forEach(([campo, obrigatorio]) => {
@@ -2356,7 +2367,12 @@ const CandidatoRegistro = () => {
                 numero_passaporte: 'Número do Passaporte',
                 pais_origem: 'País de Origem',
                 data_emissao_passaporte: 'Data de Emissão do Passaporte',
-                data_validade_passaporte: 'Data de Validade do Passaporte'
+                data_validade_passaporte: 'Data de Validade do Passaporte',
+                rnm: 'NRM',
+                uf_emissor_rnm: 'UF Emissor do RNM',
+                data_emissao_rnm: 'Data de Emissão do RNM',
+                data_vencimento_rnm: 'Data de Vencimento do RNM',
+                decreto_imigracao: 'Decreto de Imigração',
             };
 
             Object.entries(camposRequeridos).forEach(([campo, obrigatorio]) => {
@@ -3624,6 +3640,11 @@ const CandidatoRegistro = () => {
             numero_passaporte: candidato.numero_passaporte,
             data_emissao_passaporte: candidato.data_emissao_passaporte,
             data_validade_passaporte: candidato.data_validade_passaporte,
+            rnm: candidato.rnm,
+            uf_emissor_rnm: candidato.uf_emissor_rnm,
+            data_emissao_rnm: candidato.data_emissao_rnm,
+            data_vencimento_rnm: candidato.data_vencimento_rnm,
+            decreto_imigracao: candidato.decreto_imigracao,
             registro_profissional: candidato.registro_profissional,
             uf_registro_profissional: candidato.uf_registro_profissional,
             data_emissao_registro_profissional: candidato.data_emissao_registro_profissional,

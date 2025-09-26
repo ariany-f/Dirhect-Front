@@ -423,14 +423,13 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                         setValor={setHorario} 
                                         required={isCampoObrigatorio(horarios)}
                                         options={horarios.map(horario => ({
-                                            name: `${horario.id_origem} - ${horario.descricao}`,
+                                            name: horario.id_origem ? `${horario.id_origem} - ${horario.descricao || horario.nome}` : (horario.descricao || horario.nome),
                                             code: horario.id
                                         }))} 
                                         label="Horário"
                                         placeholder="Horário" />
                                 </Col6>
                             </Col12>
-
                             <Col12>
                                 <Col6>
                                     <DropdownItens 

@@ -17,6 +17,7 @@ import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import BottomMenu from '@components/BottomMenu'
 import BrandColors from '@utils/brandColors'
+import CompanyContext from '@contexts/CompanyContext';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -170,7 +171,7 @@ function Autenticado() {
                         setSelected(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.id || '');
                         setEmpresa(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.nome || '');
                         setSessionCompany(selectedCompany);
-                        setCompanyDomain(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.domain || '');
+                        setCompanyDomain(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.domain_url || '');
                         setCompanyLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.logo || '');
                         setCompanySymbol(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.simbolo || '');
                         setSimbolo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.simbolo || '');
@@ -192,7 +193,7 @@ function Autenticado() {
                         setSelected(cachedCompanies[0]?.id_tenant.id || '');
                         setEmpresa(cachedCompanies[0]?.tenant.nome || '');
                         setSessionCompany(cachedCompanies[0]?.id_tenant.id || '');
-                        setCompanyDomain(cachedCompanies[0]?.domain || '');
+                        setCompanyDomain(cachedCompanies[0]?.domain_url || '');
                         setCompanyLogo(cachedCompanies[0]?.tenant.logo || '');
                         setCompanySymbol(cachedCompanies[0]?.tenant.simbolo || '');
                         setSimbolo(cachedCompanies[0]?.tenant.simbolo || '');
@@ -217,7 +218,7 @@ function Autenticado() {
                     setSelected(selectedCompany);
                     setEmpresa(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.nome || '');
                     setSessionCompany(selectedCompany);
-                    setCompanyDomain(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.domain || '');
+                    setCompanyDomain(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.domain_url || '');
                     setCompanyLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.logo || '');
                     setCompanySymbol(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.simbolo || '');
                     setSimbolo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.simbolo || '');
@@ -251,7 +252,9 @@ function Autenticado() {
 
                             const pessoaJuridica = cliente.pessoaJuridica || cliente.pessoa_juridica;
                             
-                            // Retornar o objeto consolidado
+
+                            
+                            // Retornar o objeto consolidado com domain
                             return {
                                 ...cliente,
                                 tenant,
@@ -259,15 +262,18 @@ function Autenticado() {
                             };
                         } catch (erro) {
                             console.error("Erro ao buscar dados do cliente:", erro);
-                            return { ...cliente, tenant: {}, pessoaJuridica: {}, domain: null };
+                            return { ...cliente, tenant: {}, pessoaJuridica: {}, domain_url: null };
                         }
                     }));
 
-                    // Salvar no cache
+                    // Salvar no cache (agora com domains incluídos)
                     ArmazenadorToken.salvarTenantsCache(clientesCompletos);
                     
                     // Atualizar o estado com os clientes completos
                     setTenants(clientesCompletos);
+                    setEmpresas(clientesCompletos);
+                    setCompanies(clientesCompletos);
+                    ArmazenadorToken.salvarCompaniesCache(clientesCompletos);
                     
                 })
                 .catch(erro => {
@@ -278,28 +284,19 @@ function Autenticado() {
 
         if(((!empresas) || empresas.length == 0) && tenants)
         {
-            // Tentar recuperar domains do cache
-            const cachedDomains = ArmazenadorToken.getDomainsCache();
-            
-            if (cachedDomains && ArmazenadorToken.isCacheValido()) {
-                // Usar domains do cache
-                const tenantsWithDomain = tenants.map(tenant => ({
-                    ...tenant,
-                    domain: cachedDomains.find(domain => domain.tenant === tenant.id_tenant.id)?.domain || null
-                }));
-
-                setEmpresas(tenantsWithDomain);
-                setCompanies(tenantsWithDomain);
-                ArmazenadorToken.salvarCompaniesCache(tenantsWithDomain);
+            // Se os tenants já têm domain (do cache), usar diretamente
+            if (tenants[0] && tenants[0].domain_url !== undefined) {
+                setEmpresas(tenants);
+                setCompanies(tenants);
+                ArmazenadorToken.salvarCompaniesCache(tenants);
 
                 if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
-                    setSelected(tenantsWithDomain[0]?.id_tenant.id || '');
-                    setEmpresa(tenantsWithDomain[0]?.tenant.nome || '');
-                    setSimbolo(tenantsWithDomain[0]?.tenant.simbolo || '');
-                    setLogo(tenantsWithDomain[0]?.tenant.logo || '');
+                    setSelected(tenants[0]?.id_tenant.id || '');
+                    setEmpresa(tenants[0]?.tenant.nome || '');
+                    setSimbolo(tenants[0]?.tenant.simbolo || '');
+                    setLogo(tenants[0]?.tenant.logo || '');
                     
                     if(!localStorage.getItem('layoutColors')) {
-                        
                         // Buscar parâmetros de layout da primeira empresa
                         http.get('parametros/por-assunto/?assunto=LAYOUT')
                         .then(response => {
@@ -319,8 +316,7 @@ function Autenticado() {
                     setLogo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.logo || '');
                     
                     if(!localStorage.getItem('layoutColors')) {
-                        
-                        // Buscar parâmetros de layout da primeira empresa
+                        // Buscar parâmetros de layout da empresa selecionada
                         http.get('parametros/por-assunto/?assunto=LAYOUT')
                         .then(response => {
                             if (response && response.parametros) {
@@ -333,16 +329,15 @@ function Autenticado() {
                     }
                 }
             } else {
-                // Buscar domains do servidor
-                http.get(`client_domain/?format=json`)
-                .then(domains => {
-                    // Salvar domains no cache
-                    ArmazenadorToken.salvarDomainsCache(domains);
-                    
-                    // Cruzar os dados: adicionar domains correspondentes a cada tenant
+                // Fallback: buscar domains separadamente (código antigo)
+                // Tentar recuperar domains do cache
+                const cachedDomains = ArmazenadorToken.getDomainsCache();
+                
+                if (cachedDomains && ArmazenadorToken.isCacheValido()) {
+                    // Usar domains do cache
                     const tenantsWithDomain = tenants.map(tenant => ({
                         ...tenant,
-                        domain: domains.find(domain => domain.tenant === tenant.id_tenant.id)?.domain || null
+                        domain_url: cachedDomains.find(domain => domain.tenant === tenant.id_tenant.id)?.domain_url || null
                     }));
 
                     setEmpresas(tenantsWithDomain);
@@ -354,16 +349,72 @@ function Autenticado() {
                         setEmpresa(tenantsWithDomain[0]?.tenant.nome || '');
                         setSimbolo(tenantsWithDomain[0]?.tenant.simbolo || '');
                         setLogo(tenantsWithDomain[0]?.tenant.logo || '');
-                    } else {
-                        setSelected(ArmazenadorToken.UserCompanyPublicId);
-                        setEmpresa(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.nome || '');
-                        setSimbolo(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.simbolo || '');
-                        setLogo(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.logo || '');
+                        
+                        if(!localStorage.getItem('layoutColors')) {
+                            // Buscar parâmetros de layout da primeira empresa
+                            http.get('parametros/por-assunto/?assunto=LAYOUT')
+                            .then(response => {
+                                if (response && response.parametros) {
+                                    BrandColors.setLayoutData(response.parametros);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Erro ao buscar parâmetros de layout:', error);
+                            });
+                        }
                     }
-                })
-                .catch(erro => {
-                    console.error("Erro ao buscar domains:", erro);
-                });
+                    else {
+                        setSelected(ArmazenadorToken.UserCompanyPublicId);
+                        setEmpresa(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.nome || '');
+                        setSimbolo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.simbolo || '');
+                        setLogo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.logo || '');
+                        
+                        if(!localStorage.getItem('layoutColors')) {
+                            // Buscar parâmetros de layout da primeira empresa
+                            http.get('parametros/por-assunto/?assunto=LAYOUT')
+                            .then(response => {
+                                if (response && response.parametros) {
+                                    BrandColors.setLayoutData(response.parametros);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Erro ao buscar parâmetros de layout:', error);
+                            });
+                        }
+                    }
+                } else {
+                    // Buscar domains do servidor
+                    http.get(`client_domain/?format=json`)
+                    .then(domains => {
+                        // Salvar domains no cache
+                        ArmazenadorToken.salvarDomainsCache(domains);
+                        
+                        // Cruzar os dados: adicionar domains correspondentes a cada tenant
+                        const tenantsWithDomain = tenants.map(tenant => ({
+                            ...tenant,
+                            domain_url: domains.find(domain => domain.tenant === tenant.id_tenant.id)?.domain_url || null
+                        }));
+
+                        setEmpresas(tenantsWithDomain);
+                        setCompanies(tenantsWithDomain);
+                        ArmazenadorToken.salvarCompaniesCache(tenantsWithDomain);
+
+                        if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
+                            setSelected(tenantsWithDomain[0]?.id_tenant.id || '');
+                            setEmpresa(tenantsWithDomain[0]?.tenant.nome || '');
+                            setSimbolo(tenantsWithDomain[0]?.tenant.simbolo || '');
+                            setLogo(tenantsWithDomain[0]?.tenant.logo || '');
+                        } else {
+                            setSelected(ArmazenadorToken.UserCompanyPublicId);
+                            setEmpresa(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.nome || '');
+                            setSimbolo(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.simbolo || '');
+                            setLogo(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.logo || '');
+                        }
+                    })
+                    .catch(erro => {
+                        console.error("Erro ao buscar domains:", erro);
+                    });
+                }
             }
         }
 
@@ -458,20 +509,22 @@ function Autenticado() {
         {usuarioEstaLogado ?
             <>
             <EstilosGlobais />
-            <MainSection aoClicar={fechaMenu}>
-                <Loading opened={loading} />
-                <BarraLateral $sidebarOpened={sidebarOpened}/>
-                <MainContainer aoClicar={fechaMenu} align="flex-start" padding="0 0 0 0">
-                    <Cabecalho sidebarOpened={sidebarOpened} setSidebarOpened={setSidebarOpened} setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa ? empresa.toUpperCase() : ''} simbolo={simbolo} logo={logo} />
-                    <MarginContainer>
-                        <Outlet key={empresa} context={{ sidebarOpened }} />
-                    </MarginContainer>
-                    {!isDesktop && <BottomMenu />}
-                </MainContainer>
-                {import.meta.env.VITE_VERCEL_ENV && <Analytics />}
-                {import.meta.env.VITE_VERCEL_ENV && <SpeedInsights />}
-            </MainSection>
-            <ModalCnpj aoClicar={changeCompany} aoFechar={() => {setModalOpened(false); setLoading(false)}} opened={modalOpened} />
+            <CompanyContext.Provider value={{ changeCompany }}>
+                <MainSection aoClicar={fechaMenu}>
+                    <Loading opened={loading} />
+                    <BarraLateral $sidebarOpened={sidebarOpened}/>
+                    <MainContainer aoClicar={fechaMenu} align="flex-start" padding="0 0 0 0">
+                        <Cabecalho sidebarOpened={sidebarOpened} setSidebarOpened={setSidebarOpened} setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa ? empresa.toUpperCase() : ''} simbolo={simbolo} logo={logo} />
+                        <MarginContainer>
+                            <Outlet key={empresa} context={{ sidebarOpened }} />
+                        </MarginContainer>
+                        {!isDesktop && <BottomMenu />}
+                    </MainContainer>
+                    {import.meta.env.VITE_VERCEL_ENV && <Analytics />}
+                    {import.meta.env.VITE_VERCEL_ENV && <SpeedInsights />}
+                </MainSection>
+                <ModalCnpj aoFechar={() => {setModalOpened(false); setLoading(false)}} opened={modalOpened} />
+            </CompanyContext.Provider>
         </>
         : <Navigate to="/login" replace={true}/>
         } </>
