@@ -171,7 +171,7 @@ function KitAdmissionalDetalhes() {
                                     </ContainerHorizontal>
                                 </FrameVertical>
                             </Frame>
-                            <Botao aoClicar={() => setModalItemOpened(true)} estilo="neutro" size="small" tab><GrAddCircle fill="black" color="black"/> {t('add')} Item do Kit Admissional</Botao>
+                            <Botao aoClicar={() => setModalItemOpened(true)} estilo="neutro" size="small" tab><GrAddCircle fill="var(--black)" color="var(--black)"/> {t('add')} Item do Kit Admissional</Botao>
                         </BotaoGrupo>
                         <InfoBox>
                             <strong className="main-title">Sobre elegibilidade:</strong><br />

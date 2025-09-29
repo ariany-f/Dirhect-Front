@@ -506,6 +506,9 @@ function DataTableSindicatos({
             <DataTable 
                 key={`${JSON.stringify(integracaoStates)}-${bulkIntegrationMode}`}
                 value={sindicatos} 
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} sindicatos"
                 emptyMessage="Não foram encontrados sindicatos" 
                 selection={bulkIntegrationMode ? selectedForIntegration : (selected ? selectedSindicatos : selectedSindicato)} 
                 onSelectionChange={bulkIntegrationMode ? handleIntegrationSelectionChange : handleSelectChange} 

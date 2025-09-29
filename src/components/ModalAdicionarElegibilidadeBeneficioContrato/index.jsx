@@ -206,7 +206,7 @@ const StyledMultiSelect = styled(MultiSelect)`
 
     & .p-multiselect-token {
         background: var(--neutro-200);
-        color: black;
+        color: var(--black);
         border-radius: 12px;
         padding: 2px 8px;
         margin-right: 4px;

@@ -220,7 +220,7 @@ function EstruturaConfiguracaoBeneficios(type = 'filial') {
                                             {icone && 
                                                 <div style={{display: 'flex', fontSize: '12px', gap: '4px', fontWeight: 600}} key={icone.id}>
                                                     {icone}
-                                                    <p color="black">{dadosBeneficio?.descricao}</p>
+                                                    <p color="var(--black)">{dadosBeneficio?.descricao}</p>
                                                 </div>
                                             }
                                             <br />

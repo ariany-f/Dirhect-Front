@@ -52,6 +52,7 @@ const StyledDropdown = styled(Dropdown)`
   }
 
   .p-dropdown-panel {
+    background: var(--white) !important;
     .p-dropdown-items {
       padding: 0.5rem;
 

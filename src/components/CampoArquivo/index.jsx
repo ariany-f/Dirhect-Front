@@ -60,7 +60,7 @@ const CampoArquivo = ({ label, onFileChange, disabled = false, accept = "*", id,
             <CampoArquivoCard
                 onClick={handleClick}
             >
-                <Texto color="black" weight="600">
+                <Texto color="var(--black)" weight="600">
                     <FaUpload size={14} /> &nbsp;&nbsp;Selecionar arquivo
                 </Texto>
             </CampoArquivoCard>

@@ -164,7 +164,7 @@ const WeekDayNameCell = styled.div`
     text-align: center;
     font-size: 13px;
     font-weight: 500;
-    color: black;
+    color: var(--black);
     padding: 4px 0 0 0;
 `;
 
@@ -1023,8 +1023,8 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
     const CustomDropdownStyles = styled.div`
         /* Estilos mais diretos para sobrescrever o PrimeReact */
         .p-dropdown {
-            background: #ffffff !important;
-            border: 1px solid #d1d5db !important;
+            background: var(--white) !important;
+            border: 1px solid var(--surface-border) !important;
             border-radius: 4px !important;
             min-width: 300px !important;
         }
@@ -1035,7 +1035,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
         
         .p-dropdown:hover {
             border-color: var(--primaria) !important;
-            background: #f9fafb !important;
+            background: var(--surface-hover) !important;
         }
         
         .p-dropdown:focus-within {
@@ -1047,7 +1047,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
             padding-right: 60px !important;
             font-size: 14px !important;
             font-weight: 500 !important;
-            color: #374151 !important;
+            color: var(--text-color) !important;
             overflow: hidden !important;
             text-overflow: ellipsis !important;
             white-space: nowrap !important;
@@ -1077,14 +1077,15 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
         }
         
         .p-dropdown-panel {
-            border: 1px solid #d1d5db !important;
+            background: var(--white) !important;
+            border: 1px solid var(--surface-border) !important;
             border-radius: 4px !important;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
         }
         
         .p-dropdown-filter {
             padding: 8px 12px !important;
-            border-bottom: 1px solid #e5e7eb !important;
+            border-bottom: 1px solid var(--surface-border) !important;
         }
         
         .p-dropdown-filter .p-inputtext {
@@ -1102,16 +1103,16 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
         .p-dropdown-items .p-dropdown-item {
             padding: 8px 16px !important;
             font-size: 14px !important;
-            color: #374151 !important;
+            color: var(--text-color) !important;
         }
         
         .p-dropdown-items .p-dropdown-item:hover {
-            background: #f3f4f6 !important;
+            background: var(--surface-hover) !important;
         }
         
         .p-dropdown-items .p-dropdown-item.p-highlight {
-            background: #f3f4f6 !important;
-            color: #374151 !important;
+            background: var(--surface-hover) !important;
+            color: var(--text-color) !important;
         }
     `;
 
