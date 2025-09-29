@@ -525,6 +525,9 @@ function DataTableSecoes({ secoes, showSearch = true, paginator = true, rows = 1
             <DataTable 
                 key={`${JSON.stringify(integracaoStates)}-${bulkIntegrationMode}`}
                 value={secoes} 
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} seções"
                 emptyMessage="Não foram encontradas seções" 
                 selection={bulkIntegrationMode ? selectedForIntegration : (selected ? selectedSecoes : selectedSecao)} 
                 onSelectionChange={bulkIntegrationMode ? handleIntegrationSelectionChange : handleSelectChange} 

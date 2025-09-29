@@ -535,6 +535,9 @@ function DataTableDepartamentos({
             <DataTable 
                 key={`${JSON.stringify(integracaoStates)}-${bulkIntegrationMode}`}
                 value={departamentos} 
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} departamentos"
                 emptyMessage="Não foram encontrados departamentos" 
                 selection={bulkIntegrationMode ? selectedForIntegration : (selected ? selectedDepartamentos : selectedDepartamento)} 
                 onSelectionChange={bulkIntegrationMode ? handleIntegrationSelectionChange : handleSelectChange} 

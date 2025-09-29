@@ -231,6 +231,9 @@ function DataTableDependentes({
             
             <DataTable 
                 value={dependentes} 
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} dependentes"
                 emptyMessage="Não foram encontrados dependentes" 
                 selection={selectedDependente} 
                 onSelectionChange={(e) => verDetalhes(e.value)} 
@@ -248,15 +251,6 @@ function DataTableDependentes({
                 removableSort
                 showGridlines
                 stripedRows
-                footerColumnGroup={
-                    paginator ? (
-                        <ColumnGroup>
-                            <Row>
-                                <Column footer={totalDependentesTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
-                            </Row>
-                        </ColumnGroup>
-                    ) : null
-                }
             >
                 {search &&  <Column body={representativeFuncNomeTemplate} sortField="id_funcionario_id" header="Funcionário" sortable field="funcionario_pessoa_fisica__nome" style={{ width: '30%' }}></Column>}
                 <Column body={representativeNomeTemplate} header="Nome Completo" sortable field="nome_depend" style={{ width: '30%' }}></Column>

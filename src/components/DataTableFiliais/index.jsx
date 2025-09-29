@@ -619,6 +619,9 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
             <DataTable 
                 key={`${JSON.stringify(integracaoStates)}-${bulkIntegrationMode}`}
                 value={filiais} 
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} filiais"
                 emptyMessage="Não foram encontradas filiais" 
                 selection={bulkIntegrationMode ? selectedForIntegration : (selected ? selectedFiliais : selectedFilial)} 
                 onSelectionChange={bulkIntegrationMode ? handleIntegrationSelectionChange : handleSelectChange} 

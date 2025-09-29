@@ -18,6 +18,7 @@ import { SpeedInsights } from "@vercel/speed-insights/react"
 import BottomMenu from '@components/BottomMenu'
 import BrandColors from '@utils/brandColors'
 import CompanyContext from '@contexts/CompanyContext';
+import { ThemeProvider } from '@contexts/ThemeContext';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -508,23 +509,25 @@ function Autenticado() {
         <> 
         {usuarioEstaLogado ?
             <>
-            <EstilosGlobais />
-            <CompanyContext.Provider value={{ changeCompany }}>
-                <MainSection aoClicar={fechaMenu}>
-                    <Loading opened={loading} />
-                    <BarraLateral $sidebarOpened={sidebarOpened}/>
-                    <MainContainer aoClicar={fechaMenu} align="flex-start" padding="0 0 0 0">
-                        <Cabecalho sidebarOpened={sidebarOpened} setSidebarOpened={setSidebarOpened} setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa ? empresa.toUpperCase() : ''} simbolo={simbolo} logo={logo} />
-                        <MarginContainer>
-                            <Outlet key={empresa} context={{ sidebarOpened }} />
-                        </MarginContainer>
-                        {!isDesktop && <BottomMenu />}
-                    </MainContainer>
-                    {import.meta.env.VITE_VERCEL_ENV && <Analytics />}
-                    {import.meta.env.VITE_VERCEL_ENV && <SpeedInsights />}
-                </MainSection>
-                <ModalCnpj aoFechar={() => {setModalOpened(false); setLoading(false)}} opened={modalOpened} />
-            </CompanyContext.Provider>
+            <ThemeProvider>
+                <EstilosGlobais />
+                <CompanyContext.Provider value={{ changeCompany }}>
+                    <MainSection aoClicar={fechaMenu}>
+                        <Loading opened={loading} />
+                        <BarraLateral $sidebarOpened={sidebarOpened}/>
+                        <MainContainer aoClicar={fechaMenu} align="flex-start" padding="0 0 0 0">
+                            <Cabecalho sidebarOpened={sidebarOpened} setSidebarOpened={setSidebarOpened} setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa ? empresa.toUpperCase() : ''} simbolo={simbolo} logo={logo} />
+                            <MarginContainer>
+                                <Outlet key={empresa} context={{ sidebarOpened }} />
+                            </MarginContainer>
+                            {!isDesktop && <BottomMenu />}
+                        </MainContainer>
+                        {import.meta.env.VITE_VERCEL_ENV && <Analytics />}
+                        {import.meta.env.VITE_VERCEL_ENV && <SpeedInsights />}
+                    </MainSection>
+                    <ModalCnpj aoFechar={() => {setModalOpened(false); setLoading(false)}} opened={modalOpened} />
+                </CompanyContext.Provider>
+            </ThemeProvider>
         </>
         : <Navigate to="/login" replace={true}/>
         } </>

@@ -19,6 +19,8 @@ import CustomImage from '@components/CustomImage';
 import { ArmazenadorToken } from '@utils';
 import BrandColors from '@utils/brandColors';
 import { FaUser } from 'react-icons/fa';
+import { useTheme } from '@contexts/ThemeContext';
+import { FaMoon, FaSun } from 'react-icons/fa';
 
 // MegaMenu Container
 const MegaMenuWrapper = styled.div`
@@ -60,7 +62,7 @@ const MegaMenuPanel = styled.div`
   position: absolute;
   top: 100%;
   left: 0;
-  background: white;
+  background: var(--bg-white);
   border: 1px solid var(--neutro-200);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -121,11 +123,12 @@ const HeaderEstilizado = styled.header`
   padding: 2vh 4vw 2vh 4vw;
   width: inherit;
   z-index: 8;
-  background-color: var(--white);
+  background-color: var(--bg-white);
   box-shadow: 0px 1px 5px 0px lightgrey;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 
   @-moz-document url-prefix() {
     width: -moz-available;
@@ -174,7 +177,7 @@ const RightItems = styled.nav`
 
 const ItemEmpresa = styled.button`
   font-family: var(--fonte-secundaria);
-  background-color: var(--white);
+  background-color: var(--bg-white);
   color: var(--black);
   padding: 11px;
   display: flex;
@@ -189,6 +192,12 @@ const ItemEmpresa = styled.button`
   text-align: center;
   min-width: 150px;
   justify-content: center;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--neutro-100);
+    border-color: var(--neutro-300);
+  }
 
   &:disabled {
     cursor: default;
@@ -273,6 +282,7 @@ const ItemUsuario = styled.div`
   font-weight: 700;
   line-height: 20px;
   cursor: pointer;
+  transition: color 0.2s ease;
   
   & .user {
     background-color: var(--neutro-100);
@@ -283,6 +293,7 @@ const ItemUsuario = styled.div`
     width: 40px;
     height: 40px;
     overflow: hidden;
+    transition: background-color 0.2s ease;
     
     img {
       width: 100%;
@@ -305,6 +316,30 @@ const ItemUsuario = styled.div`
   }
 `;
 
+const ThemeToggleButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--neutro-200);
+  border-radius: 8px;
+  background-color: var(--bg-white);
+  color: var(--black);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: var(--neutro-100);
+    border-color: var(--neutro-300);
+  }
+  
+  @media screen and (max-width: 768px) {
+    width: 32px;
+    height: 32px;
+  }
+`;
+
 const MarketplaceButton = styled(Frame)`
     @media screen and (max-width: 768px) {
         display: none;
@@ -318,6 +353,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
   const menuRef = useRef(null);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
   const { t } = useTranslation('common');
+  const { isDarkMode, toggleTheme } = useTheme();
 
   // Verificar se o usuário tem apenas um perfil
   const gruposValidos = ArmazenadorToken.UserGroups ? 
@@ -476,7 +512,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
                   onMouseLeave={() => setMenuAberto(false)}
                 >
                   <MenuTrigger onClick={() => setMenuAberto(!menuAberto)}>
-                    <Texto weight="600" size={'14px'} color="black">
+                    <Texto weight="600" size={'14px'} color="var(--black)">
                       {t('options')}
                     </Texto>
                     <ChevronIcon $isOpen={menuAberto} size={16} />
@@ -510,7 +546,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
                               $isActive={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}
                             >
                               {item.icon}
-                              <Texto weight="500" size={'14px'} color="black">
+                              <Texto weight="500" size={'14px'} color="var(--black)">
                                 {item.label}
                               </Texto>
                             </MenuItem>
@@ -524,6 +560,11 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
             )}
           
           <div className={styles.divisor}>
+            {/* Botão de toggle do tema
+            <ThemeToggleButton onClick={toggleTheme} title={isDarkMode ? 'Modo claro' : 'Modo escuro'}>
+              {isDarkMode ? <FaSun fill="white" size={16} /> : <FaMoon size={16} />}
+            </ThemeToggleButton> */}
+            
             {/* Só mostra a opção de trocar empresa se NÃO estiver em telas de processos/tarefas */}
             {ArmazenadorToken.hasPermission('view_clienttenant') && !isInProcessesScreen && (
               <ItemEmpresa onClick={aoClicar}>

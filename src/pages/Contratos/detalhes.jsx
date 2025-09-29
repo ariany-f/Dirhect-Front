@@ -144,7 +144,7 @@ function DetalhesContratos() {
                                 </div>
                             }
                         </Frame>
-                        <Botao aoClicar={() => setModalOpened(true)} estilo="neutro" size="small" tab><GrAddCircle fill="black" color="black"/> {t('add')} Benefício ao Contrato</Botao>
+                        <Botao aoClicar={() => setModalOpened(true)} estilo="neutro" size="small" tab><GrAddCircle fill="var(--black)" color="var(--black)"/> {t('add')} Benefício ao Contrato</Botao>
                     </BotaoGrupo>
                     </>
                     : <></>
