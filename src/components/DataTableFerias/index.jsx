@@ -711,65 +711,71 @@ function DataTableFerias({
             }
         }
 
-        // Mapeia o status original para texto usando situacoesUnicas
-        let statusOriginalText = '';
-        if (situacaoEncontrada) {
-            // Se encontrou na API, usa o label da API
-            statusOriginalText = situacaoEncontrada.label;
-        } else {
-            // Fallback para casos onde a situação não está nas opções da API
-            switch (rowData.situacaoferias) {
-                case 'A':
-                    statusOriginalText = 'Aprovada';
-                    break;
-                case 'M':
-                    statusOriginalText = 'Marcada';
-                    break;
-                case 'F':
-                    statusOriginalText = 'Finalizada';
-                    break;
-                case 'P':
-                    statusOriginalText = 'Paga';
-                    break;
-                case 'X':
-                    statusOriginalText = 'Finalizada Próximo Mês';
-                    break;
-                case 'I':
-                    statusOriginalText = 'Iniciada Solicitação';
-                    break;
-                case 'G':
-                    statusOriginalText = 'Aguardando Gestor';
-                    break;
-                case 'D':
-                    statusOriginalText = 'Aguardando DP';
-                    break;
-                case 'E':
-                    statusOriginalText = 'Em Análise';
-                    break;
-                case 'C':
-                    statusOriginalText = 'Cancelada';
-                    break;
-                case 'R':
-                    statusOriginalText = 'Rejeitada';
-                    break;
-                default:
-                    statusOriginalText = 'N/A';
-                    break;
-            }
+        // Verificar se é status "em análise" e se tem permissão para aprovar
+        const isStatusPendente = rowData.situacaoferias === 'E';
+        const temTarefaPendenteAprovarFerias = rowData.tarefas?.some(
+            t => t.status === 'pendente' && t.tipo_codigo === 'aprovar_ferias'
+        );
+        
+        // Perfis que podem aprovar férias
+        const userPerfil = ArmazenadorToken.UserProfile;
+        const perfisQueAprovam = ['analista', 'supervisor', 'gestor'];
+        
+        // Verificar se analista_tenant pode aprovar (mesma lógica do modal)
+        const podeAnalistaTenantAprovar = ArmazenadorToken.UserProfile === 'analista_tenant' && 
+            ArmazenadorToken.UserCompanyPublicId === null; // Só se não for tenant específico
+        
+        if (podeAnalistaTenantAprovar) {
+            perfisQueAprovam.push('analista_tenant');
         }
+        
+        const temPermissaoParaAprovar = perfisQueAprovam.includes(userPerfil);
+        const podeAprovar = isStatusPendente && temPermissaoParaAprovar && temTarefaPendenteAprovarFerias;
 
-        // Verifica se os textos são diferentes (normalizando singular/plural)
-        const normalizarTexto = (texto) => {
-            return texto.toLowerCase()
-                .replace(/marcadas?/g, 'marcada')
-                .replace(/pagas?/g, 'paga')
-                .replace(/aprovadas?/g, 'aprovada')
-                .replace(/finalizadas?/g, 'finalizada')
-                .replace(/concluídas?/g, 'concluída')
-                .replace(/rejeitadas?/g, 'rejeitada');
+        // Função para aprovar férias diretamente do DataTable
+        const aprovarFerias = async (event) => {
+            event.stopPropagation(); // Evitar que abra o modal
+            
+            const tarefaPendente = rowData.tarefas?.find(
+                t => t.status === 'pendente' && t.tipo_codigo === 'aprovar_ferias'
+            );
+
+            if (!tarefaPendente) {
+                toast.current?.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Nenhuma tarefa pendente encontrada para aprovação.',
+                    life: 3000
+                });
+                return;
+            }
+
+            try {
+                await http.post(`/tarefas/${tarefaPendente.id}/aprovar/`);
+                toast.current?.show({
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: 'Férias aprovadas com sucesso!',
+                    life: 3000
+                });
+                
+                // Atualizar dados se callback disponível
+                if (onUpdate) {
+                    setTimeout(() => {
+                        onUpdate();
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error("Erro ao aprovar tarefa de férias", error);
+                const errorMessage = error.response?.data?.detail || 'Não foi possível aprovar a solicitação.';
+                toast.current?.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: errorMessage,
+                    life: 3000
+                });
+            }
         };
-
-        const textosDiferentes = normalizarTexto(statusText) !== normalizarTexto(statusOriginalText);
 
         return (
             <div style={{
@@ -782,17 +788,19 @@ function DataTableFerias({
                 <StatusTag $type={statusType}>
                     {statusIcons[statusType]} {statusText}
                 </StatusTag>
-                {/* {textosDiferentes && (
-                    <p style={{
-                        fontWeight: '400', 
-                        fontSize: '11px', 
-                        color: '#666', 
-                        margin: 0,
-                        lineHeight: '1.2'
-                    }}>
-                        {statusOriginalText}
-                    </p>
-                )} */}
+                
+                {/* Botão de aprovar para status "em análise" */}
+                {podeAprovar && (
+                    <Botao 
+                        aoClicar={aprovarFerias}
+                        estilo="vermilion" 
+                        size="small" 
+                        tab
+                        style={{ marginTop: '4px' }}
+                    >
+                        <FaCheckCircle fill="var(--secundaria)" size={12} /> Aprovar
+                    </Botao>
+                )}
             </div>
         );
     }
