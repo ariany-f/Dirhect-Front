@@ -1,0 +1,19 @@
+/** Vermilion */
+.p-confirm-dialog-accept {
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all .1s linear;
+    border: none;
+    gap: 8px;
+    padding: 12px 24px;
+    font-family: var(--fonte-primaria);
+    font-size: 16px;
+    line-height: 150%; /* 24px */
+    justify-content: center;
+    align-items: center;
+    background-color: var(--primaria);
+    color: var(--white);
+    & span {
+        color: var(--white);
+    }
+}
