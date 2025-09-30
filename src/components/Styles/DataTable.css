@@ -571,7 +571,7 @@
     height: 1.153rem;
     min-width: 1.153rem;
     line-height: 1.153rem;
-    color: var(--primary-color);
+    color: var(--primaria);
     background: var(--highlight-bg);
     margin-left: 0.5rem;
 }
@@ -822,10 +822,10 @@
 .p-paginator .p-paginator-prev:not(.p-disabled):not(.p-highlight):hover,
 .p-paginator .p-paginator-next:not(.p-disabled):not(.p-highlight):hover,
 .p-paginator .p-paginator-last:not(.p-disabled):not(.p-highlight):hover {
-    border-color: var(--primary-color);
+    border-color: var(--primaria);
     border-width: 1px;
     border-style: solid;
-    color: var(--primary-color)!important;
+    color: var(--primaria)!important;
 }
 
 .p-paginator .p-paginator-first {
@@ -854,14 +854,14 @@
 }
 
 .p-paginator .p-dropdown:hover {
-    border-color: var(--primary-color);
+    border-color: var(--primaria);
 }
 
 .p-paginator .p-dropdown:focus-within {
     outline: 0 none;
     outline-offset: 0;
     box-shadow: 0 0 0 0.1rem rgba(84, 114, 212, 0.2);
-    border-color: var(--primary-color);
+    border-color: var(--primaria);
 }
 
 .p-paginator .p-dropdown .p-dropdown-label {
@@ -911,7 +911,7 @@
 }
 
 .p-paginator .p-dropdown .p-dropdown-trigger:hover {
-    color: var(--primary-color);
+    color: var(--primaria);
 }
 
 .p-paginator .p-dropdown .p-dropdown-trigger .p-dropdown-trigger-icon {
@@ -988,12 +988,12 @@
 }
 
 .p-paginator .p-dropdown-panel .p-dropdown-item:hover {
-    color: var(--primary-color);
+    color: var(--primaria);
     background: var(--surface-hover);
 }
 
 .p-paginator .p-dropdown-panel .p-dropdown-item.p-highlight {
-    color: var(--primary-color);
+    color: var(--primaria);
     background: rgba(84, 114, 212, 0.1);
 }
 
@@ -1055,23 +1055,23 @@
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-    background: var(--primary-color);
+    background: var(--primaria);
     color: var(--primary-color-text)!important;
     font-size: 12px;
     border-radius: 8px;
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight:hover {
-    background: var(--primary-color);
+    background: var(--primaria);
     color: var(--primary-color-text)!important;
     font-size: 12px;
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page:not(.p-highlight):hover {
-    border-color: var(--primary-color);
+    border-color: var(--primaria);
     border-width: 1px;
     border-style: solid;
-    color: var(--primary-color)!important;
+    color: var(--primaria)!important;
 }
 
 /* ===============================
@@ -1199,7 +1199,7 @@
 .p-progressbar .p-progressbar-value {
     border: 0 none;
     margin: 0;
-    background: var(--primary-color);
+    background: var(--primaria);
 }
 
 .p-progressbar .p-progressbar-label {
