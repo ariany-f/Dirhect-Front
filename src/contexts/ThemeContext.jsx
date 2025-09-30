@@ -13,12 +13,12 @@ export const useTheme = () => {
 export const ThemeProvider = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     // Verificar se há preferência salva no localStorage
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      return savedTheme === 'dark';
-    }
-    // Se não há preferência salva, usar a preferência do sistema
-    return window.matchMedia('(prefers-color-scheme: light)').matches;
+    // const savedTheme = localStorage.getItem('theme');
+    // if (savedTheme) {
+    //   return savedTheme === 'dark';
+    // }
+    // Por padrão, sempre começar com modo light
+    return false;
   });
 
   useEffect(() => {
