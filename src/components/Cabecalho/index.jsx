@@ -474,15 +474,17 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
           icon: <RiOrganizationChart size={18}/>
         },
         { 
-          label: t("holidays"), 
-          url: '/auxiliar',
-          icon: <FaCalendarAlt size={18}/>
-        },
-        { 
           label: t("system_tables"), 
           url: '/tabelas-de-sistema',
           icon: <RiTable2 size={18}/>
         },
+        ...(ArmazenadorToken.hasPermission('view_feriados') ? [
+          { 
+            label: t("holidays"), 
+            url: '/auxiliar',
+            icon: <FaCalendarAlt size={18}/>
+          }
+          ] : []),
         ...(import.meta.env.VITE_OPTIONS_LINHAS_TRANSPORTE === 'true' ? [
           { 
             label: 'Linhas de Transporte', 
