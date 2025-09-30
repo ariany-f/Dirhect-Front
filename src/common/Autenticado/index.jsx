@@ -170,13 +170,13 @@ function Autenticado() {
                 if(selected == '') {
                     if(selectedCompany) {
                         setSelected(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.id || '');
-                        setEmpresa(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.nome || '');
+                        setEmpresa(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.nome || '');
                         setSessionCompany(selectedCompany);
                         setCompanyDomain(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.domain_url || '');
-                        setCompanyLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.logo || '');
-                        setCompanySymbol(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.simbolo || '');
-                        setSimbolo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.simbolo || '');
-                        setLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.logo || '');
+                        setCompanyLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.logo || '');
+                        setCompanySymbol(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.simbolo || '');
+                        setSimbolo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.simbolo || '');
+                        setLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.logo || '');
                         
                         if(!localStorage.getItem('layoutColors')) {
                             // Buscar parâmetros de layout da empresa selecionada
@@ -192,13 +192,13 @@ function Autenticado() {
                         }
                     } else {
                         setSelected(cachedCompanies[0]?.id_tenant.id || '');
-                        setEmpresa(cachedCompanies[0]?.tenant.nome || '');
+                        setEmpresa(cachedCompanies[0]?.id_tenant.nome || '');
                         setSessionCompany(cachedCompanies[0]?.id_tenant.id || '');
                         setCompanyDomain(cachedCompanies[0]?.domain_url || '');
-                        setCompanyLogo(cachedCompanies[0]?.tenant.logo || '');
-                        setCompanySymbol(cachedCompanies[0]?.tenant.simbolo || '');
-                        setSimbolo(cachedCompanies[0]?.tenant.simbolo || '');
-                        setLogo(cachedCompanies[0]?.tenant.logo || '');
+                        setCompanyLogo(cachedCompanies[0]?.id_tenant.logo || '');
+                        setCompanySymbol(cachedCompanies[0]?.id_tenant.simbolo || '');
+                        setSimbolo(cachedCompanies[0]?.id_tenant.simbolo || '');
+                        setLogo(cachedCompanies[0]?.id_tenant.logo || '');
                         
                         if(!localStorage.getItem('layoutColors')) {
                             
@@ -217,13 +217,13 @@ function Autenticado() {
                 }
                 else {
                     setSelected(selectedCompany);
-                    setEmpresa(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.nome || '');
+                    setEmpresa(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.nome || '');
                     setSessionCompany(selectedCompany);
                     setCompanyDomain(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.domain_url || '');
-                    setCompanyLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.logo || '');
-                    setCompanySymbol(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.simbolo || '');
-                    setSimbolo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.simbolo || '');
-                    setLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.logo || '');
+                    setCompanyLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.logo || '');
+                    setCompanySymbol(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.simbolo || '');
+                    setSimbolo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.simbolo || '');
+                    setLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.logo || '');
                     
                     if(!localStorage.getItem('layoutColors')) {
                         // Buscar parâmetros de layout da empresa selecionada
@@ -293,9 +293,9 @@ function Autenticado() {
 
                 if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
                     setSelected(tenants[0]?.id_tenant.id || '');
-                    setEmpresa(tenants[0]?.tenant.nome || '');
-                    setSimbolo(tenants[0]?.tenant.simbolo || '');
-                    setLogo(tenants[0]?.tenant.logo || '');
+                    setEmpresa(tenants[0]?.id_tenant.nome || '');
+                    setSimbolo(tenants[0]?.id_tenant.simbolo || '');
+                    setLogo(tenants[0]?.id_tenant.logo || '');
                     
                     if(!localStorage.getItem('layoutColors')) {
                         // Buscar parâmetros de layout da primeira empresa
@@ -312,9 +312,9 @@ function Autenticado() {
                 }
                 else {
                     setSelected(ArmazenadorToken.UserCompanyPublicId);
-                    setEmpresa(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.nome || '');
-                    setSimbolo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.simbolo || '');
-                    setLogo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.logo || '');
+                    setEmpresa(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.nome || '');
+                    setSimbolo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.simbolo || '');
+                    setLogo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.logo || '');
                     
                     if(!localStorage.getItem('layoutColors')) {
                         // Buscar parâmetros de layout da empresa selecionada
@@ -347,9 +347,9 @@ function Autenticado() {
 
                     if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
                         setSelected(tenantsWithDomain[0]?.id_tenant.id || '');
-                        setEmpresa(tenantsWithDomain[0]?.tenant.nome || '');
-                        setSimbolo(tenantsWithDomain[0]?.tenant.simbolo || '');
-                        setLogo(tenantsWithDomain[0]?.tenant.logo || '');
+                        setEmpresa(tenantsWithDomain[0]?.id_tenant.nome || '');
+                        setSimbolo(tenantsWithDomain[0]?.id_tenant.simbolo || '');
+                        setLogo(tenantsWithDomain[0]?.id_tenant.logo || '');
                         
                         if(!localStorage.getItem('layoutColors')) {
                             // Buscar parâmetros de layout da primeira empresa
@@ -366,9 +366,9 @@ function Autenticado() {
                     }
                     else {
                         setSelected(ArmazenadorToken.UserCompanyPublicId);
-                        setEmpresa(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.nome || '');
-                        setSimbolo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.simbolo || '');
-                        setLogo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.logo || '');
+                        setEmpresa(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.nome || '');
+                        setSimbolo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.simbolo || '');
+                        setLogo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.logo || '');
                         
                         if(!localStorage.getItem('layoutColors')) {
                             // Buscar parâmetros de layout da primeira empresa
@@ -402,14 +402,14 @@ function Autenticado() {
 
                         if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
                             setSelected(tenantsWithDomain[0]?.id_tenant.id || '');
-                            setEmpresa(tenantsWithDomain[0]?.tenant.nome || '');
-                            setSimbolo(tenantsWithDomain[0]?.tenant.simbolo || '');
-                            setLogo(tenantsWithDomain[0]?.tenant.logo || '');
+                            setEmpresa(tenantsWithDomain[0]?.id_tenant.nome || '');
+                            setSimbolo(tenantsWithDomain[0]?.id_tenant.simbolo || '');
+                            setLogo(tenantsWithDomain[0]?.id_tenant.logo || '');
                         } else {
                             setSelected(ArmazenadorToken.UserCompanyPublicId);
-                            setEmpresa(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.nome || '');
-                            setSimbolo(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.simbolo || '');
-                            setLogo(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.logo || '');
+                            setEmpresa(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.nome || '');
+                            setSimbolo(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.simbolo || '');
+                            setLogo(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.logo || '');
                         }
                     })
                     .catch(erro => {
@@ -425,11 +425,11 @@ function Autenticado() {
             comp = empresas.filter(company => company.id_tenant.id == selected);
             if(comp.length > 0 && comp[0].id_tenant.id)
             {
-                setEmpresa(comp[0].tenant.nome)
+                setEmpresa(comp[0].id_tenant.nome)
                 setSessionCompany(comp[0].id_tenant.id)
                 setCompanyDomain(comp[0].domain)
-                setLogo(comp[0].tenant.logo)
-                setSimbolo(comp[0].tenant.simbolo)
+                setLogo(comp[0].id_tenant.logo)
+                setSimbolo(comp[0].id_tenant.simbolo)
 
                 if(!localStorage.getItem('layoutColors')) {
                     
@@ -484,9 +484,9 @@ function Autenticado() {
            
             if(comp.length > 0 && comp[0].id_tenant.id)
             {
-                setEmpresa(comp[0].tenant.nome)
-                setSimbolo(comp[0].tenant.simbolo)
-                setLogo(comp[0].tenant.logo)
+                setEmpresa(comp[0].id_tenant.nome)
+                setSimbolo(comp[0].id_tenant.simbolo)
+                setLogo(comp[0].id_tenant.logo)
                 setSelected(id)
 
                 // Buscar parâmetros de layout da nova empresa selecionada
