@@ -875,7 +875,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     removerErroCampo('email', valor);
                 }}
                 type="text"
-                label="E-mail"
+                label="E-mail Corporativo"
                 placeholder="Digite o email"
                 disabled={modoLeitura}
             />
