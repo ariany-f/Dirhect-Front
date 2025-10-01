@@ -77,7 +77,7 @@ function DataTableTarefas({
     
     // Larguras base quando todas as colunas estão visíveis
     // Ordem: Tipo de Processo, Referência, Cliente, Data de Início, Data de Entrega, Concluído, Situação
-    const larguraBase = [15, 15, 8, 10, 10, 11, 14];
+    const larguraBase = [12, 12, 8, 8, 8, 9, 12, 12]; // Adicionado 15% para usuário solicitante
     
     // Calcula larguras redistribuídas
     const calcularLarguras = () => {
@@ -662,6 +662,23 @@ function DataTableTarefas({
         );
     };
 
+    // Template para coluna de usuário solicitante
+    const usuarioSolicitanteTemplate = (rowData) => {
+        if (rowData.usuario_solicitante_nome) {
+            return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <span style={{ fontWeight: '600', fontSize: '14px' }}>
+                        {rowData.usuario_solicitante_nome}
+                    </span>
+                    <span style={{ fontSize: '12px', color: 'var(--neutro-600)' }}>
+                        @{rowData.usuario_solicitante_username}
+                    </span>
+                </div>
+            );
+        }
+        return <span style={{ color: 'var(--neutro-400)' }}>---</span>;
+    };
+
     const aoSalvar = async (formData, tipoEnvio) => {
         try {
             let endpoint = "";
@@ -860,6 +877,11 @@ function DataTableTarefas({
                     showAddButton={false}
                     filterClear={filterClearTemplate}
                     filterApply={filterApplyTemplate}
+                />
+                <Column 
+                    header="Usuário Solicitante" 
+                    body={usuarioSolicitanteTemplate}
+                    style={{ width: `${largurasColunas[7]}%` }}
                 />
             </DataTable>
             <ModalTarefas opened={modalOpened} aoFechar={() => setModalOpened(false)} />

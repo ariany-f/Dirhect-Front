@@ -5,10 +5,11 @@ import { MdOutlineKeyboardArrowRight, MdFilterAltOff } from 'react-icons/md'
 import { FaUserPlus, FaSignOutAlt, FaUmbrellaBeach, FaFileInvoiceDollar, FaTimes, FaCheck, FaUser, FaCheckCircle } from 'react-icons/fa';
 import { RiExchangeFill } from 'react-icons/ri';
 import CampoArquivo from '@components/CampoArquivo';
+import CampoTexto from '@components/CampoTexto';
 import Botao from '@components/Botao';
 import Texto from '@components/Texto';
 import { Link, useNavigate, useOutletContext } from 'react-router-dom';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { Checkbox } from 'primereact/checkbox';
 import CheckboxContainer from '@components/CheckboxContainer'
 import CustomImage from '@components/CustomImage'
@@ -770,9 +771,9 @@ function DataTableAtividades({
                         backgroundColor: cor,
                         boxShadow: `0 0 4px ${cor}`
                     }} />
-                    <div style={{color: cor, fontWeight: 500}}>{texto}</div>
+                    <div style={{color: cor, fontWeight: 500, fontSize: '12px'}}>{texto}</div>
                 </div>
-                <div style={{fontSize: '12px', color: '#666'}}>{diasEmAberto} dia(s) em aberto</div>
+                <div style={{fontSize: '10px', color: '#666'}}>{diasEmAberto} dia(s) em aberto</div>
             </div>
         );
     };
@@ -916,6 +917,73 @@ function DataTableAtividades({
         );
     };
 
+    // Template para coluna de usuário
+    const usuarioTemplate = (rowData) => {
+        if (rowData.usuario) {
+            return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <span style={{ fontWeight: '600', fontSize: '12px' }}>
+                        {rowData.usuario.first_name} {rowData.usuario.last_name}
+                    </span>
+                    <span style={{ fontSize: '10px', color: 'var(--neutro-600)' }}>
+                        @{rowData.usuario.username}
+                    </span>
+                </div>
+            );
+        }
+        return <span style={{ color: 'var(--neutro-400)' }}>---</span>;
+    };
+
+    // Template para data de criação
+    const dataCriacaoTemplate = (rowData) => {
+        if (rowData.criado_em) {
+            const data = new Date(rowData.criado_em);
+            return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                    <span style={{ fontSize: '14px' }}>
+                        {data.toLocaleDateString('pt-BR')}
+                    </span>
+                    <span style={{ fontSize: '12px', color: 'var(--neutro-600)' }}>
+                        {data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                </div>
+            );
+        }
+        return <span style={{ color: 'var(--neutro-400)' }}>---</span>;
+    };
+
+    // Configuração das colunas com suas proporções
+    const configuracaoColunas = [
+        { nome: 'tipo', proporcao: 12 },
+        { nome: 'prioridade', proporcao: 11 },
+        { nome: 'referencia', proporcao: 16 },
+        { nome: 'descricao', proporcao: 10 },
+        { nome: 'prazo', proporcao: 10 },
+        { nome: 'cliente', proporcao: 7 },
+        { nome: 'status', proporcao: 12 },
+        { nome: 'sla', proporcao: 12 },
+        { nome: 'usuario', proporcao: 11 },
+        { nome: 'data_criacao', proporcao: 10 }
+        // Removido 'actions' da configuração por enquanto
+    ];
+
+    // Calcular larguras dinâmicas das colunas
+    const largurasColunas = useMemo(() => {
+        // Por enquanto, todas as colunas estão sempre visíveis (exceto actions)
+        const colunasDisponiveis = configuracaoColunas;
+
+        // Calcular a proporção total das colunas disponíveis
+        const proporcaoTotal = colunasDisponiveis.reduce((total, coluna) => total + coluna.proporcao, 0);
+
+        // Calcular larguras baseadas na proporção
+        const larguras = {};
+        colunasDisponiveis.forEach(coluna => {
+            larguras[coluna.nome] = `${(coluna.proporcao / proporcaoTotal) * 100}%`;
+        });
+
+        return larguras;
+    }, []);
+
     return (
         <>
             <Toast ref={toast} />
@@ -947,44 +1015,44 @@ function DataTableAtividades({
                     body={representativeTipoTemplate} 
                     field="tipo_display" 
                     header="Tipo de Processo" 
-                    style={{ width: '12%' }}
-                ></Column>
+                    style={{ width: largurasColunas.tipo }}
+                />
                 <Column 
                     body={representativePrioridadeTemplate} 
                     sortable 
                     field="prioridade" 
                     header="Prioridade" 
-                    style={{ width: '8%' }}
-                ></Column>
+                    style={{ width: largurasColunas.prioridade }}
+                />
                 <Column 
                     body={representativeReferenciaTemplate}
                     field="referencia"
                     header="Referência"
-                    style={{ width: '14%' }}
-                ></Column>
+                    style={{ width: largurasColunas.referencia }}
+                />
                 <Column 
                     body={representativeDescricaoTemplate} 
                     field="descricao" 
                     header="Descrição" 
-                    style={{ width: '19%' }}
-                ></Column>
+                    style={{ width: largurasColunas.descricao }}
+                />
                 <Column 
                     body={representativePrazoTemplate} 
                     field="agendado_para" 
                     header="Executar Até" 
-                    style={{ width: '8%' }}
-                ></Column>
+                    style={{ width: largurasColunas.prazo }}
+                />
                 <Column
                     body={representativeClienteTemplate}
                     field="cliente"
                     header="Cliente"
-                    style={{ width: '5%' }}
-                ></Column>
+                    style={{ width: largurasColunas.cliente }}
+                />
                 <Column 
                     body={representativeStatusTemplate} 
                     field="status" 
                     header="Situação" 
-                    style={{ width: '12%' }}
+                    style={{ width: largurasColunas.status }}
                     filter
                     filterField="status"
                     filterElement={statusFilterTemplate}
@@ -993,12 +1061,12 @@ function DataTableAtividades({
                     filterApply={filterApplyTemplate}
                     filterMenuStyle={{ width: '14rem' }}
                     showFilterMatchModes={false}
-                ></Column>
+                />
                 <Column 
                     body={representativeSLATemplate} 
                     field="sla" 
                     header="SLA" 
-                    style={{ width: '12%' }}
+                    style={{ width: largurasColunas.sla }}
                     sortable
                     sortField="agendado_para"
                     filter
@@ -1009,13 +1077,20 @@ function DataTableAtividades({
                     filterApply={slaFilterApplyTemplate}
                     filterMenuStyle={{ width: '14rem' }}
                     showFilterMatchModes={false}
-                ></Column>
+                />
                 <Column 
-                    body={representativeCheckTemplate} 
-                    field="check" 
-                    header="Ações" 
-                    style={{ width: '11%' }}
-                ></Column>
+                    header="Usuário" 
+                    body={usuarioTemplate}
+                    style={{ width: largurasColunas.usuario }}
+                />
+                <Column 
+                    header="Data de Criação" 
+                    body={dataCriacaoTemplate}
+                    sortable
+                    sortField="criado_em"
+                    style={{ width: largurasColunas.data_criacao }}
+                />
+                {/* Coluna de ações removida por enquanto */}
             </DataTable>
         </>
     )
