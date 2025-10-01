@@ -583,6 +583,19 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                 disabled={modoLeitura}
             />
             <CampoTexto
+                camposVazios={classError}
+                name="email_pessoal"
+                valor={candidato?.email_pessoal ?? ''}
+                setValor={valor => {
+                    setCampo('email_pessoal', valor);
+                    removerErroCampo('email_pessoal', valor);
+                }}
+                type="text"
+                label="E-mail Pessoal"
+                placeholder="Digite o email pessoal"
+                disabled={modoLeitura}
+            />
+            <CampoTexto
                 name="telefone"
                 required={true}
                 valor={candidato?.telefone ?? ''}

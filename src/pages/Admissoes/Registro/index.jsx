@@ -1447,7 +1447,7 @@ const CandidatoRegistro = () => {
                 });
                 
                 // Log detalhado de alguns campos importantes para debug
-                const camposDebug = ['nome', 'email', 'cpf', 'dt_nascimento', 'genero', 'estado_civil'];
+                const camposDebug = ['nome', 'email', 'email_pessoal', 'cpf', 'dt_nascimento', 'genero', 'estado_civil'];
                
                 
                 // Comparação detalhada para identificar diferenças
@@ -1573,6 +1573,7 @@ const CandidatoRegistro = () => {
                     // candidato: {
                     nome: dadosCandidato.nome,
                     email: dadosCandidato.email,
+                    email_pessoal: dadosCandidato.email_pessoal,
                     telefone: dadosCandidato.telefone,
                     cpf: dadosCandidato.cpf ? dadosCandidato.cpf.replace(/\D/g, '').substring(0, 11) : '',
                     dt_nascimento: dadosCandidato.dt_nascimento,
@@ -1649,7 +1650,6 @@ const CandidatoRegistro = () => {
                     // Contatos
                     telefone1: candidatoAtual.telefone1,
                     telefone2: candidatoAtual.telefone2,
-                    email_pessoal: candidatoAtual.email_pessoal,
                     
                     // Dados bancários
                     banco: candidatoAtual.banco,
@@ -3584,6 +3584,7 @@ const CandidatoRegistro = () => {
         const payload = {
             nome: candidato.nome,
             email: candidato.email,
+            email_pessoal: candidato.email_pessoal,
             telefone: candidato.telefone,
             cpf: candidato.cpf ? candidato.cpf.replace(/\D/g, '').substring(0, 11) : '',
             dt_nascimento: candidato.dt_nascimento,
@@ -3656,7 +3657,6 @@ const CandidatoRegistro = () => {
             // Contatos
             telefone1: candidato.telefone1,
             telefone2: candidato.telefone2,
-            email_pessoal: candidato.email_pessoal,
             // PIS/PASEP
             pispasep: candidato.pispasep
         };
