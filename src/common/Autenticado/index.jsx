@@ -255,7 +255,7 @@ function Autenticado() {
                 http.get(`cliente/?format=json`)
                 .then(async (response) => {
                     let clientes = response;
-
+                    console.log('🔄 clientes', clientes);
                     // Mapear cada cliente para incluir tenant, pessoa_juridica e domain
                     const clientesCompletos = await Promise.all(clientes.map(async (cliente) => {
                         try {
@@ -264,8 +264,6 @@ function Autenticado() {
                             const tenant = tenantResponse || {};
 
                             const pessoaJuridica = cliente.pessoaJuridica || cliente.pessoa_juridica;
-                            
-
                             
                             // Retornar o objeto consolidado com domain
                             return {
@@ -287,6 +285,42 @@ function Autenticado() {
                     setEmpresas(clientesCompletos);
                     setCompanies(clientesCompletos);
                     ArmazenadorToken.salvarCompaniesCache(clientesCompletos);
+
+                    if(selected == '')
+                    {
+                        if(ArmazenadorToken.UserCompanyPublicId)
+                        {
+                            setSelected(ArmazenadorToken.UserCompanyPublicId);
+                            setEmpresa(clientesCompletos.find(company => company.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.nome || '');
+                            setSessionCompany(ArmazenadorToken.UserCompanyPublicId);
+                            setCompanyDomain(clientesCompletos.find(company => company.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.domain_url || '');
+                            setCompanyLogo(clientesCompletos.find(company => company.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.logo || '');
+                            setCompanySymbol(clientesCompletos.find(company => company.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.simbolo || '');
+                            setSimbolo(clientesCompletos.find(company => company.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.simbolo || '');
+                            setLogo(clientesCompletos.find(company => company.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.logo || '');
+                        }
+                        else
+                        {
+                            setSelected(clientesCompletos[0]?.id_tenant.id || '');
+                            setEmpresa(clientesCompletos[0]?.id_tenant.nome || '');
+                            setSessionCompany(clientesCompletos[0]?.id_tenant.id || '');
+                            setCompanyDomain(clientesCompletos[0]?.domain_url || '');
+                            setCompanyLogo(clientesCompletos[0]?.id_tenant.logo || '');
+                            setCompanySymbol(clientesCompletos[0]?.id_tenant.simbolo || '');
+                            setSimbolo(clientesCompletos[0]?.id_tenant.simbolo || '');
+                            setLogo(clientesCompletos[0]?.id_tenant.logo || '');
+                        }                        
+                    }
+                    else
+                    {
+                        setSelected(selected);
+                        setEmpresa(clientesCompletos.find(company => company.id_tenant.id == selected)?.id_tenant.nome || '');
+                        setSessionCompany(selected);
+                        setCompanyLogo(clientesCompletos.find(company => company.id_tenant.id == selected)?.id_tenant.logo || '');
+                        setCompanySymbol(clientesCompletos.find(company => company.id_tenant.id == selected)?.id_tenant.simbolo || '');
+                        setSimbolo(clientesCompletos.find(company => company.id_tenant.id == selected)?.id_tenant.simbolo || '');
+                        setLogo(clientesCompletos.find(company => company.id_tenant.id == selected)?.id_tenant.logo || '');
+                    }
                     
                 })
                 .catch(erro => {
