@@ -1207,6 +1207,11 @@
     line-height: 1.5rem;
 }
 
+.p-scrollpanel .p-scrollpanel-bar {
+    background: var(--neutro-600);
+    opacity: 0.5;
+}
+
 /* Responsividade Avançada */
 @media (max-width: 1200px) {
     /* Desktop Large - Ajustes menores */
