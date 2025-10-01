@@ -134,6 +134,8 @@ function MotivoAdmissao() {
             <Container>
                 <DataTable
                     value={dados}
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                    currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} motivo-admissao"
                     loading={loading}
                     header={header}
                     filters={filters}

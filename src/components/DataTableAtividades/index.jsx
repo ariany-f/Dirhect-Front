@@ -922,6 +922,9 @@ function DataTableAtividades({
             <DataTable 
                 value={tarefasOrdenadas} 
                 filters={filters} 
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} tarefas"  
                 globalFilterFields={['descricao', 'tipo_display']}  
                 emptyMessage="Não foram encontradas tarefas" 
                 paginator 

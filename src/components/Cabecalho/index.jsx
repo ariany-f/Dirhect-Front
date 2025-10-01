@@ -10,7 +10,7 @@ import Menu from "@components/Menu";
 import { useState, useRef, useEffect } from "react";
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
 // import Notificacoes from '@components/Notificacoes';
-import { FaBuilding, FaBusAlt } from "react-icons/fa";
+import { FaBuilding, FaBusAlt, FaCalendarAlt } from "react-icons/fa";
 import { FaBars } from "react-icons/fa6";
 import { TbLayoutSidebarLeftCollapseFilled } from "react-icons/tb";
 import LanguageSelector from "../LanguageSelector";
@@ -419,6 +419,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
     { "id": 26, "url": "tabelas-de-sistema", "pageTitulo": t("system_tables") },
     { "id": 27, "url": "syync", "pageTitulo": "Syync" },
     { "id": 28, "url": "estatisticas", "pageTitulo": t("performance") },
+    { "id": 29, "url": "auxiliar", "pageTitulo": t("holidays") },
   ];
 
   // Lógica para determinar o título baseado na URL
@@ -477,6 +478,13 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
           url: '/tabelas-de-sistema',
           icon: <RiTable2 size={18}/>
         },
+        ...(ArmazenadorToken.hasPermission('view_feriados') ? [
+          { 
+            label: t("holidays"), 
+            url: '/auxiliar',
+            icon: <FaCalendarAlt size={18}/>
+          }
+          ] : []),
         ...(import.meta.env.VITE_OPTIONS_LINHAS_TRANSPORTE === 'true' ? [
           { 
             label: 'Linhas de Transporte', 

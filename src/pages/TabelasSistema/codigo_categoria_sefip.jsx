@@ -138,6 +138,8 @@ function CodigoCategoriaSefip() {
             <Container>
                 <DataTable
                     value={dados}
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                    currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} codigo-categoria-sefip"
                     loading={loading}
                     header={header}
                     filters={filters}

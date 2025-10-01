@@ -96,7 +96,21 @@ function DataTableAusencias({ ausencias, colaborador = null }) {
                 )
                 }
             </BotaoGrupo>
-            <DataTable value={ausencias} filters={filters} globalFilterFields={['funcionario']} emptyMessage="Não foram encontradas ausências registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10} tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}>
+            <DataTable 
+                value={ausencias} 
+                filters={filters} 
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} ausências"
+                globalFilterFields={['funcionario']} 
+                emptyMessage="Não foram encontradas ausências registradas" 
+                selection={selectedFerias} 
+                onSelectionChange={(e) => verDetalhes(e.value)} 
+                selectionMode="single" 
+                paginator={paginator}
+                rows={rows}
+                tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}
+            >
                 {!colaborador && <Column body={representativeColaboradorTemplate} field="funcionario" header="Colaborador" style={{ width: '30%' }}></Column>}
                 <Column body={representativSituacaoTemplate} field="ausencia_nome" header="Ausência" style={{ width: '15%' }}></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '15%' }}></Column>

@@ -419,6 +419,9 @@ function DataTableBeneficios({
             </BotaoGrupo>
             <DataTable 
                 value={beneficios} 
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} benefícios"
                 emptyMessage="Não foram encontrados benefícios" 
                 paginator={paginator}
                 rows={rows}

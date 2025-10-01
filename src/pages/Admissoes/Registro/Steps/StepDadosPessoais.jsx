@@ -6,6 +6,7 @@ import SwitchInput from '@components/SwitchInput';
 import axios from 'axios';
 import http from '@http';
 import styled from 'styled-components';
+import { Dropdown } from 'primereact/dropdown';
 
 const GridContainer = styled.div`
     padding: 0 24px 24px 24px;
@@ -43,6 +44,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
 
     const { candidato, setCampo } = useCandidatoContext();
     const lastCepRef = useRef('');
+    
     // Estados existentes (manter)
     const [estados, setEstados] = useState([]);
     const [loadingEstados, setLoadingEstados] = useState(false);
@@ -65,6 +67,16 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
             }));
             
             return opcoesFormatadas;
+        };
+    }, []);
+
+    const formatarOpcoesDdi = useMemo(() => {
+        return (opcoes) => {
+            if (!Array.isArray(opcoes)) return [];
+            return opcoes.map(opcao => ({
+                name: opcao.descricao,
+                code: opcao.id || opcao.codigo
+            }));
         };
     }, []);
 
@@ -133,11 +145,186 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
         };
     }, [candidato]);
 
+    const ddi = [
+        { name: "Afeganistão", code: "93", flag: "🇦🇫" },
+        { name: "África do Sul", code: "27", flag: "🇿🇦" },
+        { name: "Albânia", code: "355", flag: "🇦🇱" },
+        { name: "Alemanha", code: "49", flag: "🇩🇪" },
+        { name: "Andorra", code: "376", flag: "🇦🇩" },
+        { name: "Angola", code: "244", flag: "🇦🇴" },
+        { name: "Anguilla", code: "1-264", flag: "🇦🇮" },
+        { name: "Antígua e Barbuda", code: "1-268", flag: "🇦🇬" },
+        { name: "Arábia Saudita", code: "966", flag: "🇸🇦" },
+        { name: "Argélia", code: "213", flag: "🇩🇿" },
+        { name: "Argentina", code: "54", flag: "🇦🇷" },
+        { name: "Armênia", code: "374", flag: "🇦🇲" },
+        { name: "Aruba", code: "297", flag: "🇦🇼" },
+        { name: "Austrália", code: "61", flag: "🇦🇺" },
+        { name: "Áustria", code: "43", flag: "🇦🇹" },
+        { name: "Azerbaijão", code: "994", flag: "🇦🇿" },
+        { name: "Bahamas", code: "1-242", flag: "🇧🇸" },
+        { name: "Bahrein", code: "973", flag: "🇧🇭" },
+        { name: "Bangladesh", code: "880", flag: "🇧🇩" },
+        { name: "Barbados", code: "1-246", flag: "🇧🇧" },
+        { name: "Bélgica", code: "32", flag: "🇧🇪" },
+        { name: "Belize", code: "501", flag: "🇧🇿" },
+        { name: "Benin", code: "229", flag: "🇧🇯" },
+        { name: "Bermudas", code: "1-441", flag: "🇧🇲" },
+        { name: "Bolívia", code: "591", flag: "🇧🇴" },
+        { name: "Bósnia e Herzegovina", code: "387", flag: "🇧🇦" },
+        { name: "Botswana", code: "267", flag: "🇧🇼" },
+        { name: "Brasil", code: "55", flag: "🇧🇷" },
+        { name: "Brunei", code: "673", flag: "🇧🇳" },
+        { name: "Bulgária", code: "359", flag: "🇧🇬" },
+        { name: "Burkina Faso", code: "226", flag: "🇧🇫" },
+        { name: "Burundi", code: "257", flag: "🇧🇮" },
+        { name: "Cabo Verde", code: "238", flag: "🇨🇻" },
+        { name: "Camarões", code: "237", flag: "🇨🇲" },
+        { name: "Camboja", code: "855", flag: "🇰🇭" },
+        { name: "Canadá", code: "1", flag: "🇨🇦" },
+        { name: "Catar", code: "974", flag: "🇶🇦" },
+        { name: "Chile", code: "56", flag: "🇨🇱" },
+        { name: "China", code: "86", flag: "🇨🇳" },
+        { name: "Chipre", code: "357", flag: "🇨🇾" },
+        { name: "Colômbia", code: "57", flag: "🇨🇴" },
+        { name: "Comores", code: "269", flag: "🇰🇲" },
+        { name: "Congo", code: "242", flag: "🇨🇬" },
+        { name: "Coreia do Norte", code: "850", flag: "🇰🇵" },
+        { name: "Coreia do Sul", code: "82", flag: "🇰🇷" },
+        { name: "Costa do Marfim", code: "225", flag: "🇨🇮" },
+        { name: "Costa Rica", code: "506", flag: "🇨🇷" },
+        { name: "Croácia", code: "385", flag: "🇭🇷" },
+        { name: "Cuba", code: "53", flag: "🇨🇺" },
+        { name: "Dinamarca", code: "45", flag: "🇩🇰" },
+        { name: "Djibuti", code: "253", flag: "🇩🇯" },
+        { name: "Dominica", code: "1-767", flag: "🇩🇲" },
+        { name: "Egito", code: "20", flag: "🇪🇬" },
+        { name: "El Salvador", code: "503", flag: "🇸🇻" },
+        { name: "Emirados Árabes Unidos", code: "971", flag: "🇦🇪" },
+        { name: "Equador", code: "593", flag: "🇪🇨" },
+        { name: "Eritreia", code: "291", flag: "🇪🇷" },
+        { name: "Eslováquia", code: "421", flag: "🇸🇰" },
+        { name: "Eslovênia", code: "386", flag: "🇸🇮" },
+        { name: "Espanha", code: "34", flag: "🇪🇸" },
+        { name: "Estados Unidos", code: "1", flag: "🇺🇸" },
+        { name: "Estônia", code: "372", flag: "🇪🇪" },
+        { name: "Etiópia", code: "251", flag: "🇪🇹" },
+        { name: "Filipinas", code: "63", flag: "🇵🇭" },
+        { name: "Finlândia", code: "358", flag: "🇫🇮" },
+        { name: "França", code: "33", flag: "🇫🇷" },
+        { name: "Gabão", code: "241", flag: "🇬🇦" },
+        { name: "Gâmbia", code: "220", flag: "🇬🇲" },
+        { name: "Gana", code: "233", flag: "🇬🇭" },
+        { name: "Geórgia", code: "995", flag: "🇬🇪" },
+        { name: "Grécia", code: "30", flag: "🇬🇷" },
+        { name: "Granada", code: "1-473", flag: "🇬🇩" },
+        { name: "Groenlândia", code: "299", flag: "🇬🇱" },
+        { name: "Guadalupe", code: "590", flag: "🇬🇵" },
+        { name: "Guam", code: "1-671", flag: "🇬🇺" },
+        { name: "Guatemala", code: "502", flag: "🇬🇹" },
+        { name: "Guiana", code: "592", flag: "🇬🇾" },
+        { name: "Guiana Francesa", code: "594", flag: "🇬🇫" },
+        { name: "Guiné", code: "224", flag: "🇬🇳" },
+        { name: "Guiné-Bissau", code: "245", flag: "🇬🇼" },
+        { name: "Guiné Equatorial", code: "240", flag: "🇬🇶" },
+        { name: "Haiti", code: "509", flag: "🇭🇹" },
+        { name: "Holanda", code: "31", flag: "🇳🇱" },
+        { name: "Honduras", code: "504", flag: "🇭🇳" },
+        { name: "Hong Kong", code: "852", flag: "🇭🇰" },
+        { name: "Hungria", code: "36", flag: "🇭🇺" },
+        { name: "Índia", code: "91", flag: "🇮🇳" },
+        { name: "Indonésia", code: "62", flag: "🇮🇩" },
+        { name: "Irã", code: "98", flag: "🇮🇷" },
+        { name: "Iraque", code: "964", flag: "🇮🇶" },
+        { name: "Irlanda", code: "353", flag: "🇮🇪" },
+        { name: "Islândia", code: "354", flag: "🇮🇸" },
+        { name: "Israel", code: "972", flag: "🇮🇱" },
+        { name: "Itália", code: "39", flag: "🇮🇹" },
+        { name: "Jamaica", code: "1-876", flag: "🇯🇲" },
+        { name: "Japão", code: "81", flag: "🇯🇵" },
+        { name: "Jordânia", code: "962", flag: "🇯🇴" },
+        { name: "Kuwait", code: "965", flag: "🇰🇼" },
+        { name: "Líbano", code: "961", flag: "🇱🇧" },
+        { name: "Líbia", code: "218", flag: "🇱🇾" },
+        { name: "Luxemburgo", code: "352", flag: "🇱🇺" },
+        { name: "Macau", code: "853", flag: "🇲🇴" },
+        { name: "Macedônia", code: "389", flag: "🇲🇰" },
+        { name: "Madagascar", code: "261", flag: "🇲🇬" },
+        { name: "Malásia", code: "60", flag: "🇲🇾" },
+        { name: "Malawi", code: "265", flag: "🇲🇼" },
+        { name: "Maldivas", code: "960", flag: "🇲🇻" },
+        { name: "Mali", code: "223", flag: "🇲🇱" },
+        { name: "Malta", code: "356", flag: "🇲🇹" },
+        { name: "Marrocos", code: "212", flag: "🇲🇦" },
+        { name: "Martinica", code: "596", flag: "🇲🇶" },
+        { name: "Maurício", code: "230", flag: "🇲🇺" },
+        { name: "Mauritânia", code: "222", flag: "🇲🇷" },
+        { name: "México", code: "52", flag: "🇲🇽" },
+        { name: "Moçambique", code: "258", flag: "🇲🇿" },
+        { name: "Moldávia", code: "373", flag: "🇲🇩" },
+        { name: "Mônaco", code: "377", flag: "🇲🇨" },
+        { name: "Mongólia", code: "976", flag: "🇲🇳" },
+        { name: "Montenegro", code: "382", flag: "🇲🇪" },
+        { name: "Namíbia", code: "264", flag: "🇳🇦" },
+        { name: "Nepal", code: "977", flag: "🇳🇵" },
+        { name: "Nicarágua", code: "505", flag: "🇳🇮" },
+        { name: "Nigéria", code: "234", flag: "🇳🇬" },
+        { name: "Noruega", code: "47", flag: "🇳🇴" },
+        { name: "Nova Zelândia", code: "64", flag: "🇳🇿" },
+        { name: "Omã", code: "968", flag: "🇴🇲" },
+        { name: "Panamá", code: "507", flag: "🇵🇦" },
+        { name: "Papua Nova Guiné", code: "675", flag: "🇵🇬" },
+        { name: "Paquistão", code: "92", flag: "🇵🇰" },
+        { name: "Paraguai", code: "595", flag: "🇵🇾" },
+        { name: "Peru", code: "51", flag: "🇵🇪" },
+        { name: "Polônia", code: "48", flag: "🇵🇱" },
+        { name: "Portugal", code: "351", flag: "🇵🇹" },
+        { name: "Porto Rico", code: "1-787", flag: "🇵🇷" },
+        { name: "Quênia", code: "254", flag: "🇰🇪" },
+        { name: "Quirguistão", code: "996", flag: "🇰🇬" },
+        { name: "Reino Unido", code: "44", flag: "🇬🇧" },
+        { name: "República Centro-Africana", code: "236", flag: "🇨🇫" },
+        { name: "República Dominicana", code: "1-809", flag: "🇩🇴" },
+        { name: "República Tcheca", code: "420", flag: "🇨🇿" },
+        { name: "Romênia", code: "40", flag: "🇷🇴" },
+        { name: "Rússia", code: "7", flag: "🇷🇺" },
+        { name: "Ruanda", code: "250", flag: "🇷🇼" },
+        { name: "Senegal", code: "221", flag: "🇸🇳" },
+        { name: "Serra Leoa", code: "232", flag: "🇸🇱" },
+        { name: "Sérvia", code: "381", flag: "🇷🇸" },
+        { name: "Síria", code: "963", flag: "🇸🇾" },
+        { name: "Somália", code: "252", flag: "🇸🇴" },
+        { name: "Sri Lanka", code: "94", flag: "🇱🇰" },
+        { name: "Suazilândia", code: "268", flag: "🇸🇿" },
+        { name: "Sudão", code: "249", flag: "🇸🇩" },
+        { name: "Suécia", code: "46", flag: "🇸🇪" },
+        { name: "Suíça", code: "41", flag: "🇨🇭" },
+        { name: "Suriname", code: "597", flag: "🇸🇷" },
+        { name: "Tailândia", code: "66", flag: "🇹🇭" },
+        { name: "Taiwan", code: "886", flag: "🇹🇼" },
+        { name: "Tanzânia", code: "255", flag: "🇹🇿" },
+        { name: "Togo", code: "228", flag: "🇹🇬" },
+        { name: "Trinidad e Tobago", code: "1-868", flag: "🇹🇹" },
+        { name: "Tunísia", code: "216", flag: "🇹🇳" },
+        { name: "Turquia", code: "90", flag: "🇹🇷" },
+        { name: "Ucrânia", code: "380", flag: "🇺🇦" },
+        { name: "Uganda", code: "256", flag: "🇺🇬" },
+        { name: "Uruguai", code: "598", flag: "🇺🇾" },
+        { name: "Uzbequistão", code: "998", flag: "🇺🇿" },
+        { name: "Vaticano", code: "379", flag: "🇻🇦" },
+        { name: "Venezuela", code: "58", flag: "🇻🇪" },
+        { name: "Vietnã", code: "84", flag: "🇻🇳" },
+        { name: "Zâmbia", code: "260", flag: "🇿🇲" },
+        { name: "Zimbábue", code: "263", flag: "🇿🇼" }
+    ];
+      
+
     const opcoesGenero = useMemo(() => formatarOpcoesDominio(opcoesDominio.genero), [opcoesDominio.genero, formatarOpcoesDominio]);
     const opcoesCorRaca = useMemo(() => formatarOpcoesDominio(opcoesDominio.cor_raca), [opcoesDominio.cor_raca, formatarOpcoesDominio]);
     const opcoesEstadoCivil = useMemo(() => formatarOpcoesDominio(opcoesDominio.estado_civil), [opcoesDominio.estado_civil, formatarOpcoesDominio]);
     const opcoesTipoRua = useMemo(() => formatarOpcoesTipoRua(opcoesDominio.tipo_rua), [opcoesDominio.tipo_rua, formatarOpcoesTipoRua]);
     const opcoesTipoBairro = useMemo(() => formatarOpcoesTipoBairro(opcoesDominio.tipo_bairro), [opcoesDominio.tipo_bairro, formatarOpcoesTipoBairro]);
+    const opcoesDdi = useMemo(() => formatarOpcoesDdi(ddi), [ddi, formatarOpcoesDdi]);
 
     // Função para verificar se um campo é obrigatório baseado nos documentos
     const isCampoObrigatorio = useMemo(() => {
@@ -534,6 +721,117 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
         return estadoEncontrado || '';
     };
 
+    // StyledDropdown para DDI (baseado no LanguageSelector)
+    const StyledDDIDropdown = styled(Dropdown)`
+        border-radius: 4px;
+        border: 1px solid var(--neutro-400);
+        background: var(--background-label);
+        padding: 12px 16px;
+        outline: none;
+        display: flex;
+        align-items: center;
+        text-align: left;
+        align-self: stretch;
+        font-weight: 700;
+        font-size: 14px;
+        width: 100%;
+        height: 46px;
+        max-width: 100%;
+        margin-bottom: 0px;
+        ${props => props.$hasError && `
+            border: 1px solid #dc2626;
+            outline: none;
+        `}
+
+        & .p-dropdown-label {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .p-dropdown-panel {
+            background: var(--white) !important;
+            .p-dropdown-items {
+                padding: 0.5rem;
+
+                .p-dropdown-item {
+                    &:hover {
+                        background-color: var(--neutro-100) !important;
+                    }
+
+                    &.p-highlight {
+                        background-color: var(--primaria-50) !important;
+                        color: var(--primaria) !important;
+                    }
+                }
+            }
+        }
+    `;
+
+    // Template para o valor selecionado do DDI
+    const ddiValueTemplate = (option) => {
+        if (!option) return null;
+        
+        return (
+            <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                gap: '6px',
+                lineHeight: '14px',
+                fontSize: '14px'
+            }}>
+                <span style={{ fontSize: '16px' }}>{option.flag}</span>
+                <span style={{ 
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    marginTop: '2px',
+                    color: 'var(--primaria)'
+                }}>
+                    +{option.code}
+                </span>
+            </div>
+        );
+    };
+
+    // Template para os itens da lista do DDI
+    const ddiItemTemplate = (option) => {
+        if (!option) return null;
+        
+        return (
+            <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '8px',
+                fontSize: '14px',
+                padding: '8px 12px'
+            }}>
+                <span style={{ fontSize: '18px' }}>{option.flag}</span>
+                <span style={{ 
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    color: 'var(--primaria)',
+                    minWidth: '30px'
+                }}>
+                    +{option.code}
+                </span>
+                <span style={{ 
+                    color: 'var(--neutro-600)',
+                    fontSize: '14px'
+                }}>
+                    {option.name}
+                </span>
+            </div>
+        );
+    };
+
+    // Definir Brasil (55) como DDI padrão se não houver DDI selecionado
+    useEffect(() => {
+        if (!candidato?.ddi && !modoLeitura) {
+            setCampo('ddi', '55');
+        }
+    }, [candidato?.ddi, modoLeitura, setCampo]);
+
     return (
         <GridContainer data-tour="panel-step-1">
 
@@ -583,16 +881,93 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                 disabled={modoLeitura}
             />
             <CampoTexto
-                name="telefone"
-                required={true}
-                valor={candidato?.telefone ?? ''}
+                camposVazios={classError}
+                name="email_pessoal"
+                valor={candidato?.email_pessoal ?? ''}
                 setValor={valor => {
-                    setCampo('telefone', valor);
-                    removerErroCampo('telefone', valor);
+                    setCampo('email_pessoal', valor);
+                    removerErroCampo('email_pessoal', valor);
                 }}
-                label="Telefone"
+                type="text"
+                label="E-mail Pessoal"
+                placeholder="Digite o email pessoal"
                 disabled={modoLeitura}
             />
+            {/* Campos de telefone organizados em uma linha */}
+            <div style={{ 
+                display: 'flex', 
+                gap: '12px', 
+                alignItems: 'flex-start'
+            }}>
+                <div style={{ flex: '0 0 120px' }}>
+                    <div style={{ width: '100%', maxWidth: '100%', minWidth: 0, overflow: 'hidden', flexShrink: 1, flexGrow: 0, boxSizing: 'border-box'}}>
+                        <div style={{ marginBottom: '4px' }}>
+                            <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: 'var(--neutro-700)', marginBottom: '4px' }}>
+                                DDI<span style={{color: 'var(--error)'}}> *</span>
+                            </label>
+                        </div>
+                        <StyledDDIDropdown
+                            value={(() => {
+                                if (!candidato?.ddi) {
+                                    // Se não há DDI selecionado, retorna Brasil (55) como padrão
+                                    return ddi.find(ddi => ddi.code === "55") || null;
+                                }
+                                const ddiSelecionado = ddi.find(ddi => String(ddi.code) === String(candidato.ddi));
+                                return ddiSelecionado || null;
+                            })()}
+                            options={ddi}
+                            onChange={(e) => {
+                                setCampo('ddi', e.value.code);
+                                removerErroCampo('ddi', e.value);
+                            }}
+                            optionLabel="name"
+                            valueTemplate={ddiValueTemplate}
+                            itemTemplate={ddiItemTemplate}
+                            placeholder="DDI"
+                            disabled={modoLeitura}
+                            $hasError={isCampoEmErro('ddi')}
+                            filter
+                            filterBy="name,code"
+                            showClear={false}
+                        />
+                        {isCampoEmErro('ddi') && (
+                            <p style={{ color: 'var(--error)', fontSize: '12px', margin: '4px 0 0 0' }}>
+                                Você deve preencher esse campo
+                            </p>
+                        )}
+                    </div>
+                </div>
+                <div style={{ flex: '0 0 80px' }}>
+                    <CampoTexto
+                        camposVazios={classError}
+                        name="ddd"
+                        required={true}
+                        valor={candidato?.ddd ?? ''}
+                        setValor={valor => {
+                            setCampo('ddd', valor);
+                            removerErroCampo('ddd', valor);
+                        }}
+                        type="text"
+                        label="DDD"
+                        placeholder="DDD"
+                        disabled={modoLeitura}
+                    />
+                </div>
+                <div style={{ flex: '1' }}>
+                    <CampoTexto
+                        name="telefone"
+                        required={true}
+                        valor={candidato?.telefone ?? ''}
+                        setValor={valor => {
+                            setCampo('telefone', valor);
+                            removerErroCampo('telefone', valor);
+                        }}
+                        label="Telefone"
+                        placeholder="Número do telefone"
+                        disabled={modoLeitura}
+                    />
+                </div>
+            </div>
             <CampoTexto
                 camposVazios={isCampoEmErro('dt_nascimento') ? ['dt_nascimento'] : []}
                 name="dt_nascimento"
@@ -612,7 +987,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                 required={true}
                 label="Gênero"
                 valor={getValorSelecionadoFromCandidato('genero', opcoesGenero)}
-                                        setValor={(valor) => {
+                setValor={(valor) => {
                             setCampo('genero', valor.code);
                             removerErroCampo('genero', valor);
                         }}
