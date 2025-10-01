@@ -869,14 +869,13 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
             <CampoTexto
                 camposVazios={classError}
                 name="email"
-                required={true}
                 valor={candidato?.email ?? ''}
                 setValor={valor => {
                     setCampo('email', valor);
                     removerErroCampo('email', valor);
                 }}
                 type="text"
-                label="E-mail"
+                label="E-mail Corporativo"
                 placeholder="Digite o email"
                 disabled={modoLeitura}
             />
@@ -963,6 +962,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                             removerErroCampo('telefone', valor);
                         }}
                         label="Telefone"
+                        maxCaracteres={11}
+                        patternMask="99999999999"
                         placeholder="Número do telefone"
                         disabled={modoLeitura}
                     />
