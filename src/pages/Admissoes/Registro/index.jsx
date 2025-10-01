@@ -1431,7 +1431,7 @@ const CandidatoRegistro = () => {
                     'uf_emissor_rnm', 'data_emissao_rnm', 'data_vencimento_rnm', 'decreto_imigracao',
                     'registro_profissional', 'uf_registro_profissional', 'data_emissao_registro_profissional',
                     'tipo_sanguineo', 'circunscricao_militar', 'orgao_expedicao', 'regiao_militar',
-                    'situacao_militar', 'telefone1', 'telefone2', 'email_pessoal'
+                    'situacao_militar', 'telefone1', 'telefone2', 'email_pessoal', 'ddi', 'ddd', 'ddi1', 'ddd1', 'ddi2', 'ddd2'
                 ];
                 
                 const candidatoPessoal = {};
@@ -1575,6 +1575,8 @@ const CandidatoRegistro = () => {
                     email: dadosCandidato.email,
                     email_pessoal: dadosCandidato.email_pessoal,
                     telefone: dadosCandidato.telefone,
+                    ddi: dadosCandidato.ddi,
+                    ddd: dadosCandidato.ddd,
                     cpf: dadosCandidato.cpf ? dadosCandidato.cpf.replace(/\D/g, '').substring(0, 11) : '',
                     dt_nascimento: dadosCandidato.dt_nascimento,
                     salario: (() => {
@@ -1650,6 +1652,10 @@ const CandidatoRegistro = () => {
                     // Contatos
                     telefone1: candidatoAtual.telefone1,
                     telefone2: candidatoAtual.telefone2,
+                    ddi1: candidatoAtual.ddi1,
+                    ddd1: candidatoAtual.ddd1,
+                    ddi2: candidatoAtual.ddi2,
+                    ddd2: candidatoAtual.ddd2,
                     
                     // Dados bancários
                     banco: candidatoAtual.banco,
@@ -2016,6 +2022,8 @@ const CandidatoRegistro = () => {
                 { campo: 'nome', nome: 'Nome completo' },
                 { campo: 'cpf', nome: 'CPF' },
                 { campo: 'email', nome: 'Email' },
+                { campo: 'ddi', nome: 'DDI' },
+                { campo: 'ddd', nome: 'DDD' },
                 { campo: 'telefone', nome: 'Telefone' },
                 { campo: 'dt_nascimento', nome: 'Data de nascimento' },
                 { campo: 'genero', nome: 'Gênero' },
@@ -3586,6 +3594,8 @@ const CandidatoRegistro = () => {
             email: candidato.email,
             email_pessoal: candidato.email_pessoal,
             telefone: candidato.telefone,
+            ddi: candidato.ddi,
+            ddd: candidato.ddd,
             cpf: candidato.cpf ? candidato.cpf.replace(/\D/g, '').substring(0, 11) : '',
             dt_nascimento: candidato.dt_nascimento,
             nome_mae: candidato.nome_mae,
@@ -3657,6 +3667,10 @@ const CandidatoRegistro = () => {
             // Contatos
             telefone1: candidato.telefone1,
             telefone2: candidato.telefone2,
+            ddi1: candidato.ddi1,
+            ddi2: candidato.ddi2,
+            ddd1: candidato.ddd1,
+            ddd2: candidato.ddd2,
             // PIS/PASEP
             pispasep: candidato.pispasep
         };
