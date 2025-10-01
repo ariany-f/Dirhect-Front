@@ -182,7 +182,7 @@ function DataTableDemissao({
             {!colaborador && showSearch &&
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
                 <span className="p-input-icon-left">
-                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por candidato" />
+                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por colaborador" />
                 </span>
                 {ArmazenadorToken.hasPermission('view_funcionario') &&
                     <BotaoGrupo>
