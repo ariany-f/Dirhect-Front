@@ -12,6 +12,9 @@ import { Tag } from 'primereact/tag';
 import http from '@http';
 import Texto from '@components/Texto';
 import { useTranslation } from 'react-i18next';
+import { Tooltip } from 'primereact/tooltip';
+import DataTableCandidatos from '@components/DataTableCandidatos';
+import { Dialog } from 'primereact/dialog';
 
 function DataTableVagas({ 
     vagas: initialVagas,
@@ -36,6 +39,12 @@ function DataTableVagas({
     const [vagas, setVagas] = useState(initialVagas || []);
     const navegar = useNavigate()
     const { t } = useTranslation('common');
+
+    // Estados para o modal de candidatos
+    const [modalCandidatosAberto, setModalCandidatosAberto] = useState(false);
+    const [candidatosModal, setCandidatosModal] = useState([]);
+    const [vagaModal, setVagaModal] = useState(null);
+    const [tipoModal, setTipoModal] = useState(''); // 'total' ou 'aprovados'
 
     // Configuração de larguras das colunas
     const exibeColunasOpcionais = {
@@ -90,7 +99,19 @@ function DataTableVagas({
     }
     
     const representativeNumeroColaboradoresTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}><FaUserAlt /> {rowData?.total_candidatos ?? 0}</p>
+        return (
+            <p style={{fontWeight: '400', cursor: 'pointer'}} 
+               onClick={(e) => {
+                   e.stopPropagation();
+                   abrirModalCandidatos(rowData, 'total');
+               }}>
+                <FaUserAlt 
+                    data-pr-tooltip="Ver candidatos"
+                    data-pr-position="top"
+                    className="candidatos-total"
+                /> {rowData?.total_candidatos ?? 0}
+            </p>
+        )
     }
 
     const representativeTituloTemplate = (rowData) => {
@@ -107,7 +128,19 @@ function DataTableVagas({
     }
 
     const representativeAprovadosTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}><FaUserAlt /> {rowData?.candidatos_aprovados ?? 0}</p>
+        return (
+            <p style={{fontWeight: '400', cursor: 'pointer'}} 
+               onClick={(e) => {
+                   e.stopPropagation();
+                   abrirModalCandidatos(rowData, 'aprovados');
+               }}>
+                <FaUserAlt 
+                    data-pr-tooltip="Ver candidatos aprovados"
+                    data-pr-position="top"
+                    className="candidatos-aprovados"
+                /> {rowData?.candidatos_aprovados ?? 0}
+            </p>
+        )
     }
 
     const representativeStatusTemplate = (rowData) => {
@@ -206,12 +239,32 @@ function DataTableVagas({
         }
     };
 
-    const totalVagasTemplate = () => {
-        return 'Total de Vagas: ' + (totalRecords ?? 0);
+    // Função para abrir o modal de candidatos
+    const abrirModalCandidatos = async (vaga, tipo) => {
+        try {
+            // Busca os candidatos da vaga
+            const response = await http.get(`vagas/${vaga.id}/?format=json`);
+            let candidatos = response.candidatos || [];
+            
+            // Se for para mostrar apenas aprovados, filtra os candidatos
+            if (tipo === 'aprovados') {
+                candidatos = response.candidatos_aprovados;
+            } 
+            
+            setCandidatosModal(candidatos);
+            setVagaModal(vaga);
+            setTipoModal(tipo);
+            setModalCandidatosAberto(true);
+        } catch (error) {
+            console.error('Erro ao carregar candidatos:', error);
+        }
     };
 
     return (
         <>
+            <Tooltip target=".candidatos-total" />
+            <Tooltip target=".candidatos-aprovados" />
+            
             {showSearch &&
                 <div className="flex justify-content-end">
                     <span className="p-input-icon-left">
@@ -251,6 +304,31 @@ function DataTableVagas({
                 <Column body={representativeAprovadosTemplate} field="candidatos_aprovados" header="Aprovados" style={{ width: `${largurasColunas[6]}%` }}></Column>
                 <Column body={representativeSalarioTemplate} field="salario" header="Salário" style={{ width: `${largurasColunas[7]}%` }} sortable></Column>
             </DataTable>
+
+            {/* Modal para exibir candidatos */}
+            <Dialog 
+                header={`Candidatos ${tipoModal === 'aprovados' ? 'Aprovados' : ''} - ${vagaModal?.titulo || ''}`}
+                visible={modalCandidatosAberto}
+                style={{ width: '90vw', maxWidth: '1200px' }}
+                onHide={() => setModalCandidatosAberto(false)}
+                maximizable
+                modal
+            >
+                <div style={{ padding: '10px 0' }}>
+                    <DataTableCandidatos 
+                        candidatos={candidatosModal}
+                        vagaId={vagaModal?.id}
+                        documentos={[]} // Pode ser passado se necessário
+                        onCandidatosUpdate={() => {
+                            // Recarrega os candidatos quando há atualização
+                            abrirModalCandidatos(vagaModal, tipoModal);
+                        }}
+                        onEditarCandidato={() => {
+                            // Pode implementar edição se necessário
+                        }}
+                    />
+                </div>
+            </Dialog>
         </>
     )
 }

@@ -5,7 +5,7 @@ import { MdOutlineKeyboardArrowRight, MdWarning } from 'react-icons/md'
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { Real } from '@utils/formats'
 import { Tag } from 'primereact/tag';
 import { FaCheck, FaTimes, FaTrash, FaPen } from 'react-icons/fa';
@@ -27,6 +27,147 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
     const [modalEncaminharAberto, setModalEncaminharAberto] = useState(false);
     const [candidatoParaAprovar, setCandidatoParaAprovar] = useState(null);
     const toast = useRef(null);
+
+    // Configuração das colunas com suas proporções
+    const configuracaoColunas = [
+        { nome: 'nome', proporcao: 25 },
+        { nome: 'email', proporcao: 20 },
+        { nome: 'telefone', proporcao: 15 },
+        { nome: 'status', proporcao: 15 },
+        { nome: 'data_candidatura', proporcao: 15 },
+        { nome: 'actions', proporcao: 10 }
+    ];
+
+    // Função reutilizável para verificar se há ações disponíveis para exibir
+    const temAcoesDisponiveis = (rowData) => {
+        const hoje = new Date();
+        const encerramento = new Date(rowData?.vaga?.dt_encerramento);
+        const vagaEncerrada = rowData?.vaga?.status === 'F' || hoje > encerramento;
+        const vagaTransferida = rowData?.vaga?.status === 'T';
+        
+        const vagaConfigurada = rowData?.vagas_configuradas?.[0];
+        const vagaAprovada = vagaConfigurada?.status === 'A';
+        const vagaRejeitada = vagaConfigurada?.status === 'R';
+
+        // Conta quantos candidatos já foram aprovados
+        const candidatosAprovados = listaCandidatos.filter(c => 
+            c.vagas_configuradas?.[0]?.status === 'A'
+        ).length;
+
+        // Verifica se já atingiu o limite de vagas
+        const vagasPreenchidas = candidatosAprovados >= rowData?.vaga?.qtd_vaga;
+        
+        // Verifica se há pelo menos uma ação disponível
+        const temEdicao = !vagaEncerrada && !vagasPreenchidas && !vagaTransferida && !vagaAprovada && !vagaRejeitada;
+        const temAprovacao = !vagaEncerrada && !vagaTransferida && !vagaAprovada && vagaConfigurada?.status !== 'R' && !vagasPreenchidas;
+        const temRejeicao = !vagaEncerrada && !vagasPreenchidas && !vagaTransferida && vagaConfigurada?.status !== 'R' && vagaConfigurada?.status !== 'A';
+        
+        return temEdicao || temAprovacao || temRejeicao;
+    };
+
+    // Função para verificar ações específicas disponíveis
+    const getAcoesDisponiveis = (rowData) => {
+        const hoje = new Date();
+        const encerramento = new Date(rowData?.vaga?.dt_encerramento);
+        const vagaEncerrada = rowData?.vaga?.status === 'F' || hoje > encerramento;
+        const vagaTransferida = rowData?.vaga?.status === 'T';
+        
+        const vagaConfigurada = rowData?.vagas_configuradas?.[0];
+        const vagaAprovada = vagaConfigurada?.status === 'A';
+        const vagaRejeitada = vagaConfigurada?.status === 'R';
+
+        // Conta quantos candidatos já foram aprovados
+        const candidatosAprovados = listaCandidatos.filter(c => 
+            c.vagas_configuradas?.[0]?.status === 'A'
+        ).length;
+
+        // Verifica se já atingiu o limite de vagas
+        const vagasPreenchidas = candidatosAprovados >= rowData?.vaga?.qtd_vaga;
+        
+        return {
+            vagaEncerrada,
+            vagaTransferida,
+            vagaAprovada,
+            vagaRejeitada,
+            vagasPreenchidas,
+            temEdicao: !vagaEncerrada && !vagasPreenchidas && !vagaTransferida && !vagaAprovada && !vagaRejeitada,
+            temAprovacao: !vagaEncerrada && !vagaTransferida && !vagaAprovada && vagaConfigurada?.status !== 'R' && !vagasPreenchidas,
+            temRejeicao: !vagaEncerrada && !vagasPreenchidas && !vagaTransferida && vagaConfigurada?.status !== 'R' && vagaConfigurada?.status !== 'A'
+        };
+    };
+
+    // Calcular larguras dinâmicas das colunas
+    const largurasColunas = useMemo(() => {
+        // Verificar se há pelo menos um candidato com ações disponíveis
+        const temAcoesEmAlgumCandidato = listaCandidatos && listaCandidatos.length > 0 
+            ? listaCandidatos.some(candidato => temAcoesDisponiveis(candidato))
+            : false;
+        
+        // Determinar quais colunas estão presentes
+        const colunasDisponiveis = configuracaoColunas.filter(coluna => {
+            if (coluna.nome === 'actions') {
+                // Só mostra actions se houver ações disponíveis em pelo menos um candidato
+                return temAcoesEmAlgumCandidato;
+            }
+            return true; // Outras colunas sempre visíveis
+        });
+
+        // Calcular a proporção total das colunas disponíveis
+        const proporcaoTotal = colunasDisponiveis.reduce((total, coluna) => total + coluna.proporcao, 0);
+
+        // Calcular larguras baseadas na proporção
+        const larguras = {};
+        colunasDisponiveis.forEach(coluna => {
+            larguras[coluna.nome] = `${(coluna.proporcao / proporcaoTotal) * 100}%`;
+        });
+
+        return larguras;
+    }, [listaCandidatos]);
+
+    // Template de ações (só renderiza se houver funções disponíveis)
+    const actionsTemplate = (candidato) => {
+        // Se não há nenhuma função disponível, não renderiza nada
+        if (!onCandidatosUpdate && !onEditarCandidato) {
+            return null;
+        }
+
+        return (
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                {onCandidatosUpdate && (
+                    <button
+                        onClick={() => onCandidatosUpdate(candidato)}
+                        style={{
+                            background: 'var(--primaria)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            padding: '4px 8px',
+                            cursor: 'pointer',
+                            fontSize: '12px'
+                        }}
+                    >
+                        Atualizar
+                    </button>
+                )}
+                {onEditarCandidato && (
+                    <button
+                        onClick={() => onEditarCandidato(candidato)}
+                        style={{
+                            background: 'var(--secundaria)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            padding: '4px 8px',
+                            cursor: 'pointer',
+                            fontSize: '12px'
+                        }}
+                    >
+                        Editar
+                    </button>
+                )}
+            </div>
+        );
+    };
 
     useEffect(() => {
         if (candidatos?.length > 0 && vagaId) {
@@ -370,26 +511,11 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
     );
 
     const actionTemplate = (rowData) => {
-        const hoje = new Date();
-        const encerramento = new Date(rowData?.vaga?.dt_encerramento);
-        const vagaEncerrada = rowData?.vaga?.status === 'F' || hoje > encerramento;
-        const vagaTransferida = rowData?.vaga?.status === 'T';
-        
-        const vagaConfigurada = rowData?.vagas_configuradas?.[0];
-        const vagaAprovada = vagaConfigurada?.status === 'A';
-        const vagaRejeitada = vagaConfigurada?.status === 'R';
-
-        // Conta quantos candidatos já foram aprovados
-        const candidatosAprovados = listaCandidatos.filter(c => 
-            c.vagas_configuradas?.[0]?.status === 'A'
-        ).length;
-
-        // Verifica se já atingiu o limite de vagas
-        const vagasPreenchidas = candidatosAprovados >= rowData?.vaga?.qtd_vaga;
+        const acoes = getAcoesDisponiveis(rowData);
         
         return (
             <div style={{ display: 'flex', gap: '12px' }}>
-               {vagaEncerrada ? (
+               {acoes.vagaEncerrada ? (
                 <Tag
                     value="Vaga encerrada"
                     style={{
@@ -398,7 +524,7 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
                     }}
                 />
                ) : (
-                    vagasPreenchidas && (
+                    acoes.vagasPreenchidas && (
                         <Tag
                             value={ <>
                                 <MdWarning fill='var(--secundaria)' /> {`Quantidade máx de candidatos`}
@@ -415,7 +541,7 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
                 )
                )}
                 {/* Ícone de edição - só aparece para candidatos não aprovados e não rejeitados */}
-                {!vagaEncerrada && !vagasPreenchidas && !vagaTransferida && !vagaAprovada && !vagaRejeitada && (
+                {acoes.temEdicao && (
                     <>
                         <Tooltip target=".editar" mouseTrack mouseTrackLeft={10} />
                         <FaPen 
@@ -431,12 +557,12 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
                     </>
                 )}
                 
-                {!vagaEncerrada && !vagaTransferida && !vagaAprovada && vagaConfigurada?.status !== 'R' && !vagasPreenchidas && (
+                {acoes.temAprovacao && (
                     <>
                         <Tooltip target=".aprovar" mouseTrack mouseTrackLeft={10} />
                         <FaCheck 
                             title="Aprovar" 
-                            data-pr-tooltip={vagaTransferida ? "Vaga transferida - Ação indisponível" : "Aprovar candidato"}
+                            data-pr-tooltip={acoes.vagaTransferida ? "Vaga transferida - Ação indisponível" : "Aprovar candidato"}
                             className="aprovar"
                             onClick={() => handleAprovar(rowData)}
                             style={{
@@ -446,12 +572,12 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
                         />
                     </>
                 )}
-                {!vagaEncerrada && !vagasPreenchidas && !vagaTransferida && vagaConfigurada?.status !== 'R' && vagaConfigurada?.status !== 'A' && (
+                {acoes.temRejeicao && (
                     <>
                         <Tooltip target=".rejeitar" mouseTrack mouseTrackLeft={10} />
                         <FaTimes 
                             title="Rejeitar" 
-                            data-pr-tooltip={vagaTransferida ? "Vaga transferida - Ação indisponível" : "Rejeitar candidato"}
+                            data-pr-tooltip={acoes.vagaTransferida ? "Vaga transferida - Ação indisponível" : "Rejeitar candidato"}
                             className="rejeitar"
                             onClick={() => handleRejeitar(rowData)}
                             style={{
@@ -474,18 +600,15 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
                 </span>
             </div>
             <DataTable value={listaCandidatos} filters={filters} globalFilterFields={['nome', 'email']}  emptyMessage="Não foram encontrados candidatos" selection={selectedCandidato} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
-                <Column body={representativeCandidatoTemplate} field="nome" header="Nome" style={{ width: '15%' }}></Column>
-                <Column body={emailTemplate} field="email" header="E-mail" style={{ width: '25%' }}></Column>
-                <Column body={telefoneTemplate} field="telefone" header="Telefone" style={{ width: '13%' }}></Column>
-                {/* <Column body={deficienciaTemplate} field="deficiencia" header="PCD" style={{ width: '10%' }} /> */}
-                {/* <Column field="cpf" header="CPF" style={{ width: '15%' }}></Column> */}
-                <Column body={representativeDatasTemplate} field="dt_exame_medico" header="Datas" style={{ width: '15%' }}></Column>
-                {/* <Column body={representativeDataExameMedicoTemplate} field="dt_exame_medico" header="Exame Médico" style={{ width: '10%' }}></Column>
-                <Column body={representativeDataInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column> */}
-                <Column body={representativeStatusPreenchimentoTemplate} field="statusDePreenchimento" header="Status" style={{ width: '12%' }} />
-                {/* <Column body={representativeStatusCandidatoTemplate} field="statusDeCandidato" header="Status Candidato" style={{ width: '12%' }} /> */}
-                <Column body={actionTemplate} style={{ width: '15%' }} />
-                {/* <Column field="statusDeCandidato" header="Status Candidato" style={{ width: '10%' }}></Column> */}
+                <Column body={representativeCandidatoTemplate} field="nome" header="Nome" style={{ width: `${largurasColunas.nome}` }}></Column>
+                <Column body={emailTemplate} field="email" header="E-mail" style={{ width: `${largurasColunas.email}` }}></Column>
+                <Column body={telefoneTemplate} field="telefone" header="Telefone" style={{ width: `${largurasColunas.telefone}` }}></Column>
+                <Column body={representativeDatasTemplate} field="dt_exame_medico" header="Datas" style={{ width: `${largurasColunas.data_candidatura}` }}></Column>
+                <Column body={representativeStatusPreenchimentoTemplate} field="statusDePreenchimento" header="Status" style={{ width: `${largurasColunas.status}` }} />
+                {/* Só renderiza a coluna de ações se houver ações disponíveis em pelo menos um candidato */}
+                {listaCandidatos && listaCandidatos.length > 0 && listaCandidatos.some(candidato => temAcoesDisponiveis(candidato)) && (
+                    <Column body={actionTemplate} style={{ width: `${largurasColunas.actions}` }} />
+                )}
             </DataTable>
             <ModalEncaminharVaga
                 opened={modalEncaminharAberto}
