@@ -193,6 +193,9 @@ function DataTableDemissao({
             {!loadingTipos && (
                 <DataTable 
                     value={demissoes} 
+                    rowsPerPageOptions={[5, 10, 25, 50]}
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                    currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} demissões"
                     emptyMessage="Não foram encontradas demissões pendentes" 
                     selection={selectedVaga} 
                     onSelectionChange={(e) => verDetalhes(e.value)} 
@@ -210,15 +213,6 @@ function DataTableDemissao({
                     removableSort
                     showGridlines
                     stripedRows
-                    footerColumnGroup={
-                        paginator ? (
-                            <ColumnGroup>
-                                <Row>
-                                    <Column footer={totalDemissoesTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
-                                </Row>
-                            </ColumnGroup>
-                        ) : null
-                    }
                 >
                     {!colaborador &&
                         <Column body={representativeChapaTemplate} header="Matrícula" sortable field="chapa" style={{ width: '10%' }}></Column>
