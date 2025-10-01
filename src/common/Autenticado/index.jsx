@@ -2,7 +2,6 @@ import MainSection from "@components/MainSection"
 import EstilosGlobais from '@components/GlobalStyles'
 import BarraLateral from "@components/BarraLateral"
 import Cabecalho from "@components/Cabecalho"
-import Botao from "@components/Botao"
 import MainContainer from "@components/MainContainer"
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
@@ -163,14 +162,19 @@ function Autenticado() {
             const selectedCompany = ArmazenadorToken.UserCompanyPublicId;
 
             if (cachedTenants && cachedCompanies && ArmazenadorToken.isCacheValido()) {
+                console.log('🔄 Usar dados do cache');
                 // Usar dados do cache
                 setTenants(cachedTenants);
                 setEmpresas(cachedCompanies);
                 setCompanies(cachedCompanies);
                 if(selected == '') {
+                    console.log('🔄 selected vazio');
                     if(selectedCompany) {
+                        console.log('🔄 selectedCompany');
+                        console.log('🔄 cachedCompanies', cachedCompanies);
                         setSelected(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.id || '');
                         setEmpresa(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.nome || '');
+                        console.log('🔄 setEmpresa', cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.nome);
                         setSessionCompany(selectedCompany);
                         setCompanyDomain(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.domain_url || '');
                         setCompanyLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.logo || '');
@@ -191,8 +195,11 @@ function Autenticado() {
                             });
                         }
                     } else {
+                        console.log('🔄 pegar Parametros de layout porém com cache válido');
+                        console.log('🔄 cachedCompanies', cachedCompanies);
                         setSelected(cachedCompanies[0]?.id_tenant.id || '');
                         setEmpresa(cachedCompanies[0]?.id_tenant.nome || '');
+                        console.log('🔄 setEmpresa', cachedCompanies[0]?.id_tenant.nome);
                         setSessionCompany(cachedCompanies[0]?.id_tenant.id || '');
                         setCompanyDomain(cachedCompanies[0]?.domain_url || '');
                         setCompanyLogo(cachedCompanies[0]?.id_tenant.logo || '');
@@ -216,8 +223,12 @@ function Autenticado() {
                     }
                 }
                 else {
+                    console.log('🔄 pegar Parametros de layout porém com cache válido e selectedCompany');
+                    console.log('🔄 selectedCompany', selectedCompany);
+                    console.log('🔄 cachedCompanies', cachedCompanies);
                     setSelected(selectedCompany);
                     setEmpresa(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.nome || '');
+                    console.log('🔄 setEmpresa', cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.nome);
                     setSessionCompany(selectedCompany);
                     setCompanyDomain(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.domain_url || '');
                     setCompanyLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.logo || '');
@@ -239,6 +250,7 @@ function Autenticado() {
                     }
                 }
             } else {
+                console.log('🔄 Não há cache de tenants');
                 // Buscar dados do servidor
                 http.get(`cliente/?format=json`)
                 .then(async (response) => {
@@ -292,8 +304,11 @@ function Autenticado() {
                 ArmazenadorToken.salvarCompaniesCache(tenants);
 
                 if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
+                    console.log('🔄 selected vazio com UserCompanyPublicId');
+                    console.log('🔄 tenants', tenants);
                     setSelected(tenants[0]?.id_tenant.id || '');
                     setEmpresa(tenants[0]?.id_tenant.nome || '');
+                    console.log('🔄 setEmpresa', tenants[0]?.id_tenant.nome);
                     setSimbolo(tenants[0]?.id_tenant.simbolo || '');
                     setLogo(tenants[0]?.id_tenant.logo || '');
                     
@@ -311,8 +326,11 @@ function Autenticado() {
                     }
                 }
                 else {
+                    console.log('🔄 pegar Parametros de layout');
+                    console.log('🔄 ArmazenadorToken.UserCompanyPublicId', ArmazenadorToken.UserCompanyPublicId);
                     setSelected(ArmazenadorToken.UserCompanyPublicId);
                     setEmpresa(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.nome || '');
+                    console.log('🔄 setEmpresa', tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.nome);
                     setSimbolo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.simbolo || '');
                     setLogo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.logo || '');
                     
@@ -330,6 +348,7 @@ function Autenticado() {
                     }
                 }
             } else {
+                console.log('🔄 Não há domain no cache');
                 // Fallback: buscar domains separadamente (código antigo)
                 // Tentar recuperar domains do cache
                 const cachedDomains = ArmazenadorToken.getDomainsCache();
@@ -346,7 +365,10 @@ function Autenticado() {
                     ArmazenadorToken.salvarCompaniesCache(tenantsWithDomain);
 
                     if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
+                        console.log('🔄 selected vazio com UserCompanyPublicId');
+                        console.log('🔄 tenantsWithDomain', tenantsWithDomain);
                         setSelected(tenantsWithDomain[0]?.id_tenant.id || '');
+                        console.log('🔄 setEmpresa', tenantsWithDomain[0]?.id_tenant.nome);
                         setEmpresa(tenantsWithDomain[0]?.id_tenant.nome || '');
                         setSimbolo(tenantsWithDomain[0]?.id_tenant.simbolo || '');
                         setLogo(tenantsWithDomain[0]?.id_tenant.logo || '');
@@ -365,8 +387,12 @@ function Autenticado() {
                         }
                     }
                     else {
+                        console.log('🔄 pegar Parametros de layout');
+                        console.log('🔄 ArmazenadorToken.UserCompanyPublicId', ArmazenadorToken.UserCompanyPublicId);
+                        console.log('🔄 tenants', tenants);
                         setSelected(ArmazenadorToken.UserCompanyPublicId);
                         setEmpresa(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.nome || '');
+                        console.log('🔄 setEmpresa', tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.nome);
                         setSimbolo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.simbolo || '');
                         setLogo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.logo || '');
                         
@@ -401,13 +427,18 @@ function Autenticado() {
                         ArmazenadorToken.salvarCompaniesCache(tenantsWithDomain);
 
                         if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
+                            console.log('🔄 selected vazio com UserCompanyPublicId');
+                            console.log('🔄 tenantsWithDomain', tenantsWithDomain);
                             setSelected(tenantsWithDomain[0]?.id_tenant.id || '');
+                            console.log('🔄 setEmpresa', tenantsWithDomain[0]?.id_tenant.nome);
                             setEmpresa(tenantsWithDomain[0]?.id_tenant.nome || '');
                             setSimbolo(tenantsWithDomain[0]?.id_tenant.simbolo || '');
                             setLogo(tenantsWithDomain[0]?.id_tenant.logo || '');
                         } else {
+                            console.log('tenantsWithDomain', tenantsWithDomain);
                             setSelected(ArmazenadorToken.UserCompanyPublicId);
                             setEmpresa(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.nome || '');
+                            console.log('🔄 setEmpresa', tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.nome);
                             setSimbolo(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.simbolo || '');
                             setLogo(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.logo || '');
                         }
@@ -422,10 +453,13 @@ function Autenticado() {
         var comp = [];
         if(selected && empresas && empresas.length > 0)
         {
+            console.log('🔄 empresas', empresas);
             comp = empresas.filter(company => company.id_tenant.id == selected);
             if(comp.length > 0 && comp[0].id_tenant.id)
             {
+                console.log('🔄 comp', comp);
                 setEmpresa(comp[0].id_tenant.nome)
+                console.log('🔄 setEmpresa', comp[0].id_tenant.nome);
                 setSessionCompany(comp[0].id_tenant.id)
                 setCompanyDomain(comp[0].domain)
                 setLogo(comp[0].id_tenant.logo)
@@ -475,7 +509,7 @@ function Autenticado() {
     }
 
     function changeCompany(id) {
-        
+        console.log('🔄 changeCompany', id);
         var comp = [];
 
         if(id && empresas)
@@ -484,7 +518,9 @@ function Autenticado() {
            
             if(comp.length > 0 && comp[0].id_tenant.id)
             {
+                console.log('🔄 comp', comp);
                 setEmpresa(comp[0].id_tenant.nome)
+                console.log('🔄 setEmpresa', comp[0].id_tenant.nome);
                 setSimbolo(comp[0].id_tenant.simbolo)
                 setLogo(comp[0].id_tenant.logo)
                 setSelected(id)
