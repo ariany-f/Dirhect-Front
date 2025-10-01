@@ -2289,9 +2289,6 @@ const CandidatoRegistro = () => {
         if (!dadosCandidato.cpf?.trim()) {
             camposObrigatorios.push('CPF');
         }
-        if (!dadosCandidato.email?.trim()) {
-            camposObrigatorios.push('E-mail');
-        }
         if (!dadosCandidato.telefone?.trim()) {
             camposObrigatorios.push('Telefone');
         }
@@ -2704,7 +2701,7 @@ const CandidatoRegistro = () => {
         // Step 1 - Dados Pessoais
         if (activeIndex === 1) {
             const camposObrigatorios = [
-                'nome', 'cpf', 'email', 'telefone', 'dt_nascimento', 'genero', 'cor_raca', 'estado_civil',
+                'nome', 'cpf', 'telefone', 'dt_nascimento', 'genero', 'cor_raca', 'estado_civil',
                 'estado_natal', 'naturalidade', 'cep', 'tipo_rua', 'rua', 'numero',
                 'bairro', 'tipo_bairro', 'cidade', 'estado'
             ];
