@@ -2021,7 +2021,6 @@ const CandidatoRegistro = () => {
             const camposObrigatoriosDadosPessoais = [
                 { campo: 'nome', nome: 'Nome completo' },
                 { campo: 'cpf', nome: 'CPF' },
-                { campo: 'email', nome: 'Email' },
                 { campo: 'ddi', nome: 'DDI' },
                 { campo: 'ddd', nome: 'DDD' },
                 { campo: 'telefone', nome: 'Telefone' },
@@ -2041,14 +2040,14 @@ const CandidatoRegistro = () => {
                 { campo: 'estado', nome: 'Estado' }
             ];
 
-                    camposObrigatoriosDadosPessoais.forEach(({ campo, nome }) => {
-            // Verifica se o campo existe e tem valor (pode ser objeto ou string)
-            const valor = dadosCandidato[campo];
-            if (!valor || (typeof valor === 'object' && !valor.id && !valor.code) || (typeof valor === 'string' && !valor.trim())) {
-                camposObrigatorios.push(nome);
-                setClassError(prev => [...prev, campo]);
-            }
-        });
+            camposObrigatoriosDadosPessoais.forEach(({ campo, nome }) => {
+                // Verifica se o campo existe e tem valor (pode ser objeto ou string)
+                const valor = dadosCandidato[campo];
+                if (!valor || (typeof valor === 'object' && !valor.id && !valor.code) || (typeof valor === 'string' && !valor.trim())) {
+                    camposObrigatorios.push(nome);
+                    setClassError(prev => [...prev, campo]);
+                }
+            });
 
             // Validação de PIS (se preenchido, deve ser válido)
             if (dadosCandidato.pispasep && dadosCandidato.pispasep.trim() !== '' && !validarPIS(dadosCandidato.pispasep)) {
