@@ -1447,7 +1447,7 @@ const CandidatoRegistro = () => {
                 });
                 
                 // Log detalhado de alguns campos importantes para debug
-                const camposDebug = ['nome', 'email', 'email_pessoal', 'cpf', 'dt_nascimento', 'genero', 'estado_civil'];
+                const camposDebug = ['nome', 'email', 'email_pessoal', 'cpf', 'dt_nascimento', 'genero', 'estado_civil', 'nacionalidade', 'cor_raca', 'estado_civil', 'estado_natal', 'naturalidade', 'cep', 'tipo_rua', 'rua', 'numero', 'complemento', 'bairro', 'tipo_bairro', 'cidade', 'estado', 'pais', 'pispasep', 'orgao_emissor_ident', 'data_emissao_ident', 'titulo_eleitor', 'zona_titulo_eleitor', 'secao_titulo_eleitor', 'data_titulo_eleitor', 'estado_emissor_tit_eleitor', 'carteira_trabalho', 'serie_carteira_trab', 'uf_carteira_trab', 'data_emissao_ctps', 'data_venc_ctps', 'nit', 'carteira_motorista', 'tipo_carteira_habilit', 'data_venc_habilit', 'data_emissao_cnh', 'identidade', 'uf_identidade', 'dt_opcao_fgts', 'codigo_situacao_fgts', 'numero_cartao_sus', 'certificado_reservista', 'numero_passaporte', 'data_emissao_passaporte', 'data_validade_passaporte', 'rnm', 'uf_emissor_rnm', 'data_emissao_rnm', 'data_vencimento_rnm', 'decreto_imigracao', 'registro_profissional', 'uf_registro_profissional', 'data_emissao_registro_profissional', 'tipo_sanguineo', 'circunscricao_militar', 'orgao_expedicao', 'regiao_militar', 'situacao_militar', 'telefone1', 'telefone2', 'email_pessoal', 'ddi', 'ddd', 'ddi1', 'ddd1', 'ddi2', 'ddd2'];
                
                 
                 // Comparação detalhada para identificar diferenças
@@ -2029,6 +2029,7 @@ const CandidatoRegistro = () => {
                 { campo: 'cor_raca', nome: 'Cor/Raça' },
                 { campo: 'estado_civil', nome: 'Estado Civil' },
                 { campo: 'estado_natal', nome: 'Estado Natal' },
+                { campo: 'nacionalidade', nome: 'Nacionalidade' },
                 { campo: 'naturalidade', nome: 'Naturalidade' },
                 { campo: 'cep', nome: 'CEP' },
                 { campo: 'tipo_rua', nome: 'Tipo de Logradouro' },
@@ -2294,6 +2295,18 @@ const CandidatoRegistro = () => {
         }
         if (!dadosCandidato.dt_nascimento) {
             camposObrigatorios.push('Data de nascimento');
+        }
+        if (!dadosCandidato.nacionalidade?.trim()) {
+            camposObrigatorios.push('Nacionalidade');
+        }
+        if (!dadosCandidato.genero?.trim()) {
+            camposObrigatorios.push('Gênero');
+        }
+        if (!dadosCandidato.cor_raca?.trim()) {
+            camposObrigatorios.push('Cor/Raça');
+        }
+        if (!dadosCandidato.estado_civil?.trim()) {
+            camposObrigatorios.push('Estado Civil');
         }
         
         // Validação de dados bancários obrigatórios
@@ -2702,7 +2715,7 @@ const CandidatoRegistro = () => {
         if (activeIndex === 1) {
             const camposObrigatorios = [
                 'nome', 'cpf', 'telefone', 'dt_nascimento', 'genero', 'cor_raca', 'estado_civil',
-                'estado_natal', 'naturalidade', 'cep', 'tipo_rua', 'rua', 'numero',
+                'estado_natal', 'nacionalidade', 'naturalidade', 'cep', 'tipo_rua', 'rua', 'numero',
                 'bairro', 'tipo_bairro', 'cidade', 'estado'
             ];
             

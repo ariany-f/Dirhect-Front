@@ -1022,6 +1022,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                 disabled={modoLeitura}
             />
             <DropdownItens
+                camposVazios={isCampoEmErro('nacionalidade') ? ['nacionalidade'] : []}
                 name="nacionalidade"
                 label="Nacionalidade"
                 required={true}
