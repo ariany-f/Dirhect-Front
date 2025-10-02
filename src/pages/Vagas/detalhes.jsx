@@ -422,7 +422,7 @@ function DetalhesVaga() {
             });
     };
 
-    const handleAdicionarCandidato = (dados) => {
+    const handleAdicionarCandidato = async (dados) => {
         const {
             nome,
             email,
@@ -447,23 +447,20 @@ function DetalhesVaga() {
             vaga_id: id
         };
 
-        http.post(`candidato/`, dadosCandidato)
-            .then(response => {
-                toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Candidato encaminhado com sucesso!', life: 3000 });
-                setModalAdicionarCandidatoAberto(false);
-                // Recarrega os dados da vaga
-                http.get(`vagas/${id}/?format=json`)
-                    .then(response => {
-                        setVaga(response);
-                    })
-                    .catch(error => {
-                        console.error('Erro ao recarregar vaga:', error);
-                    });
-            })
-            .catch(error => {
-                console.error('Erro ao adicionar candidato:', error);
-                toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao encaminhar candidato', life: 3000 });
-            });
+        try {
+            const response = await http.post(`candidato/`, dadosCandidato);
+            toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Candidato encaminhado com sucesso!', life: 3000 });
+            setModalAdicionarCandidatoAberto(false);
+            
+            // Recarrega os dados da vaga
+            const vagaResponse = await http.get(`vagas/${id}/?format=json`);
+            setVaga(vagaResponse);
+            
+        } catch (error) {
+            console.error('Erro ao adicionar candidato:', error);
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao encaminhar candidato', life: 3000 });
+            throw error; // Re-throw o erro para que o modal saiba que falhou
+        }
     };
 
     const handleEditarCandidato = (candidato) => {

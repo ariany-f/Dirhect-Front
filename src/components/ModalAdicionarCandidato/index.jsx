@@ -145,7 +145,7 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
     return camposObrigatorios.length === 0;
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     console.log('Tentando salvar candidato:', { nome, email, cpf, nascimento, telefone });
     
     if (!validarCampos()) {
@@ -173,14 +173,24 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
     }
 
     console.log('Validação passou, salvando candidato...');
-    aoSalvar({
-      nome,
-      email,
-      cpf,
-      nascimento,
-      telefone
-    });
-    limparCampos();
+    
+    try {
+      // Chama a função aoSalvar e aguarda o resultado
+      await aoSalvar({
+        nome,
+        email,
+        cpf,
+        nascimento,
+        telefone
+      });
+      
+      // Só limpa os campos se o aoSalvar foi bem-sucedido
+      limparCampos();
+      
+    } catch (error) {
+      console.error('Erro ao salvar candidato:', error);
+      // Não limpa os campos em caso de erro
+    }
   };
 
   return (
