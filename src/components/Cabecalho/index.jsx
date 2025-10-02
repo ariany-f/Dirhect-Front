@@ -478,7 +478,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
           url: '/tabelas-de-sistema',
           icon: <RiTable2 size={18}/>
         },
-        ...(ArmazenadorToken.hasPermission('view_feriados') ? [
+        ...(ArmazenadorToken.hasPermission('view_feriados') || ArmazenadorToken.hasPermission('view_calendario') ? [
           { 
             label: t("holidays"), 
             url: '/auxiliar',

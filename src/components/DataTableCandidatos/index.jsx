@@ -507,7 +507,7 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
     );
 
     const telefoneTemplate = (rowData) => (
-        <span style={{ fontSize: 13 }}>{rowData.telefone || '-----'}</span>
+        <span style={{ fontSize: 13 }}>{rowData.ddi} {rowData.ddd} {rowData.telefone || '-----'}</span>
     );
 
     const actionTemplate = (rowData) => {

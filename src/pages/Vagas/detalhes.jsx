@@ -428,6 +428,8 @@ function DetalhesVaga() {
             email,
             cpf,
             nascimento,
+            ddi,
+            ddd,
             telefone
         } = dados;
 
@@ -439,6 +441,8 @@ function DetalhesVaga() {
             content: '',
             cpf: cpfNumerico,
             dt_nascimento: (nascimento || '2000-01-01'),
+            ddi: ddi || '',
+            ddd: ddd || '',
             telefone: telefone || '',
             dt_inicio: '2023-01-01',
             salario: null,

@@ -6,7 +6,7 @@ import { Toast } from 'primereact/toast'
 import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import ModalEditarFeriado from '../ModalEditarFeriado';
+import ModalEditarCalendario from '../ModalEditarCalendario';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Tooltip } from 'primereact/tooltip';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
@@ -15,15 +15,15 @@ import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
 import { FaPen, FaTimes as FaCancel, FaFileExcel } from 'react-icons/fa';
 import Botao from '@components/Botao';
 
-function DataTableFeriados({ feriados, showSearch = true, pagination = true, rows, totalRecords, first, onPage, totalPages, onSearch, selected = null, setSelected = () => { }, onUpdate, sortField, sortOrder, onSort, onExportExcel, exportingExcel = false }) {
+function DataTableCalendarios({ calendarios, showSearch = true, pagination = true, rows, totalRecords, first, onPage, totalPages, onSearch, selected = null, setSelected = () => { }, onUpdate, sortField, sortOrder, onSort, onExportExcel, exportingExcel = false }) {
 
-    const[selectedFeriado, setSelectedFeriado] = useState({})
+    const[selectedCalendario, setSelectedCalendario] = useState({})
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [modalOpened, setModalOpened] = useState(false)
     const [modalColaboradoresOpened, setModalColaboradoresOpened] = useState(false)
-    const [selectedFeriadoColaboradores, setSelectedFeriadoColaboradores] = useState({})
+    const [selectedCalendarioColaboradores, setSelectedCalendarioColaboradores] = useState({})
     const toast = useRef(null)
-    const [selectedFeriados, setSelectedFeriados] = useState([]);
+    const [selectedCalendarios, setSelectedCalendarios] = useState([]);
     const [integracaoStates, setIntegracaoStates] = useState({});
     const [bulkIntegrationMode, setBulkIntegrationMode] = useState(false);
     const [selectedForIntegration, setSelectedForIntegration] = useState([]);
@@ -43,8 +43,8 @@ function DataTableFeriados({ feriados, showSearch = true, pagination = true, row
     };
     
     // Larguras base quando todas as colunas estão visíveis
-    // Ordem: Nome, Tipo, Data, Hora Início, Hora Fim, Calendário, Ações
-    const larguraBase = [20, 10, 12, 15, 15, 18, 10];
+    // Ordem: Nome, ID Origem, Descrição, Ações
+    const larguraBase = [30, 10, 30, 20];
     
     // Calcula larguras redistribuídas
     const calcularLarguras = () => {
@@ -74,13 +74,13 @@ function DataTableFeriados({ feriados, showSearch = true, pagination = true, row
     };
 
     useEffect(() => {
-        if (selected && Array.isArray(selected) && selected.length > 0 && feriados) {
-            const feriadosSelecionados = feriados.filter(feriado => selected.includes(feriado.id));
-            setSelectedFeriados(feriadosSelecionados);
+        if (selected && Array.isArray(selected) && selected.length > 0 && calendarios) {
+            const calendariosSelecionados = calendarios.filter(calendario => selected.includes(calendario.id));
+            setSelectedCalendarios(calendariosSelecionados);
         } else {
-            setSelectedFeriados([]);
+            setSelectedCalendarios([]);
         }
-    }, [selected, feriados]);
+    }, [selected, calendarios]);
 
     const navegar = useNavigate()
 
@@ -94,59 +94,35 @@ function DataTableFeriados({ feriados, showSearch = true, pagination = true, row
     }
 
     function verDetalhes(value) {
-        setSelectedFeriado(value); // Atualiza o estado
+        setSelectedCalendario(value); // Atualiza o estado
         setTimeout(() => setModalOpened(true), 0); // Aguarda a atualização do estado
     }
 
-    const representativeDataTemplate = (rowData) => {
+    const representativeDescricaoTemplate = (rowData) => {
         return (
-            <div>
-                {new Date(rowData.data).toLocaleDateString('pt-BR')}
+            <div style={{ 
+                maxWidth: '300px', 
+                overflow: 'hidden', 
+                textOverflow: 'ellipsis', 
+                whiteSpace: 'nowrap' 
+            }}>
+                {rowData.descricao || '-'}
             </div>
         )
     }
 
-    const representativeTipoTemplate = (rowData) => {
-        let tipo = '';
-        switch (rowData.tipo) {
-            case '1':
-                tipo = 'Nacional';
-                break;
-            case '2':
-                tipo = 'Estadual';
-                break;
-            case '3':
-                tipo = 'Municipal';
-                break;
-        }
-        return (
-            <div>
-                {tipo}
-            </div>
-        )
-    }
-
-    const representativeCalendarioTemplate = (rowData) => {
-        
-        return (
-            <div>
-                {rowData.calendario_nome ? rowData.calendario_nome : '-'}
-            </div>
-        )
-    }
-
-    const excluirFeriado = (id) => {
+    const excluirCalendario = (id) => {
         confirmDialog({
-            message: 'Tem certeza que deseja excluir este feriado?',
+            message: 'Tem certeza que deseja excluir este calendario?',
             header: 'Deletar',
             icon: 'pi pi-info-circle',
             accept: () => {
-                http.delete(`/feriados/${id}/?format=json`)
+                http.delete(`/calendarios/${id}/?format=json`)
                 .then(() => {
                     toast.current.show({
                         severity: 'success',
                         summary: 'Sucesso',
-                        detail: 'Feriado excluído com sucesso',
+                        detail: 'Calendario excluído com sucesso',
                         life: 3000
                     });
                     
@@ -158,30 +134,30 @@ function DataTableFeriados({ feriados, showSearch = true, pagination = true, row
                     toast.current.show({
                         severity: 'error',
                         summary: 'Erro',
-                        detail: 'Não foi possível excluir o feriado',
+                        detail: 'Não foi possível excluir o calendario',
                         life: 3000
                     });
-                    console.error('Erro ao excluir feriado:', error);
+                    console.error('Erro ao excluir calendario:', error);
                 });
             },
             reject: () => {}
         });
     };
 
-    // Função para editar feriado
-    const editarFeriadoClick = (feriado) => {
-        setSelectedFeriado(feriado);
+    // Função para editar calendario
+    const editarCalendarioClick = (calendario) => {
+        setSelectedCalendario(calendario);
         setModalOpened(true);
     };
 
-    // Função para salvar edição do feriado
-    const editarFeriado = (data, id) => {
-        http.put(`/feriados/${id}/?format=json`, data)
+    // Função para salvar edição do calendario
+    const editarCalendario = (data, id) => {
+        http.put(`/calendarios/${id}/?format=json`, data)
             .then(() => {
                 toast.current.show({
                     severity: 'success',
                     summary: 'Sucesso',
-                    detail: 'Feriado atualizado com sucesso',
+                    detail: 'Calendario atualizado com sucesso',
                     life: 3000
                 });
                 
@@ -194,10 +170,10 @@ function DataTableFeriados({ feriados, showSearch = true, pagination = true, row
                 toast.current.show({
                     severity: 'error',
                     summary: 'Erro',
-                    detail: 'Não foi possível atualizar o feriado',
+                    detail: 'Não foi possível atualizar o calendario',
                     life: 3000
                 });
-                console.error('Erro ao atualizar feriado:', error);
+                console.error('Erro ao atualizar calendario:', error);
             });
     };
 
@@ -211,14 +187,14 @@ function DataTableFeriados({ feriados, showSearch = true, pagination = true, row
                 justifyContent: 'center'
             }}>
                  <Tooltip style={{fontSize: '10px'}} target=".edit" mouseTrack mouseTrackLeft={10} />
-                {ArmazenadorToken.hasPermission('change_feriados') && (
+                {ArmazenadorToken.hasPermission('change_calendario') && (
                 <FaPen 
                     className="edit" 
-                    data-pr-tooltip="Editar Feriado" 
+                    data-pr-tooltip="Editar Calendario" 
                     size={16} 
                     onClick={(e) => {
                         e.stopPropagation();
-                        editarFeriadoClick(rowData);
+                        editarCalendarioClick(rowData);
                     }}
                     style={{
                         cursor: 'pointer',
@@ -227,14 +203,14 @@ function DataTableFeriados({ feriados, showSearch = true, pagination = true, row
                 />
                 )}
                 <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
-                {ArmazenadorToken.hasPermission('delete_feriados') && (
+                {ArmazenadorToken.hasPermission('delete_calendario') && (
                     <RiDeleteBin6Line 
                         className="delete" 
-                        data-pr-tooltip="Excluir Feriado" 
+                        data-pr-tooltip="Excluir Calendario" 
                         size={16} 
                         onClick={(e) => {
                             e.stopPropagation();
-                            excluirFeriado(rowData.id);
+                            excluirCalendario(rowData.id);
                         }}
                         style={{
                             cursor: 'pointer',
@@ -263,18 +239,18 @@ function DataTableFeriados({ feriados, showSearch = true, pagination = true, row
             <div style={{ display: 'flex', width: '100%', justifyContent: showSearch ? "space-between" : "flex-end", alignItems: 'center', marginBottom: '16px' }}>
                 {showSearch && 
                     <span className="p-input-icon-left">
-                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar feriados" />
+                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar calendarios" />
                     </span>
                 }
             </div>
             <DataTable 
                 key={`${JSON.stringify(integracaoStates)}-${bulkIntegrationMode}`}
-                value={feriados} 
+                value={calendarios} 
                 rowsPerPageOptions={[5, 10, 25, 50]}
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} feriados"
-                emptyMessage="Não foram encontrados feriados" 
-                selection={bulkIntegrationMode ? selectedForIntegration : (selected ? selectedFeriados : selectedFeriado)} 
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} calendarios"
+                emptyMessage="Não foram encontrados calendarios" 
+                selection={bulkIntegrationMode ? selectedForIntegration : (selected ? selectedCalendarios : selectedCalendario)} 
                 selectionMode={bulkIntegrationMode ? "checkbox" : (selected ? "checkbox" : "single")} 
                 paginator={pagination} 
                 lazy
@@ -293,15 +269,12 @@ function DataTableFeriados({ feriados, showSearch = true, pagination = true, row
                     <Column selectionMode="multiple" style={{ width: `${largurasColunas[0]}%` }}></Column>
                 )}
                 <Column field="nome" header="Nome" style={{ width: `${largurasColunas[getColumnIndex(1)]}%` }}></Column>
-                <Column field="tipo" body={representativeTipoTemplate} header="Tipo" style={{ width: `${largurasColunas[getColumnIndex(2)]}%` }}></Column>
-                <Column field="data" body={representativeDataTemplate} header="Data" style={{ width: `${largurasColunas[getColumnIndex(3)]}%` }}></Column>
-                <Column field="horainicio" header="Hora Início" style={{ width: `${largurasColunas[getColumnIndex(4)]}%` }}></Column>
-                <Column field="horafim" header="Hora Fim" style={{ width: `${largurasColunas[getColumnIndex(5)]}%` }}></Column>
-                <Column field="calendario" body={representativeCalendarioTemplate} header="Calendário" style={{ width: `${largurasColunas[getColumnIndex(6)]}%` }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: `${largurasColunas[getColumnIndex(7)]}%` }}></Column>
+                <Column field="id_origem" header="ID Origem" style={{ width: `${largurasColunas[getColumnIndex(2)]}%` }}></Column>
+                <Column field="descricao" body={representativeDescricaoTemplate} header="Descrição" style={{ width: `${largurasColunas[getColumnIndex(3)]}%` }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: `${largurasColunas[getColumnIndex(4)]}%` }}></Column>
             </DataTable>
-            <ModalEditarFeriado aoSalvar={editarFeriado} feriado={selectedFeriado} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+            <ModalEditarCalendario aoSalvar={editarCalendario} calendario={selectedCalendario} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }
-export default DataTableFeriados
+export default DataTableCalendarios

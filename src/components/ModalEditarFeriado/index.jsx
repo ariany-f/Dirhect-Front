@@ -8,6 +8,7 @@ import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
 import { ArmazenadorToken } from "@utils"
+import http from "@http"
 
 const Col12 = styled.div`
     display: flex;
@@ -38,9 +39,9 @@ const Wrapper = styled.div`
 
 // Opções de tipos de feriado
 const tiposFeriado = [
-    { name: '1 - Nacional', value: '1' },
-    { name: '2 - Estadual', value: '2' },
-    { name: '3 - Municipal', value: '3' }
+    { name: '1 - Nacional', code: '1' },
+    { name: '2 - Estadual', code: '2' },
+    { name: '3 - Municipal', code: '3' }
 ];
 
 function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
@@ -50,10 +51,34 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
     const [tipo, setTipo] = useState(null);
     const [horaInicio, setHoraInicio] = useState('');
     const [horaFim, setHoraFim] = useState('');
+    const [calendario, setCalendario] = useState(null);
+    const [calendarios, setCalendarios] = useState([]);
     const [id, setId] = useState(null);
+    const [key, setKey] = useState(0); // Adicionar esta linha
 
+    // Carrega calendários quando o modal abre
     useEffect(() => {
-        if (feriado && opened) {
+        if (opened) {
+            http.get('calendario/?format=json')
+                .then(response => {
+                    const calendariosFormatados = response.map(cal => ({
+                        name: cal.nome,
+                        code: cal.id  // Usar 'code' em vez de 'value'
+                    }));
+                    setCalendarios(calendariosFormatados);
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar calendários:', error);
+                });
+        }
+    }, [opened]);
+
+    // Efeito para preencher os campos quando estiver editando
+    useEffect(() => {
+        if (feriado && opened && calendarios.length > 0) {
+            console.log('Feriado recebido:', feriado);
+            console.log('Calendários disponíveis:', calendarios);
+            
             setNome(feriado.nome || '');
             setData(feriado.data || '');
             setHoraInicio(feriado.horainicio || '');
@@ -61,10 +86,30 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
             setId(feriado.id);
             
             // Encontrar o tipo correto baseado no valor
-            const tipoSelecionado = tiposFeriado.find(t => t.value === feriado.tipo);
+            const tipoSelecionado = tiposFeriado.find(t => t.code == feriado.tipo);
             setTipo(tipoSelecionado || null);
+
+            // Encontrar o calendário correto baseado no valor
+            if (feriado.calendario) {
+                console.log('Procurando calendário com ID:', feriado.calendario);
+                const calendarioSelecionado = calendarios.find(cal => {
+                    return cal.code == feriado.calendario;
+                });
+                console.log('Calendário encontrado:', calendarioSelecionado);
+                setCalendario(calendarioSelecionado || null);
+            }
+        } else if (!opened) {
+            // Limpa os campos quando fecha o modal
+            setNome('');
+            setData('');
+            setHoraInicio('');
+            setHoraFim('');
+            setTipo(null);
+            setCalendario(null);
+            setId(null);
+            setClassError([]);
         }
-    }, [feriado, opened]);
+    }, [feriado, opened, calendarios]);
 
     const validarESalvar = () => {
         let errors = [];
@@ -73,6 +118,7 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
         if (!tipo) errors.push('tipo');
         if (!horaInicio) errors.push('horainicio');
         if (!horaFim) errors.push('horafim');
+        if (!calendario) errors.push('calendario');
         
         if (errors.length > 0) {
             setClassError(errors);
@@ -82,13 +128,25 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
         const dadosParaAPI = {
             nome: nome.trim(),
             data: data,
-            tipo: tipo,
+            tipo: tipo.code,  // Usar 'code' em vez de 'value'
             horainicio: horaInicio,
-            horafim: horaFim
+            horafim: horaFim,
+            calendario: calendario.code
         };
         
         aoSalvar(dadosParaAPI, id);
     };
+
+    // No JSX, remover os templates e usar o padrão simples:
+    <DropdownItens
+        camposVazios={classError.includes('calendario') ? ['calendario'] : []}
+        name="calendario"
+        valor={calendario}
+        setValor={setCalendario}
+        options={calendarios}
+        label="Calendário*"
+        placeholder="Selecione o calendário"
+    />
 
     return (
         <>
@@ -168,6 +226,21 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
                                         placeholder="23:59" 
                                     />
                                 </Col4>
+                            </Col12>
+
+                            <Col12>
+                                <Col6>
+                                    <DropdownItens
+                                        key={key}
+                                        camposVazios={classError.includes('calendario') ? ['calendario'] : []}
+                                        name="calendario"
+                                        valor={calendario}
+                                        setValor={setCalendario}
+                                        options={calendarios}
+                                        label="Calendário*"
+                                        placeholder="Selecione o calendário"
+                                    />
+                                </Col6>
                             </Col12>
 
                             <Botao

@@ -202,6 +202,7 @@ import ColaboradorDemissao from './pages/Colaboradores/Detalhes/demissao'
 import Estatisticas from './pages/Tarefas/estatisticas'
 import Auxiliar from './pages/Auxiliares'
 import FeriadosLista from './pages/Auxiliares/feriados'
+import CalendariosLista from './pages/Auxiliares/calendarios'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
@@ -340,6 +341,7 @@ function AppRouter() {
 
               <Route path="auxiliar" element={<Auxiliar />} >
                 <Route index element={<FeriadosLista />} />
+                <Route path="calendarios" element={<CalendariosLista />} />
               </Route>
 
               <Route path="estrutura" element={<EstruturaOrganizacional />} >

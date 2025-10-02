@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RiCloseFill } from 'react-icons/ri';
 import styled from "styled-components";
 import Botao from "@components/Botao";
@@ -8,6 +8,7 @@ import DropdownItens from "@components/DropdownItens";
 import Titulo from "@components/Titulo";
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
 import styles from './ModalAdicionarFeriado.module.css';
+import http from "@http";
 
 const Col12 = styled.div`
     display: flex;
@@ -50,6 +51,24 @@ function ModalAdicionarFeriado({ opened = false, aoFechar, aoSalvar }) {
     const [tipo, setTipo] = useState(null);
     const [horaInicio, setHoraInicio] = useState('');
     const [horaFim, setHoraFim] = useState('');
+    const [calendario, setCalendario] = useState(null);
+    const [calendarios, setCalendarios] = useState([]);
+
+    useEffect(() => {
+        if(opened) {
+            http.get('/calendario/')
+                .then((response) => {
+                    const calendariosFormatados = response.map(cal => ({
+                        name: cal.nome,
+                        value: cal.id
+                    }))
+                    setCalendarios(calendariosFormatados);
+                })
+                .catch((error) => {
+                    console.error('Erro ao buscar calendários:', error);
+                });
+        }
+    }, [opened]);
 
     const validarESalvar = () => {
         let errors = [];
@@ -58,6 +77,7 @@ function ModalAdicionarFeriado({ opened = false, aoFechar, aoSalvar }) {
         if (!tipo) errors.push('tipo');
         if (!horaInicio) errors.push('horainicio');
         if (!horaFim) errors.push('horafim');
+        if (!calendario) errors.push('calendario');
         
         if (errors.length > 0) {
             setClassError(errors);
@@ -69,7 +89,8 @@ function ModalAdicionarFeriado({ opened = false, aoFechar, aoSalvar }) {
             data: data,
             tipo: tipo,
             horainicio: horaInicio,
-            horafim: horaFim
+            horafim: horaFim,
+            calendario: calendario
         };
         
         aoSalvar(dadosParaAPI);
@@ -90,6 +111,20 @@ function ModalAdicionarFeriado({ opened = false, aoFechar, aoSalvar }) {
                         </Frame>
                         
                         <Wrapper>
+                            <Col12>
+                                <Col6>
+                                    <DropdownItens
+                                        camposVazios={classError.includes('calendario') ? ['calendario'] : []}
+                                        name="calendario"
+                                        valor={calendario}
+                                        setValor={setCalendario}
+                                        options={calendarios}
+                                        label="Calendário*"
+                                        placeholder="Selecione o calendário"
+                                        optionLabel="name"
+                                    />
+                                </Col6>
+                            </Col12>
                             <Col12>
                                 <Col6>
                                     <CampoTexto 

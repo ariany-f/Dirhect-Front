@@ -10,10 +10,10 @@ import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
 import { FaFileExcel } from 'react-icons/fa'
 import { GrAddCircle } from 'react-icons/gr'
-import ModalAdicionarFeriado from '@components/ModalAdicionarFeriado'
+import ModalAdicionarCalendario from '@components/ModalAdicionarCalendario'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
-import DataTableFeriados from '@components/DataTableFeriados'
+import DataTableCalendarios from '@components/DataTableCalendarios'
 import { ArmazenadorToken } from '@utils'
 
 const ConteudoFrame = styled.div`
@@ -23,9 +23,9 @@ const ConteudoFrame = styled.div`
     width: 100%;
 `
 
-function FeriadosLista() {
+function CalendariosLista() {
     const [loading, setLoading] = useState(false)
-    const [feriados, setFeriados] = useState(null)
+    const [calendarios, setCalendarios] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
     const [page, setPage] = useState(1);
@@ -41,9 +41,9 @@ function FeriadosLista() {
     const loadData = (currentPage, currentPageSize, search = '', sort = '', order = '') => {
         setLoading(true);
         const orderParam = (sort && order) ? `&ordering=${order === 'desc' ? '-' : ''}${sort}` : '';
-        http.get(`feriados/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`)
+        http.get(`calendario/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`)
             .then(response => {
-                setFeriados(response.results);
+                setCalendarios(response.results);
                 setTotalRecords(response.count);
                 setTotalPages(response.total_pages);
             })
@@ -83,15 +83,15 @@ function FeriadosLista() {
         loadData(page, pageSize, searchTerm, field, order);
     };
 
-    const adicionarFeriado = (data) => {
+    const adicionarCalendario = (data) => {
         setLoading(true);
         console.log(data);
-        http.post('feriados/', data)
+        http.post('calendario/', data)
             .then(response => {
                 toast.current.show({
                     severity: 'success',
                     summary: 'Sucesso',
-                    detail: 'Feriado criado com sucesso!',
+                    detail: 'Calendario criado com sucesso!',
                     life: 3000
                 });
             })
@@ -99,7 +99,7 @@ function FeriadosLista() {
                 toast.current.show({
                     severity: 'error',
                     summary: 'Erro',
-                    detail: 'Erro ao criar feriado',
+                    detail: 'Erro ao criar calendario',
                     life: 3000
                 });
             })
@@ -109,14 +109,14 @@ function FeriadosLista() {
             });
     }
 
-    const editarFeriado = (data, id) => {
+    const editarCalendario = (data, id) => {
         setLoading(true);
-        http.put(`feriados/${id}/?format=json`, data)
+        http.put(`calendario/${id}/?format=json`, data)
             .then(response => {
                 toast.current.show({
                     severity: 'success',
                     summary: 'Sucesso',
-                    detail: 'Feriado atualizado com sucesso!',
+                    detail: 'Calendario atualizado com sucesso!',
                     life: 3000
                 });
             })
@@ -124,7 +124,7 @@ function FeriadosLista() {
                 toast.current.show({
                     severity: 'error',
                     summary: 'Erro',
-                    detail: 'Erro ao atualizar feriado',
+                    detail: 'Erro ao atualizar calendario',
                     life: 3000
                 });
             })
@@ -135,14 +135,14 @@ function FeriadosLista() {
     }
 
     const exportarExcel = () => {
-        http.get('feriados/export-excel/', {
+        http.get('calendarios/export-excel/', {
             responseType: 'blob'
         })
             .then(response => {
                 const url = window.URL.createObjectURL(new Blob([response]));
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', `feriados_${dataFormatada}_${horaFormatada}.xlsx`);
+                link.setAttribute('download', `calendarios_${dataFormatada}_${horaFormatada}.xlsx`);
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
@@ -175,14 +175,14 @@ function FeriadosLista() {
             <Loading opened={loading} />
             <BotaoGrupo align="space-between">
                 <BotaoGrupo tabs>
-                    <Link to="/auxiliar">
-                        <Botao estilo={'black'} size="small" tab>Feriados</Botao>
-                    </Link>
-                    {ArmazenadorToken.hasPermission('view_calendario') && (
-                        <Link to="/auxiliar/calendarios">
-                            <Botao estilo={''} size="small" tab>Calendários</Botao>
+                    {ArmazenadorToken.hasPermission('view_feriados') && (
+                        <Link to="/auxiliar">
+                            <Botao estilo={''} size="small" tab>Feriados</Botao>
                         </Link>
                     )}
+                    <Link to="/auxiliar/calendarios">
+                        <Botao estilo={'black'} size="small" tab>Calendários</Botao>
+                    </Link>
                 </BotaoGrupo>
                 <BotaoGrupo>
                     <Botao 
@@ -199,15 +199,15 @@ function FeriadosLista() {
                         />
                         {exportingExcel ? 'Exportando...' : 'Exportar Excel'}
                     </Botao>
-                    {ArmazenadorToken.hasPermission('add_feriados') &&
-                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um feriado</Botao>
+                    {ArmazenadorToken.hasPermission('add_calendario') &&
+                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um calendario</Botao>
                     }
                 </BotaoGrupo>
             </BotaoGrupo>
             
             {
-                <DataTableFeriados 
-                    feriados={feriados}
+                <DataTableCalendarios 
+                    calendarios={calendarios}
                     paginator={true}
                     rows={pageSize}
                     totalRecords={totalRecords}
@@ -224,9 +224,9 @@ function FeriadosLista() {
                 />
             }
         </ConteudoFrame>
-        <ModalAdicionarFeriado aoSalvar={adicionarFeriado} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+        <ModalAdicionarCalendario aoSalvar={adicionarCalendario} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }
 
-export default FeriadosLista
+export default CalendariosLista
