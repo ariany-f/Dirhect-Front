@@ -33,7 +33,7 @@ import ColaboradorRegistroSucesso from '@pages/Colaboradores/Registro/sucesso'
 import EstruturaOrganizacional from '@pages/Estrutura'
 import DepartamentoLista from '@pages/Estrutura/departamentos'
 import DepartamentoDetalhes from '@pages/Estrutura/departamento/detalhes'
-import DepartamentoAdicionarColaboradores from '@pages/Estrutura/adicionar-colaboradores'
+import EstruturaAdicionarColaboradores from '@pages/Estrutura/adicionar-colaboradores'
 import DepartamentoColaboradores from '@pages/Estrutura/colaboradores-sem-departamento'
 import LinhasTransporte from '@pages/LinhasTransporte'
 import ListaLinhasTransporte from '@pages/LinhasTransporte/lista'
@@ -354,15 +354,15 @@ function AppRouter() {
                 <Route path="centros-custo" element={<CentrosCustoLista />} />
                 <Route path="horarios" element={<HorariosLista />} />
                 <Route path="colaboradores-sem-departamento" element={<DepartamentoColaboradores />} />
-                <Route path=":id/adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />
-                <Route path="adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />
+                <Route path=":id/adicionar-colaboradores" element={<EstruturaAdicionarColaboradores />} />
+                <Route path="adicionar-colaboradores" element={<EstruturaAdicionarColaboradores />} />
                 <Route path="departamento/detalhes/:id" element={<DepartamentoDetalhes />} >
                     <Route index element={<EstruturaConfiguracaoBeneficios type="departamento" />} />
                     <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
                 </Route>
                 <Route path="filial/detalhes/:id" element={<FilialDetalhes />} >
                     <Route index element={<EstruturaConfiguracaoBeneficios type="filial" />} />
-                    <Route  path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
+                    <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
                 </Route>
                 <Route path="colaborador/detalhes/:id" element={<EstruturaColaboradorDetalhes />} >
                     <Route index element={<EstruturaConfiguracaoBeneficios type="funcionario" />} />
