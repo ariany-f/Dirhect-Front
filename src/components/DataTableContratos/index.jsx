@@ -62,7 +62,7 @@ function DataTableContratos({
 
     // Configuração de larguras das colunas
     // Ordem: Operadora, Observação, Data Início, Data Fim, Situação, Benefícios com Regras, Itens com Regras, Ações
-    const larguraBase = [17, 11, 10, 10, 10, 10, 9, 14, 6];
+    const larguraBase = [17, 11, 10, 10, 12, 10, 9, 14, 6];
     
     // Verifica se há colunas condicionais (no caso atual, todas são sempre exibidas)
     const exibeColunasOpcionais = {
