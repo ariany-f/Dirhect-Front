@@ -193,7 +193,13 @@ function DataTableFeriados({
     };
 
     const representativeDataTemplate = (rowData) => {
-        return new Date(rowData.data).toLocaleDateString('pt-BR');
+        // Se a data já vem formatada da API
+        if (rowData.data.includes('/')) {
+            return rowData.data;
+        }
+        // Se vem no formato ISO, corrigir o fuso horário
+        const data = new Date(rowData.data + 'T00:00:00');
+        return data.toLocaleDateString('pt-BR');
     };
 
     const representativeHoraTemplate = (rowData, field) => {
@@ -406,8 +412,8 @@ function DataTableFeriados({
                 <Column field="nome" header="Nome" style={{ width: `${largurasColunas[getColumnIndex(1)]}%` }}></Column>
                 <Column field="tipo" body={representativeTipoTemplate} header="Tipo" style={{ width: `${largurasColunas[getColumnIndex(2)]}%` }}></Column>
                 <Column field="data" body={representativeDataTemplate} header="Data" style={{ width: `${largurasColunas[getColumnIndex(3)]}%` }}></Column>
-                <Column field="hora_inicio" body={(rowData) => representativeHoraTemplate(rowData, 'hora_inicio')} header="Hora Início" style={{ width: `${largurasColunas[getColumnIndex(4)]}%` }}></Column>
-                <Column field="hora_fim" body={(rowData) => representativeHoraTemplate(rowData, 'hora_fim')} header="Hora Fim" style={{ width: `${largurasColunas[getColumnIndex(5)]}%` }}></Column>
+                <Column field="horainicio" body={(rowData) => representativeHoraTemplate(rowData, 'horainicio')} header="Hora Início" style={{ width: `${largurasColunas[getColumnIndex(4)]}%` }}></Column>
+                <Column field="horafim" body={(rowData) => representativeHoraTemplate(rowData, 'horafim')} header="Hora Fim" style={{ width: `${largurasColunas[getColumnIndex(5)]}%` }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: `${largurasColunas[getColumnIndex(6)]}%` }}></Column>
             </DataTable>
             <ModalEditarFeriado aoSalvar={editarFeriado} feriado={selectedFeriado} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />

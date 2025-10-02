@@ -386,7 +386,7 @@ function DataTableCalendarios({
                 sortOrder={sortOrder === 'desc' ? -1 : 1}
                 onSort={handleSort}
                 removableSort
-                tableStyle={{ minWidth: '580px' }}
+                tableStyle={{ minWidth: '650px' }}
                 onSelectionChange={onSelectionChange ? handleSelectionChange : undefined}
                 rowClassName={(data) => data === selectedCalendario ? 'p-highlight' : ''}
                 header={headerTemplate}

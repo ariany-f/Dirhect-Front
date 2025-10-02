@@ -101,8 +101,8 @@ function ModalAdicionarFeriado({ opened = false, aoFechar, aoSalvar, calendarioS
             setNome('');
             setData('');
             setTipo(null);
-            setHoraInicio('');
-            setHoraFim('');
+            setHoraInicio('00:00');
+            setHoraFim('23:59');
             setClassError([]);
         }
     }, [opened]);

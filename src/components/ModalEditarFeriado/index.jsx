@@ -10,31 +10,55 @@ import { Overlay, DialogEstilizado } from '@components/Modal/styles';
 import { ArmazenadorToken } from "@utils"
 import http from "@http"
 
-const Col12 = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 16px;
-    width: 100%;
-`;
-
-const Col6 = styled.div`
-    flex: 1 1 calc(50% - 8px);
-    min-width: 250px;
-`;
-
-const Col4 = styled.div`
-    flex: 1 1 calc(33.333% - 11px);
-    min-width: 200px;
-`;
-
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 16px;
+    gap: 24px;
     width: 100%;
+`;
+
+const FormSection = styled.div`
+    border-radius: 12px;
+    padding: 24px 2px;
+    width: 100%;
+`;
+
+const SectionTitle = styled.div`
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    position: relative;
+    
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 40px;
+        height: 2px;
+        background: var(--primaria);
+    }
+`;
+
+const ButtonContainer = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 8px;
+    padding-top: 20px;
+`;
+
+const LeftColumn = styled.div`
+    flex: 1;
+    min-width: 300px;
+`;
+
+const RightColumn = styled.div`
+    flex: 0 0 200px;
+    min-width: 200px;
 `;
 
 // Opções de tipos de feriado
@@ -54,7 +78,7 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
     const [calendario, setCalendario] = useState(null);
     const [calendarios, setCalendarios] = useState([]);
     const [id, setId] = useState(null);
-    const [key, setKey] = useState(0); // Adicionar esta linha
+    const [key, setKey] = useState(0);
 
     // Carrega calendários quando o modal abre
     useEffect(() => {
@@ -63,7 +87,7 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
                 .then(response => {
                     const calendariosFormatados = response.map(cal => ({
                         name: cal.nome,
-                        code: cal.id  // Usar 'code' em vez de 'value'
+                        code: cal.id
                     }));
                     setCalendarios(calendariosFormatados);
                 })
@@ -76,13 +100,10 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
     // Efeito para preencher os campos quando estiver editando
     useEffect(() => {
         if (feriado && opened && calendarios.length > 0) {
-            console.log('Feriado recebido:', feriado);
-            console.log('Calendários disponíveis:', calendarios);
-            
             setNome(feriado.nome || '');
             setData(feriado.data || '');
-            setHoraInicio(feriado.horainicio || '');
-            setHoraFim(feriado.horafim || '');
+            setHoraInicio(feriado.horainicio || '00:00');
+            setHoraFim(feriado.horafim || '23:59');
             setId(feriado.id);
             
             // Encontrar o tipo correto baseado no valor
@@ -91,11 +112,9 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
 
             // Encontrar o calendário correto baseado no valor
             if (feriado.calendario) {
-                console.log('Procurando calendário com ID:', feriado.calendario);
                 const calendarioSelecionado = calendarios.find(cal => {
                     return cal.code == feriado.calendario;
                 });
-                console.log('Calendário encontrado:', calendarioSelecionado);
                 setCalendario(calendarioSelecionado || null);
             }
         } else if (!opened) {
@@ -114,10 +133,8 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
     const validarESalvar = () => {
         let errors = [];
         if (!nome.trim()) errors.push('nome');
-        if (!data) errors.push('data');
+        if (!data.trim()) errors.push('data');
         if (!tipo) errors.push('tipo');
-        if (!horaInicio) errors.push('horainicio');
-        if (!horaFim) errors.push('horafim');
         if (!calendario) errors.push('calendario');
         
         if (errors.length > 0) {
@@ -128,31 +145,20 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
         const dadosParaAPI = {
             nome: nome.trim(),
             data: data,
-            tipo: tipo.code,  // Usar 'code' em vez de 'value'
-            horainicio: horaInicio,
-            horafim: horaFim,
+            tipo: tipo.code,
+            hora_inicio: horaInicio || null,
+            hora_fim: horaFim || null,
             calendario: calendario.code
         };
         
         aoSalvar(dadosParaAPI, id);
     };
 
-    // No JSX, remover os templates e usar o padrão simples:
-    <DropdownItens
-        camposVazios={classError.includes('calendario') ? ['calendario'] : []}
-        name="calendario"
-        valor={calendario}
-        setValor={setCalendario}
-        options={calendarios}
-        label="Calendário*"
-        placeholder="Selecione o calendário"
-    />
-
     return (
         <>
             {opened && (
                 <Overlay>
-                    <DialogEstilizado open={opened}>
+                    <DialogEstilizado open={opened} style={{ maxWidth: '800px', width: '90vw' }}>
                         <Frame>
                             <Titulo>
                                 <button className="close" onClick={aoFechar}>
@@ -163,94 +169,100 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
                         </Frame>
                         
                         <Wrapper>
-                            <Col12>
-                                <Col6>
-                                    <CampoTexto 
-                                        camposVazios={classError.includes('nome') ? ['nome'] : []}
-                                        name="nome" 
-                                        valor={nome} 
-                                        setValor={setNome} 
-                                        type="text" 
-                                        label="Nome*" 
-                                        placeholder="Digite o nome do feriado" 
-                                    />
-                                </Col6>
-                                
-                                <Col6>
-                                    <CampoTexto 
-                                        camposVazios={classError.includes('data') ? ['data'] : []}
-                                        name="data" 
-                                        valor={data} 
-                                        setValor={setData} 
-                                        type="date" 
-                                        label="Data*" 
-                                        placeholder="Selecione a data" 
-                                    />
-                                </Col6>
-                            </Col12>
+                            <FormSection>
+                                <div style={{ display: 'flex', gap: '32px', alignItems: 'flex-start' }}>
+                                    <LeftColumn>
+                                        <SectionTitle>Informações do Feriado</SectionTitle>
+                                        
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                                            <CampoTexto 
+                                                camposVazios={classError.includes('nome') ? ['nome'] : []}
+                                                name="nome" 
+                                                valor={nome} 
+                                                setValor={setNome} 
+                                                type="text" 
+                                                label="Nome do Feriado*" 
+                                                placeholder="Digite o nome do feriado" 
+                                                maxCaracteres={100}
+                                            />
+                                            
+                                            <CampoTexto 
+                                                camposVazios={classError.includes('data') ? ['data'] : []}
+                                                name="data" 
+                                                valor={data} 
+                                                setValor={setData} 
+                                                type="date" 
+                                                label="Data do Feriado*" 
+                                                placeholder="Selecione a data" 
+                                            />
+                                            
+                                            <DropdownItens
+                                                camposVazios={classError.includes('tipo') ? ['tipo'] : []}
+                                                name="tipo"
+                                                valor={tipo}
+                                                setValor={setTipo}
+                                                label="Tipo do Feriado*"
+                                                placeholder="Selecione o tipo"
+                                                options={tiposFeriado}
+                                                optionLabel="name"
+                                            />
 
-                            <Col12>
-                                <Col4>
-                                    <DropdownItens
-                                        camposVazios={classError.includes('tipo') ? ['tipo'] : []}
-                                        name="tipo"
-                                        valor={tipo}
-                                        setValor={setTipo}
-                                        options={tiposFeriado}
-                                        label="Tipo*"
-                                        placeholder="Selecione o tipo"
-                                        optionLabel="name"
-                                    />
-                                </Col4>
+                                            <DropdownItens
+                                                key={key}
+                                                camposVazios={classError.includes('calendario') ? ['calendario'] : []}
+                                                name="calendario"
+                                                valor={calendario}
+                                                setValor={setCalendario}
+                                                options={calendarios}
+                                                label="Calendário*"
+                                                placeholder="Selecione o calendário"
+                                            />
+                                        </div>
+                                    </LeftColumn>
 
-                                <Col4>
-                                    <CampoTexto 
-                                        camposVazios={classError.includes('horainicio') ? ['horainicio'] : []}
-                                        name="horainicio" 
-                                        valor={horaInicio} 
-                                        setValor={setHoraInicio} 
-                                        type="time" 
-                                        label="Hora Início*" 
-                                        placeholder="00:00" 
-                                    />
-                                </Col4>
-                                
-                                <Col4>
-                                    <CampoTexto 
-                                        camposVazios={classError.includes('horafim') ? ['horafim'] : []}
-                                        name="horafim" 
-                                        valor={horaFim} 
-                                        setValor={setHoraFim} 
-                                        type="time" 
-                                        label="Hora Fim*" 
-                                        placeholder="23:59" 
-                                    />
-                                </Col4>
-                            </Col12>
+                                    <RightColumn>
+                                        <SectionTitle>Horários (Opcional)</SectionTitle>
+                                        
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                                            <CampoTexto 
+                                                name="hora_inicio" 
+                                                valor={horaInicio} 
+                                                setValor={setHoraInicio} 
+                                                type="time" 
+                                                label="Hora de Início" 
+                                                placeholder="Selecione a hora de início" 
+                                            />
+                                            
+                                            <CampoTexto 
+                                                name="hora_fim" 
+                                                valor={horaFim} 
+                                                setValor={setHoraFim} 
+                                                type="time" 
+                                                label="Hora de Fim" 
+                                                placeholder="Selecione a hora de fim" 
+                                            />
+                                        </div>
+                                    </RightColumn>
+                                </div>
+                            </FormSection>
 
-                            <Col12>
-                                <Col6>
-                                    <DropdownItens
-                                        key={key}
-                                        camposVazios={classError.includes('calendario') ? ['calendario'] : []}
-                                        name="calendario"
-                                        valor={calendario}
-                                        setValor={setCalendario}
-                                        options={calendarios}
-                                        label="Calendário*"
-                                        placeholder="Selecione o calendário"
-                                    />
-                                </Col6>
-                            </Col12>
-
-                            <Botao
-                                aoClicar={validarESalvar} 
-                                estilo="vermilion" 
-                                size="medium" 
-                                filled
-                            >
-                                Salvar Alterações
-                            </Botao>
+                            <ButtonContainer>
+                                <Botao
+                                    aoClicar={aoFechar}
+                                    estilo="neutro"
+                                    size="medium"
+                                >
+                                    Cancelar
+                                </Botao>
+                                <Botao
+                                    aoClicar={validarESalvar} 
+                                    estilo="vermilion" 
+                                    size="medium" 
+                                    filled
+                                >
+                                    Salvar Alterações
+                                </Botao>
+                            </ButtonContainer>
                         </Wrapper>
                     </DialogEstilizado>
                 </Overlay>
