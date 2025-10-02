@@ -483,6 +483,16 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                                     valor={dataDemissao}
                                                     setValor={(valor, nome) => {
                                                         if (valor instanceof Date) {
+                                                            // Verifica se a data está bloqueada
+                                                            if (datasBloqueadas.some(bloq => bloq.getTime() === valor.setHours(0,0,0,0))) {
+                                                                toast.current.show({
+                                                                    severity: 'warn',
+                                                                    summary: 'Data inválida',
+                                                                    detail: 'Não é permitido selecionar uma data de demissão dentro de um período bloqueado.',
+                                                                    life: 4000
+                                                                });
+                                                                return;
+                                                            }
                                                             // Se for um objeto Date, converte para string
                                                             const dataFormatada = valor.toISOString().split('T')[0];
                                                             handleDataDemissaoChange(dataFormatada);
