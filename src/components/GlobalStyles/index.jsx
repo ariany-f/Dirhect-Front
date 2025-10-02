@@ -9,6 +9,13 @@ const EstilosGlobais = createGlobalStyle`
   :root {
       /* Cores da marca - configuráveis via .env */
       --primaria: ${colorVariations['--primaria']};
+      --primaria-50: ${colorVariations['--primaria-50']};
+      --primaria-100: ${colorVariations['--primaria-100']};
+      --primaria-200: ${colorVariations['--primaria-200']};
+      --primaria-300: ${colorVariations['--primaria-300']};
+      --primaria-400: ${colorVariations['--primaria-400']};
+      --primaria-500: ${colorVariations['--primaria-500']};
+      --primaria-600: ${colorVariations['--primaria-600']};
       --vermilion-50: ${colorVariations['--vermilion-50']};
       --vermilion-100: ${colorVariations['--vermilion-100']};
       --vermilion-200: ${colorVariations['--vermilion-200']};
@@ -436,8 +443,8 @@ template {
 .p-datatable-tbody {
   & .p-highlight {
     & > td > div > p { 
-      color: var(--info-2-500) !important;
-      background-color: var(--info-2-50) !important;
+      color: var(--primaria) !important;
+      background-color: var(--primaria-300) !important;
       padding: 4px 6px !important;
       font-weight: 500 !important;
       border-radius: 4px !important;
@@ -447,8 +454,8 @@ template {
 .p-datatable-tbody {
   & .p-highlight {
     & > td > div > div > p > div > div { 
-      color: var(--info-2-500) !important;
-      background-color: var(--info-2-50) !important;
+      color: var(--primaria) !important;
+      background-color: var(--primaria-300) !important;
       padding: 4px 6px !important;
       font-weight: 500 !important;
       border-radius: 4px !important;
