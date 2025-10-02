@@ -368,48 +368,39 @@ function OperadorasListagem() {
     return (
         <ConteudoFrame>
             <Toast ref={toast} />
-            {operadoras && operadoras.length > 0 ? (
-                <Col12Expandable $gap="8px">
+            <Col12Expandable $gap="8px">
+                <Col6Expandable $expanded={!!selectedOperadora}>
+                    <DataTableOperadoras 
+                        showSearch={false}
+                        operadoras={operadoras} 
+                        rows={registrosPorPagina}
+                        totalRecords={totalRegistros}
+                        first={(paginaAtual - 1) * registrosPorPagina}
+                        onPage={onPage}
+                        onSearch={onSearch}
+                        sortField={sortField}
+                        sortOrder={sortOrder}
+                        onSort={onSort}
+                        onSelectionChange={handleOperadoraSelection}
+                        onAddClick={() => { setOperadoraEditando(null); setModalOpened(true); }}
+                        onEditClick={editarOperadora}
+                        onDeleteClick={deletarOperadora}
+                        onUpdate={carregarOperadoras}
+                    />
+                </Col6Expandable>
+                {selectedOperadora ? 
                     <Col6Expandable $expanded={!!selectedOperadora}>
-                        <DataTableOperadoras 
+                        <DataTableOperadorasDetalhes 
                             showSearch={false}
-                            operadoras={operadoras} 
-                            rows={registrosPorPagina}
-                            totalRecords={totalRegistros}
-                            first={(paginaAtual - 1) * registrosPorPagina}
-                            onPage={onPage}
-                            onSearch={onSearch}
-                            sortField={sortField}
-                            sortOrder={sortOrder}
-                            onSort={onSort}
-                            onSelectionChange={handleOperadoraSelection}
-                            onAddClick={() => { setOperadoraEditando(null); setModalOpened(true); }}
-                            onEditClick={editarOperadora}
-                            onDeleteClick={deletarOperadora}
-                            onUpdate={carregarOperadoras}
+                            beneficios={beneficios}
+                            onAddBeneficio={adicionarBeneficio}
+                            operadora={selectedOperadora}
+                            onDeleteBeneficio={deletarBeneficioOperadora}
                         />
                     </Col6Expandable>
-                    {selectedOperadora ? 
-                        <Col6Expandable $expanded={!!selectedOperadora}>
-                            <DataTableOperadorasDetalhes 
-                                showSearch={false}
-                                beneficios={beneficios}
-                                onAddBeneficio={adicionarBeneficio}
-                                operadora={selectedOperadora}
-                                onDeleteBeneficio={deletarBeneficioOperadora}
-                            />
-                        </Col6Expandable>
-                    : null}
-                </Col12Expandable>
-            ) : (
-                <ContainerSemRegistro>
-                    <section className={styles.container}>
-                        <img src={Management} />
-                        <h6>Não há operadoras registrados</h6>
-                        <p>Aqui você verá todos os operadoras registradas.</p>
-                    </section>
-                </ContainerSemRegistro>
-            )}
+                : null}
+            </Col12Expandable>
+        
 
             <ModalOperadoras 
                 opened={modalOpened} 

@@ -349,7 +349,6 @@ function CalendariosListagem() {
     return (
         <ConteudoFrame>
             <Toast ref={toast} />
-            {calendarios && calendarios.length > 0 ? (
                 <Col12Expandable $gap="8px">
                     <Col5Expandable $expanded={!!selectedCalendario}>
                         <DataTableCalendarios 
@@ -391,15 +390,6 @@ function CalendariosListagem() {
                         </Col7Expandable>
                     : null}
                 </Col12Expandable>
-            ) : (
-                <ContainerSemRegistro>
-                    <section className={styles.container}>
-                        <img src={Management} />
-                        <h6>Não há calendários registrados</h6>
-                        <p>Aqui você verá todos os calendários registrados.</p>
-                    </section>
-                </ContainerSemRegistro>
-            )}
 
             <ModalAdicionarCalendario 
                 opened={modalCalendarioOpened} 
