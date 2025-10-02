@@ -84,7 +84,7 @@ function DepartamentosLista() {
         
         loadData(newPage, newPageSize, searchTerm, sortField, sortOrder)
     }
-
+    
     const onSearch = (search) => {
         setSearchTerm(search)
         setPage(1)

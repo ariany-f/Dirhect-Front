@@ -551,7 +551,7 @@ function DataTableSecoes({ secoes, showSearch = true, paginator = true, rows = 1
                 onPage={onPage}
                 sortField={sortField}
                 sortOrder={sortOrder}
-                onSort={onSort}
+                onSort={handleSort}
                 removableSort
                 tableStyle={{ minWidth: '68vw' }}
             >

@@ -63,11 +63,6 @@ function SindicatosLista() {
             })
             .catch(erro => {
                 console.error('Erro ao carregar sindicatos:', erro)
-                toast.current.show({
-                    severity: 'error',
-                    summary: 'Erro',
-                    detail: 'Erro ao carregar sindicatos'
-                })
             })
             .finally(() => {
                 setLoading(false)

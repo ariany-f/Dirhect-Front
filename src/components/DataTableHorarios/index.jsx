@@ -545,7 +545,7 @@ function DataTableHorarios({
                 onPage={onPage}
                 sortField={sortField}
                 sortOrder={sortOrder === 'desc' ? -1 : 1}
-                onSort={onSort}
+                onSort={handleSort}
                 removableSort
                 tableStyle={{ minWidth: '68vw' }}
             >

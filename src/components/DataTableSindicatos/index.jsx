@@ -406,16 +406,19 @@ function DataTableSindicatos({
         );
     };
 
-    const handleSort = (event) => {
-        if (onSort) {
-            onSort(event);
-        }
-    };
-
     const onFilter = (event) => {
         console.log("Filtro aplicado:", event.filters);
         const newFilters = { ...event.filters };
         setFilters(newFilters);
+    };
+
+    const handleSort = (event) => {
+        if (onSort) {
+            onSort({
+                field: event.sortField,
+                order: event.sortOrder === 1 ? 'asc' : 'desc'
+            });
+        }
     };
 
     return (
@@ -522,7 +525,7 @@ function DataTableSindicatos({
                 onPage={onPage}
                 sortField={sortField}
                 sortOrder={sortOrder === 'desc' ? -1 : 1}
-                onSort={onSort}
+                onSort={handleSort}
                 removableSort
                 tableStyle={{ minWidth: '68vw' }}
             >
