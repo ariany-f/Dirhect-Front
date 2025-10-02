@@ -1,16 +1,16 @@
 import { styled } from "styled-components";
-import { RiHandCoinFill, RiOrganizationChart, RiTable2 } from "react-icons/ri";
+import { RiHandCoinFill, RiOrganizationChart, RiTable2, RiTeamLine, RiGiftLine, RiUserSettingsLine, RiUserAddLine, RiHandHeartLine, RiListSettingsLine } from "react-icons/ri";
 import styles from './Cabecalho.module.css';
 import Frame from "@components/Frame";
 import Texto from "@components/Texto";
 import { Link, useLocation } from "react-router-dom";
-import { BsArrowLeftRight } from 'react-icons/bs';
+import { BsArrowLeftRight, BsFillPersonVcardFill } from 'react-icons/bs';
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import Menu from "@components/Menu";
 import { useState, useRef, useEffect } from "react";
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
 // import Notificacoes from '@components/Notificacoes';
-import { FaBuilding, FaBusAlt, FaCalendarAlt } from "react-icons/fa";
+import { FaBuilding, FaBusAlt, FaCalendarAlt, FaGift } from "react-icons/fa";
 import { FaBars } from "react-icons/fa6";
 import { TbLayoutSidebarLeftCollapseFilled } from "react-icons/tb";
 import LanguageSelector from "../LanguageSelector";
@@ -346,6 +346,40 @@ const MarketplaceButton = styled(Frame)`
     }
 `;
 
+// Array de perfis com ícones específicos (igual ao selecionar-grupo.jsx)
+const perfisConfig = [
+    {
+        nome: 'RH',
+        icone: RiTeamLine,
+        cor: '#3B82F6'
+    },
+    {
+        nome: 'Colaborador',
+        icone: BsFillPersonVcardFill,
+        cor: '#10B981'
+    },
+    {
+        nome: 'Benefícios',
+        icone: FaGift,
+        cor: '#F59E0B'
+    },
+    {
+        nome: 'Outsourcing',
+        icone: RiListSettingsLine,
+        cor: '#8B5CF6'
+    },
+    {
+        nome: 'Candidato',
+        icone: RiUserAddLine,
+        cor: '#EF4444'
+    },
+    {
+        nome: 'Corretor',
+        icone: RiHandHeartLine,
+        cor: '#EC4899'
+    }
+];
+
 const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, simbolo, logo, sidebarOpened, setSidebarOpened }) => {
   const location = useLocation();
   const [menuAberto, setMenuAberto] = useState(false);
@@ -354,6 +388,22 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
   const { t } = useTranslation('common');
   const { isDarkMode, toggleTheme } = useTheme();
+
+  // Função para obter o ícone baseado no nome do perfil
+  const getIconePerfil = (nomePerfil) => {
+    const perfil = perfisConfig.find(p => 
+      nomePerfil.toLowerCase().includes(p.nome.toLowerCase())
+    );
+    return perfil ? perfil.icone : FaUser;
+  };
+
+  // Função para obter a cor baseada no nome do perfil
+  const getCorPerfil = (nomePerfil) => {
+    const perfil = perfisConfig.find(p => 
+      nomePerfil.toLowerCase().includes(p.nome.toLowerCase())
+    );
+    return perfil ? perfil.cor : 'var(--neutro-600)';
+  };
 
   // Verificar se o usuário tem apenas um perfil
   const gruposValidos = ArmazenadorToken.UserGroups ? 
@@ -627,7 +677,11 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
                 justifyContent: 'center',
               }}
             >
-              <FaUser size={16} />
+              {(() => {
+                const IconeComponente = getIconePerfil(usuario.tipo || 'Perfil');
+                const corPerfil = getCorPerfil(usuario.tipo || 'Perfil');
+                return <IconeComponente size={16} fill={corPerfil} />;
+              })()}
               {isDesktop && (usuario.tipo || 'Perfil')}
               {!temApenasUmPerfil && <BsArrowLeftRight />}
             </ItemPerfil>
