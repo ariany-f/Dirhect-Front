@@ -146,8 +146,8 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
             nome: nome.trim(),
             data: data,
             tipo: tipo.code,
-            hora_inicio: horaInicio || null,
-            hora_fim: horaFim || null,
+            horainicio: horaInicio || null,
+            horafim: horaFim || null,
             calendario: calendario.code
         };
         
@@ -225,7 +225,7 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
                                         
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                                             <CampoTexto 
-                                                name="hora_inicio" 
+                                                name="horainicio" 
                                                 valor={horaInicio} 
                                                 setValor={setHoraInicio} 
                                                 type="time" 
@@ -234,7 +234,7 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
                                             />
                                             
                                             <CampoTexto 
-                                                name="hora_fim" 
+                                                name="horafim" 
                                                 valor={horaFim} 
                                                 setValor={setHoraFim} 
                                                 type="time" 

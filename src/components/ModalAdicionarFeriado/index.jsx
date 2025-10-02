@@ -122,8 +122,8 @@ function ModalAdicionarFeriado({ opened = false, aoFechar, aoSalvar, calendarioS
             nome: nome.trim(),
             data: data,
             tipo: tipo.code,
-            hora_inicio: horaInicio || null,
-            hora_fim: horaFim || null,
+            horainicio: horaInicio || null,
+            horafim: horaFim || null,
             calendario: calendarioSelecionado.id
         };
         
