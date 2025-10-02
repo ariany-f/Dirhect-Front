@@ -469,7 +469,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
     { "id": 26, "url": "tabelas-de-sistema", "pageTitulo": t("system_tables") },
     { "id": 27, "url": "syync", "pageTitulo": "Syync" },
     { "id": 28, "url": "estatisticas", "pageTitulo": t("performance") },
-    { "id": 29, "url": "auxiliar", "pageTitulo": t("holidays") },
+    { "id": 29, "url": "calendarios", "pageTitulo": t("calendars") },
   ];
 
   // Lógica para determinar o título baseado na URL
@@ -530,8 +530,8 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
         },
         ...(ArmazenadorToken.hasPermission('view_feriados') || ArmazenadorToken.hasPermission('view_calendario') ? [
           { 
-            label: t("holidays"), 
-            url: '/auxiliar',
+            label: t("calendars"), 
+            url: '/calendarios',
             icon: <FaCalendarAlt size={18}/>
           }
           ] : []),

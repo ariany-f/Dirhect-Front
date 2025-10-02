@@ -140,6 +140,9 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, onDeleteBenef
         <DataTable 
             value={beneficios} 
             filters={filters} 
+            rowsPerPageOptions={[5, 10, 25, 50]}
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+            currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} benefícios"
             globalFilterFields={['beneficio.descricao']} 
             emptyMessage="Não foram encontrados benefícios vinculados à esta operadora" 
             paginator 

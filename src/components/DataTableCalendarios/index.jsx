@@ -14,10 +14,70 @@ import { ArmazenadorToken } from '@utils';
 import { useMetadadosPermission } from '@hooks/useMetadadosPermission';
 import { FaPen, FaTimes as FaCancel, FaFileExcel } from 'react-icons/fa';
 import Botao from '@components/Botao';
+import { GrAddCircle } from 'react-icons/gr';
+import BotaoGrupo from '@components/BotaoGrupo';
+import Texto from '@components/Texto';
+import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
 
-function DataTableCalendarios({ calendarios, showSearch = true, pagination = true, rows, totalRecords, first, onPage, totalPages, onSearch, selected = null, setSelected = () => { }, onUpdate, sortField, sortOrder, onSort, onExportExcel, exportingExcel = false }) {
+const TableHeader = styled.div`
+    display: flex;
+    padding: 0px;
+    flex-direction: column;
 
-    const[selectedCalendario, setSelectedCalendario] = useState({})
+    .header-title {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        .add-button {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background: var(--surface-100);
+            }
+
+            svg {
+                width: 16px;
+                height: 16px;
+            }
+        }
+    }
+`;
+
+function DataTableCalendarios({ 
+    calendarios, 
+    showSearch = false, // Mudado para false por padrão
+    pagination = true, 
+    rows = 10, 
+    totalRecords, 
+    first, 
+    onPage, 
+    totalPages, 
+    onSearch, 
+    selected = null, 
+    setSelected = () => { }, 
+    onUpdate, 
+    sortField, 
+    sortOrder, 
+    onSort, 
+    onExportExcel, 
+    exportingExcel = false,
+    onAddClick,
+    onEditClick,
+    onDeleteClick,
+    onReload,
+    onSelectionChange,
+    calendarioSelecionado
+}) {
+
+    const[selectedCalendario, setSelectedCalendario] = useState(null)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [modalOpened, setModalOpened] = useState(false)
     const [modalColaboradoresOpened, setModalColaboradoresOpened] = useState(false)
@@ -35,6 +95,7 @@ function DataTableCalendarios({ calendarios, showSearch = true, pagination = tru
         integracao: { value: null, matchMode: FilterMatchMode.EQUALS }
     });
     const { metadadosDeveSerExibido } = useMetadadosPermission();
+    const { t } = useTranslation('common');
 
     // Configuração de larguras das colunas
     const exibeColunasOpcionais = {
@@ -42,9 +103,9 @@ function DataTableCalendarios({ calendarios, showSearch = true, pagination = tru
         integracao: ((metadadosDeveSerExibido || bulkIntegrationMode) && ArmazenadorToken.hasPermission('change_filial'))
     };
     
-    // Larguras base quando todas as colunas estão visíveis
+    // Larguras base otimizadas para Col5 (41.66% da tela)
     // Ordem: Nome, ID Origem, Descrição, Ações
-    const larguraBase = [30, 10, 30, 20];
+    const larguraBase = [180, 120, 180, 100];
     
     // Calcula larguras redistribuídas
     const calcularLarguras = () => {
@@ -82,11 +143,39 @@ function DataTableCalendarios({ calendarios, showSearch = true, pagination = tru
         }
     }, [selected, calendarios]);
 
+    // Auto-selecionar primeiro calendário se não houver seleção
+    useEffect(() => {
+        if (calendarios && calendarios.length > 0 && !selectedCalendario && onSelectionChange) {
+            setSelectedCalendario(calendarios[0]);
+            onSelectionChange(calendarios[0]);
+        }
+    }, [calendarios, selectedCalendario, onSelectionChange]);
+
+    // Sincronizar calendarioSelecionado com o estado interno
+    useEffect(() => {
+        if (calendarioSelecionado) {
+            setSelectedCalendario(calendarioSelecionado);
+        }
+    }, [calendarioSelecionado]);
+
     const navegar = useNavigate()
 
     const onGlobalFilterChange = (value) => {
         setGlobalFilterValue(value);
-        onSearch(value);
+        if (onSearch) {
+            onSearch(value);
+        }
+    };
+
+    const handleSelectionChange = (e) => {
+        if (e.value === null) {
+            return;
+        }
+        
+        setSelectedCalendario(e.value);
+        if (onSelectionChange) {
+            onSelectionChange(e.value);
+        }
     };
 
     const removerMascaraCNPJ = (cnpj) => {
@@ -110,6 +199,14 @@ function DataTableCalendarios({ calendarios, showSearch = true, pagination = tru
             </div>
         )
     }
+
+    const representativeNomeTemplate = (rowData) => {
+        return (
+            <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                <Texto size={16} weight={500}>{rowData?.nome}</Texto>
+            </div>
+        )
+    };
 
     const excluirCalendario = (id) => {
         confirmDialog({
@@ -194,7 +291,11 @@ function DataTableCalendarios({ calendarios, showSearch = true, pagination = tru
                     size={16} 
                     onClick={(e) => {
                         e.stopPropagation();
-                        editarCalendarioClick(rowData);
+                        if (onEditClick) {
+                            onEditClick(rowData);
+                        } else {
+                            editarCalendarioClick(rowData);
+                        }
                     }}
                     style={{
                         cursor: 'pointer',
@@ -210,7 +311,11 @@ function DataTableCalendarios({ calendarios, showSearch = true, pagination = tru
                         size={16} 
                         onClick={(e) => {
                             e.stopPropagation();
-                            excluirCalendario(rowData.id);
+                            if (onDeleteClick) {
+                                onDeleteClick(rowData);
+                            } else {
+                                excluirCalendario(rowData.id);
+                            }
                         }}
                         style={{
                             cursor: 'pointer',
@@ -231,18 +336,36 @@ function DataTableCalendarios({ calendarios, showSearch = true, pagination = tru
         }
     };
 
+    const headerTemplate = () => {
+        return (
+            <TableHeader>
+                <BotaoGrupo align="space-between">
+                    <Texto size={'18px'} weight={600}>Calendários</Texto>
+                    {onAddClick && (
+                        <Botao aoClicar={onAddClick} estilo="neutro" size="small" tab>
+                            <GrAddCircle /> {t('add')} Calendário
+                        </Botao>
+                    )}
+                </BotaoGrupo>
+                {showSearch && (
+                    <CampoTexto  
+                        width={'200px'} 
+                        valor={globalFilterValue} 
+                        setValor={onGlobalFilterChange} 
+                        type="search" 
+                        label="" 
+                        placeholder="Buscar calendários" 
+                    />
+                )}
+            </TableHeader>
+        );
+    };
+
     return (
         <>
             <Toast ref={toast} />
             <ConfirmDialog  />
             
-            <div style={{ display: 'flex', width: '100%', justifyContent: showSearch ? "space-between" : "flex-end", alignItems: 'center', marginBottom: '16px' }}>
-                {showSearch && 
-                    <span className="p-input-icon-left">
-                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar calendarios" />
-                    </span>
-                }
-            </div>
             <DataTable 
                 key={`${JSON.stringify(integracaoStates)}-${bulkIntegrationMode}`}
                 value={calendarios} 
@@ -263,12 +386,17 @@ function DataTableCalendarios({ calendarios, showSearch = true, pagination = tru
                 sortOrder={sortOrder === 'desc' ? -1 : 1}
                 onSort={handleSort}
                 removableSort
-                tableStyle={{ minWidth: '68vw' }}
+                tableStyle={{ minWidth: '580px' }}
+                onSelectionChange={onSelectionChange ? handleSelectionChange : undefined}
+                rowClassName={(data) => data === selectedCalendario ? 'p-highlight' : ''}
+                header={headerTemplate}
+                showGridlines
+                stripedRows
             >
                 {exibeColunasOpcionais.checkbox && (
                     <Column selectionMode="multiple" style={{ width: `${largurasColunas[0]}%` }}></Column>
                 )}
-                <Column field="nome" header="Nome" style={{ width: `${largurasColunas[getColumnIndex(1)]}%` }}></Column>
+                <Column field="nome" body={representativeNomeTemplate} header="Nome" style={{ width: `${largurasColunas[getColumnIndex(1)]}%` }}></Column>
                 <Column field="id_origem" header="ID Origem" style={{ width: `${largurasColunas[getColumnIndex(2)]}%` }}></Column>
                 <Column field="descricao" body={representativeDescricaoTemplate} header="Descrição" style={{ width: `${largurasColunas[getColumnIndex(3)]}%` }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: `${largurasColunas[getColumnIndex(4)]}%` }}></Column>

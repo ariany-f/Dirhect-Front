@@ -222,33 +222,33 @@ function EstruturaAdicionarColaboradores() {
         if (tipo === 'departamento') {
             let colaboradoresSimplificados = {};
             if(listaColaboradoresSelecionados) {
-                colaboradoresSimplificados = listaColaboradoresSelecionados.map(colaborador => (
-                    colaborador.public_id
-                ));
-            }
-           
-            setColaboradores(colaboradoresSimplificados)
-            setDepartamentoCompanyPublicId(departamento.public_company_id)
+            colaboradoresSimplificados = listaColaboradoresSelecionados.map(colaborador => (
+                colaborador.public_id
+            ));
+        }
+       
+        setColaboradores(colaboradoresSimplificados)
+        setDepartamentoCompanyPublicId(departamento.public_company_id)
             
             if(departamento.public_company_id) {
-                submeterDepartamento()
-                .then((response) => {
+            submeterDepartamento()
+            .then((response) => {
                     if(response.success) {
-                        toast.current.show({ severity: 'info', summary: 'Sucesso', detail: 'Colaborador Adicionado', life: 3000 });
+                    toast.current.show({ severity: 'info', summary: 'Sucesso', detail: 'Colaborador Adicionado', life: 3000 });
                         setTimeout(() => {
                             navegar(`/estrutura/departamento/detalhes/${id}`)
                         }, "700");
                     } else {
                         toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao adicionar colaborador', life: 3000 });
-                    }
-                })
-                .catch(erro => {
-                    toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
-                })
+                }
+            })
+            .catch(erro => {
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
+            })
                 .finally(() => {
-                    setLoading(false)
-                })
-            }
+                setLoading(false)
+            })
+        }
         } else {
             // Para outros tipos de estrutura, implementar lógica específica
             toast.current.show({ 
@@ -423,7 +423,7 @@ function EstruturaAdicionarColaboradores() {
                         selectionMode={rowClick ? null : 'checkbox'} 
                         selection={listaColaboradoresSelecionados} 
                         onSelectionChange={(e) => {
-                            setListaColaboradoresSelecionados(e.value);
+                        setListaColaboradoresSelecionados(e.value);
                         }} 
                         tableStyle={{ minWidth: '68vw' }}
                         paginator

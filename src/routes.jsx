@@ -200,9 +200,9 @@ import Syync from './pages/Syync'
 import SyyncTarefasLista from './pages/Tarefas/syync'
 import ColaboradorDemissao from './pages/Colaboradores/Detalhes/demissao'
 import Estatisticas from './pages/Tarefas/estatisticas'
-import Auxiliar from './pages/Auxiliares'
-import FeriadosLista from './pages/Auxiliares/feriados'
-import CalendariosLista from './pages/Auxiliares/calendarios'
+import CalendariosListagem from './pages/Calendario/lista'
+import DetalhesCalendarios from './pages/Calendario/detalhes'
+import Calendarios from './pages/Calendario'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
@@ -339,9 +339,9 @@ function AppRouter() {
               <Route path="syync" element={<Syync />} />
               <Route path="estatisticas" element={<Estatisticas />} />
 
-              <Route path="auxiliar" element={<Auxiliar />} >
-                <Route index element={<FeriadosLista />} />
-                <Route path="calendarios" element={<CalendariosLista />} />
+              <Route path="calendarios" element={<Calendarios/>}>
+                <Route index element={<CalendariosListagem />} />
+                <Route path="detalhes/:id" element={<DetalhesCalendarios />} />
               </Route>
 
               <Route path="estrutura" element={<EstruturaOrganizacional />} >
