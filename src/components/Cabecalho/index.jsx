@@ -351,32 +351,32 @@ const perfisConfig = [
     {
         nome: 'RH',
         icone: RiTeamLine,
-        cor: '#3B82F6'
+        cor: 'var(--primaria)'
     },
     {
         nome: 'Colaborador',
         icone: BsFillPersonVcardFill,
-        cor: '#10B981'
+        cor: 'var(--primaria)'
     },
     {
         nome: 'Benefícios',
         icone: FaGift,
-        cor: '#F59E0B'
+        cor: 'var(--primaria)'
     },
     {
         nome: 'Outsourcing',
         icone: RiListSettingsLine,
-        cor: '#8B5CF6'
+        cor: 'var(--primaria)'
     },
     {
         nome: 'Candidato',
         icone: RiUserAddLine,
-        cor: '#EF4444'
+        cor: 'var(--primaria)'
     },
     {
         nome: 'Corretor',
         icone: RiHandHeartLine,
-        cor: '#EC4899'
+        cor: 'var(--primaria)'
     }
 ];
 
