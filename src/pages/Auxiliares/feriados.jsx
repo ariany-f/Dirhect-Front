@@ -184,7 +184,7 @@ function FeriadosLista() {
                         </Link>
                     )}
                 </BotaoGrupo>
-                <BotaoGrupo>
+                {/* <BotaoGrupo>
                     <Botao 
                         aoClicar={exportarExcel} 
                         estilo="vermilion" 
@@ -202,7 +202,7 @@ function FeriadosLista() {
                     {ArmazenadorToken.hasPermission('add_feriados') &&
                         <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um feriado</Botao>
                     }
-                </BotaoGrupo>
+                </BotaoGrupo> */}
             </BotaoGrupo>
             
             {

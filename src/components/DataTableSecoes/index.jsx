@@ -57,8 +57,8 @@ function DataTableSecoes({ secoes, showSearch = true, paginator = true, rows = 1
     };
     
     // Larguras base quando todas as colunas estão visíveis
-    // Ordem: Checkbox, Id, Código, Nome, Descrição, Integração, Ações
-    const larguraBase = [5, 10, 10, 25, 25, 15, 20];
+    // Ordem: Checkbox, Id, Código, Nome, Descrição, Calendário, Integração, Ações
+    const larguraBase = [5, 8, 8, 20, 20, 15, 12, 12];
     
     // Calcula larguras redistribuídas
     const calcularLarguras = () => {
@@ -72,7 +72,7 @@ function DataTableSecoes({ secoes, showSearch = true, paginator = true, rows = 1
         
         // Remove integração se não deve ser exibida
         if (!exibeColunasOpcionais.integracao) {
-            indicesRemover.push(5); // índice da coluna integração
+            indicesRemover.push(6); // índice da coluna integração (agora é 6 em vez de 5)
         }
         
         // Remove colunas opcionais e recalcula
@@ -91,7 +91,7 @@ function DataTableSecoes({ secoes, showSearch = true, paginator = true, rows = 1
         if (!exibeColunasOpcionais.checkbox && baseIndex > 0) {
             adjustedIndex -= 1;
         }
-        if (!exibeColunasOpcionais.integracao && baseIndex > 5) {
+        if (!exibeColunasOpcionais.integracao && baseIndex > 6) { // Ajustado para 6
             adjustedIndex -= 1;
         }
         return adjustedIndex;
@@ -367,6 +367,14 @@ function DataTableSecoes({ secoes, showSearch = true, paginator = true, rows = 1
         }
     }
 
+    const representativeCalendarioTemplate = (rowData) => {
+        return (
+            <div>
+                {rowData.calendario_nome || '-'}
+            </div>
+        )
+    }
+
     const representativeActionsTemplate = (rowData) => {
         return (
             <div style={{ 
@@ -536,7 +544,7 @@ function DataTableSecoes({ secoes, showSearch = true, paginator = true, rows = 1
                 lazy
                 dataKey="id"
                 filters={filters}
-                globalFilterFields={['nome', 'descricao']}
+                globalFilterFields={['nome', 'descricao', 'calendario_nome']}
                 rows={rows}
                 totalRecords={totalRecords}
                 first={first}
@@ -554,10 +562,11 @@ function DataTableSecoes({ secoes, showSearch = true, paginator = true, rows = 1
                 <Column body={representativeCodigoTemplate} field="id_origem" header="Código" sortable style={{ width: `${largurasColunas[getColumnIndex(2)]}%` }}></Column>
                 <Column body={representativeNomeTemplate} field="nome" header="Nome" sortable style={{ width: `${largurasColunas[getColumnIndex(3)]}%` }}></Column>
                 <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" sortable style={{ width: `${largurasColunas[getColumnIndex(4)]}%` }}></Column>
+                <Column body={representativeCalendarioTemplate} field="calendario_nome" header="Calendário" sortField="calendario" sortable style={{ width: `${largurasColunas[getColumnIndex(5)]}%` }}></Column>
                 {exibeColunasOpcionais.integracao && (
-                    <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: `${largurasColunas[getColumnIndex(5)]}%` }}></Column>
+                    <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: `${largurasColunas[getColumnIndex(6)]}%` }}></Column>
                 )}
-                <Column body={representativeActionsTemplate} header="" style={{ width: `${largurasColunas[getColumnIndex(6)]}%` }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: `${largurasColunas[getColumnIndex(7)]}%` }}></Column>
             </DataTable>
             <ModalListaColaboradoresPorEstrutura 
                 visible={modalColaboradoresOpened}

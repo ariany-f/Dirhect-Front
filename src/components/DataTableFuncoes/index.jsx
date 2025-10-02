@@ -585,7 +585,7 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
                 first={first}
                 onPage={onPage}
                 sortField={sortField}
-                sortOrder={sortOrder === 'desc' ? -1 : (sortOrder === 'asc' ? 1 : 0)}
+                sortOrder={sortOrder === 'desc' ? -1 : 1}
                 onSort={onSort}
                 removableSort
                 tableStyle={{ minWidth: '68vw' }}

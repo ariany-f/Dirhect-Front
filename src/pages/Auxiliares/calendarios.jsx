@@ -184,7 +184,7 @@ function CalendariosLista() {
                         <Botao estilo={'black'} size="small" tab>Calendários</Botao>
                     </Link>
                 </BotaoGrupo>
-                <BotaoGrupo>
+                {/* <BotaoGrupo>
                     <Botao 
                         aoClicar={exportarExcel} 
                         estilo="vermilion" 
@@ -202,7 +202,7 @@ function CalendariosLista() {
                     {ArmazenadorToken.hasPermission('add_calendario') &&
                         <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um calendario</Botao>
                     }
-                </BotaoGrupo>
+                </BotaoGrupo> */}
             </BotaoGrupo>
             
             {
