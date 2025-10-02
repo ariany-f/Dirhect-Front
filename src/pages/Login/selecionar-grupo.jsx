@@ -3,8 +3,10 @@ import Titulo from "@components/Titulo"
 import RadioButton from "@components/RadioButton"
 import styled from "styled-components"
 import { useEffect, useRef, useState } from "react"
-import { RiBuildingLine, RiErrorWarningLine, RiUserLine } from "react-icons/ri"
-import { FaUser } from "react-icons/fa"
+import { RiBuildingLine, RiErrorWarningLine, RiUserLine, RiTeamLine, RiGiftLine, RiUserSettingsLine, RiUserAddLine, RiHandHeartLine, RiListSettingsLine  } from "react-icons/ri"
+import { FaUser, FaUsers, FaGift, FaUserCog, FaUserPlus, FaHandHoldingHeart } from "react-icons/fa"
+import { HiUsers, HiGift, HiCog, HiUserAdd, HiHeart } from "react-icons/hi"
+import { BsFillPersonVcardFill } from "react-icons/bs"
 import Texto from "@components/Texto"
 import styles from './Login.module.css'
 import http from '@http';
@@ -104,6 +106,40 @@ const WrapperOut = styled.div`
     }
 `;
 
+// Array de perfis com ícones específicos
+const perfisConfig = [
+    {
+        nome: 'RH',
+        icone: RiTeamLine,
+        cor: '#3B82F6'
+    },
+    {
+        nome: 'Colaborador',
+        icone: BsFillPersonVcardFill,
+        cor: '#10B981'
+    },
+    {
+        nome: 'Benefícios',
+        icone: FaGift,
+        cor: '#F59E0B'
+    },
+    {
+        nome: 'Outsourcing',
+        icone: RiListSettingsLine,
+        cor: '#8B5CF6'
+    },
+    {
+        nome: 'Candidato',
+        icone: RiUserAddLine,
+        cor: '#EF4444'
+    },
+    {
+        nome: 'Corretor',
+        icone: RiHandHeartLine,
+        cor: '#EC4899'
+    }
+];
+
 function SelecionarGrupo() {
     
     const { 
@@ -123,6 +159,22 @@ function SelecionarGrupo() {
     const toast = useRef(null)
     const navegar = useNavigate()
     const { t } = useTranslation('common');
+
+    // Função para obter o ícone baseado no nome do grupo
+    const getIconePerfil = (nomeGrupo) => {
+        const perfil = perfisConfig.find(p => 
+            nomeGrupo.toLowerCase().includes(p.nome.toLowerCase())
+        );
+        return perfil ? perfil.icone : RiUserLine;
+    };
+
+    // Função para obter a cor baseada no nome do grupo
+    const getCorPerfil = (nomeGrupo) => {
+        const perfil = perfisConfig.find(p => 
+            nomeGrupo.toLowerCase().includes(p.nome.toLowerCase())
+        );
+        return perfil ? perfil.cor : 'var(--neutro-600)';
+    };
 
     useEffect(() => {
         // Pegar os grupos do ArmazenadorToken apenas uma vez
@@ -166,13 +218,19 @@ function SelecionarGrupo() {
                     </Titulo>
                     <WrapperProfiles>
                         {grupos.map((grupo, idx) => {
+                            const IconeComponente = getIconePerfil(grupo) || FaUser;
+                            const corPerfil = getCorPerfil(grupo);
+                            
                             return (
                                 <ProfileCard 
                                     key={idx} 
                                     $active={selected === grupo}
                                     onClick={() => handleSelectChange(grupo)}>
                                     <ProfileIcon $active={selected === grupo}>
-                                        <FaUser fill={selected === grupo ? '#fff' : 'var(--neutro-600)'} />
+                                        <IconeComponente 
+                                            fill={selected === grupo ? '#fff' : corPerfil} 
+                                            size={32}
+                                        />
                                     </ProfileIcon>
                                     <ProfileName $active={selected === grupo}>
                                         {grupo}
