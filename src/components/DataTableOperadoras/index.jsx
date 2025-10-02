@@ -69,7 +69,24 @@ const StatusTag = styled.span`
     `}
 `;
 
-function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onAddClick, onEditClick, onDeleteClick, onUpdate }) {
+function DataTableOperadoras({ 
+    operadoras, 
+    showSearch = true, 
+    pagination = true, 
+    rows = 10, 
+    totalRecords, 
+    first, 
+    onPage, 
+    onSearch, 
+    sortField, 
+    sortOrder, 
+    onSort,
+    onSelectionChange, 
+    onAddClick, 
+    onEditClick, 
+    onDeleteClick, 
+    onUpdate 
+}) {
     const[selectedOperadora, setSelectedOperadora] = useState(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [operadorasStatus, setOperadorasStatus] = useState({});
@@ -121,10 +138,10 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
     }, [operadoras, selectedOperadora, onSelectionChange]);
 
     const onGlobalFilterChange = (value) => {
-        let _filters = { ...filters };
-        _filters['global'].value = value;
-        setFilters(_filters);
         setGlobalFilterValue(value);
+        if (onSearch) {
+            onSearch(value);
+        }
     };
 
     const handleSelectionChange = (e) => {
@@ -134,6 +151,15 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
         
         setSelectedOperadora(e.value);
         onSelectionChange(e.value);
+    };
+
+    const handleSort = (event) => {
+        if (onSort) {
+            onSort({
+                field: event.sortField,
+                order: event.sortOrder === 1 ? 'asc' : 'desc'
+            });
+        }
     };
 
     const atualizarStatus = async (id) => {
@@ -246,14 +272,14 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
                         <GrAddCircle /> {t('add')} Operadora
                     </Botao>
                 </BotaoGrupo>
-                {search && (
+                {showSearch && (
                     <CampoTexto  
                         width={'200px'} 
                         valor={globalFilterValue} 
                         setValor={onGlobalFilterChange} 
                         type="search" 
                         label="" 
-                        placeholder="Buscar" 
+                        placeholder="Buscar operadoras" 
                     />
                 )}
             </TableHeader>
@@ -266,14 +292,21 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
             <ConfirmDialog  />
             <DataTable 
                 value={operadoras} 
-                filters={filters} 
                 rowsPerPageOptions={[5, 10, 25, 50]}
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} operadoras"
-                globalFilterFields={['nome']} 
                 emptyMessage="Não foram encontradas operadoras" 
-                paginator 
-                rows={10}
+                paginator={pagination} 
+                lazy
+                dataKey="id"
+                rows={rows} 
+                totalRecords={totalRecords} 
+                first={first} 
+                onPage={onPage}
+                sortField={sortField}
+                sortOrder={sortOrder === 'desc' ? -1 : 1}
+                onSort={handleSort}
+                removableSort
                 selection={selectedOperadora} 
                 onSelectionChange={handleSelectionChange}
                 selectionMode="single"

@@ -61,34 +61,139 @@ const Col6Expandable = styled(Col6)`
 `;
 
 function OperadorasListagem() {
-
-    const [operadoras, setOperadoras] = useState(null)
-    const context = useOutletContext()
+    // Estados para operadoras
+    const [operadoras, setOperadoras] = useState([])
+    const [loading, setLoading] = useState(false)
+    const [paginaAtual, setPaginaAtual] = useState(1)
+    const [totalRegistros, setTotalRegistros] = useState(0)
+    const [registrosPorPagina] = useState(10)
+    const [searchTerm, setSearchTerm] = useState('')
+    const [sortField, setSortField] = useState('')
+    const [sortOrder, setSortOrder] = useState('')
+    
+    // Estados para benefícios
+    const [beneficios, setBeneficios] = useState([])
+    const [loadingBeneficios, setLoadingBeneficios] = useState(false)
+    const [paginaAtualBeneficios, setPaginaAtualBeneficios] = useState(1)
+    const [totalRegistrosBeneficios, setTotalRegistrosBeneficios] = useState(0)
+    const [searchTermBeneficios, setSearchTermBeneficios] = useState('')
+    const [sortFieldBeneficios, setSortFieldBeneficios] = useState('')
+    const [sortOrderBeneficios, setSortOrderBeneficios] = useState('')
+    
+    // Estados para modais e seleção
     const [modalOpened, setModalOpened] = useState(false)
     const [modalBeneficioOpened, setModalBeneficioOpened] = useState(false)
-    const toast = useRef(null)
     const [selectedOperadora, setSelectedOperadora] = useState(null)
-    const [beneficios, setBeneficios] = useState(null)
     const [operadoraEditando, setOperadoraEditando] = useState(null);
     
+    const toast = useRef(null)
+    
+    // Carregar operadoras quando os parâmetros mudarem
     useEffect(() => {
-        if(context)
-        {
-            setOperadoras(context)
-        }
-    }, [context])
+        carregarOperadoras();
+    }, [paginaAtual, searchTerm, sortField, sortOrder])
 
+    // Carregar benefícios quando uma operadora for selecionada
     useEffect(() => {
         if (selectedOperadora) {
-            http.get(`operadora/${selectedOperadora.id}/?format=json`)
-                .then(response => {
-                    setBeneficios(response.beneficios_vinculados)
-                })
-                .catch(erro => {
-                    console.error('Erro ao carregar benefícios:', erro)
-                })
+            carregarBeneficios();
+        } else {
+            setBeneficios([]);
         }
     }, [selectedOperadora])
+
+    const carregarOperadoras = async () => {
+        setLoading(true);
+        try {
+            const params = new URLSearchParams({
+                page: paginaAtual,
+                page_size: registrosPorPagina
+            });
+
+            if (searchTerm.trim()) {
+                params.append('search', searchTerm.trim());
+            }
+
+            if (sortField && sortOrder) {
+                const orderParam = sortOrder === 'desc' ? '-' : '';
+                params.append('ordering', `${orderParam}${sortField}`);
+            }
+
+            const response = await http.get(`operadora/?${params.toString()}`);
+            
+            if (response.results) {
+                setOperadoras(response.results);
+                setTotalRegistros(response.count || 0);
+            } else {
+                setOperadoras(response);
+                setTotalRegistros(response.length || 0);
+            }
+        } catch (error) {
+            console.error('Erro ao carregar operadoras:', error);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Não foi possível carregar as operadoras',
+                life: 3000
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const carregarBeneficios = async () => {
+        if (!selectedOperadora) return;
+        
+        try {
+            const response = await http.get(`operadora/${selectedOperadora.id}/?format=json`);
+            setBeneficios(response.beneficios_vinculados || []);
+        } catch (error) {
+            console.error('Erro ao carregar benefícios:', error);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Não foi possível carregar os benefícios',
+                life: 3000
+            });
+        }
+    };
+
+    // Handlers para paginação, busca e ordenação
+    const onPage = (event) => {
+        setPaginaAtual(event.page + 1);
+    };
+
+    const onPageBeneficios = (event) => {
+        setPaginaAtualBeneficios(event.page + 1);
+    };
+
+    const onSearch = (search) => {
+        setSearchTerm(search);
+        setPaginaAtual(1);
+    };
+
+    const onSearchBeneficios = (search) => {
+        setSearchTermBeneficios(search);
+        setPaginaAtualBeneficios(1);
+    };
+
+    const onSort = ({ field, order }) => {
+        setSortField(field);
+        setSortOrder(order);
+        setPaginaAtual(1);
+    };
+
+    const onSortBeneficios = ({ field, order }) => {
+        setSortFieldBeneficios(field);
+        setSortOrderBeneficios(order);
+        setPaginaAtualBeneficios(1);
+    };
+
+    const handleOperadoraSelection = (operadora) => {
+        setSelectedOperadora(operadora);
+        setPaginaAtualBeneficios(1);
+        setSearchTermBeneficios('');
+    };
     
     const adicionarOperadora = async (operadora) => {
         const formData = new FormData();
@@ -108,12 +213,12 @@ function OperadorasListagem() {
         });
         if(response?.data.id)
         {
-            context.push(response?.data)
             toast.current.show({
                 message: 'Operadora adicionada com sucesso!',
                 type: 'success',
             });
             setModalOpened(false)
+            carregarOperadoras();
             return true;
         }
         else
@@ -138,16 +243,11 @@ function OperadorasListagem() {
             })
             
             if (response) {
-                // Busca os benefícios atualizados da operadora
-                const updatedBeneficios = await http.get(`operadora/${selectedOperadora.id}/?format=json`)
-                    .then(response => response.beneficios_vinculados)
-                
-                setBeneficios(updatedBeneficios)
-                
                 toast.current.show({
                     message: 'Benefício adicionado com sucesso!',
                     type: 'success',
                 })
+                carregarBeneficios();
             }
         } catch (error) {
             console.error('Erro ao adicionar benefício:', error)
@@ -183,13 +283,13 @@ function OperadorasListagem() {
             },
         });
         if(response?.data.id) {
-            setOperadoras(operadoras.map(op => op.id === response.data.id ? response.data : op));
             setOperadoraEditando(null);
             setModalOpened(false);
             toast.current.show({
                 message: 'Operadora editada com sucesso!',
                 type: 'success',
             });
+            carregarOperadoras();
             return true;
         } else {
             toast.current.show({
@@ -198,12 +298,6 @@ function OperadorasListagem() {
             });
             return false;
         }
-    };
-
-    // Função para recarregar operadoras do backend
-    const reloadOperadoras = async () => {
-        const response = await http.get('operadora/');
-        if (response) setOperadoras(response);
     };
 
     // Função para deletar operadora com confirmação
@@ -223,7 +317,10 @@ function OperadorasListagem() {
                         detail: 'Operadora excluída com sucesso!',
                         life: 3000
                     });
-                    reloadOperadoras();
+                    carregarOperadoras();
+                    if (selectedOperadora && selectedOperadora.id === operadora.id) {
+                        setSelectedOperadora(null);
+                    }
                 } catch (error) {
                     console.error('Erro ao excluir operadora:', error);
                     toast.current.show({
@@ -254,12 +351,7 @@ function OperadorasListagem() {
                         detail: 'Benefício desvinculado com sucesso!',
                         life: 3000
                     });
-                    // Recarrega os benefícios da operadora selecionada
-                    if (selectedOperadora) {
-                        const updatedBeneficios = await http.get(`operadora/${selectedOperadora.id}/?format=json`)
-                            .then(response => response.beneficios_vinculados)
-                        setBeneficios(updatedBeneficios)
-                    }
+                    carregarBeneficios();
                 } catch (error) {
                     console.error('Erro ao excluir benefício:', error);
                     toast.current.show({
@@ -276,24 +368,32 @@ function OperadorasListagem() {
     return (
         <ConteudoFrame>
             <Toast ref={toast} />
-            {operadoras ? (
+            {operadoras && operadoras.length > 0 ? (
                 <Col12Expandable $gap="8px">
                     <Col6Expandable $expanded={!!selectedOperadora}>
                         <DataTableOperadoras 
-                            search={false} 
+                            showSearch={false}
                             operadoras={operadoras} 
-                            onSelectionChange={setSelectedOperadora}
+                            rows={registrosPorPagina}
+                            totalRecords={totalRegistros}
+                            first={(paginaAtual - 1) * registrosPorPagina}
+                            onPage={onPage}
+                            onSearch={onSearch}
+                            sortField={sortField}
+                            sortOrder={sortOrder}
+                            onSort={onSort}
+                            onSelectionChange={handleOperadoraSelection}
                             onAddClick={() => { setOperadoraEditando(null); setModalOpened(true); }}
                             onEditClick={editarOperadora}
                             onDeleteClick={deletarOperadora}
-                            onReload={reloadOperadoras}
-                            onUpdate={reloadOperadoras}
+                            onUpdate={carregarOperadoras}
                         />
                     </Col6Expandable>
-                    {selectedOperadora && beneficios ? 
+                    {selectedOperadora ? 
                         <Col6Expandable $expanded={!!selectedOperadora}>
                             <DataTableOperadorasDetalhes 
-                                beneficios={beneficios} 
+                                showSearch={false}
+                                beneficios={beneficios}
                                 onAddBeneficio={adicionarBeneficio}
                                 operadora={selectedOperadora}
                                 onDeleteBeneficio={deletarBeneficioOperadora}

@@ -26,6 +26,7 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { Tooltip } from 'primereact/tooltip';
 import http from '@http';
+import CampoTexto from '@components/CampoTexto';
 
 const TableHeader = styled.div`
     display: flex;
@@ -33,7 +34,22 @@ const TableHeader = styled.div`
     flex-direction: column;
 `;
 
-function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, onDeleteBeneficio, operadora = null }) {
+function DataTableOperadorasDetalhes({ 
+    beneficios, 
+    showSearch = true,
+    pagination = true, 
+    rows = 10, 
+    totalRecords, 
+    first, 
+    onPage, 
+    onSearch, 
+    sortField, 
+    sortOrder, 
+    onSort,
+    onAddBeneficio, 
+    onDeleteBeneficio, 
+    operadora = null 
+}) {
     const[selectedBeneficio, setSelectedBeneficio] = useState(0)
     const [sendData, setSendData] = useState({})
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -75,10 +91,19 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, onDeleteBenef
     }, [beneficios])
 
     const onGlobalFilterChange = (value) => {
-        let _filters = { ...filters };
-        _filters['global'].value = value;
-        setFilters(_filters);
         setGlobalFilterValue(value);
+        if (onSearch) {
+            onSearch(value);
+        }
+    };
+
+    const handleSort = (event) => {
+        if (onSort) {
+            onSort({
+                field: event.sortField,
+                order: event.sortOrder === 1 ? 'asc' : 'desc'
+            });
+        }
     };
 
     const representativeBeneficioTemplate = (rowData) => {
@@ -132,6 +157,16 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, onDeleteBenef
                         </Botao>
                     )}
                 </BotaoGrupo>
+                {showSearch && (
+                    <CampoTexto  
+                        width={'200px'} 
+                        valor={globalFilterValue} 
+                        setValor={onGlobalFilterChange} 
+                        type="search" 
+                        label="" 
+                        placeholder="Buscar benefícios" 
+                    />
+                )}
             </TableHeader>
         );
     };
@@ -139,7 +174,7 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, onDeleteBenef
     return (
         <DataTable 
             value={beneficios} 
-            filters={filters} 
+            filters={filters}
             rowsPerPageOptions={[5, 10, 25, 50]}
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} benefícios"
@@ -152,7 +187,6 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, onDeleteBenef
             selectionMode="single"
             tableStyle={{ minWidth: '36vw', maxWidth: '100%' }}
             header={headerTemplate}
-            showHeader={false}
             showGridlines
             stripedRows
         >

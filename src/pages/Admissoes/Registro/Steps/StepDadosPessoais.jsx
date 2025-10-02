@@ -923,7 +923,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                             valueTemplate={ddiValueTemplate}
                             itemTemplate={ddiItemTemplate}
                             placeholder="DDI"
-                            disabled={modoLeitura}
+                disabled={modoLeitura}
                             $hasError={isCampoEmErro('ddi')}
                             filter
                             filterBy="name,code"
@@ -937,36 +937,36 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     </div>
                 </div>
                 <div style={{ flex: '0 0 80px' }}>
-                    <CampoTexto
-                        camposVazios={classError}
-                        name="ddd"
-                        required={true}
-                        valor={candidato?.ddd ?? ''}
-                        setValor={valor => {
-                            setCampo('ddd', valor);
-                            removerErroCampo('ddd', valor);
-                        }}
-                        type="text"
-                        label="DDD"
+            <CampoTexto
+                camposVazios={classError}
+                name="ddd"
+                required={true}
+                valor={candidato?.ddd ?? ''}
+                setValor={valor => {
+                    setCampo('ddd', valor);
+                    removerErroCampo('ddd', valor);
+                }}
+                type="text"
+                label="DDD"
                         placeholder="DDD"
-                        disabled={modoLeitura}
-                    />
+                disabled={modoLeitura}
+            />
                 </div>
                 <div style={{ flex: '1' }}>
-                    <CampoTexto
-                        name="telefone"
-                        required={true}
-                        valor={candidato?.telefone ?? ''}
-                        setValor={valor => {
-                            setCampo('telefone', valor);
-                            removerErroCampo('telefone', valor);
-                        }}
-                        label="Telefone"
+            <CampoTexto
+                name="telefone"
+                required={true}
+                valor={candidato?.telefone ?? ''}
+                setValor={valor => {
+                    setCampo('telefone', valor);
+                    removerErroCampo('telefone', valor);
+                }}
+                label="Telefone"
                         maxCaracteres={11}
                         patternMask="99999999999"
                         placeholder="Número do telefone"
-                        disabled={modoLeitura}
-                    />
+                disabled={modoLeitura}
+            />
                 </div>
             </div>
             <CampoTexto
@@ -988,7 +988,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                 required={true}
                 label="Gênero"
                 valor={getValorSelecionadoFromCandidato('genero', opcoesGenero)}
-                setValor={(valor) => {
+                                        setValor={(valor) => {
                             setCampo('genero', valor.code);
                             removerErroCampo('genero', valor);
                         }}
