@@ -57,8 +57,8 @@ function DataTableSecoes({ secoes, showSearch = true, paginator = true, rows = 1
     };
     
     // Larguras base quando todas as colunas estão visíveis
-    // Ordem: Checkbox, Id, Código, Nome, Descrição, Calendário, Integração, Ações
-    const larguraBase = [5, 8, 8, 20, 20, 15, 12, 12];
+    // Ordem: Checkbox, Id, Código, Nome, Descrição, Calendário, Filial, Integração, Ações
+    const larguraBase = [5, 7, 7, 18, 18, 12, 12, 10, 11];
     
     // Calcula larguras redistribuídas
     const calcularLarguras = () => {
@@ -72,7 +72,7 @@ function DataTableSecoes({ secoes, showSearch = true, paginator = true, rows = 1
         
         // Remove integração se não deve ser exibida
         if (!exibeColunasOpcionais.integracao) {
-            indicesRemover.push(6); // índice da coluna integração (agora é 6 em vez de 5)
+            indicesRemover.push(7); // índice da coluna integração (agora é 7)
         }
         
         // Remove colunas opcionais e recalcula
@@ -91,7 +91,7 @@ function DataTableSecoes({ secoes, showSearch = true, paginator = true, rows = 1
         if (!exibeColunasOpcionais.checkbox && baseIndex > 0) {
             adjustedIndex -= 1;
         }
-        if (!exibeColunasOpcionais.integracao && baseIndex > 6) { // Ajustado para 6
+        if (!exibeColunasOpcionais.integracao && baseIndex > 7) { // Ajustado para 7
             adjustedIndex -= 1;
         }
         return adjustedIndex;
@@ -124,11 +124,12 @@ function DataTableSecoes({ secoes, showSearch = true, paginator = true, rows = 1
     };
 
     const representativeFilialTemplate = (rowData) => {
-        if(rowData?.departamento?.filial && rowData?.departamento?.filial?.nome) {
-            return rowData?.departamento?.filial?.nome;
-        }
-        return 'Não informado';
-    };
+        return (
+            <div>
+                {rowData.filial?.nome || '-'}
+            </div>
+        )
+    }
 
     function handleSelectChange(e) {
         if (selected) {
@@ -544,7 +545,7 @@ function DataTableSecoes({ secoes, showSearch = true, paginator = true, rows = 1
                 lazy
                 dataKey="id"
                 filters={filters}
-                globalFilterFields={['nome', 'descricao', 'calendario_nome']}
+                globalFilterFields={['nome', 'descricao', 'calendario_nome', 'filial__nome']}
                 rows={rows}
                 totalRecords={totalRecords}
                 first={first}
@@ -563,10 +564,11 @@ function DataTableSecoes({ secoes, showSearch = true, paginator = true, rows = 1
                 <Column body={representativeNomeTemplate} field="nome" header="Nome" sortable style={{ width: `${largurasColunas[getColumnIndex(3)]}%` }}></Column>
                 <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" sortable style={{ width: `${largurasColunas[getColumnIndex(4)]}%` }}></Column>
                 <Column body={representativeCalendarioTemplate} field="calendario_nome" header="Calendário" sortField="calendario" sortable style={{ width: `${largurasColunas[getColumnIndex(5)]}%` }}></Column>
+                <Column body={representativeFilialTemplate} field="filial__nome" header="Filial" sortable style={{ width: `${largurasColunas[getColumnIndex(6)]}%` }}></Column>
                 {exibeColunasOpcionais.integracao && (
-                    <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: `${largurasColunas[getColumnIndex(6)]}%` }}></Column>
+                    <Column body={representativeIntegracaoTemplate} header="Integração" style={{ width: `${largurasColunas[getColumnIndex(7)]}%` }}></Column>
                 )}
-                <Column body={representativeActionsTemplate} header="" style={{ width: `${largurasColunas[getColumnIndex(7)]}%` }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: `${largurasColunas[getColumnIndex(8)]}%` }}></Column>
             </DataTable>
             <ModalListaColaboradoresPorEstrutura 
                 visible={modalColaboradoresOpened}
