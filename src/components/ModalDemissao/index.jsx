@@ -208,6 +208,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
     
     const toast = useRef(null);
 
+    const [camposVazios, setCamposVazios] = useState([]);
     const userPerfil = ArmazenadorToken.UserProfile;
     const hoje = new Date();
     const diaDoMes = hoje.getDate();
@@ -252,11 +253,24 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
         if (bloquearFormulario) {
             return;
         }
-        if (!dataDemissao || !tipoDemissao || !motivoDemissao) {
-            toast.current.show({ severity: 'warn', summary: 'Aviso', detail: 'Por favor, preencha todos os campos obrigatórios.' });
+        
+        // Validação de campos obrigatórios
+        const camposObrigatorios = [];
+        
+        if (!dataDemissao || dataDemissao === '') camposObrigatorios.push('data_demissao');
+        if (!tipoDemissao || tipoDemissao === '') camposObrigatorios.push('tipo_demissao');
+        if (!motivoDemissao || motivoDemissao === '') camposObrigatorios.push('motivo_demissao');
+        
+        setCamposVazios(camposObrigatorios);
+        
+        if (camposObrigatorios.length > 0) {
+            toast.current.show({ 
+                severity: 'warn', 
+                summary: 'Aviso', 
+                detail: 'Por favor, preencha todos os campos obrigatórios.' 
+            });
             return;
         }
-
 
         if(estabilidadeBloqueada) {
             confirmDialog({
@@ -455,38 +469,34 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                                     name="tipo_demissao"
                                                     placeholder="Selecione o tipo"
                                                     filter
+                                                    camposVazios={camposVazios}
                                                 />
                                             </FormGroup>
                                         </FormRow>
 
                                         <FormRow>
                                             <FormGroup $flex1>
-                                                <CampoDataPeriodo
+                                                <CampoTexto
                                                     label="Data da Demissão"
                                                     name="data_demissao"
-                                                    value={dataDemissao ? new Date(dataDemissao + 'T00:00:00') : null}
-                                                    onChange={e => {
-                                                        const novaData = e.value;
-                                                        if (datasBloqueadas.some(bloq => bloq.getTime() === novaData?.setHours(0,0,0,0))) {
-                                                            toast.current.show({
-                                                                severity: 'warn',
-                                                                summary: 'Data inválida',
-                                                                detail: 'Não é permitido selecionar uma data de demissão dentro de um período bloqueado.',
-                                                                life: 4000
-                                                            });
-                                                            return;
-                                                        }
-                                                        // Salvar sempre como yyyy-MM-dd
-                                                        if (novaData instanceof Date && !isNaN(novaData)) {
-                                                            handleDataDemissaoChange(novaData.toISOString().split('T')[0]);
+                                                    type="date"
+                                                    valor={dataDemissao}
+                                                    setValor={(valor, nome) => {
+                                                        if (valor instanceof Date) {
+                                                            // Se for um objeto Date, converte para string
+                                                            const dataFormatada = valor.toISOString().split('T')[0];
+                                                            handleDataDemissaoChange(dataFormatada);
+                                                        } else if (typeof valor === 'string') {
+                                                            // Se for string, usa diretamente
+                                                            handleDataDemissaoChange(valor);
                                                         } else {
+                                                            // Se for null/undefined, limpa o campo
                                                             handleDataDemissaoChange('');
                                                         }
                                                     }}
-                                                    //minDate={minDateDemissao}
-                                                    //disabledDates={datasBloqueadas}
+                                                    camposVazios={camposVazios}
                                                     placeholder="Selecione a data"
-                                                    required
+                                                    required={true}
                                                 />
                                             </FormGroup>
                                             <FormGroup $flex1>
@@ -529,6 +539,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                                     name="motivo_demissao"
                                                     placeholder="Selecione o motivo"
                                                     filter
+                                                    camposVazios={camposVazios}
                                                 />
                                             </FormGroup>
                                         </FormRow>
