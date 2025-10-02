@@ -105,7 +105,7 @@ function DataTableHorariosElegibilidade({ horarios = [], showSearch = true, pagi
     const representativeDescriptionTemplate = (rowData) => {  
         var fim = (rowData.hora_fim) ? new Date(rowData.hora_fim).toLocaleDateString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : 'Não definido';
         var inicio = (rowData.hora_inicio) ? new Date(rowData.hora_inicio).toLocaleDateString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : 'Não definido';
-        return <Texto width={'100%'} weight={800}>{`#${rowData.codigo} - ${rowData.descricao} - ${inicio} - ${fim}`}</Texto>
+        return <Texto width={'100%'} weight={800}>{`#${rowData.codigo || rowData.id_origem || '---'} - ${rowData.descricao || '---'} - ${inicio} - ${fim}`}</Texto>
     }
 
     
