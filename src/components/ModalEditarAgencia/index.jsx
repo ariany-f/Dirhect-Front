@@ -53,89 +53,94 @@ const ButtonContainer = styled.div`
 
 const LeftColumn = styled.div`
     flex: 1;
-    min-width: 300px;
+    min-width: 200px;
+`;
+
+const MiddleColumn = styled.div`
+    flex: 1;
+    min-width: 200px;
 `;
 
 const RightColumn = styled.div`
-    flex: 0 0 200px;
+    flex: 1;
+    min-width: 200px;
+`;
+
+const FourthColumn = styled.div`
+    flex: 1;
     min-width: 200px;
 `;
 
 // Opções de tipos de agencia
 const tiposAgencia = [
-    { name: '1 - Nacional', code: '1' },
-    { name: '2 - Estadual', code: '2' },
-    { name: '3 - Municipal', code: '3' }
+    { name: '1 - Matriz', code: 1 },
+    { name: '2 - Filial', code: 2 },
+    { name: '3 - Posto', code: 3 },
+    { name: '4 - Correspondente', code: 4 },
+    { name: '5 - Outros', code: 5 }
 ];
 
 function ModalEditarAgencia({ opened = false, agencia, aoFechar, aoSalvar }) {
     const [classError, setClassError] = useState([]);
     const [nome, setNome] = useState('');
-    const [data, setData] = useState('');
-    const [tipo, setTipo] = useState(null);
-    const [horaInicio, setHoraInicio] = useState('');
-    const [horaFim, setHoraFim] = useState('');
-    const [banco, setBanco] = useState(null);
-    const [bancos, setBancos] = useState([]);
+    const [numAgencia, setNumAgencia] = useState('');
+    const [codCompensacao, setCodCompensacao] = useState('');
+    const [tipoAgencia, setTipoAgencia] = useState(null);
+    const [telefone, setTelefone] = useState('');
+    const [praca, setPraca] = useState('');
+    const [rua, setRua] = useState('');
+    const [numero, setNumero] = useState('');
+    const [complemento, setComplemento] = useState('');
+    const [bairro, setBairro] = useState('');
+    const [cidade, setCidade] = useState('');
+    const [estado, setEstado] = useState('');
+    const [cep, setCep] = useState('');
     const [id, setId] = useState(null);
-    const [key, setKey] = useState(0);
-
-    // Carrega calendários quando o modal abre
-    useEffect(() => {
-        if (opened) {
-            http.get('banco/?format=json')
-                .then(response => {
-                    const bancosFormatados = response.map(cal => ({
-                        name: cal.nome,
-                        code: cal.id
-                    }));
-                    setBancos(bancosFormatados);
-                })
-                .catch(error => {
-                    console.error('Erro ao carregar calendários:', error);
-                });
-        }
-    }, [opened]);
 
     // Efeito para preencher os campos quando estiver editando
     useEffect(() => {
-        if (agencia && opened && bancos.length > 0) {
+        if (agencia && opened) {
             setNome(agencia.nome || '');
-            setData(agencia.data || '');
-            setHoraInicio(agencia.horainicio || '00:00');
-            setHoraFim(agencia.horafim || '23:59');
+            setNumAgencia(agencia.num_agencia || '');
+            setCodCompensacao(agencia.cod_compensacao || '');
+            setTelefone(agencia.telefone || '');
+            setPraca(agencia.praca || '');
+            setRua(agencia.rua || '');
+            setNumero(agencia.numero || '');
+            setComplemento(agencia.complemento || '');
+            setBairro(agencia.bairro || '');
+            setCidade(agencia.cidade || '');
+            setEstado(agencia.estado || '');
+            setCep(agencia.cep || '');
             setId(agencia.id);
             
             // Encontrar o tipo correto baseado no valor
-            const tipoSelecionado = tiposAgencia.find(t => t.code == agencia.tipo);
-            setTipo(tipoSelecionado || null);
-
-            // Encontrar o calendário correto baseado no valor
-            if (agencia.banco) {
-                const bancoSelecionado = bancos.find(cal => {
-                    return cal.code == agencia.banco;
-                });
-                setBanco(bancoSelecionado || null);
-            }
+            const tipoSelecionado = tiposAgencia.find(t => t.code == agencia.tipo_agencia);
+            setTipoAgencia(tipoSelecionado || null);
         } else if (!opened) {
             // Limpa os campos quando fecha o modal
             setNome('');
-            setData('');
-            setHoraInicio('');
-            setHoraFim('');
-            setTipo(null);
-            setBanco(null);
+            setNumAgencia('');
+            setCodCompensacao('');
+            setTipoAgencia(null);
+            setTelefone('');
+            setPraca('');
+            setRua('');
+            setNumero('');
+            setComplemento('');
+            setBairro('');
+            setCidade('');
+            setEstado('');
+            setCep('');
             setId(null);
             setClassError([]);
         }
-    }, [agencia, opened, bancos]);
+    }, [agencia, opened]);
 
     const validarESalvar = () => {
         let errors = [];
         if (!nome.trim()) errors.push('nome');
-        if (!data.trim()) errors.push('data');
-        if (!tipo) errors.push('tipo');
-        if (!banco) errors.push('banco');
+        if (!tipoAgencia) errors.push('tipoAgencia');
         
         if (errors.length > 0) {
             setClassError(errors);
@@ -144,11 +149,19 @@ function ModalEditarAgencia({ opened = false, agencia, aoFechar, aoSalvar }) {
 
         const dadosParaAPI = {
             nome: nome.trim(),
-            data: data,
-            tipo: tipo.code,
-            horainicio: horaInicio || null,
-            horafim: horaFim || null,
-            banco: banco.code
+            num_agencia: numAgencia.trim(),
+            cod_compensacao: codCompensacao.trim() || null,
+            tipo_agencia: tipoAgencia.code,
+            telefone: telefone.trim() || null,
+            praca: praca.trim() || null,
+            rua: rua.trim() || null,
+            numero: numero.trim() || null,
+            complemento: complemento.trim() || null,
+            bairro: bairro.trim() || null,
+            cidade: cidade.trim() || null,
+            estado: estado.trim() || null,
+            cep: cep.trim() || null,
+            num_banco: agencia.num_banco
         };
         
         aoSalvar(dadosParaAPI, id);
@@ -158,21 +171,21 @@ function ModalEditarAgencia({ opened = false, agencia, aoFechar, aoSalvar }) {
         <>
             {opened && (
                 <Overlay>
-                    <DialogEstilizado open={opened} style={{ maxWidth: '800px', width: '90vw' }}>
+                    <DialogEstilizado open={opened} style={{ maxWidth: '1200px', width: '95vw' }}>
                         <Frame>
                             <Titulo>
                                 <button className="close" onClick={aoFechar}>
                                     <RiCloseFill size={20} className="fechar" />  
                                 </button>
-                                <h6>Editar Agencia</h6>
+                                <h6>Editar Agência</h6>
                             </Titulo>
                         </Frame>
                         
                         <Wrapper>
                             <FormSection>
-                                <div style={{ display: 'flex', gap: '32px', alignItems: 'flex-start' }}>
+                                <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
                                     <LeftColumn>
-                                        <SectionTitle>Informações do Agencia</SectionTitle>
+                                        <SectionTitle>Informações Básicas</SectionTitle>
                                         
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                                             <CampoTexto 
@@ -181,68 +194,152 @@ function ModalEditarAgencia({ opened = false, agencia, aoFechar, aoSalvar }) {
                                                 valor={nome} 
                                                 setValor={setNome} 
                                                 type="text" 
-                                                label="Nome do Agencia*" 
-                                                placeholder="Digite o nome do agencia" 
+                                                label="Nome da Agência*" 
+                                                placeholder="Digite o nome da agência" 
                                                 maxCaracteres={100}
                                             />
                                             
                                             <CampoTexto 
-                                                camposVazios={classError.includes('data') ? ['data'] : []}
-                                                name="data" 
-                                                valor={data} 
-                                                setValor={setData} 
-                                                type="date" 
-                                                label="Data do Agencia*" 
-                                                placeholder="Selecione a data" 
+                                                name="numAgencia" 
+                                                valor={numAgencia} 
+                                                setValor={setNumAgencia} 
+                                                type="text" 
+                                                label="Número da Agência (Somente Leitura)" 
+                                                placeholder="Número da agência" 
+                                                maxCaracteres={20}
+                                                disabled={true}
+                                            />
+                                            
+                                            <CampoTexto 
+                                                name="codCompensacao" 
+                                                valor={codCompensacao} 
+                                                setValor={setCodCompensacao} 
+                                                type="text" 
+                                                label="Código de Compensação" 
+                                                placeholder="Digite o código de compensação" 
+                                                maxCaracteres={20}
                                             />
                                             
                                             <DropdownItens
-                                                camposVazios={classError.includes('tipo') ? ['tipo'] : []}
-                                                name="tipo"
-                                                valor={tipo}
-                                                setValor={setTipo}
-                                                label="Tipo do Agencia*"
+                                                camposVazios={classError.includes('tipoAgencia') ? ['tipoAgencia'] : []}
+                                                name="tipoAgencia"
+                                                valor={tipoAgencia}
+                                                setValor={setTipoAgencia}
+                                                label="Tipo da Agência*"
                                                 placeholder="Selecione o tipo"
                                                 options={tiposAgencia}
                                                 optionLabel="name"
                                             />
-
-                                            <DropdownItens
-                                                key={key}
-                                                camposVazios={classError.includes('banco') ? ['banco'] : []}
-                                                name="banco"
-                                                valor={banco}
-                                                setValor={setBanco}
-                                                options={bancos}
-                                                label="Calendário*"
-                                                placeholder="Selecione o calendário"
-                                            />
                                         </div>
                                     </LeftColumn>
 
-                                    <RightColumn>
-                                        <SectionTitle>Horários (Opcional)</SectionTitle>
+                                    <MiddleColumn>
+                                        <SectionTitle>Contato</SectionTitle>
                                         
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                                             <CampoTexto 
-                                                name="horainicio" 
-                                                valor={horaInicio} 
-                                                setValor={setHoraInicio} 
-                                                type="time" 
-                                                label="Hora de Início" 
-                                                placeholder="Selecione a hora de início" 
+                                                name="telefone" 
+                                                valor={telefone} 
+                                                setValor={setTelefone} 
+                                                type="text" 
+                                                label="Telefone" 
+                                                placeholder="Digite o telefone" 
+                                                maxCaracteres={20}
+                                            />
+
+                                            <CampoTexto 
+                                                name="praca" 
+                                                valor={praca} 
+                                                setValor={setPraca} 
+                                                type="text" 
+                                                label="Praça" 
+                                                placeholder="Digite a praça" 
+                                                maxCaracteres={100}
+                                            />
+                                        </div>
+                                    </MiddleColumn>
+
+                                    <RightColumn>
+                                        <SectionTitle>Endereço</SectionTitle>
+                                        
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                                            <CampoTexto 
+                                                name="rua" 
+                                                valor={rua} 
+                                                setValor={setRua} 
+                                                type="text" 
+                                                label="Rua" 
+                                                placeholder="Digite a rua" 
+                                                maxCaracteres={100}
                                             />
                                             
                                             <CampoTexto 
-                                                name="horafim" 
-                                                valor={horaFim} 
-                                                setValor={setHoraFim} 
-                                                type="time" 
-                                                label="Hora de Fim" 
-                                                placeholder="Selecione a hora de fim" 
+                                                name="numero" 
+                                                valor={numero} 
+                                                setValor={setNumero} 
+                                                type="text" 
+                                                label="Número" 
+                                                placeholder="Digite o número" 
+                                                maxCaracteres={20}
+                                            />
+
+                                            <CampoTexto 
+                                                name="complemento" 
+                                                valor={complemento} 
+                                                setValor={setComplemento} 
+                                                type="text" 
+                                                label="Complemento" 
+                                                placeholder="Digite o complemento" 
+                                                maxCaracteres={100}
+                                            />
+
+                                            <CampoTexto 
+                                                name="bairro" 
+                                                valor={bairro} 
+                                                setValor={setBairro} 
+                                                type="text" 
+                                                label="Bairro" 
+                                                placeholder="Digite o bairro" 
+                                                maxCaracteres={100}
                                             />
                                         </div>
                                     </RightColumn>
+
+                                    <FourthColumn>
+                                        <SectionTitle>Localização</SectionTitle>
+                                        
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                                            <CampoTexto 
+                                                name="cidade" 
+                                                valor={cidade} 
+                                                setValor={setCidade} 
+                                                type="text" 
+                                                label="Cidade" 
+                                                placeholder="Digite a cidade" 
+                                                maxCaracteres={100}
+                                            />
+
+                                            <CampoTexto 
+                                                name="estado" 
+                                                valor={estado} 
+                                                setValor={setEstado} 
+                                                type="text" 
+                                                label="Estado" 
+                                                placeholder="Digite o estado" 
+                                                maxCaracteres={50}
+                                            />
+
+                                            <CampoTexto 
+                                                name="cep" 
+                                                valor={cep} 
+                                                setValor={setCep} 
+                                                type="text" 
+                                                label="CEP" 
+                                                placeholder="Digite o CEP" 
+                                                maxCaracteres={10}
+                                            />
+                                        </div>
+                                    </FourthColumn>
                                 </div>
                             </FormSection>
 
@@ -260,7 +357,7 @@ function ModalEditarAgencia({ opened = false, agencia, aoFechar, aoSalvar }) {
                                     size="medium" 
                                     filled
                                 >
-                                    Salvar Alterações
+                                    Salvar Agência
                                 </Botao>
                             </ButtonContainer>
                         </Wrapper>

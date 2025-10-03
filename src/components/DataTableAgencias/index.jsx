@@ -345,7 +345,7 @@ function DataTableAgencias({
                 justifyContent: 'center'
             }}>
                 <Tooltip style={{fontSize: '10px'}} target=".edit" mouseTrack mouseTrackLeft={10} />
-                {ArmazenadorToken.hasPermission('change_agencias') && (
+                {ArmazenadorToken.hasPermission('change_agencia') && (
                 <FaPen 
                     className="edit" 
                     data-pr-tooltip="Editar Agencia" 
@@ -365,7 +365,7 @@ function DataTableAgencias({
                 />
                 )}
                 <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
-                {ArmazenadorToken.hasPermission('delete_agencias') && (
+                {ArmazenadorToken.hasPermission('delete_agencia') && (
                     <RiDeleteBin6Line 
                         className="delete" 
                         data-pr-tooltip="Excluir Agencia" 
@@ -422,7 +422,7 @@ function DataTableAgencias({
                     {onAddClick && (
                         <BotaoGrupo align="end" verticalalign="start">
                             <Botao aoClicar={onAddClick} estilo="vermilion" size="small" tab>
-                                <GrAddCircle /> Adicionar Agencia
+                                <GrAddCircle fill="var(--secundaria)" stroke="var(--secundaria)" color="var(--secundaria)" /> Adicionar Agencia
                             </Botao>
                         </BotaoGrupo>
                     )}
@@ -468,8 +468,8 @@ function DataTableAgencias({
                 <Column field="num_agencia" body={representativeNumAgenciaTemplate} header="Número Agência" style={{ width: `${largurasColunas[getColumnIndex(2)]}%` }}></Column>
                 {/* <Column field="cod_compensacao" body={representativeCodCompensacaoTemplate} header="Código Compensação" style={{ width: `${largurasColunas[getColumnIndex(3)]}%` }}></Column> */}
                 <Column field="tipo_agencia" body={representativeTipoAgenciaTemplate} header="Tipo Agência" style={{ width: `${largurasColunas[getColumnIndex(4)]}%` }}></Column>
-                <Column field="telefone" body={representativeTelefoneTemplate} header="Telefone" style={{ width: `${largurasColunas[getColumnIndex(5)]}%` }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: `${largurasColunas[getColumnIndex(6)]}%` }}></Column>
+                {/* <Column field="telefone" body={representativeTelefoneTemplate} header="Telefone" style={{ width: `${largurasColunas[getColumnIndex(5)]}%` }}></Column> */}
+                <Column body={representativeActionsTemplate} header="" style={{ width: `${largurasColunas[getColumnIndex(5)]}%` }}></Column>
             </DataTable>
             <ModalEditarAgencia aoSalvar={editarAgencia} agencia={selectedAgencia} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>

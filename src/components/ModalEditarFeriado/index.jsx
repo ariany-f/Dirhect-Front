@@ -83,23 +83,23 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
     // Carrega calendários quando o modal abre
     useEffect(() => {
         if (opened) {
-            http.get('calendario/?format=json')
-                .then(response => {
-                    const calendariosFormatados = response.map(cal => ({
-                        name: cal.nome,
-                        code: cal.id
-                    }));
-                    setCalendarios(calendariosFormatados);
-                })
-                .catch(error => {
-                    console.error('Erro ao carregar calendários:', error);
-                });
+            // http.get('calendario/?format=json')
+            //     .then(response => {
+            //         const calendariosFormatados = response.map(cal => ({
+            //             name: cal.nome,
+            //             code: cal.id
+            //         }));
+            //         setCalendarios(calendariosFormatados);
+            //     })
+            //     .catch(error => {
+            //         console.error('Erro ao carregar calendários:', error);
+            //     });
         }
     }, [opened]);
 
     // Efeito para preencher os campos quando estiver editando
     useEffect(() => {
-        if (feriado && opened && calendarios.length > 0) {
+        if (feriado && opened) {
             setNome(feriado.nome || '');
             setData(feriado.data || '');
             setHoraInicio(feriado.horainicio || '00:00');
@@ -111,12 +111,12 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
             setTipo(tipoSelecionado || null);
 
             // Encontrar o calendário correto baseado no valor
-            if (feriado.calendario) {
-                const calendarioSelecionado = calendarios.find(cal => {
-                    return cal.code == feriado.calendario;
-                });
-                setCalendario(calendarioSelecionado || null);
-            }
+            // if (feriado.calendario) {
+            //     const calendarioSelecionado = calendarios.find(cal => {
+            //         return cal.code == feriado.calendario;
+            //     });
+            //     setCalendario(calendarioSelecionado || null);
+            // }
         } else if (!opened) {
             // Limpa os campos quando fecha o modal
             setNome('');
@@ -124,18 +124,17 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
             setHoraInicio('');
             setHoraFim('');
             setTipo(null);
-            setCalendario(null);
+            // setCalendario(null);
             setId(null);
             setClassError([]);
         }
-    }, [feriado, opened, calendarios]);
+    }, [feriado, opened]);
 
     const validarESalvar = () => {
         let errors = [];
         if (!nome.trim()) errors.push('nome');
         if (!data.trim()) errors.push('data');
         if (!tipo) errors.push('tipo');
-        if (!calendario) errors.push('calendario');
         
         if (errors.length > 0) {
             setClassError(errors);
@@ -147,8 +146,7 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
             data: data,
             tipo: tipo.code,
             horainicio: horaInicio || null,
-            horafim: horaFim || null,
-            calendario: calendario.code
+            horafim: horaFim || null
         };
         
         aoSalvar(dadosParaAPI, id);
@@ -164,12 +162,12 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
                                 <button className="close" onClick={aoFechar}>
                                     <RiCloseFill size={20} className="fechar" />  
                                 </button>
-                                <h6>Editar Feriado</h6>
+                                <h6>Editar Feriado - {feriado?.nome || ''}</h6>
                             </Titulo>
                         </Frame>
                         
                         <Wrapper>
-                            <FormSection>
+                            <FormSection>   
                                 <div style={{ display: 'flex', gap: '32px', alignItems: 'flex-start' }}>
                                     <LeftColumn>
                                         <SectionTitle>Informações do Feriado</SectionTitle>
@@ -205,17 +203,6 @@ function ModalEditarFeriado({ opened = false, feriado, aoFechar, aoSalvar }) {
                                                 placeholder="Selecione o tipo"
                                                 options={tiposFeriado}
                                                 optionLabel="name"
-                                            />
-
-                                            <DropdownItens
-                                                key={key}
-                                                camposVazios={classError.includes('calendario') ? ['calendario'] : []}
-                                                name="calendario"
-                                                valor={calendario}
-                                                setValor={setCalendario}
-                                                options={calendarios}
-                                                label="Calendário*"
-                                                placeholder="Selecione o calendário"
                                             />
                                         </div>
                                     </LeftColumn>

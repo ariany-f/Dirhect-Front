@@ -105,7 +105,7 @@ function DataTableBancos({
     
     // Larguras base otimizadas para Col5 (41.66% da tela)
     // Ordem: Nome, ID Origem, Descrição, Ações
-    const larguraBase = [30, 40, 20, 10];
+    const larguraBase = [10, 30, 30, 20, 10];
     
     // Calcula larguras redistribuídas
     const calcularLarguras = () => {
@@ -415,10 +415,11 @@ function DataTableBancos({
                 {exibeColunasOpcionais.checkbox && (
                     <Column selectionMode="multiple" style={{ width: `${largurasColunas[0]}%` }}></Column>
                 )}
-                <Column field="nome" body={representativeNomeTemplate} header="Nome" style={{ width: `${largurasColunas[getColumnIndex(1)]}%` }}></Column>
-                <Column field="nome_completo" body={representativeNomeCompletoTemplate} header="Nome Completo" style={{ width: `${largurasColunas[getColumnIndex(2)]}%` }}></Column>
-                <Column field="id_ispb" body={representativeIdIspbTemplate} header="ID ISPB" style={{ width: `${largurasColunas[getColumnIndex(3)]}%` }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: `${largurasColunas[getColumnIndex(4)]}%` }}></Column>
+                <Column field="id" header="Id" style={{ width: `${largurasColunas[getColumnIndex(1)]}%` }}></Column>
+                <Column field="nome" body={representativeNomeTemplate} header="Nome" style={{ width: `${largurasColunas[getColumnIndex(2)]}%` }}></Column>
+                <Column field="nome_completo" body={representativeNomeCompletoTemplate} header="Nome Completo" style={{ width: `${largurasColunas[getColumnIndex(3)]}%` }}></Column>
+                <Column field="id_ispb" body={representativeIdIspbTemplate} header="ID ISPB" style={{ width: `${largurasColunas[getColumnIndex(4)]}%` }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: `${largurasColunas[getColumnIndex(5)]}%` }}></Column>
             </DataTable>
             <ModalEditarBanco aoSalvar={editarBanco} banco={selectedBanco} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
