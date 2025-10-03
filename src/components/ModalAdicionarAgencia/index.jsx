@@ -7,7 +7,7 @@ import Frame from '@components/Frame';
 import Botao from '@components/Botao';
 import { FormContainer, ActionsContainer } from './styles';
 
-const ModalAdicionarAgencia = ({ opened, aoFechar, aoSalvar, valorBusca, bancoId }) => {
+const ModalAdicionarAgencia = ({ opened, aoFechar, aoSalvar, valorBusca, bancoSelecionado }) => {
     const [numero, setNumero] = useState('');
     const [nome, setNome] = useState('');
 
@@ -26,7 +26,7 @@ const ModalAdicionarAgencia = ({ opened, aoFechar, aoSalvar, valorBusca, bancoId
         aoSalvar({
             numero,
             nome,
-            banco: bancoId,
+            banco: bancoSelecionado.id,
         });
     };
 
@@ -42,7 +42,7 @@ const ModalAdicionarAgencia = ({ opened, aoFechar, aoSalvar, valorBusca, bancoId
                         <button className="close" onClick={aoFechar}>
                             <RiCloseFill size={20} className="fechar" />
                         </button>
-                        <h6>Adicionar Nova Agência</h6>
+                        <h6>Adicionar Nova Agência - {bancoSelecionado.nome}</h6>
                     </Titulo>
                 </Frame>
                 <FormContainer>
