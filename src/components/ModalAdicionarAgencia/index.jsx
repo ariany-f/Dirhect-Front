@@ -51,7 +51,6 @@ const ModalAdicionarAgencia = ({ opened, aoFechar, aoSalvar, valorBusca, bancoId
                         valor={numero}
                         setValor={setNumero}
                         placeholder="Digite o número da agência"
-                        disabled
                     />
                     <CampoTexto
                         label="Nome da Agência (Opcional)"
