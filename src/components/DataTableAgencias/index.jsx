@@ -111,7 +111,7 @@ function DataTableAgencias({
     
     // Larguras base otimizadas para Col7 (58.33% da tela)
     // Ordem: Nome, Tipo, Data, Hora Início, Hora Fim, Ações
-    const larguraBase = [25, 15, 15, 15, 15, 15];
+    const larguraBase = [25, 15, 15, 15, 15];
 
     // Calcula larguras redistribuídas
     const calcularLarguras = () => {
@@ -463,7 +463,7 @@ function DataTableAgencias({
                 )}
                 <Column field="nome" header="Nome" style={{ width: `${largurasColunas[getColumnIndex(1)]}%` }}></Column>
                 <Column field="num_agencia" body={representativeNumAgenciaTemplate} header="Número Agência" style={{ width: `${largurasColunas[getColumnIndex(2)]}%` }}></Column>
-                <Column field="cod_compensacao" body={representativeCodCompensacaoTemplate} header="Código Compensação" style={{ width: `${largurasColunas[getColumnIndex(3)]}%` }}></Column>
+                {/* <Column field="cod_compensacao" body={representativeCodCompensacaoTemplate} header="Código Compensação" style={{ width: `${largurasColunas[getColumnIndex(3)]}%` }}></Column> */}
                 <Column field="tipo_agencia" body={representativeTipoAgenciaTemplate} header="Tipo Agência" style={{ width: `${largurasColunas[getColumnIndex(4)]}%` }}></Column>
                 <Column field="telefone" body={representativeTelefoneTemplate} header="Telefone" style={{ width: `${largurasColunas[getColumnIndex(5)]}%` }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: `${largurasColunas[getColumnIndex(6)]}%` }}></Column>
