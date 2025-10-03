@@ -384,7 +384,7 @@ function BancosListagem() {
                             <DataTableAgencias
                                 agencias={agencias}
                                 banco={selectedBanco}
-                                showSearch={false} // Desabilitar busca
+                                showSearch={true}
                                 rows={registrosPorPagina}
                                 totalRecords={totalRegistrosAgencias}
                                 first={(paginaAtualAgencias - 1) * registrosPorPagina}
