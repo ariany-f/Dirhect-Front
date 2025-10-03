@@ -4,7 +4,7 @@ import styles from './Cabecalho.module.css';
 import Frame from "@components/Frame";
 import Texto from "@components/Texto";
 import { Link, useLocation } from "react-router-dom";
-import { BsArrowLeftRight, BsFillPersonVcardFill } from 'react-icons/bs';
+import { BsArrowLeftRight, BsBank, BsFillPersonVcardFill } from 'react-icons/bs';
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import Menu from "@components/Menu";
 import { useState, useRef, useEffect } from "react";
@@ -540,7 +540,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
           { 
             label: t("banks"), 
             url: '/bancos',
-            icon: <FaBuilding size={18}/>
+            icon: <BsBank size={18}/>
           }
           ] : []),
         ...(import.meta.env.VITE_OPTIONS_LINHAS_TRANSPORTE === 'true' ? [
