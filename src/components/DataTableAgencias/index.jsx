@@ -400,30 +400,33 @@ function DataTableAgencias({
     const headerTemplate = () => {
         return (
             <TableHeader>
-                <BotaoGrupo align="space-between">
-                    {banco?.nome && (
-                        <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                            <Texto size={16} weight={500}>{banco.nome}</Texto>
-                        </div>
-                    )}
-                    {onAddClick && (
-                        <Botao aoClicar={onAddClick} estilo="vermilion" size="small" tab>
-                            <GrAddCircle /> Adicionar Agencia
-                        </Botao>
-                    )}
-                </BotaoGrupo>
-                {showSearch && (
-                    <div style={{marginTop: '10px'}}>
-                        <CampoTexto  
-                            width={'200px'} 
-                            valor={globalFilterValue} 
-                            setValor={onGlobalFilterChange} 
-                            type="search" 
-                            label="" 
-                            placeholder="Buscar agencias" 
-                        />
+                
+                {banco?.nome && (
+                    <div style={{display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px'}}>
+                        <Texto size={16} weight={500}>{banco.nome}</Texto>
                     </div>
                 )}
+                <BotaoGrupo verticalalign="center" align="space-between">
+                    {showSearch && (
+                        <BotaoGrupo align="start" verticalalign="center">
+                            <CampoTexto  
+                                width={'200px'} 
+                                valor={globalFilterValue} 
+                                setValor={onGlobalFilterChange} 
+                                type="search" 
+                                label="" 
+                                placeholder="Buscar agencias" 
+                            />
+                        </BotaoGrupo>
+                    )}
+                    {onAddClick && (
+                        <BotaoGrupo align="end" verticalalign="start">
+                            <Botao aoClicar={onAddClick} estilo="vermilion" size="small" tab>
+                                <GrAddCircle /> Adicionar Agencia
+                            </Botao>
+                        </BotaoGrupo>
+                    )}
+                </BotaoGrupo>
             </TableHeader>
         );
     };
