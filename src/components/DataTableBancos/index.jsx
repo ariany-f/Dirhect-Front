@@ -358,22 +358,24 @@ function DataTableBancos({
             <TableHeader>
                 <BotaoGrupo align="space-between">
                     <Texto size={'18px'} weight={600}>Bancos</Texto>
-                    {onAddClick && (
+                    {/* {onAddClick && (
                         <Botao aoClicar={onAddClick} estilo="neutro" size="small" tab>
                             <GrAddCircle /> {t('add')} Banco
                         </Botao>
-                    )}
+                    )} */}
+                    <BotaoGrupo align="end">
+                        <CampoTexto  
+                            width={'80px'} 
+                            valor={globalFilterValue} 
+                            setValor={onGlobalFilterChange} 
+                            type="search" 
+                            label="" 
+                            placeholder="Buscar bancos" 
+                        />
+                    </BotaoGrupo>
                 </BotaoGrupo>
-                {showSearch && (
-                    <CampoTexto  
-                        width={'200px'} 
-                        valor={globalFilterValue} 
-                        setValor={onGlobalFilterChange} 
-                        type="search" 
-                        label="" 
-                        placeholder="Buscar bancos" 
-                    />
-                )}
+                {/* {showSearch && ( */}
+                {/* )} */}
             </TableHeader>
         );
     };
