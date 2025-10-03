@@ -414,16 +414,14 @@ function DataTableAgencias({
                 </BotaoGrupo>
                 {showSearch && (
                     <div style={{marginTop: '10px'}}>
-                        <BotaoGrupo align="end">
-                            <CampoTexto  
-                                width={'200px'} 
-                                valor={globalFilterValue} 
-                                setValor={onGlobalFilterChange} 
-                                type="search" 
-                                label="" 
-                                placeholder="Buscar agencias" 
-                            />
-                        </BotaoGrupo>
+                        <CampoTexto  
+                            width={'200px'} 
+                            valor={globalFilterValue} 
+                            setValor={onGlobalFilterChange} 
+                            type="search" 
+                            label="" 
+                            placeholder="Buscar agencias" 
+                        />
                     </div>
                 )}
             </TableHeader>
