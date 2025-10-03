@@ -353,7 +353,7 @@ function DataTableFeriados({
                 <BotaoGrupo align="space-between">
                     {calendario?.nome && (
                         <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                            <Texto size={16} weight={500}>{calendario.nome}</Texto>
+                            <Texto size={16} weight={600}>{calendario.nome}</Texto>
                         </div>
                     )}
                     {onAddClick && (

@@ -403,7 +403,7 @@ function DataTableAgencias({
                 
                 {banco?.nome && (
                     <div style={{display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px'}}>
-                        <Texto size={16} weight={500}>{banco.nome}</Texto>
+                        <Texto size={16} weight={600}>{banco.nome}</Texto>
                     </div>
                 )}
                 <BotaoGrupo verticalalign="center" align="space-between">
