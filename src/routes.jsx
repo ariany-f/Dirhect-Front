@@ -203,6 +203,9 @@ import Estatisticas from './pages/Tarefas/estatisticas'
 import CalendariosListagem from './pages/Calendario/lista'
 import DetalhesCalendarios from './pages/Calendario/detalhes'
 import Calendarios from './pages/Calendario'
+import Bancos from './pages/Bancos'
+import BancosListagem from './pages/Bancos/lista'
+import DetalhesBancos from './pages/Bancos/detalhes'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
@@ -342,6 +345,11 @@ function AppRouter() {
               <Route path="calendarios" element={<Calendarios/>}>
                 <Route index element={<CalendariosListagem />} />
                 <Route path="detalhes/:id" element={<DetalhesCalendarios />} />
+              </Route>
+
+              <Route path="bancos" element={<Bancos/>}>
+                <Route index element={<BancosListagem />} />
+                <Route path="detalhes/:id" element={<DetalhesBancos />} />
               </Route>
 
               <Route path="estrutura" element={<EstruturaOrganizacional />} >

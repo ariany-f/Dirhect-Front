@@ -3,6 +3,7 @@ import { Overlay, DialogEstilizado } from '@components/Modal/styles';
 import Titulo from '@components/Titulo';
 import { RiCloseFill } from 'react-icons/ri';
 import CampoTexto from '@components/CampoTexto';
+import Frame from '@components/Frame';
 import Botao from '@components/Botao';
 import { FormContainer, ActionsContainer } from './styles';
 

@@ -470,6 +470,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
     { "id": 27, "url": "syync", "pageTitulo": "Syync" },
     { "id": 28, "url": "estatisticas", "pageTitulo": t("performance") },
     { "id": 29, "url": "calendarios", "pageTitulo": t("calendars") },
+    { "id": 30, "url": "bancos", "pageTitulo": t("banks") },
   ];
 
   // Lógica para determinar o título baseado na URL
@@ -533,6 +534,13 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
             label: t("calendars"), 
             url: '/calendarios',
             icon: <FaCalendarAlt size={18}/>
+          }
+          ] : []),
+        ...(ArmazenadorToken.hasPermission('view_bancos') || ArmazenadorToken.hasPermission('view_agencia') ? [
+          { 
+            label: t("banks"), 
+            url: '/bancos',
+            icon: <FaBuilding size={18}/>
           }
           ] : []),
         ...(import.meta.env.VITE_OPTIONS_LINHAS_TRANSPORTE === 'true' ? [
