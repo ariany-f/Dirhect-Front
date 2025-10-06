@@ -1195,15 +1195,18 @@ const CandidatoRegistro = () => {
 
     // Função para calcular o índice do step de educação
     const getStepEducacaoIndex = () => {
-        return 4; // Documentos, Dados Pessoais, Dados Bancários, Dados Contratuais, Educação
+        let index = 3; // Documentos, Dados Pessoais, Dados Bancários
+        
+        if (!self) {
+            index += 1; // Dados Contratuais
+        }
+        
+        return index; // Educação
     };
 
     // Função para calcular o índice do step de dependentes
     const getStepDependentesIndex = () => {
-        let index = getStepEducacaoIndex(); // Base: até Educação
-        
-        // Sempre adiciona pelo menos 1 para o step de dependentes
-        index += 1;
+        let index = getStepEducacaoIndex() + 1; // Base: até Educação + 1
         
         if (mostrarHabilidades) {
             index += 1; // Habilidades
@@ -1212,6 +1215,7 @@ const CandidatoRegistro = () => {
         if (mostrarExperiencia) {
             index += 1; // Experiência Profissional
         }
+        
         return index; // Dependentes
     };
     
@@ -1350,7 +1354,7 @@ const CandidatoRegistro = () => {
                     toast.current.show({
                         severity: 'info',
                         summary: 'Informação',
-                        detail: 'Nenhuma alteração nos dados da vaga para salvar.',
+                        detail: 'Nenhuma alteração nos dados contratuais para salvar.',
                         life: 3000
                     });
                     return;
@@ -2092,7 +2096,9 @@ const CandidatoRegistro = () => {
 
         
         // Validação específica por step
-        if (activeIndex === 1) { // Step Dados Pessoais
+        const stepReal = mapearActiveIndexParaStep(activeIndex);
+        
+        if (stepReal === 'dados_pessoais') { // Step Dados Pessoais
             // Validação de dados pessoais obrigatórios baseada no required={true}
             const camposObrigatoriosDadosPessoais = [
                 { campo: 'nome', nome: 'Nome completo' },
@@ -2201,7 +2207,7 @@ const CandidatoRegistro = () => {
                     }
                 });
             }
-        } else if (activeIndex === 2) { // Step Dados Bancários
+        } else if (stepReal === 'dados_bancarios') { // Step Dados Bancários
             // Validação de dados bancários obrigatórios baseada no required={true}
             const camposObrigatoriosDadosBancarios = [
                 { campo: 'banco', nome: 'Banco' },
@@ -2216,7 +2222,7 @@ const CandidatoRegistro = () => {
                     setClassError(prev => [...prev, campo]);
                 }
             });
-        } else if (activeIndex === 3 && !self) { // Step Dados Contratuais (apenas se não for self)
+        } else if (stepReal === 'dados_contratuais') { // Step Dados Contratuais (apenas se não for self)
             
             // Validação de dados contratuais obrigatórios baseada no required={true}
             const camposObrigatoriosDadosContratuais = [
@@ -2275,7 +2281,7 @@ const CandidatoRegistro = () => {
                 camposObrigatorios.push('Centro de custo');
                 setClassError(prev => [...prev, 'centro_custo_id']);
             }
-        } else if (activeIndex === getStepDependentesIndex() && activeIndex !== getStepEducacaoIndex()) { // Step Dependentes (apenas se não for o mesmo que educação)
+        } else if (stepReal === 'dependentes') { // Step Dependentes
            
             if (candidato.dependentes && candidato.dependentes.length > 0) {
                 candidato.dependentes.forEach((dependente, index) => {
@@ -2782,13 +2788,15 @@ const CandidatoRegistro = () => {
             return true;
         }
 
+        const stepReal = mapearActiveIndexParaStep(activeIndex);
+
         // Step 0 - Documentos - sempre válido (passa direto)
-        if (activeIndex === 0) {
+        if (stepReal === 'anexos') {
             return true;
         }
 
         // Step 1 - Dados Pessoais
-        if (activeIndex === 1) {
+        if (stepReal === 'dados_pessoais') {
             const camposObrigatorios = [
                 'nome', 'cpf', 'telefone', 'dt_nascimento', 'genero', 'cor_raca', 'estado_civil',
                 'estado_natal', 'nacionalidade', 'naturalidade', 'cep', 'tipo_rua', 'rua', 'numero',
@@ -2802,7 +2810,7 @@ const CandidatoRegistro = () => {
         }
 
         // Step 2 - Dados Bancários
-        if (activeIndex === 2) {
+        if (stepReal === 'dados_bancarios') {
             const camposObrigatorios = ['banco', 'conta_corrente'];
             return camposObrigatorios.every(campo => {
                 const valor = candidato[campo];
@@ -2811,7 +2819,7 @@ const CandidatoRegistro = () => {
         }
 
         // Step 3 - Dados Contratuais (apenas se não for self)
-        if (activeIndex === 3 && !self) {
+        if (stepReal === 'dados_contratuais') {
             const camposObrigatorios = [
                 'dt_admissao', 'tipo_admissao', 'motivo_admissao', 'tipo_situacao',
                 'tipo_funcionario', 'tipo_recebimento', 'jornada', 'salario', 'letra',
@@ -2894,7 +2902,7 @@ const CandidatoRegistro = () => {
         }
 
         // Step Educação
-        if (activeIndex === getStepEducacaoIndex()) {
+        if (stepReal === 'escolaridade') {
             const valor = candidato.grau_instrucao;
             
             if (!valor) {
@@ -2911,7 +2919,7 @@ const CandidatoRegistro = () => {
         }
 
         // Step Dependentes
-        if (activeIndex === getStepDependentesIndex()) {
+        if (stepReal === 'dependentes') {
             const resultado = !verificarDependentesIncompletos();
             return resultado;
         }
@@ -2942,7 +2950,7 @@ const CandidatoRegistro = () => {
         const isFirstStep = activeIndex === 0;
         
         // Calcular o último step dinamicamente baseado nas variáveis de ambiente
-        let totalSteps = 4; // Documentos, Dados Pessoais, Dados Bancários, Educação
+        let totalSteps = 3; // Documentos, Dados Pessoais, Dados Bancários
         
         if (!self) {
             totalSteps += 1; // Dados Cadastrais
@@ -3069,9 +3077,9 @@ const CandidatoRegistro = () => {
                     )}
                     
                     {/* Steps intermediários com salvar */}
-                    {(activeIndex >= 1 && activeIndex < totalSteps - 2) && (
+                    {(activeIndex >= 1 && activeIndex < totalSteps - 1) && mapearActiveIndexParaStep(activeIndex) !== 'anotacoes' && mapearActiveIndexParaStep(activeIndex) !== 'revisao' && (
                         <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
-                            {activeIndex !== getStepDependentesIndex() && (
+                            {mapearActiveIndexParaStep(activeIndex) !== 'dependentes' && (
                                 <Botao 
                                     size="small" 
                                     iconPos="right" 
@@ -3094,7 +3102,7 @@ const CandidatoRegistro = () => {
                     )}
                     
                     {/* Step de Anotações - botão Salvar + Próximo */}
-                    {activeIndex === totalSteps - 2 && stepAtualValido && (
+                    {mapearActiveIndexParaStep(activeIndex) === 'anotacoes' && stepAtualValido && (
                         <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
                             <Botao 
                                 size="small" 
@@ -3117,7 +3125,7 @@ const CandidatoRegistro = () => {
                     )}
                     
                     {/* Step de LGPD para self - botão Aceitar */}
-                    {self && activeIndex === totalSteps - 3 && candidato.aceite_lgpd === false && (
+                    {self && mapearActiveIndexParaStep(activeIndex) === 'lgpd' && candidato.aceite_lgpd === false && (
                         <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
                                 <Botao 
                                     iconPos="right" 
@@ -3130,7 +3138,7 @@ const CandidatoRegistro = () => {
                     )}
                     
                     {/* Step de Revisão - botão Finalizar */}
-                    {isLastStep && podeFinalizar && (
+                    {mapearActiveIndexParaStep(activeIndex) === 'revisao' && podeFinalizar && (
                         <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
                                 <Botao 
                                     size="small" 

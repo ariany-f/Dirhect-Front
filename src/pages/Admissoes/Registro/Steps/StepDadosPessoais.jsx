@@ -956,6 +956,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
             <CampoTexto
                 name="telefone"
                 required={true}
+                camposVazios={isCampoEmErro('telefone') ? ['telefone'] : []}
                 valor={candidato?.telefone ?? ''}
                 setValor={valor => {
                     setCampo('telefone', valor);
