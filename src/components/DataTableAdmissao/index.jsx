@@ -130,6 +130,35 @@ function DataTableAdmissao({
         return ultimaTarefa?.status === 'cancelada';
     };
 
+    // Função para verificar se a admissão está com erro
+    const verificarErro = (candidato) => {
+        // Se não há tarefas pendentes, verifica o log_tarefas
+        if (!candidato?.tarefas || candidato.tarefas.length === 0) {
+            if (!candidato?.log_tarefas || candidato.log_tarefas.length === 0) {
+                return false;
+            }
+            
+            // Ordena os logs por data (mais recente primeiro)
+            const logsOrdenados = [...candidato.log_tarefas].sort((a, b) => 
+                new Date(b.criado_em) - new Date(a.criado_em)
+            );
+            
+            // Pega o último log
+            const ultimoLog = logsOrdenados[0];
+            
+            // Verifica se o último log é de erro
+            return ultimoLog?.tipo === 'erro';
+        }
+        
+        // Se há tarefas, verifica o status da última tarefa
+        const tarefasOrdenadas = [...candidato.tarefas].sort((a, b) => 
+            new Date(b.created_at || b.updated_at) - new Date(a.created_at || a.updated_at)
+        );
+        
+        const ultimaTarefa = tarefasOrdenadas[0];
+        return ultimaTarefa?.status === 'erro';
+    };
+
     // Função para verificar se alguma admissão tem tarefa de LGPD
     const algumaAdmissaoTemLGPD = () => {
         return vagas?.some(admissao => 
@@ -433,6 +462,7 @@ function DataTableAdmissao({
         const isModoLeitura = verificarModoLeitura(rowData);
         const isFinalizada = verificarFinalizada(rowData);
         const isCancelada = verificarCancelada(rowData);
+        const isErro = verificarErro(rowData);
         
         return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -461,8 +491,8 @@ function DataTableAdmissao({
                 {isModoLeitura && (
                     <div
                         style={{
-                            backgroundColor: isCancelada ? 'rgba(220, 38, 38, 0.15)' : (isFinalizada ? 'rgba(102, 187, 106, 0.15)' : 'rgba(66, 165, 245, 0.15)'),
-                            color: isCancelada ? '#dc2626' : (isFinalizada ? '#28a745' : 'rgb(66, 165, 245)'),
+                            backgroundColor: isErro ? 'rgba(255, 87, 34, 0.15)' : (isCancelada ? 'rgba(220, 38, 38, 0.15)' : (isFinalizada ? 'rgba(102, 187, 106, 0.15)' : 'rgba(66, 165, 245, 0.15)')),
+                            color: isErro ? '#ff5722' : (isCancelada ? '#dc2626' : (isFinalizada ? '#28a745' : 'rgb(66, 165, 245)')),
                             fontWeight: 500,
                             fontSize: 11,
                             borderRadius: 4,
@@ -473,10 +503,10 @@ function DataTableAdmissao({
                             width: 'fit-content'
                         }}
                     >
-                        {isCancelada ? 'Cancelada' : (isFinalizada ? 'Finalizada' : 'Preenchimento Concluído')}
+                        {isErro ? 'Erro' : (isCancelada ? 'Cancelada' : (isFinalizada ? 'Finalizada' : 'Preenchimento Concluído'))}
                     </div>
                 )}
-                {!isModoLeitura && !isFinalizada && !isCancelada && (
+                {!isModoLeitura && !isFinalizada && !isCancelada && !isErro && (
                     <div
                         style={{
                             backgroundColor: 'rgb(255, 248, 225)',
@@ -555,7 +585,8 @@ function DataTableAdmissao({
                     const isModoLeitura = verificarModoLeitura(data);
                     const isFinalizada = verificarFinalizada(data);
                     const isCancelada = verificarCancelada(data);
-                    return `datatable-clickable-row ${(isModoLeitura || isFinalizada || isCancelada) ? 'datatable-readonly-row' : ''}`;
+                    const isErro = verificarErro(data);
+                    return `datatable-clickable-row ${(isModoLeitura || isFinalizada || isCancelada || isErro) ? 'datatable-readonly-row' : ''}`;
                 }}
                 rowsPerPageOptions={[5, 10, 25, 50]}
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
