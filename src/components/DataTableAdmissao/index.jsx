@@ -112,6 +112,24 @@ function DataTableAdmissao({
         return !todasTarefasPendentes;
     };
 
+    // Função para verificar se a admissão foi cancelada
+    const verificarCancelada = (candidato) => {
+        if (!candidato?.tarefas || candidato.tarefas.length === 0) {
+            return false;
+        }
+        
+        // Ordena as tarefas por data (mais recente primeiro)
+        const tarefasOrdenadas = [...candidato.tarefas].sort((a, b) => 
+            new Date(b.created_at || b.updated_at) - new Date(a.created_at || a.updated_at)
+        );
+        
+        // Pega a última tarefa
+        const ultimaTarefa = tarefasOrdenadas[0];
+        
+        // Verifica se a última tarefa está cancelada
+        return ultimaTarefa?.status === 'cancelada';
+    };
+
     // Função para verificar se alguma admissão tem tarefa de LGPD
     const algumaAdmissaoTemLGPD = () => {
         return vagas?.some(admissao => 
@@ -414,6 +432,7 @@ function DataTableAdmissao({
         // Verifica se está em modo leitura usando a mesma lógica do index.jsx
         const isModoLeitura = verificarModoLeitura(rowData);
         const isFinalizada = verificarFinalizada(rowData);
+        const isCancelada = verificarCancelada(rowData);
         
         return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -442,8 +461,8 @@ function DataTableAdmissao({
                 {isModoLeitura && (
                     <div
                         style={{
-                            backgroundColor: isFinalizada ? 'rgba(102, 187, 106, 0.15)' : 'rgba(66, 165, 245, 0.15)',
-                            color: isFinalizada ? '#28a745' : 'rgb(66, 165, 245)',
+                            backgroundColor: isCancelada ? 'rgba(220, 38, 38, 0.15)' : (isFinalizada ? 'rgba(102, 187, 106, 0.15)' : 'rgba(66, 165, 245, 0.15)'),
+                            color: isCancelada ? '#dc2626' : (isFinalizada ? '#28a745' : 'rgb(66, 165, 245)'),
                             fontWeight: 500,
                             fontSize: 11,
                             borderRadius: 4,
@@ -454,10 +473,10 @@ function DataTableAdmissao({
                             width: 'fit-content'
                         }}
                     >
-                        {isFinalizada ? 'Finalizada' : 'Preenchimento Concluído'}
+                        {isCancelada ? 'Cancelada' : (isFinalizada ? 'Finalizada' : 'Preenchimento Concluído')}
                     </div>
                 )}
-                {!isModoLeitura && !isFinalizada && (
+                {!isModoLeitura && !isFinalizada && !isCancelada && (
                     <div
                         style={{
                             backgroundColor: 'rgb(255, 248, 225)',
@@ -535,7 +554,8 @@ function DataTableAdmissao({
                 rowClassName={(data) => {
                     const isModoLeitura = verificarModoLeitura(data);
                     const isFinalizada = verificarFinalizada(data);
-                    return `datatable-clickable-row ${(isModoLeitura || isFinalizada) ? 'datatable-readonly-row' : ''}`;
+                    const isCancelada = verificarCancelada(data);
+                    return `datatable-clickable-row ${(isModoLeitura || isFinalizada || isCancelada) ? 'datatable-readonly-row' : ''}`;
                 }}
                 rowsPerPageOptions={[5, 10, 25, 50]}
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
