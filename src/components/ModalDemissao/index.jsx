@@ -663,6 +663,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                             <FormLabel>Observação</FormLabel>
                                             <TextArea
                                                 value={observacao}
+                                                maxLength={250}
                                                 onChange={(e) => setObservacao(e.target.value)}
                                                 placeholder="Digite uma observação (opcional)"
                                             />
