@@ -327,6 +327,7 @@ const VagasRegistro = () => {
                             valor={dataEncerramento} 
                             setValor={setDataEncerramento} 
                             type="date" 
+                            required={true}
                             label="Data de Encerramento" 
                             placeholder="Digite a data de encerramento" />
                     </Col6>

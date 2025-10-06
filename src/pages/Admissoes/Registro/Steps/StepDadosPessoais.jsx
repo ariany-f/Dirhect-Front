@@ -1132,7 +1132,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     removerErroCampo('carteira_trabalho', valor);
                 }}
                 patternMask="9999999"
-                label={`CTPS${isCampoObrigatorio('carteira_trabalho') ? '*' : ''}`}
+                required={isCampoObrigatorio('carteira_trabalho')}
+                label={`CTPS`}
                 placeholder="Digite o número da carteira"
                 disabled={modoLeitura}
             />
@@ -1146,14 +1147,16 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     removerErroCampo('serie_carteira_trab', valor);
                 }}
                 patternMask="999999"
-                label={`Série da CTPS${isCampoObrigatorio('serie_carteira_trab') ? '*' : ''}`}
+                required={isCampoObrigatorio('serie_carteira_trab')}
+                label={`Série da CTPS`}
                 placeholder="Digite a série"
                 disabled={modoLeitura}
             />
             <DropdownItens
                 camposVazios={isCampoObrigatorio('uf_carteira_trab') && isCampoEmErro('uf_carteira_trab') ? ['uf_carteira_trab'] : []}
                 name="uf_carteira_trab"
-                label={`UF da CTPS${isCampoObrigatorio('uf_carteira_trab') ? '*' : ''}`}
+                required={isCampoObrigatorio('uf_carteira_trab')}
+                label={`UF da CTPS`}
                 valor={getEstadoFormatado('uf_carteira_trab')}
                 setValor={valor => {
                     setCampo('uf_carteira_trab', valor.code);
@@ -1173,7 +1176,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     removerErroCampo('data_emissao_ctps', valor);
                 }}
                 type="date"
-                label={`Data de Emissão da CTPS${isCampoObrigatorio('data_emissao_ctps') ? '*' : ''}`}
+                required={isCampoObrigatorio('data_emissao_ctps')}
+                label={`Data de Emissão da CTPS`}
                 disabled={modoLeitura}
             />
             <CampoTexto
@@ -1185,7 +1189,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     removerErroCampo('data_venc_ctps', valor);
                 }}
                 type="date"
-                label={`Data de Vencimento da CTPS${isCampoObrigatorio('data_venc_ctps') ? '*' : ''}`}
+                required={isCampoObrigatorio('data_venc_ctps')}
+                label={`Data de Vencimento da CTPS`}
                 disabled={modoLeitura}
             />
             
@@ -1200,7 +1205,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     removerErroCampo('carteira_motorista', valor);
                 }}
                 patternMask="99999999999"
-                label={`Número da CNH${isCampoObrigatorio('carteira_motorista') ? '*' : ''}`}
+                required={isCampoObrigatorio('carteira_motorista')}
+                label={`Número da CNH`}
                 placeholder="Digite o número da CNH"
                 disabled={modoLeitura}
             />
@@ -1213,7 +1219,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     removerErroCampo('data_emissao_cnh', valor);
                 }}
                 type="date"
-                label={`Data de Emissão da CNH${isCampoObrigatorio('data_emissao_cnh') ? '*' : ''}`}
+                required={isCampoObrigatorio('data_emissao_cnh')}
+                label={`Data de Emissão da CNH`}
                 disabled={modoLeitura}
             />
             <CampoTexto
@@ -1224,7 +1231,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     setCampo('tipo_carteira_habilit', valor);
                     removerErroCampo('tipo_carteira_habilit', valor);
                 }}
-                label={`Tipo da CNH${isCampoObrigatorio('tipo_carteira_habilit') ? '*' : ''}`}
+                required={isCampoObrigatorio('tipo_carteira_habilit')}
+                label={`Tipo da CNH`}
                 placeholder="Ex: A, B, C, D, E"
                 disabled={modoLeitura}
             />
@@ -1237,7 +1245,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     removerErroCampo('data_venc_habilit', valor);
                 }}
                 type="date"
-                label={`Data de Vencimento da CNH${isCampoObrigatorio('data_venc_habilit') ? '*' : ''}`}
+                required={isCampoObrigatorio('data_venc_habilit')}
+                label={`Data de Vencimento da CNH`}
                 disabled={modoLeitura}
             />
             
@@ -1253,14 +1262,16 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                 }}
                 //patternMask="99999999S"
                 maxCaracteres={15}
-                label={`Identidade (RG)${isCampoObrigatorio('identidade') ? '*' : ''}`}
+                required={isCampoObrigatorio('identidade')}
+                label={`Identidade (RG)`}
                 placeholder="Digite o número do RG"
                 disabled={modoLeitura}
             />
             <DropdownItens
                 camposVazios={isCampoObrigatorio('uf_identidade') && isCampoEmErro('uf_identidade') ? ['uf_identidade'] : []}
                 name="uf_identidade"
-                label={`UF da Identidade${isCampoObrigatorio('uf_identidade') ? '*' : ''}`}
+                required={isCampoObrigatorio('uf_identidade')}
+                label={`UF da Identidade`}
                 valor={getEstadoFormatado('uf_identidade')}
                 setValor={valor => {
                     setCampo('uf_identidade', valor.code);
@@ -1279,7 +1290,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     setCampo('orgao_emissor_ident', valor);
                     removerErroCampo('orgao_emissor_ident', valor);
                 }}
-                label={`Órgão Emissor da Identidade${isCampoObrigatorio('orgao_emissor_ident') ? '*' : ''}`}
+                required={isCampoObrigatorio('orgao_emissor_ident')}
+                label={`Órgão Emissor da Identidade`}
                 placeholder="Ex: SSP, DETRAN"
                 disabled={modoLeitura}
             />
@@ -1292,7 +1304,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     removerErroCampo('data_emissao_ident', valor);
                 }}
                 type="date"
-                label={`Data de Emissão da Identidade${isCampoObrigatorio('data_emissao_ident') ? '*' : ''}`}
+                required={isCampoObrigatorio('data_emissao_ident')}
+                label={`Data de Emissão da Identidade`}
                 disabled={modoLeitura}
             />
 
@@ -1307,7 +1320,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     removerErroCampo('titulo_eleitor', valor);
                 }}
                 patternMask="999999999999"
-                label={`Título de Eleitor${isCampoObrigatorio('titulo_eleitor') ? '*' : ''}`}
+                required={isCampoObrigatorio('titulo_eleitor')}
+                label={`Título de Eleitor`}
                 placeholder="Digite o número do título"
                 disabled={modoLeitura}
             />
@@ -1320,7 +1334,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     removerErroCampo('zona_titulo_eleitor', valor);
                 }}
                 patternMask="999"
-                label={`Zona do Título${isCampoObrigatorio('zona_titulo_eleitor') ? '*' : ''}`}
+                label={`Zona do Título`}
+                required={isCampoObrigatorio('zona_titulo_eleitor')}
                 placeholder="Digite a zona"
                 disabled={modoLeitura}
             />
@@ -1346,13 +1361,15 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     removerErroCampo('data_titulo_eleitor', valor);
                 }}
                 type="date"
-                label={`Data do Título${isCampoObrigatorio('data_titulo_eleitor') ? '*' : ''}`}
+                required={isCampoObrigatorio('data_titulo_eleitor')}
+                label={`Data do Título`}
                 disabled={modoLeitura}
             />
             <DropdownItens
                 camposVazios={isCampoObrigatorio('estado_emissor_tit_eleitor') && isCampoEmErro('estado_emissor_tit_eleitor') ? ['estado_emissor_tit_eleitor'] : []}
                 name="estado_emissor_tit_eleitor"
-                label={`Estado Emissor do Título${isCampoObrigatorio('estado_emissor_tit_eleitor') ? '*' : ''}`}
+                required={isCampoObrigatorio('estado_emissor_tit_eleitor')}
+                label={`Estado Emissor do Título`}
                 valor={getEstadoFormatado('estado_emissor_tit_eleitor')}
                 setValor={valor => {
                     setCampo('estado_emissor_tit_eleitor', valor.code);
@@ -1374,7 +1391,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     setCampo('numero_passaporte', valor);
                     removerErroCampo('numero_passaporte', valor);
                 }}
-                label={`Número do Passaporte${isCampoObrigatorio('numero_passaporte') ? '*' : ''}`}
+                required={isCampoObrigatorio('numero_passaporte')}
+                label={`Número do Passaporte`}
                 placeholder="Digite o número do passaporte"
                 disabled={modoLeitura}
             />
@@ -1386,7 +1404,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     setCampo('pais_origem', valor);
                     removerErroCampo('pais_origem', valor);
                 }}
-                label={`País de Origem${isCampoObrigatorio('pais_origem') ? '*' : ''}`}
+                required={isCampoObrigatorio('pais_origem')}
+                label={`País de Origem`}
                 placeholder="Digite o nome do país de origem"
                 disabled={modoLeitura}
             />
@@ -1399,7 +1418,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     removerErroCampo('data_emissao_passaporte', valor);
                 }}
                 type="date"
-                label={`Data de Emissão do Passaporte${isCampoObrigatorio('data_emissao_passaporte') ? '*' : ''}`}
+                required={isCampoObrigatorio('data_emissao_passaporte')}
+                label={`Data de Emissão do Passaporte`}
                 disabled={modoLeitura}
             />
             <CampoTexto
@@ -1411,7 +1431,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     removerErroCampo('data_validade_passaporte', valor);
                 }}
                 type="date"
-                label={`Data de Validade do Passaporte${isCampoObrigatorio('data_validade_passaporte') ? '*' : ''}`}
+                required={isCampoObrigatorio('data_validade_passaporte')}
+                label={`Data de Validade do Passaporte`}
                 disabled={modoLeitura}
             />
 
@@ -1425,7 +1446,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     setCampo('rnm', valor);
                     removerErroCampo('rnm', valor);
                 }}
-                label={`Número do RNM${isCampoObrigatorio('rnm') ? '*' : ''}`}
+                required={isCampoObrigatorio('rnm')}
+                label={`Número do RNM`}
                 placeholder="Digite o número do rnm"
                 disabled={modoLeitura}
             />
@@ -1437,14 +1459,16 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     setCampo('decreto_imigracao', valor);
                     removerErroCampo('decreto_imigracao', valor);
                 }}
-                label={`Decreto de Imigração${isCampoObrigatorio('decreto_imigracao') ? '*' : ''}`}
+                required={isCampoObrigatorio('decreto_imigracao')}
+                label={`Decreto de Imigração`}
                 placeholder="Digite o número do decreto de imigração"
                 disabled={modoLeitura}
             />
             <DropdownItens
                 camposVazios={isCampoObrigatorio('uf_emissor_rnm') && isCampoEmErro('uf_emissor_rnm') ? ['uf_emissor_rnm'] : []}
                 name="uf_emissor_rnm"
-                label={`UF Emissor do RNM${isCampoObrigatorio('uf_emissor_rnm') ? '*' : ''}`}
+                required={isCampoObrigatorio('uf_emissor_rnm')}
+                label={`UF Emissor do RNM`}
                 valor={getEstadoFormatado('uf_emissor_rnm')}
                 setValor={valor => {
                     setCampo('uf_emissor_rnm', valor.code);
@@ -1464,7 +1488,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     removerErroCampo('data_emissao_rnm', valor);
                 }}
                 type="date"
-                label={`Data de Emissão do RNM${isCampoObrigatorio('data_emissao_rnm') ? '*' : ''}`}
+                required={isCampoObrigatorio('data_emissao_rnm')}
+                label={`Data de Emissão do RNM`}
                 disabled={modoLeitura}
             />
             <CampoTexto
@@ -1476,7 +1501,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, classInvalid = [], 
                     removerErroCampo('data_vencimento_rnm', valor);
                 }}
                 type="date"
-                label={`Data de Vencimento do RNM${isCampoObrigatorio('data_vencimento_rnm') ? '*' : ''}`}
+                required={isCampoObrigatorio('data_vencimento_rnm')}
+                label={`Data de Vencimento do RNM`}
                 disabled={modoLeitura}
             />
 

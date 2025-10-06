@@ -339,6 +339,52 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 return '';
             }
             
+            // Para sindicato, prioriza o campo direto do candidato
+            if (campo === 'sindicato_id') {
+                // Primeiro tenta pegar do candidato.sindicato (campo direto)
+                const sindicatoCandidato = candidato?.sindicato;
+                
+                if (sindicatoCandidato) {
+                    // Tenta encontrar por ID exato (comparação numérica e string)
+                    let item = lista.find(item => item.id === sindicatoCandidato || item.id === Number(sindicatoCandidato) || String(item.id) === String(sindicatoCandidato));
+                    
+                    // Se não encontrar por ID, tenta por id_origem
+                    if (!item) {
+                        item = lista.find(item => item.id_origem === sindicatoCandidato || item.id_origem === String(sindicatoCandidato) || String(item.id_origem) === String(sindicatoCandidato));
+                    }
+                    
+                    if (item) {
+                        return {
+                            name: item.nome || item.descricao,
+                            code: item.id
+                        };
+                    }
+                }
+                
+                // Se não encontrar no candidato.sindicato, tenta pegar do dados_vaga.sindicato_id
+                const sindicatoDadosVaga = candidato?.dados_vaga?.sindicato_id;
+                
+                if (sindicatoDadosVaga) {
+                    // Tenta encontrar por ID exato (comparação numérica e string)
+                    let item = lista.find(item => item.id === sindicatoDadosVaga || item.id === Number(sindicatoDadosVaga) || String(item.id) === String(sindicatoDadosVaga));
+                    
+                    // Se não encontrar por ID, tenta por id_origem
+                    if (!item) {
+                        item = lista.find(item => item.id_origem === sindicatoDadosVaga || item.id_origem === String(sindicatoDadosVaga) || String(item.id_origem) === String(sindicatoDadosVaga));
+                    }
+                    
+                    if (item) {
+                        return {
+                            name: item.nome || item.descricao,
+                            code: item.id
+                        };
+                    }
+                }
+                
+                // Se não encontrar em nenhum lugar, retorna vazio
+                return '';
+            }
+            
             // Para outros campos, mantém a lógica original
             // Primeiro tenta pegar do dados_vaga
             const id = candidato?.dados_vaga?.[campo];
@@ -382,7 +428,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
 
             return '';
         };
-    }, [candidato?.dados_vaga, candidato?.filial, candidato?.id_secao, candidato?.id_funcao, candidato?.id_horario, candidato?.centro_custo, candidato?.dados_vaga?.filial_id, vaga]);
+    }, [candidato?.dados_vaga, candidato?.filial, candidato?.id_secao, candidato?.id_funcao, candidato?.id_horario, candidato?.centro_custo, candidato?.sindicato, candidato?.dados_vaga?.filial_id, candidato?.dados_vaga?.sindicato_id, vaga]);
 
     // Função para obter o valor selecionado no formato {name, code} para tabelas de domínio
     const getValorSelecionadoFromCandidato = useMemo(() => {
@@ -728,11 +774,15 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 name="sindicato"
                 valor={getValorSelecionado('sindicato_id', sindicatos)}
                 setValor={valor => {
-                    setCampo('dados_vaga', { 
-                        ...candidato.dados_vaga, 
-                        sindicato_id: valor.code,
-                        sindicato_nome: valor.name
+                    console.log('StepVaga - Salvando sindicato:', {
+                        valor,
+                        code: valor.code,
+                        name: valor.name,
+                        candidatoSindicatoAtual: candidato.sindicato
                     });
+                    
+                    // Salvar no campo sindicato do candidato
+                    setCampo('sindicato', valor.code);
                 }}
                 options={opcoesSindicatos}
                 label="Sindicato"

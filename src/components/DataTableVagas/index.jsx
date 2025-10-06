@@ -45,6 +45,7 @@ function DataTableVagas({
     const [candidatosModal, setCandidatosModal] = useState([]);
     const [vagaModal, setVagaModal] = useState(null);
     const [tipoModal, setTipoModal] = useState(''); // 'total' ou 'aprovados'
+    const [documentosModal, setDocumentosModal] = useState([]);
 
     // Configuração de larguras das colunas
     const exibeColunasOpcionais = {
@@ -251,9 +252,13 @@ function DataTableVagas({
                 candidatos = response.candidatos_aprovados;
             } 
             
+            // Busca os documentos da vaga
+            const documentosResponse = await http.get(`vagas_documentos/?format=json&vaga=${vaga.id}`);
+            
             setCandidatosModal(candidatos);
             setVagaModal(vaga);
             setTipoModal(tipo);
+            setDocumentosModal(documentosResponse || []);
             setModalCandidatosAberto(true);
         } catch (error) {
             console.error('Erro ao carregar candidatos:', error);
@@ -318,7 +323,7 @@ function DataTableVagas({
                     <DataTableCandidatos 
                         candidatos={candidatosModal}
                         vagaId={vagaModal?.id}
-                        documentos={[]} // Pode ser passado se necessário
+                        documentos={documentosModal}
                         onCandidatosUpdate={() => {
                             // Recarrega os candidatos quando há atualização
                             abrirModalCandidatos(vagaModal, tipoModal);

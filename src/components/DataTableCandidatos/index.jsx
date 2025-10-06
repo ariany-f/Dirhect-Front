@@ -322,9 +322,13 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
     const handleAprovar = async (rowData) => {
         // Verifica se deve abrir o modal baseado na variável de ambiente
         const deveAbrirModal = import.meta.env.VITE_OPTIONS_ACESSO_CANDIDATO === 'true';
+        console.log('Documentos recebidos no DataTableCandidatos:', documentos);
+        console.log('Tipo dos documentos:', typeof documentos);
+        console.log('Quantidade de documentos:', documentos?.length);
         
         // Verifica se há documentos configurados para a vaga (sempre verifica)
         if (!documentos || documentos.length === 0) {
+            
             confirmDialog({
                 message: 'Não há documentos configurados para esta vaga. Deseja continuar mesmo assim?',
                 header: 'Confirmação',

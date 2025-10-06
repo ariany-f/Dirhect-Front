@@ -25,6 +25,7 @@ import StepExperiencia from './Steps/StepExperiencia';
 import StepLGPD from './Steps/StepLGPD';
 import StepDependentes from './Steps/StepDependentes';
 import StepAnotacoes from './Steps/StepAnotacoes';
+import StepRevisao from './Steps/StepRevisao';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { RiExchangeFill, RiUpload2Fill } from 'react-icons/ri';
 import { ArmazenadorToken } from '@utils';
@@ -520,6 +521,35 @@ const CandidatoRegistro = () => {
             .then(response => setSecoes(response))
             .catch(() => setSecoes([]));
     };
+
+    const carregarOpcoesLetraHorario = async (horarioId) => {
+        if (!horarioId) {
+            setOpcoesLetraHorario([]);
+            return;
+        }
+        
+        try {
+            const detalhesHorario = await http.get(`horario_indice/?id_horario=${horarioId}`);
+            const opcoes = (detalhesHorario || []).map(item => ({
+                code: item.id,
+                name: item.descricao_letra ? `${item.indice} - ${item.descricao_letra}` : `${item.indice}`
+            }));
+            setOpcoesLetraHorario(opcoes);
+        } catch (err) {
+            setOpcoesLetraHorario([]);
+            console.error('Erro ao buscar detalhes do horário:', err);
+        }
+    };
+
+    // Carregar opções de letra quando o horário mudar
+    useEffect(() => {
+        const horarioId = candidato?.id_horario || candidato?.dados_vaga?.horario_id;
+        if (horarioId) {
+            carregarOpcoesLetraHorario(horarioId);
+        } else {
+            setOpcoesLetraHorario([]);
+        }
+    }, [candidato?.id_horario, candidato?.dados_vaga?.horario_id]);
     const [horarios, setHorarios] = useState([]);
     const [funcoes, setFuncoes] = useState([]);
     const [funcoes_confianca, setFuncoesConfianca] = useState([]);
@@ -529,6 +559,7 @@ const CandidatoRegistro = () => {
     const [nacionalidades, setNacionalidades] = useState([]);
     const [opcoesDominio, setOpcoesDominio] = useState({});
     const [availableDominioTables, setAvailableDominioTables] = useState([]);
+    const [opcoesLetraHorario, setOpcoesLetraHorario] = useState([]);
     const [dadosCarregados, setDadosCarregados] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
     const [carregamentoEmAndamento, setCarregamentoEmAndamento] = useState(false);
@@ -1250,7 +1281,7 @@ const CandidatoRegistro = () => {
                 
                 // Comparar TODOS os campos do step de Vaga, não só os obrigatórios
                 const camposVaga = [
-                    'filial', 'id_secao', 'id_funcao', 'id_horario', 'centro_custo',
+                    'filial', 'id_secao', 'id_funcao', 'id_horario', 'centro_custo', 'sindicato',
                     'salario', 'ajuda_custo', 'arredondamento', 'media_sal_maternidade',
                     'dt_admissao', 'indicativo_admissao', 'tipo_admissao', 'motivo_admissao',
                     'tipo_situacao', 'tipo_funcionario', 'tipo_regime_trabalhista', 'tipo_regime_previdenciario',
@@ -1259,7 +1290,7 @@ const CandidatoRegistro = () => {
                     'codigo_situacao_fgts', 'dt_opcao_fgts', 'codigo_ocorrencia_sefip', 'codigo_categoria_sefip',
                     'contrato_tempo_parcial', 'tipo_contrato_prazo_determinado', 'tipo_contrato_trabalho',
                     'codigo_categoria_esocial', 'natureza_atividade_esocial', 'letra',
-                    'perc_adiantamento',
+                    'perc_adiantamento'
                     // Adicione outros campos do StepVaga conforme necessário
                 ];
                 
@@ -1298,6 +1329,21 @@ const CandidatoRegistro = () => {
                     if (initialVaga[campo] !== undefined) {
                         initialVaga[campo] = normalizarCampoSalario(initialVaga[campo]);
                     }
+                });
+                
+                console.log('Comparação dados vaga:', {
+                    candidatoVaga,
+                    initialVaga,
+                    candidatoVagaString: JSON.stringify(candidatoVaga),
+                    initialVagaString: JSON.stringify(initialVaga),
+                    saoIguais: JSON.stringify(candidatoVaga) === JSON.stringify(initialVaga)
+                });
+                
+                // Log específico para sindicato
+                console.log('Comparação específica sindicato:', {
+                    candidatoSindicato: candidatoVaga.sindicato,
+                    initialSindicato: initialVaga.sindicato,
+                    sindicatoDiferente: candidatoVaga.sindicato !== initialVaga.sindicato
                 });
                 
                 if (JSON.stringify(candidatoVaga) === JSON.stringify(initialVaga)) {
@@ -1402,6 +1448,36 @@ const CandidatoRegistro = () => {
                         severity: 'info',
                         summary: 'Informação',
                         detail: 'Nenhuma alteração nos dados bancários para salvar.',
+                        life: 3000
+                    });
+                    return;
+                }
+            }
+            
+            // Verificação específica para payload de anotações
+            const stepReal = mapearActiveIndexParaStep(activeIndex);
+            if (payloadEspecifico && stepReal === 'anotacoes') {
+                console.log('Entrando na verificação de anotações');
+                console.log('activeIndex:', activeIndex);
+                console.log('stepReal:', stepReal);
+                console.log('payloadEspecifico:', payloadEspecifico);
+                
+                const candidatoNormalizado = normalizarObjeto(candidatoAtual);
+                const initialNormalizado = normalizarObjeto(initialCandidato);
+                
+                // Compara apenas o campo anotações
+                const candidatoAnotacoes = candidatoNormalizado.anotacoes || '';
+                const initialAnotacoes = initialNormalizado.anotacoes || '';
+                
+                console.log('Candidato anotações:', candidatoAnotacoes);
+                console.log('Initial anotações:', initialAnotacoes);
+                console.log('São iguais?', candidatoAnotacoes === initialAnotacoes);
+                
+                if (candidatoAnotacoes === initialAnotacoes) {
+                    toast.current.show({
+                        severity: 'info',
+                        summary: 'Informação',
+                        detail: 'Nenhuma alteração nas anotações para salvar.',
                         life: 3000
                     });
                     return;
@@ -2887,8 +2963,11 @@ const CandidatoRegistro = () => {
             totalSteps += 1; // LGPD
         }
         
-        // Adicionar step de anotações como último
+        // Adicionar step de anotações
         totalSteps += 1; // Anotações
+        
+        // Adicionar step de revisão (sempre o último)
+        totalSteps += 1; // Revisão
         
         const isLastStep = activeIndex === totalSteps - 1;
         
@@ -2990,7 +3069,7 @@ const CandidatoRegistro = () => {
                     )}
                     
                     {/* Steps intermediários com salvar */}
-                    {(activeIndex >= 1 && activeIndex < totalSteps - 1) && (
+                    {(activeIndex >= 1 && activeIndex < totalSteps - 2) && (
                         <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
                             {activeIndex !== getStepDependentesIndex() && (
                                 <Botao 
@@ -3014,8 +3093,8 @@ const CandidatoRegistro = () => {
                         </div>
                     )}
                     
-                    {/* Último step (Anotações) */}
-                    {isLastStep && stepAtualValido && (
+                    {/* Step de Anotações - botão Salvar + Próximo */}
+                    {activeIndex === totalSteps - 2 && stepAtualValido && (
                         <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
                             <Botao 
                                 size="small" 
@@ -3025,15 +3104,34 @@ const CandidatoRegistro = () => {
                             >
                                 <FaSave fill="var(--secundaria)"/> Salvar
                             </Botao>
-                            {self ? (
+                            <Botao 
+                                size="small" 
+                                label="Next" 
+                                iconPos="right" 
+                                aoClicar={handleSalvarEContinuar}
+                                disabled={!dadosCarregados || !stepAtualValido}
+                            >
+                                <HiArrowRight size={20} fill="var(--secundaria)"/> Próximo
+                            </Botao>
+                        </div>
+                    )}
+                    
+                    {/* Step de LGPD para self - botão Aceitar */}
+                    {self && activeIndex === totalSteps - 3 && candidato.aceite_lgpd === false && (
+                        <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
                                 <Botao 
                                     iconPos="right" 
                                     aoClicar={handleAceitarLGPD}
                                     disabled={candidato.aceite_lgpd || modoLeitura}
                                 >
-                                    <FaSave fill="var(--secundaria)"/> {candidato.aceite_lgpd ? 'Termo Aceito' : 'Aceitar e Finalizar'}
+                                <FaSave fill="var(--secundaria)"/> {candidato.aceite_lgpd ? 'Termo Aceito' : 'Aceitar e Continuar'}
                                 </Botao>
-                            ) : (
+                        </div>
+                    )}
+                    
+                    {/* Step de Revisão - botão Finalizar */}
+                    {isLastStep && podeFinalizar && (
+                        <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
                                 <Botao 
                                     size="small" 
                                     label="Next" 
@@ -3043,7 +3141,6 @@ const CandidatoRegistro = () => {
                                 >
                                     <RiExchangeFill fill="var(--secundaria)"/> Finalizar
                                 </Botao>
-                            )}
                         </div>
                     )}
                     
@@ -3709,6 +3806,12 @@ const CandidatoRegistro = () => {
         
         const dadosVaga = candidato.dados_vaga || {};
         
+        console.log('Gerando payload dados contratuais:', {
+            dadosVaga,
+            sindicato_id: dadosVaga?.sindicato_id,
+            sindicato_nome: dadosVaga?.sindicato_nome
+        });
+        
         return {
             // Dados básicos da admissão
             chapa: candidato.chapa,
@@ -3732,7 +3835,7 @@ const CandidatoRegistro = () => {
             ...(candidato.id_horario ? { id_horario: candidato.id_horario } : (dadosVaga?.horario_id ? { id_horario: dadosVaga.horario_id } : {})),
             // Para horário, prioriza o campo direto do candidato, depois dados_vaga
             ...(candidato.id_horario ? { horario: candidato.id_horario } : (dadosVaga?.horario_id ? { horario: dadosVaga.horario_id } : {})),
-            ...(dadosVaga?.sindicato_id ? { sindicato: dadosVaga.sindicato_id } : {}),
+            ...(candidato.sindicato ? { sindicato: candidato.sindicato } : (dadosVaga?.sindicato_id ? { sindicato: dadosVaga.sindicato_id } : {})),
             // Dados adicionais
             tipo_admissao: candidato.tipo_admissao,
             codigo_ficha_registro: candidato.codigo_ficha_registro,
@@ -3798,9 +3901,12 @@ const CandidatoRegistro = () => {
 
     const gerarPayloadStepAnotacoes = () => {
         // Step Anotações
-        return {
+        const payload = {
             anotacoes: candidato.anotacoes || ''
         };
+        console.log('Payload Step Anotações:', payload);
+        console.log('Candidato anotações:', candidato.anotacoes);
+        return payload;
     };
 
     const gerarPayloadStepLGPD = () => {
@@ -3810,23 +3916,101 @@ const CandidatoRegistro = () => {
         };
     };
 
+    // Função para mapear o activeIndex real para o step correto
+    const mapearActiveIndexParaStep = (index) => {
+        let stepReal = 0;
+        
+        // 0: Anexos (sempre presente)
+        if (index === stepReal) return 'anexos';
+        stepReal++;
+        
+        // 1: Dados Pessoais (sempre presente)
+        if (index === stepReal) return 'dados_pessoais';
+        stepReal++;
+        
+        // 2: Dados Bancários (sempre presente)
+        if (index === stepReal) return 'dados_bancarios';
+        stepReal++;
+        
+        // 3: Dados Contratuais (só se !self)
+        if (!self) {
+            if (index === stepReal) return 'dados_contratuais';
+            stepReal++;
+        }
+        
+        // 4: Escolaridade (sempre presente)
+        if (index === stepReal) return 'escolaridade';
+        stepReal++;
+        
+        // 5: Habilidades (só se mostrarHabilidades)
+        if (mostrarHabilidades) {
+            if (index === stepReal) return 'habilidades';
+            stepReal++;
+        }
+        
+        // 6: Experiência Profissional (só se mostrarExperiencia)
+        if (mostrarExperiencia) {
+            if (index === stepReal) return 'experiencia';
+            stepReal++;
+        }
+        
+        // 7: Dependentes (sempre presente)
+        if (index === stepReal) return 'dependentes';
+        stepReal++;
+        
+        // 8: LGPD (só se self)
+        if (self) {
+            if (index === stepReal) return 'lgpd';
+            stepReal++;
+        }
+        
+        // 9: Anotações (sempre presente)
+        if (index === stepReal) return 'anotacoes';
+        stepReal++;
+        
+        // 10: Revisão (sempre presente)
+        if (index === stepReal) return 'revisao';
+        
+        return 'desconhecido';
+    };
+
     // Função para obter o payload específico baseado no step atual
     const obterPayloadStepAtual = () => {
-        switch (activeIndex) {
-            case 0: // Documentos
+        console.log('obterPayloadStepAtual - activeIndex:', activeIndex);
+        console.log('self:', self);
+        console.log('mostrarHabilidades:', mostrarHabilidades);
+        console.log('mostrarExperiencia:', mostrarExperiencia);
+        
+        const stepReal = mapearActiveIndexParaStep(activeIndex);
+        console.log('Step real mapeado:', stepReal);
+        
+        switch (stepReal) {
+            case 'anexos':
                 return gerarPayloadStepDocumentos();
-            case 1: // Dados Pessoais
+            case 'dados_pessoais':
                 return gerarPayloadStepDadosPessoais();
-            case 2: // Dados Bancários
+            case 'dados_bancarios':
                 return gerarPayloadStepDadosBancarios();
-            case 3: // Dados Contratuais
+            case 'dados_contratuais':
                 return gerarPayloadStepDadosContratuais();
-            case getStepEducacaoIndex(): // Educação
+            case 'escolaridade':
                 return gerarPayloadStepEducacao();
-            case getStepDependentesIndex(): // Dependentes
+            case 'habilidades':
+                return {};
+            case 'experiencia':
+                return {};
+            case 'dependentes':
                 return gerarPayloadStepDependentes();
+            case 'lgpd':
+                return gerarPayloadStepLGPD();
+            case 'anotacoes':
+                console.log('Retornando payload de anotações');
+                return gerarPayloadStepAnotacoes();
+            case 'revisao':
+                return {};
             default:
-                // Para outros steps (habilidades, experiência, etc.)
+                // Para outros steps
+                console.log('Retornando payload vazio para step:', stepReal);
                 return {};
         }
     };
@@ -4304,6 +4488,29 @@ const CandidatoRegistro = () => {
                     <StepperPanel header="Anotações">
                         <ScrollPanel className="responsive-scroll-panel">
                             <StepAnotacoes modoLeitura={modoLeitura} />
+                        </ScrollPanel>
+                    </StepperPanel>
+                    
+                    <StepperPanel header="Revisão">
+                        <ScrollPanel className="responsive-scroll-panel">
+                            <StepRevisao 
+                                candidato={candidato}
+                                dependentes={candidato?.dependentes}
+                                documentos={candidato?.documentos}
+                                educacao={candidato?.educacao}
+                                anotacoes={candidato?.anotacoes}
+                                lgpdAceito={candidato?.aceite_lgpd}
+                                opcoesDominio={opcoesDominio}
+                                opcoesLetraHorario={opcoesLetraHorario}
+                                paises={paises}
+                                sindicatos={sindicatos}
+                                filiais={filiais}
+                                secoes={secoes}
+                                funcoes={funcoes}
+                                centros_custo={centros_custo}
+                                horarios={horarios}
+                                self={self}
+                            />
                         </ScrollPanel>
                     </StepperPanel>
                 </Stepper>
