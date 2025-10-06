@@ -542,7 +542,7 @@ function DetalhesVaga() {
                                             }}
                                         />
                                     )}
-                                    {vaga.status == 'A' && (
+                                    {vaga.status == 'A' && vaga.origem != 'E' && (
                                         <>
                                         <FaPen style={{ cursor: 'pointer' }} size={16} onClick={() => setModalEditarAberto(true)} fill="var(--primaria)" />
                                             <FaExchangeAlt style={{ cursor: 'pointer' }} size={16} onClick={() => setModalTransferirAberto(true)} fill="var(--primaria)" title="Transferir vaga" />
