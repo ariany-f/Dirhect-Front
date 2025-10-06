@@ -2,7 +2,6 @@ import MainSection from "@components/MainSection"
 import EstilosGlobais from '@components/GlobalStyles'
 import BarraLateral from "@components/BarraLateral"
 import Cabecalho from "@components/Cabecalho"
-import Botao from "@components/Botao"
 import MainContainer from "@components/MainContainer"
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
@@ -17,6 +16,8 @@ import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import BottomMenu from '@components/BottomMenu'
 import BrandColors from '@utils/brandColors'
+import CompanyContext from '@contexts/CompanyContext';
+import { ThemeProvider } from '@contexts/ThemeContext';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -161,20 +162,25 @@ function Autenticado() {
             const selectedCompany = ArmazenadorToken.UserCompanyPublicId;
 
             if (cachedTenants && cachedCompanies && ArmazenadorToken.isCacheValido()) {
+                console.log('🔄 Usar dados do cache');
                 // Usar dados do cache
                 setTenants(cachedTenants);
                 setEmpresas(cachedCompanies);
                 setCompanies(cachedCompanies);
                 if(selected == '') {
+                    console.log('🔄 selected vazio');
                     if(selectedCompany) {
+                        console.log('🔄 selectedCompany');
+                        console.log('🔄 cachedCompanies', cachedCompanies);
                         setSelected(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.id || '');
-                        setEmpresa(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.nome || '');
+                        setEmpresa(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.nome || '');
+                        console.log('🔄 setEmpresa', cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.nome);
                         setSessionCompany(selectedCompany);
-                        setCompanyDomain(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.domain || '');
-                        setCompanyLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.logo || '');
-                        setCompanySymbol(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.simbolo || '');
-                        setSimbolo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.simbolo || '');
-                        setLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.logo || '');
+                        setCompanyDomain(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.domain_url || '');
+                        setCompanyLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.logo || '');
+                        setCompanySymbol(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.simbolo || '');
+                        setSimbolo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.simbolo || '');
+                        setLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.logo || '');
                         
                         if(!localStorage.getItem('layoutColors')) {
                             // Buscar parâmetros de layout da empresa selecionada
@@ -189,14 +195,17 @@ function Autenticado() {
                             });
                         }
                     } else {
+                        console.log('🔄 pegar Parametros de layout porém com cache válido');
+                        console.log('🔄 cachedCompanies', cachedCompanies);
                         setSelected(cachedCompanies[0]?.id_tenant.id || '');
-                        setEmpresa(cachedCompanies[0]?.tenant.nome || '');
+                        setEmpresa(cachedCompanies[0]?.id_tenant.nome || '');
+                        console.log('🔄 setEmpresa', cachedCompanies[0]?.id_tenant.nome);
                         setSessionCompany(cachedCompanies[0]?.id_tenant.id || '');
-                        setCompanyDomain(cachedCompanies[0]?.domain || '');
-                        setCompanyLogo(cachedCompanies[0]?.tenant.logo || '');
-                        setCompanySymbol(cachedCompanies[0]?.tenant.simbolo || '');
-                        setSimbolo(cachedCompanies[0]?.tenant.simbolo || '');
-                        setLogo(cachedCompanies[0]?.tenant.logo || '');
+                        setCompanyDomain(cachedCompanies[0]?.domain_url || '');
+                        setCompanyLogo(cachedCompanies[0]?.id_tenant.logo || '');
+                        setCompanySymbol(cachedCompanies[0]?.id_tenant.simbolo || '');
+                        setSimbolo(cachedCompanies[0]?.id_tenant.simbolo || '');
+                        setLogo(cachedCompanies[0]?.id_tenant.logo || '');
                         
                         if(!localStorage.getItem('layoutColors')) {
                             
@@ -214,14 +223,18 @@ function Autenticado() {
                     }
                 }
                 else {
+                    console.log('🔄 pegar Parametros de layout porém com cache válido e selectedCompany');
+                    console.log('🔄 selectedCompany', selectedCompany);
+                    console.log('🔄 cachedCompanies', cachedCompanies);
                     setSelected(selectedCompany);
-                    setEmpresa(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.nome || '');
+                    setEmpresa(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.nome || '');
+                    console.log('🔄 setEmpresa', cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.nome);
                     setSessionCompany(selectedCompany);
-                    setCompanyDomain(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.domain || '');
-                    setCompanyLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.logo || '');
-                    setCompanySymbol(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.simbolo || '');
-                    setSimbolo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.simbolo || '');
-                    setLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.tenant.logo || '');
+                    setCompanyDomain(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.domain_url || '');
+                    setCompanyLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.logo || '');
+                    setCompanySymbol(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.simbolo || '');
+                    setSimbolo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.simbolo || '');
+                    setLogo(cachedCompanies.find(company => company.id_tenant.id == selectedCompany)?.id_tenant.logo || '');
                     
                     if(!localStorage.getItem('layoutColors')) {
                         // Buscar parâmetros de layout da empresa selecionada
@@ -237,11 +250,12 @@ function Autenticado() {
                     }
                 }
             } else {
+                console.log('🔄 Não há cache de tenants');
                 // Buscar dados do servidor
                 http.get(`cliente/?format=json`)
                 .then(async (response) => {
                     let clientes = response;
-
+                    console.log('🔄 clientes', clientes);
                     // Mapear cada cliente para incluir tenant, pessoa_juridica e domain
                     const clientesCompletos = await Promise.all(clientes.map(async (cliente) => {
                         try {
@@ -251,7 +265,7 @@ function Autenticado() {
 
                             const pessoaJuridica = cliente.pessoaJuridica || cliente.pessoa_juridica;
                             
-                            // Retornar o objeto consolidado
+                            // Retornar o objeto consolidado com domain
                             return {
                                 ...cliente,
                                 tenant,
@@ -259,15 +273,54 @@ function Autenticado() {
                             };
                         } catch (erro) {
                             console.error("Erro ao buscar dados do cliente:", erro);
-                            return { ...cliente, tenant: {}, pessoaJuridica: {}, domain: null };
+                            return { ...cliente, tenant: {}, pessoaJuridica: {}, domain_url: null };
                         }
                     }));
 
-                    // Salvar no cache
+                    // Salvar no cache (agora com domains incluídos)
                     ArmazenadorToken.salvarTenantsCache(clientesCompletos);
                     
                     // Atualizar o estado com os clientes completos
                     setTenants(clientesCompletos);
+                    setEmpresas(clientesCompletos);
+                    setCompanies(clientesCompletos);
+                    ArmazenadorToken.salvarCompaniesCache(clientesCompletos);
+
+                    if(selected == '')
+                    {
+                        if(ArmazenadorToken.UserCompanyPublicId)
+                        {
+                            setSelected(ArmazenadorToken.UserCompanyPublicId);
+                            setEmpresa(clientesCompletos.find(company => company.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.nome || '');
+                            setSessionCompany(ArmazenadorToken.UserCompanyPublicId);
+                            setCompanyDomain(clientesCompletos.find(company => company.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.domain_url || '');
+                            setCompanyLogo(clientesCompletos.find(company => company.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.logo || '');
+                            setCompanySymbol(clientesCompletos.find(company => company.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.simbolo || '');
+                            setSimbolo(clientesCompletos.find(company => company.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.simbolo || '');
+                            setLogo(clientesCompletos.find(company => company.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.logo || '');
+                        }
+                        else
+                        {
+                            setSelected(clientesCompletos[0]?.id_tenant.id || '');
+                            setEmpresa(clientesCompletos[0]?.id_tenant.nome || '');
+                            setSessionCompany(clientesCompletos[0]?.id_tenant.id || '');
+                            setCompanyDomain(clientesCompletos[0]?.domain_url || '');
+                            setCompanyLogo(clientesCompletos[0]?.id_tenant.logo || '');
+                            setCompanySymbol(clientesCompletos[0]?.id_tenant.simbolo || '');
+                            setSimbolo(clientesCompletos[0]?.id_tenant.simbolo || '');
+                            setLogo(clientesCompletos[0]?.id_tenant.logo || '');
+                        }                        
+                    }
+                    else
+                    {
+                        setSelected(selected);
+                        setEmpresa(clientesCompletos.find(company => company.id_tenant.id == selected)?.id_tenant.nome || '');
+                        setSessionCompany(selected);
+                        setCompanyLogo(clientesCompletos.find(company => company.id_tenant.id == selected)?.id_tenant.logo || '');
+                        setCompanySymbol(clientesCompletos.find(company => company.id_tenant.id == selected)?.id_tenant.simbolo || '');
+                        setSimbolo(clientesCompletos.find(company => company.id_tenant.id == selected)?.id_tenant.simbolo || '');
+                        setLogo(clientesCompletos.find(company => company.id_tenant.id == selected)?.id_tenant.logo || '');
+                    }
                     
                 })
                 .catch(erro => {
@@ -278,28 +331,22 @@ function Autenticado() {
 
         if(((!empresas) || empresas.length == 0) && tenants)
         {
-            // Tentar recuperar domains do cache
-            const cachedDomains = ArmazenadorToken.getDomainsCache();
-            
-            if (cachedDomains && ArmazenadorToken.isCacheValido()) {
-                // Usar domains do cache
-                const tenantsWithDomain = tenants.map(tenant => ({
-                    ...tenant,
-                    domain: cachedDomains.find(domain => domain.tenant === tenant.id_tenant.id)?.domain || null
-                }));
-
-                setEmpresas(tenantsWithDomain);
-                setCompanies(tenantsWithDomain);
-                ArmazenadorToken.salvarCompaniesCache(tenantsWithDomain);
+            // Se os tenants já têm domain (do cache), usar diretamente
+            if (tenants[0] && tenants[0].domain_url !== undefined) {
+                setEmpresas(tenants);
+                setCompanies(tenants);
+                ArmazenadorToken.salvarCompaniesCache(tenants);
 
                 if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
-                    setSelected(tenantsWithDomain[0]?.id_tenant.id || '');
-                    setEmpresa(tenantsWithDomain[0]?.tenant.nome || '');
-                    setSimbolo(tenantsWithDomain[0]?.tenant.simbolo || '');
-                    setLogo(tenantsWithDomain[0]?.tenant.logo || '');
+                    console.log('🔄 selected vazio com UserCompanyPublicId');
+                    console.log('🔄 tenants', tenants);
+                    setSelected(tenants[0]?.id_tenant.id || '');
+                    setEmpresa(tenants[0]?.id_tenant.nome || '');
+                    console.log('🔄 setEmpresa', tenants[0]?.id_tenant.nome);
+                    setSimbolo(tenants[0]?.id_tenant.simbolo || '');
+                    setLogo(tenants[0]?.id_tenant.logo || '');
                     
                     if(!localStorage.getItem('layoutColors')) {
-                        
                         // Buscar parâmetros de layout da primeira empresa
                         http.get('parametros/por-assunto/?assunto=LAYOUT')
                         .then(response => {
@@ -313,14 +360,16 @@ function Autenticado() {
                     }
                 }
                 else {
+                    console.log('🔄 pegar Parametros de layout');
+                    console.log('🔄 ArmazenadorToken.UserCompanyPublicId', ArmazenadorToken.UserCompanyPublicId);
                     setSelected(ArmazenadorToken.UserCompanyPublicId);
-                    setEmpresa(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.nome || '');
-                    setSimbolo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.simbolo || '');
-                    setLogo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.logo || '');
+                    setEmpresa(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.nome || '');
+                    console.log('🔄 setEmpresa', tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.nome);
+                    setSimbolo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.simbolo || '');
+                    setLogo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.logo || '');
                     
                     if(!localStorage.getItem('layoutColors')) {
-                        
-                        // Buscar parâmetros de layout da primeira empresa
+                        // Buscar parâmetros de layout da empresa selecionada
                         http.get('parametros/por-assunto/?assunto=LAYOUT')
                         .then(response => {
                             if (response && response.parametros) {
@@ -333,16 +382,16 @@ function Autenticado() {
                     }
                 }
             } else {
-                // Buscar domains do servidor
-                http.get(`client_domain/?format=json`)
-                .then(domains => {
-                    // Salvar domains no cache
-                    ArmazenadorToken.salvarDomainsCache(domains);
-                    
-                    // Cruzar os dados: adicionar domains correspondentes a cada tenant
+                console.log('🔄 Não há domain no cache');
+                // Fallback: buscar domains separadamente (código antigo)
+                // Tentar recuperar domains do cache
+                const cachedDomains = ArmazenadorToken.getDomainsCache();
+                
+                if (cachedDomains && ArmazenadorToken.isCacheValido()) {
+                    // Usar domains do cache
                     const tenantsWithDomain = tenants.map(tenant => ({
                         ...tenant,
-                        domain: domains.find(domain => domain.tenant === tenant.id_tenant.id)?.domain || null
+                        domain_url: cachedDomains.find(domain => domain.tenant === tenant.id_tenant.id)?.domain_url || null
                     }));
 
                     setEmpresas(tenantsWithDomain);
@@ -350,34 +399,105 @@ function Autenticado() {
                     ArmazenadorToken.salvarCompaniesCache(tenantsWithDomain);
 
                     if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
+                        console.log('🔄 selected vazio com UserCompanyPublicId');
+                        console.log('🔄 tenantsWithDomain', tenantsWithDomain);
                         setSelected(tenantsWithDomain[0]?.id_tenant.id || '');
-                        setEmpresa(tenantsWithDomain[0]?.tenant.nome || '');
-                        setSimbolo(tenantsWithDomain[0]?.tenant.simbolo || '');
-                        setLogo(tenantsWithDomain[0]?.tenant.logo || '');
-                    } else {
-                        setSelected(ArmazenadorToken.UserCompanyPublicId);
-                        setEmpresa(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.nome || '');
-                        setSimbolo(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.simbolo || '');
-                        setLogo(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.tenant.logo || '');
+                        console.log('🔄 setEmpresa', tenantsWithDomain[0]?.id_tenant.nome);
+                        setEmpresa(tenantsWithDomain[0]?.id_tenant.nome || '');
+                        setSimbolo(tenantsWithDomain[0]?.id_tenant.simbolo || '');
+                        setLogo(tenantsWithDomain[0]?.id_tenant.logo || '');
+                        
+                        if(!localStorage.getItem('layoutColors')) {
+                            // Buscar parâmetros de layout da primeira empresa
+                            http.get('parametros/por-assunto/?assunto=LAYOUT')
+                            .then(response => {
+                                if (response && response.parametros) {
+                                    BrandColors.setLayoutData(response.parametros);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Erro ao buscar parâmetros de layout:', error);
+                            });
+                        }
                     }
-                })
-                .catch(erro => {
-                    console.error("Erro ao buscar domains:", erro);
-                });
+                    else {
+                        console.log('🔄 pegar Parametros de layout');
+                        console.log('🔄 ArmazenadorToken.UserCompanyPublicId', ArmazenadorToken.UserCompanyPublicId);
+                        console.log('🔄 tenants', tenants);
+                        setSelected(ArmazenadorToken.UserCompanyPublicId);
+                        setEmpresa(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.nome || '');
+                        console.log('🔄 setEmpresa', tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.nome);
+                        setSimbolo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.simbolo || '');
+                        setLogo(tenants.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.logo || '');
+                        
+                        if(!localStorage.getItem('layoutColors')) {
+                            // Buscar parâmetros de layout da primeira empresa
+                            http.get('parametros/por-assunto/?assunto=LAYOUT')
+                            .then(response => {
+                                if (response && response.parametros) {
+                                    BrandColors.setLayoutData(response.parametros);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Erro ao buscar parâmetros de layout:', error);
+                            });
+                        }
+                    }
+                } else {
+                    // Buscar domains do servidor
+                    http.get(`client_domain/?format=json`)
+                    .then(domains => {
+                        // Salvar domains no cache
+                        ArmazenadorToken.salvarDomainsCache(domains);
+                        
+                        // Cruzar os dados: adicionar domains correspondentes a cada tenant
+                        const tenantsWithDomain = tenants.map(tenant => ({
+                            ...tenant,
+                            domain_url: domains.find(domain => domain.tenant === tenant.id_tenant.id)?.domain_url || null
+                        }));
+
+                        setEmpresas(tenantsWithDomain);
+                        setCompanies(tenantsWithDomain);
+                        ArmazenadorToken.salvarCompaniesCache(tenantsWithDomain);
+
+                        if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
+                            console.log('🔄 selected vazio com UserCompanyPublicId');
+                            console.log('🔄 tenantsWithDomain', tenantsWithDomain);
+                            setSelected(tenantsWithDomain[0]?.id_tenant.id || '');
+                            console.log('🔄 setEmpresa', tenantsWithDomain[0]?.id_tenant.nome);
+                            setEmpresa(tenantsWithDomain[0]?.id_tenant.nome || '');
+                            setSimbolo(tenantsWithDomain[0]?.id_tenant.simbolo || '');
+                            setLogo(tenantsWithDomain[0]?.id_tenant.logo || '');
+                        } else {
+                            console.log('tenantsWithDomain', tenantsWithDomain);
+                            setSelected(ArmazenadorToken.UserCompanyPublicId);
+                            setEmpresa(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.nome || '');
+                            console.log('🔄 setEmpresa', tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.nome);
+                            setSimbolo(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.simbolo || '');
+                            setLogo(tenantsWithDomain.find(tenant => tenant.id_tenant.id == ArmazenadorToken.UserCompanyPublicId)?.id_tenant.logo || '');
+                        }
+                    })
+                    .catch(erro => {
+                        console.error("Erro ao buscar domains:", erro);
+                    });
+                }
             }
         }
 
         var comp = [];
         if(selected && empresas && empresas.length > 0)
         {
+            console.log('🔄 empresas', empresas);
             comp = empresas.filter(company => company.id_tenant.id == selected);
             if(comp.length > 0 && comp[0].id_tenant.id)
             {
-                setEmpresa(comp[0].tenant.nome)
+                console.log('🔄 comp', comp);
+                setEmpresa(comp[0].id_tenant.nome)
+                console.log('🔄 setEmpresa', comp[0].id_tenant.nome);
                 setSessionCompany(comp[0].id_tenant.id)
                 setCompanyDomain(comp[0].domain)
-                setLogo(comp[0].tenant.logo)
-                setSimbolo(comp[0].tenant.simbolo)
+                setLogo(comp[0].id_tenant.logo)
+                setSimbolo(comp[0].id_tenant.simbolo)
 
                 if(!localStorage.getItem('layoutColors')) {
                     
@@ -423,7 +543,7 @@ function Autenticado() {
     }
 
     function changeCompany(id) {
-        
+        console.log('🔄 changeCompany', id);
         var comp = [];
 
         if(id && empresas)
@@ -432,9 +552,11 @@ function Autenticado() {
            
             if(comp.length > 0 && comp[0].id_tenant.id)
             {
-                setEmpresa(comp[0].tenant.nome)
-                setSimbolo(comp[0].tenant.simbolo)
-                setLogo(comp[0].tenant.logo)
+                console.log('🔄 comp', comp);
+                setEmpresa(comp[0].id_tenant.nome)
+                console.log('🔄 setEmpresa', comp[0].id_tenant.nome);
+                setSimbolo(comp[0].id_tenant.simbolo)
+                setLogo(comp[0].id_tenant.logo)
                 setSelected(id)
 
                 // Buscar parâmetros de layout da nova empresa selecionada
@@ -457,21 +579,25 @@ function Autenticado() {
         <> 
         {usuarioEstaLogado ?
             <>
-            <EstilosGlobais />
-            <MainSection aoClicar={fechaMenu}>
-                <Loading opened={loading} />
-                <BarraLateral $sidebarOpened={sidebarOpened}/>
-                <MainContainer aoClicar={fechaMenu} align="flex-start" padding="0 0 0 0">
-                    <Cabecalho sidebarOpened={sidebarOpened} setSidebarOpened={setSidebarOpened} setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa ? empresa.toUpperCase() : ''} simbolo={simbolo} logo={logo} />
-                    <MarginContainer>
-                        <Outlet key={empresa} context={{ sidebarOpened }} />
-                    </MarginContainer>
-                    {!isDesktop && <BottomMenu />}
-                </MainContainer>
-                {import.meta.env.VITE_VERCEL_ENV && <Analytics />}
-                {import.meta.env.VITE_VERCEL_ENV && <SpeedInsights />}
-            </MainSection>
-            <ModalCnpj aoClicar={changeCompany} aoFechar={() => {setModalOpened(false); setLoading(false)}} opened={modalOpened} />
+            <ThemeProvider>
+                <EstilosGlobais />
+                <CompanyContext.Provider value={{ changeCompany }}>
+                    <MainSection aoClicar={fechaMenu}>
+                        <Loading opened={loading} />
+                        <BarraLateral $sidebarOpened={sidebarOpened}/>
+                        <MainContainer aoClicar={fechaMenu} align="flex-start" padding="0 0 0 0">
+                            <Cabecalho sidebarOpened={sidebarOpened} setSidebarOpened={setSidebarOpened} setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa ? empresa.toUpperCase() : ''} simbolo={simbolo} logo={logo} />
+                            <MarginContainer>
+                                <Outlet key={empresa} context={{ sidebarOpened }} />
+                            </MarginContainer>
+                            {!isDesktop && <BottomMenu />}
+                        </MainContainer>
+                        {import.meta.env.VITE_VERCEL_ENV && <Analytics />}
+                        {import.meta.env.VITE_VERCEL_ENV && <SpeedInsights />}
+                    </MainSection>
+                    <ModalCnpj aoFechar={() => {setModalOpened(false); setLoading(false)}} opened={modalOpened} />
+                </CompanyContext.Provider>
+            </ThemeProvider>
         </>
         : <Navigate to="/login" replace={true}/>
         } </>

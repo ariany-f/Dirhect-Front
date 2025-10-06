@@ -1427,10 +1427,11 @@ const CandidatoRegistro = () => {
                     'data_venc_ctps', 'nit', 'carteira_motorista', 'tipo_carteira_habilit',
                     'data_venc_habilit', 'data_emissao_cnh', 'identidade', 'uf_identidade',
                     'dt_opcao_fgts', 'codigo_situacao_fgts', 'numero_cartao_sus', 'certificado_reservista',
-                    'numero_passaporte', 'data_emissao_passaporte', 'data_validade_passaporte',
+                    'numero_passaporte', 'data_emissao_passaporte', 'data_validade_passaporte', 'rnm',
+                    'uf_emissor_rnm', 'data_emissao_rnm', 'data_vencimento_rnm', 'decreto_imigracao',
                     'registro_profissional', 'uf_registro_profissional', 'data_emissao_registro_profissional',
                     'tipo_sanguineo', 'circunscricao_militar', 'orgao_expedicao', 'regiao_militar',
-                    'situacao_militar', 'telefone1', 'telefone2', 'email_pessoal'
+                    'situacao_militar', 'telefone1', 'telefone2', 'email_pessoal', 'ddi', 'ddd', 'ddi1', 'ddd1', 'ddi2', 'ddd2'
                 ];
                 
                 const candidatoPessoal = {};
@@ -1446,7 +1447,7 @@ const CandidatoRegistro = () => {
                 });
                 
                 // Log detalhado de alguns campos importantes para debug
-                const camposDebug = ['nome', 'email', 'cpf', 'dt_nascimento', 'genero', 'estado_civil'];
+                const camposDebug = ['nome', 'email', 'email_pessoal', 'cpf', 'dt_nascimento', 'genero', 'estado_civil', 'nacionalidade', 'cor_raca', 'estado_civil', 'estado_natal', 'naturalidade', 'cep', 'tipo_rua', 'rua', 'numero', 'complemento', 'bairro', 'tipo_bairro', 'cidade', 'estado', 'pais', 'pispasep', 'orgao_emissor_ident', 'data_emissao_ident', 'titulo_eleitor', 'zona_titulo_eleitor', 'secao_titulo_eleitor', 'data_titulo_eleitor', 'estado_emissor_tit_eleitor', 'carteira_trabalho', 'serie_carteira_trab', 'uf_carteira_trab', 'data_emissao_ctps', 'data_venc_ctps', 'nit', 'carteira_motorista', 'tipo_carteira_habilit', 'data_venc_habilit', 'data_emissao_cnh', 'identidade', 'uf_identidade', 'dt_opcao_fgts', 'codigo_situacao_fgts', 'numero_cartao_sus', 'certificado_reservista', 'numero_passaporte', 'data_emissao_passaporte', 'data_validade_passaporte', 'rnm', 'uf_emissor_rnm', 'data_emissao_rnm', 'data_vencimento_rnm', 'decreto_imigracao', 'registro_profissional', 'uf_registro_profissional', 'data_emissao_registro_profissional', 'tipo_sanguineo', 'circunscricao_militar', 'orgao_expedicao', 'regiao_militar', 'situacao_militar', 'telefone1', 'telefone2', 'email_pessoal', 'ddi', 'ddd', 'ddi1', 'ddd1', 'ddi2', 'ddd2'];
                
                 
                 // Comparação detalhada para identificar diferenças
@@ -1572,7 +1573,10 @@ const CandidatoRegistro = () => {
                     // candidato: {
                     nome: dadosCandidato.nome,
                     email: dadosCandidato.email,
+                    email_pessoal: dadosCandidato.email_pessoal,
                     telefone: dadosCandidato.telefone,
+                    ddi: dadosCandidato.ddi,
+                    ddd: dadosCandidato.ddd,
                     cpf: dadosCandidato.cpf ? dadosCandidato.cpf.replace(/\D/g, '').substring(0, 11) : '',
                     dt_nascimento: dadosCandidato.dt_nascimento,
                     salario: (() => {
@@ -1631,6 +1635,11 @@ const CandidatoRegistro = () => {
                     numero_passaporte: candidatoAtual.numero_passaporte,
                     data_emissao_passaporte: candidatoAtual.data_emissao_passaporte,
                     data_validade_passaporte: candidatoAtual.data_validade_passaporte,
+                    rnm: candidatoAtual.rnm,
+                    uf_emissor_rnm: candidatoAtual.uf_emissor_rnm,
+                    data_emissao_rnm: candidatoAtual.data_emissao_rnm,
+                    data_vencimento_rnm: candidatoAtual.data_vencimento_rnm,
+                    decreto_imigracao: candidatoAtual.decreto_imigracao,
                     registro_profissional: candidatoAtual.registro_profissional,
                     uf_registro_profissional: candidatoAtual.uf_registro_profissional,
                     data_emissao_registro_profissional: candidatoAtual.data_emissao_registro_profissional,
@@ -1643,7 +1652,10 @@ const CandidatoRegistro = () => {
                     // Contatos
                     telefone1: candidatoAtual.telefone1,
                     telefone2: candidatoAtual.telefone2,
-                    email_pessoal: candidatoAtual.email_pessoal,
+                    ddi1: candidatoAtual.ddi1,
+                    ddd1: candidatoAtual.ddd1,
+                    ddi2: candidatoAtual.ddi2,
+                    ddd2: candidatoAtual.ddd2,
                     
                     // Dados bancários
                     banco: candidatoAtual.banco,
@@ -2009,13 +2021,15 @@ const CandidatoRegistro = () => {
             const camposObrigatoriosDadosPessoais = [
                 { campo: 'nome', nome: 'Nome completo' },
                 { campo: 'cpf', nome: 'CPF' },
-                { campo: 'email', nome: 'Email' },
+                { campo: 'ddi', nome: 'DDI' },
+                { campo: 'ddd', nome: 'DDD' },
                 { campo: 'telefone', nome: 'Telefone' },
                 { campo: 'dt_nascimento', nome: 'Data de nascimento' },
                 { campo: 'genero', nome: 'Gênero' },
                 { campo: 'cor_raca', nome: 'Cor/Raça' },
                 { campo: 'estado_civil', nome: 'Estado Civil' },
                 { campo: 'estado_natal', nome: 'Estado Natal' },
+                { campo: 'nacionalidade', nome: 'Nacionalidade' },
                 { campo: 'naturalidade', nome: 'Naturalidade' },
                 { campo: 'cep', nome: 'CEP' },
                 { campo: 'tipo_rua', nome: 'Tipo de Logradouro' },
@@ -2027,14 +2041,14 @@ const CandidatoRegistro = () => {
                 { campo: 'estado', nome: 'Estado' }
             ];
 
-                    camposObrigatoriosDadosPessoais.forEach(({ campo, nome }) => {
-            // Verifica se o campo existe e tem valor (pode ser objeto ou string)
-            const valor = dadosCandidato[campo];
-            if (!valor || (typeof valor === 'object' && !valor.id && !valor.code) || (typeof valor === 'string' && !valor.trim())) {
-                camposObrigatorios.push(nome);
-                setClassError(prev => [...prev, campo]);
-            }
-        });
+            camposObrigatoriosDadosPessoais.forEach(({ campo, nome }) => {
+                // Verifica se o campo existe e tem valor (pode ser objeto ou string)
+                const valor = dadosCandidato[campo];
+                if (!valor || (typeof valor === 'object' && !valor.id && !valor.code) || (typeof valor === 'string' && !valor.trim())) {
+                    camposObrigatorios.push(nome);
+                    setClassError(prev => [...prev, campo]);
+                }
+            });
 
             // Validação de PIS (se preenchido, deve ser válido)
             if (dadosCandidato.pispasep && dadosCandidato.pispasep.trim() !== '' && !validarPIS(dadosCandidato.pispasep)) {
@@ -2093,7 +2107,12 @@ const CandidatoRegistro = () => {
                     numero_passaporte: 'Número do Passaporte',
                     pais_origem: 'País de Origem',
                     data_emissao_passaporte: 'Data de Emissão do Passaporte',
-                    data_validade_passaporte: 'Data de Validade do Passaporte'
+                    data_validade_passaporte: 'Data de Validade do Passaporte',
+                    rnm: 'NRM',
+                    uf_emissor_rnm: 'UF Emissor do RNM',
+                    data_emissao_rnm: 'Data de Emissão do RNM',
+                    data_vencimento_rnm: 'Data de Vencimento do RNM',
+                    decreto_imigracao: 'Decreto de Imigração',
                 };
 
                 Object.entries(camposRequeridos).forEach(([campo, obrigatorio]) => {
@@ -2271,14 +2290,23 @@ const CandidatoRegistro = () => {
         if (!dadosCandidato.cpf?.trim()) {
             camposObrigatorios.push('CPF');
         }
-        if (!dadosCandidato.email?.trim()) {
-            camposObrigatorios.push('E-mail');
-        }
         if (!dadosCandidato.telefone?.trim()) {
             camposObrigatorios.push('Telefone');
         }
         if (!dadosCandidato.dt_nascimento) {
             camposObrigatorios.push('Data de nascimento');
+        }
+        if (!dadosCandidato.nacionalidade?.trim()) {
+            camposObrigatorios.push('Nacionalidade');
+        }
+        if (!dadosCandidato.genero?.trim()) {
+            camposObrigatorios.push('Gênero');
+        }
+        if (!dadosCandidato.cor_raca?.trim()) {
+            camposObrigatorios.push('Cor/Raça');
+        }
+        if (!dadosCandidato.estado_civil?.trim()) {
+            camposObrigatorios.push('Estado Civil');
         }
         
         // Validação de dados bancários obrigatórios
@@ -2356,7 +2384,12 @@ const CandidatoRegistro = () => {
                 numero_passaporte: 'Número do Passaporte',
                 pais_origem: 'País de Origem',
                 data_emissao_passaporte: 'Data de Emissão do Passaporte',
-                data_validade_passaporte: 'Data de Validade do Passaporte'
+                data_validade_passaporte: 'Data de Validade do Passaporte',
+                rnm: 'NRM',
+                uf_emissor_rnm: 'UF Emissor do RNM',
+                data_emissao_rnm: 'Data de Emissão do RNM',
+                data_vencimento_rnm: 'Data de Vencimento do RNM',
+                decreto_imigracao: 'Decreto de Imigração',
             };
 
             Object.entries(camposRequeridos).forEach(([campo, obrigatorio]) => {
@@ -2681,8 +2714,8 @@ const CandidatoRegistro = () => {
         // Step 1 - Dados Pessoais
         if (activeIndex === 1) {
             const camposObrigatorios = [
-                'nome', 'cpf', 'email', 'telefone', 'dt_nascimento', 'genero', 'cor_raca', 'estado_civil',
-                'estado_natal', 'naturalidade', 'cep', 'tipo_rua', 'rua', 'numero',
+                'nome', 'cpf', 'telefone', 'dt_nascimento', 'genero', 'cor_raca', 'estado_civil',
+                'estado_natal', 'nacionalidade', 'naturalidade', 'cep', 'tipo_rua', 'rua', 'numero',
                 'bairro', 'tipo_bairro', 'cidade', 'estado'
             ];
             
@@ -3568,7 +3601,10 @@ const CandidatoRegistro = () => {
         const payload = {
             nome: candidato.nome,
             email: candidato.email,
+            email_pessoal: candidato.email_pessoal,
             telefone: candidato.telefone,
+            ddi: candidato.ddi,
+            ddd: candidato.ddd,
             cpf: candidato.cpf ? candidato.cpf.replace(/\D/g, '').substring(0, 11) : '',
             dt_nascimento: candidato.dt_nascimento,
             nome_mae: candidato.nome_mae,
@@ -3624,6 +3660,11 @@ const CandidatoRegistro = () => {
             numero_passaporte: candidato.numero_passaporte,
             data_emissao_passaporte: candidato.data_emissao_passaporte,
             data_validade_passaporte: candidato.data_validade_passaporte,
+            rnm: candidato.rnm,
+            uf_emissor_rnm: candidato.uf_emissor_rnm,
+            data_emissao_rnm: candidato.data_emissao_rnm,
+            data_vencimento_rnm: candidato.data_vencimento_rnm,
+            decreto_imigracao: candidato.decreto_imigracao,
             registro_profissional: candidato.registro_profissional,
             uf_registro_profissional: candidato.uf_registro_profissional,
             data_emissao_registro_profissional: candidato.data_emissao_registro_profissional,
@@ -3635,7 +3676,10 @@ const CandidatoRegistro = () => {
             // Contatos
             telefone1: candidato.telefone1,
             telefone2: candidato.telefone2,
-            email_pessoal: candidato.email_pessoal,
+            ddi1: candidato.ddi1,
+            ddi2: candidato.ddi2,
+            ddd1: candidato.ddd1,
+            ddd2: candidato.ddd2,
             // PIS/PASEP
             pispasep: candidato.pispasep
         };

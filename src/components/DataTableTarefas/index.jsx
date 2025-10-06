@@ -207,7 +207,7 @@ function DataTableTarefas({
         if (!option.value) return <span>{option.label}</span>;
         return (
             <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <CustomImage src={option.simbolo} width={20} height={20} />
+                <CustomImage title={option.label} src={option.simbolo} width={20} height={20} />
                 {option.label}
             </span>
         );
@@ -623,7 +623,15 @@ function DataTableTarefas({
                         setCliente(response);
                         // Atualizar cache se necessário
                         if (tenantsCache) {
-                            const novoCache = [...tenantsCache, response];
+                            const novoCache = tenantsCache.map(tenant => {
+                                if (tenant?.tenant?.id === rowData.tenant) {
+                                    return {
+                                        ...tenant,
+                                        tenant: response
+                                    };
+                                }
+                                return tenant;
+                            });
                             ArmazenadorToken.salvarTenantsCache(novoCache);
                         }
                     })
@@ -648,7 +656,7 @@ function DataTableTarefas({
             <>
                 <Tooltip target=".cliente" mouseTrack mouseTrackLeft={10} />
                 <div data-pr-tooltip={cliente.nome || '-'} className="cliente">
-                    <CustomImage src={cliente.simbolo} width={36} height={36} />
+                    <CustomImage title={cliente.nome} src={cliente.simbolo} width={36} height={36} />
                 </div>
             </>
         );
@@ -735,7 +743,7 @@ function DataTableTarefas({
                             model="filled"
                             aoClicar={() => setModalSyyncOpened(true)}
                         >
-                            <GrAddCircle className={styles.icon} fill="var(--secundaria)" stroke="white" color="white"/>{t('add')}
+                            <GrAddCircle fill="var(--secundaria)" stroke="var(--secundaria)" color="var(--secundaria)"/>{t('add')}
                         </Botao>
                     )}
                     {onRefresh && (

@@ -570,6 +570,9 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
             <DataTable 
                 key={`${JSON.stringify(integracaoStates)}-${bulkIntegrationMode}`}
                 value={funcoes} 
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} funções"
                 emptyMessage="Não foram encontradas funções" 
                 selection={bulkIntegrationMode ? selectedForIntegration : (selected ? selectedFuncoes : selectedFuncao)} 
                 onSelectionChange={bulkIntegrationMode ? handleIntegrationSelectionChange : handleSelectChange} 

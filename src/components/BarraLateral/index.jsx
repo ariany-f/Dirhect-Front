@@ -10,7 +10,7 @@ import "./BarraLateral.css"
 import { Link, useLocation } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
-import { FaBuilding, FaBusAlt, FaClock, FaInfo, FaKey, FaSync, FaUmbrellaBeach, FaUserTimes } from "react-icons/fa"
+import { FaBuilding, FaBusAlt, FaChartLine, FaClock, FaInfo, FaKey, FaSync, FaUmbrellaBeach, FaUserTimes } from "react-icons/fa"
 import { FaUserGroup } from "react-icons/fa6"
 import { FaBars } from "react-icons/fa"
 import { BreadCrumb } from "primereact/breadcrumb"
@@ -406,7 +406,7 @@ function BarraLateral({ $sidebarOpened }) {
             id: 7,
             url: '/tarefas',
             pageTitulo: t('processes'),
-            icone: <GoTasklist size={20} fill="white" />, 
+            icone: <GoTasklist size={20} className="icon" />, 
             itemTitulo: t('processes'),
             permission: 'view_tarefa',
         },
@@ -438,7 +438,7 @@ function BarraLateral({ $sidebarOpened }) {
             id: 13,
             url: '/ferias',
             pageTitulo: t('vacation_program'),
-            icone: <FaUmbrellaBeach size={20} fill="white"/>,
+            icone: <FaUmbrellaBeach size={20} className="icon"/>,
             itemTitulo: t('vacation_program'),
             permission: 'view_ferias',
         },
@@ -555,6 +555,14 @@ function BarraLateral({ $sidebarOpened }) {
             permission: 'view_syync',
         },
         {
+            id: 25,
+            url: '/tarefas/estatisticas',
+            pageTitulo: t('performance'),
+            icone: <FaChartLine size={20} className="icon" />,
+            itemTitulo: t('performance'),
+            permission: 'view_estatisticas',
+        },
+        {
             id: 24,
             url: '/estrutura',
             pageTitulo: 'Estrutura Organizacional',
@@ -572,6 +580,9 @@ function BarraLateral({ $sidebarOpened }) {
     } else if(userGroups.includes('Colaborador')) {
         userPermissions.push('view_cadastro')
     } else if(userGroups.includes('Outsourcing')) {
+        if(userPermissions.includes('view_tarefa'))  {
+            userPermissions.push('view_estatisticas')
+        }
         userPermissions.push('view_syync')
     } else if(userGroups.includes('Integração')) {
         userPermissions.push('view_estrutura_organizacional')
@@ -666,6 +677,7 @@ function BarraLateral({ $sidebarOpened }) {
       t('activities'),
       t('external_credentials'),
       'Metadados',
+      t('performance'),
       'Lançtos de Folha'
     ];
 
@@ -745,6 +757,36 @@ function BarraLateral({ $sidebarOpened }) {
             </BarraLateralEstilizada>
         );
     }
+    
+
+    // Função para verificar se um menu deve estar ativo
+    const isMenuActive = (menuUrl) => {
+        if (menuUrl === "/") {
+            return location.pathname === "/";
+        }
+        
+        const currentPath = location.pathname;
+        
+        // Se a URL atual é exatamente igual ao menu, seleciona
+        if (currentPath === menuUrl) {
+            return true;
+        }
+        
+        // Se a URL atual começa com o menu URL, verifica se não há um menu mais específico
+        if (currentPath.startsWith(menuUrl)) {
+            // Busca por TODOS os menus que também começam com o mesmo prefixo
+            const menusComMesmoPrefix = menusOrdenados.filter(menu => 
+                menu.url !== menuUrl && 
+                menu.url.startsWith(menuUrl) &&
+                currentPath.startsWith(menu.url)
+            );
+            
+            // Se não há menus mais específicos, seleciona este
+            return menusComMesmoPrefix.length === 0;
+        }
+        
+        return false;
+    };
 
     return (
         <>
@@ -809,20 +851,55 @@ function BarraLateral({ $sidebarOpened }) {
                                         <span style={{ marginLeft: '10px', color: 'var(--secundaria)' }}>Carregando...</span>
                                     </div>
                                 ) : (
-                                    // Só mostra outros menus quando não estiver carregando
-                                    menusOrdenados.filter(menu => menu.itemTitulo !== t('home')).map((item) => (
-                                        <StyledLink 
-                                            key={item.id} 
-                                            className="link p-ripple" 
-                                            to={item.url}
-                                            onClick={() => window.innerWidth <= 760 && setBarraLateralOpened(false)}>
-                                            <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
-                                                {item.icone}
-                                                {item.itemTitulo}
-                                            </ItemNavegacao>
-                                            <Ripple />
-                                        </StyledLink>
-                                    ))
+                                    <>
+                                        {/* Menus regulares */}
+                                        {menusOrdenados.filter(menu => 
+                                            menu.itemTitulo !== t('home') && 
+                                            menu.itemTitulo !== t('processes') && 
+                                            menu.itemTitulo !== t('activities') &&
+                                            menu.itemTitulo !== t('performance')
+                                        ).map((item) => (
+                                            <StyledLink 
+                                                key={item.id} 
+                                                className="link p-ripple" 
+                                                to={item.url}
+                                                onClick={() => window.innerWidth <= 760 && setBarraLateralOpened(false)}>
+                                                <ItemNavegacao ativo={isMenuActive(item.url)}>
+                                                    {item.icone}
+                                                    {item.itemTitulo}
+                                                </ItemNavegacao>
+                                                <Ripple />
+                                            </StyledLink>
+                                        ))}
+                                        
+                                        {/* Seção Global - Processos, Atividades e Estatísticas */}
+                                        {(menusOrdenados.find(menu => menu.itemTitulo === t('processes')) || 
+                                          menusOrdenados.find(menu => menu.itemTitulo === t('activities')) ||
+                                          menusOrdenados.find(menu => menu.itemTitulo === t('performance'))) && (
+                                            <>
+                                                <NavTitulo style={{ marginTop: '10px', marginBottom: '5px' }}>
+                                                    Global
+                                                </NavTitulo>
+                                                {menusOrdenados.filter(menu => 
+                                                    menu.itemTitulo === t('processes') || 
+                                                    menu.itemTitulo === t('activities') ||
+                                                    menu.itemTitulo === t('performance')
+                                                ).map((item) => (
+                                                    <StyledLink 
+                                                        key={item.id} 
+                                                        className="link p-ripple" 
+                                                        to={item.url}
+                                                        onClick={() => window.innerWidth <= 760 && setBarraLateralOpened(false)}>
+                                                        <ItemNavegacao ativo={isMenuActive(item.url)}>
+                                                            {item.icone}
+                                                            {item.itemTitulo}
+                                                        </ItemNavegacao>
+                                                        <Ripple />
+                                                    </StyledLink>
+                                                ))}
+                                            </>
+                                        )}
+                                    </>
                                 )}
                                 </div>
                             {whiteLabel && (

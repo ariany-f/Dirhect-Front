@@ -17,6 +17,7 @@ import { Overlay, DialogEstilizado } from '@components/Modal/styles'
 import { useTranslation } from "react-i18next"
 import CustomImage from "@components/CustomImage"
 import CampoTexto from "@components/CampoTexto"
+import { useCompanyContext } from '@contexts/CompanyContext';
 
 const AdicionarCnpjBotao = styled.div`
     font-size: 14px;
@@ -93,7 +94,7 @@ const ListaEmpresas = styled.div`
     }
 `;
 
-function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
+function ModalCnpj({ opened = false, aoFechar }) {
 
     const { 
         usuario,
@@ -104,6 +105,8 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
         setCompanySymbol,
         setCompanyLogo
     } = useSessaoUsuarioContext()
+
+    const { changeCompany } = useCompanyContext();
 
     const [tenants, setTenants] = useState(null)
     const [empresas, setEmpresas] = useState(usuario.companies ?? null)
@@ -120,22 +123,22 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
             if((!tenants) && ((!empresas) || empresas.length == 0))
             {
                 setLoading(true);
-                // Buscar clientes
+                // Buscar dados do servidor
                 http.get(`cliente/?format=json`)
                 .then(async (response) => {
-                    let clientes = response; // Supondo que a resposta seja um array de clientes
+                    let clientes = response;
 
                     // Mapear cada cliente para incluir tenant, pessoa_juridica e domain
                     const clientesCompletos = await Promise.all(clientes.map(async (cliente) => {
                         try {
                             // Buscar o tenant
-                            const tenantResponse = await http.get(`client_tenant/${cliente?.id_tenant?.id}/?format=json`);
-                            
+                            const tenantResponse = await http.get(`client_tenant/${cliente.id_tenant.id}/?format=json`);
                             const tenant = tenantResponse || {};
 
                             const pessoaJuridica = cliente.pessoaJuridica || cliente.pessoa_juridica;
-
-                            // Retornar o objeto consolidado
+                            
+                            
+                            // Retornar o objeto consolidado com domain
                             return {
                                 ...cliente,
                                 tenant,
@@ -143,12 +146,19 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                             };
                         } catch (erro) {
                             console.error("Erro ao buscar dados do cliente:", erro);
-                            return { ...cliente, tenant: {}, pessoaJuridica: {}, domain: null };
+                            return { ...cliente, tenant: {}, pessoaJuridica: {}, domain_url: null };
                         }
                     }));
 
+                    // Salvar no cache (agora com domains incluídos)
+                    ArmazenadorToken.salvarTenantsCache(clientesCompletos);
+                    
                     // Atualizar o estado com os clientes completos
                     setTenants(clientesCompletos);
+                    setEmpresas(clientesCompletos);
+                    setCompanies(clientesCompletos);
+                    ArmazenadorToken.salvarCompaniesCache(clientesCompletos);
+                    
                 })
                 .catch(erro => {
                     console.error("Erro ao buscar clientes:", erro);
@@ -160,27 +170,11 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     
             if(((!empresas) || empresas.length == 0) && tenants)
             {
-                setLoading(true);
-                http.get(`client_domain/?format=json`)
-                .then(domains => {
-                        // Cruzar os dados: adicionar domains correspondentes a cada tenant
-                    const tenantsWithDomain = tenants.map(tenant => ({
-                        ...tenant,
-                        domain: domains.find(domain => domain.tenant === tenant.id_tenant.id)?.domain || null
-                    }));
+                // Como os tenants já têm domain, usar diretamente
+                setEmpresas(tenants)
+                setCompanies(tenants)
 
-                    setEmpresas(tenantsWithDomain)
-                    setCompanies(tenantsWithDomain)
-
-                    setSelected(ArmazenadorToken.UserCompanyPublicId ?? tenantsWithDomain[0].id_tenant.id)
-                    
-                })
-                .catch(erro => {
-                    console.error("Erro ao buscar domains:", erro);
-                })
-                .finally(() => {
-                    setLoading(false);
-                })
+                setSelected(ArmazenadorToken.UserCompanyPublicId ?? tenants[0].id_tenant.id)
             }
         }
 
@@ -197,7 +191,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     
     const selectCompany = () => {
         
-        aoClicar(selected)
+        changeCompany(selected)
 
         setSessionCompany(selected)
 
@@ -205,13 +199,13 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
        
         if(comp.length > 0 && comp[0].id_tenant.id)
         {
-            setCompanyDomain(comp[0].domain)
+            setCompanyDomain(comp[0].domain_url)
             setCompanySymbol(comp[0].tenant?.simbolo || '')
             setCompanyLogo(comp[0].tenant?.logo || '')
 
             ArmazenadorToken.definirCompany(
                 selected,
-                comp[0].domain?.split('.')[0] || '',
+                comp[0].domain_url?.split('.')[0] || '',
                 comp[0].tenant?.simbolo || '',
                 comp[0].tenant?.logo || ''
             )

@@ -37,6 +37,29 @@ function DataTableVagas({
     const navegar = useNavigate()
     const { t } = useTranslation('common');
 
+    // Configuração de larguras das colunas
+    const exibeColunasOpcionais = {
+        // Todas as colunas são sempre exibidas neste DataTable
+    };
+    
+    // Larguras base quando todas as colunas estão visíveis
+    // Ordem: Título, Descrição, Abertura, Encerramento, Status, Candidatos, Aprovados, Salário
+    const larguraBase = [20, 22, 10, 10, 10, 8, 8, 12];
+    
+    // Calcula larguras redistribuídas
+    const calcularLarguras = () => {
+        let larguras = [...larguraBase];
+        
+        // Neste DataTable, todas as colunas são sempre exibidas
+        // mas mantemos a estrutura para consistência
+        const totalFiltrado = larguras.reduce((acc, val) => acc + val, 0);
+        const fatorRedistribuicao = 100 / totalFiltrado;
+        
+        return larguras.map(largura => Math.round(largura * fatorRedistribuicao * 100) / 100);
+    };
+    
+    const largurasColunas = calcularLarguras();
+
     useEffect(() => {
         setVagas(initialVagas || []);
     }, [initialVagas]);
@@ -219,14 +242,14 @@ function DataTableVagas({
                 showGridlines
                 stripedRows
             >
-                <Column body={representativeTituloTemplate} field="titulo" header="Titulo" style={{ width: '20%' }} sortable></Column>
-                <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" style={{ width: '22%' }} sortable></Column>
-                <Column body={representativeAberturaTemplate} sortable field="dt_abertura" header="Abertura" style={{ width: '10%' }}></Column>
-                <Column body={representativeEncerramentoTemplate} field="dt_encerramento" header="Encerramento" style={{ width: '10%' }} sortable></Column>
-                <Column body={representativeStatusTemplate} field="status" header="Status" style={{ width: '15%' }}></Column>
-                <Column body={representativeNumeroColaboradoresTemplate} field="total_candidatos" header="Candidatos" style={{ width: '8%' }}></Column>
-                <Column body={representativeAprovadosTemplate} field="candidatos_aprovados" header="Aprovados" style={{ width: '8%' }}></Column>
-                <Column body={representativeSalarioTemplate} field="salario" header="Salário" style={{ width: '15%' }} sortable></Column>
+                <Column body={representativeTituloTemplate} field="titulo" header="Titulo" style={{ width: `${largurasColunas[0]}%` }} sortable></Column>
+                <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" style={{ width: `${largurasColunas[1]}%` }} sortable></Column>
+                <Column body={representativeAberturaTemplate} sortable field="dt_abertura" header="Abertura" style={{ width: `${largurasColunas[2]}%` }}></Column>
+                <Column body={representativeEncerramentoTemplate} field="dt_encerramento" header="Encerramento" style={{ width: `${largurasColunas[3]}%` }} sortable></Column>
+                <Column body={representativeStatusTemplate} field="status" header="Status" style={{ width: `${largurasColunas[4]}%` }}></Column>
+                <Column body={representativeNumeroColaboradoresTemplate} field="total_candidatos" header="Candidatos" style={{ width: `${largurasColunas[5]}%` }}></Column>
+                <Column body={representativeAprovadosTemplate} field="candidatos_aprovados" header="Aprovados" style={{ width: `${largurasColunas[6]}%` }}></Column>
+                <Column body={representativeSalarioTemplate} field="salario" header="Salário" style={{ width: `${largurasColunas[7]}%` }} sortable></Column>
             </DataTable>
         </>
     )

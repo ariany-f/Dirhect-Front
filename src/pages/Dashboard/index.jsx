@@ -1,5 +1,5 @@
 import http from '@http'
-import { useEffect, useState, useRef, useMemo } from 'react'
+import { useEffect, useState, useRef, useMemo, useTransition } from 'react'
 import DashboardCard from '@components/DashboardCard'
 import Loading from '@components/Loading'
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario'
@@ -8,12 +8,15 @@ import { FaUserPlus, FaUmbrellaBeach, FaArrowRight, FaUserTimes, FaCheckCircle, 
 import { Link } from 'react-router-dom';
 import '@pages/Dashboard/DashboardAtividades.css'
 import { ArmazenadorToken } from '@utils'
+import { Skeleton } from 'primereact/skeleton'
 
 function Dashboard() {
     const {
         usuarioEstaLogado,
         usuario
     } = useSessaoUsuarioContext()
+
+    const [isPending, startTransition] = useTransition()
 
     const [colaboradores, setColaboradores] = useState(null)
     const [loadingOpened, setLoadingOpened] = useState(true)
@@ -170,20 +173,26 @@ function Dashboard() {
                 // Se for usuário Outsourcing, carregar apenas os indicadores
                 if (usuario?.tipo === 'Outsourcing') {
                     if(ArmazenadorToken.hasPermission('view_tarefa')) {
-                        await http.get('tarefas/indicadores/')
+                        await http.get('tarefas/indicadores/?tenant=' + ArmazenadorToken.UserCompanyPublicId)
                             .then(response => {
                                 console.log('Response do endpoint /tarefas/indicadores/:', response);
-                                setIndicadoresTarefas(response);
-                                setColaboradores([]);
+                                startTransition(() => {
+                                    setIndicadoresTarefas(response);
+                                    setColaboradores([]);
+                                });
                             })
                             .catch(error => {
                                 console.error('Erro ao carregar indicadores de tarefas:', error);
-                                setIndicadoresTarefas(null);
-                                setColaboradores([]);
+                                startTransition(() => {
+                                    setIndicadoresTarefas(null);
+                                    setColaboradores([]);
+                                });
                             });
                     } else {
-                        setIndicadoresTarefas(null);
-                        setColaboradores([]);
+                        startTransition(() => {
+                            setIndicadoresTarefas(null);
+                            setColaboradores([]);
+                        });
                     }
                     return; // Sair da função para usuários Outsourcing
                 }
@@ -194,88 +203,100 @@ function Dashboard() {
                     await http.get('funcionario/dashboard/')
                         .then(response => {
                             console.log('Response do dashboard de funcionários:', response);
-                            setFuncionariosDashboard(response);
+                            startTransition(() => {
+                                setFuncionariosDashboard(response);
                             
-                            // Usar dados do dashboard para popular os totais
-                            setTotalVagas(0); // Vagas não vem no dashboard ainda
-                            setTotalFerias(0); // Usar dados do dashboard quando necessário
-                            setTotalAdmissoes(response?.admissoes?.admissoes_andamento || 0);
-                            
-                            setColaboradores([]);
+                                // Usar dados do dashboard para popular os totais
+                                setTotalVagas(0); // Vagas não vem no dashboard ainda
+                                setTotalFerias(0); // Usar dados do dashboard quando necessário
+                                setTotalAdmissoes(response?.admissoes?.admissoes_andamento || 0);
+                                
+                                setColaboradores([]);
+                            });
                         })
                         .catch(error => {
                             console.error('Erro ao carregar dashboard de funcionários:', error);
-                            setFuncionariosDashboard(null);
-                            setColaboradores(null);
-                            setTotalVagas(0);
-                            setTotalFerias(0);
-                            setTotalAdmissoes(0);
+                            startTransition(() => {
+                                setFuncionariosDashboard(null);
+                                setColaboradores(null);
+                                setTotalVagas(0);
+                                setTotalFerias(0);
+                                setTotalAdmissoes(0);
+                            });
                         });
                 } else {
                     // Se não tem permissão, definir valores padrão
-                    setFuncionariosDashboard(null);
-                    setColaboradores([]);
-                    setTotalVagas(0);
-                    setTotalFerias(0);
-                    setTotalAdmissoes(0);
+                    startTransition(() => {
+                        setFuncionariosDashboard(null);
+                        setColaboradores([]);
+                        setTotalVagas(0);
+                        setTotalFerias(0);
+                        setTotalAdmissoes(0);
+                    });
                 }
                 
                 // Carregar apenas tarefas se tiver permissão
                 if(ArmazenadorToken.hasPermission('view_tarefa')) {
                     await http.get('tarefas/?format=json&status__in=pendente,em_andamento,aprovada,erro')
                         .then(response => {
-                            setAtividadesRaw(response.results || [])
-                            setAtividadesAgrupadas(response.agrupamento_por_tipo || [])
+                            startTransition(() => {
+                                setAtividadesRaw(response.results || [])
+                                setAtividadesAgrupadas(response.agrupamento_por_tipo || [])
 
-                            const openTasks = response.results || [];
-                            
-                            // Agrupar por status
-                            const porStatus = openTasks.reduce((acc, atividade) => {
-                                acc[atividade.status] = (acc[atividade.status] || 0) + 1;
-                                return acc;
-                            }, {});
-                            setAtividadesPorStatus(porStatus)
-                            
-                            // Agrupar por tipo de atividade
-                            const porTipo = openTasks.reduce((acc, atividade) => {
-                                const tipo = atividade.tipo_display || atividade.entidade_display || atividade.tipo_tarefa || atividade.tipo;
-                                acc[tipo] = (acc[tipo] || 0) + 1;
-                                return acc;
-                            }, {});
-                            setAtividadesPorTipo(porTipo)
-                            
-                            // Agrupar por SLA
-                            const porSLA = openTasks.reduce((acc, atividade) => {
-                                const slaInfo = getSLAInfo(atividade);
-                                acc[slaInfo] = (acc[slaInfo] || 0) + 1;
-                                return acc;
-                            }, {});
-                            setAtividadesPorSLA(porSLA)
-                            
-                            // Agrupar por entidade
-                            const porEntidade = openTasks.reduce((acc, atividade) => {
-                                const entidade = atividade.entidade_display || atividade.entidade_tipo || 'Outro';
-                                acc[entidade] = (acc[entidade] || 0) + 1;
-                                return acc;
-                            }, {});
-                            setAtividadesPorEntidade(porEntidade);
+                                const openTasks = response.results || [];
+                                
+                                // Agrupar por status
+                                const porStatus = openTasks.reduce((acc, atividade) => {
+                                    acc[atividade.status] = (acc[atividade.status] || 0) + 1;
+                                    return acc;
+                                }, {});
+                                setAtividadesPorStatus(porStatus)
+                                
+                                // Agrupar por tipo de atividade
+                                const porTipo = openTasks.reduce((acc, atividade) => {
+                                    const tipo = atividade.tipo_display || atividade.entidade_display || atividade.tipo_tarefa || atividade.tipo;
+                                    acc[tipo] = (acc[tipo] || 0) + 1;
+                                    return acc;
+                                }, {});
+                                setAtividadesPorTipo(porTipo)
+                                
+                                // Agrupar por SLA
+                                const porSLA = openTasks.reduce((acc, atividade) => {
+                                    const slaInfo = getSLAInfo(atividade);
+                                    acc[slaInfo] = (acc[slaInfo] || 0) + 1;
+                                    return acc;
+                                }, {});
+                                setAtividadesPorSLA(porSLA)
+                                
+                                // Agrupar por entidade
+                                const porEntidade = openTasks.reduce((acc, atividade) => {
+                                    const entidade = atividade.entidade_display || atividade.entidade_tipo || 'Outro';
+                                    acc[entidade] = (acc[entidade] || 0) + 1;
+                                    return acc;
+                                }, {});
+                                setAtividadesPorEntidade(porEntidade);
+                            });
                     })
                     .catch(() => {
+                        startTransition(() => {
+                            setAtividadesPorStatus({})
+                            setAtividadesPorTipo({})
+                            setAtividadesPorSLA({})
+                            setAtividadesPorEntidade({})
+                            setAtividadesRaw([])
+                            setAtividadesAgrupadas([])
+                        });
+                    })
+                }
+                else {
+                    startTransition(() => {
                         setAtividadesPorStatus({})
                         setAtividadesPorTipo({})
                         setAtividadesPorSLA({})
                         setAtividadesPorEntidade({})
                         setAtividadesRaw([])
                         setAtividadesAgrupadas([])
-                    })
-                }
-                else {
-                    setAtividadesPorStatus({})
-                    setAtividadesPorTipo({})
-                    setAtividadesPorSLA({})
-                    setAtividadesPorEntidade({})
-                    setAtividadesRaw([])
-                    setAtividadesAgrupadas([])
+                    });
                 }
             }
         } finally {
@@ -298,7 +319,7 @@ function Dashboard() {
             isMounted.current = false;
             clearTimeout(timer); // Limpar o timer se o componente for desmontado
         };
-    }, [usuarioEstaLogado]); // Removido colaboradores das dependências
+    }, [usuarioEstaLogado, usuario?.company_public_id]); // Removido colaboradores das dependências
 
     const getSLAInfo = (atividade) => {
         if (atividade.status === 'concluida') {
@@ -439,6 +460,15 @@ function Dashboard() {
         return <Loading opened={loadingOpened} />
     }
 
+    if (isPending) {
+        console.log('isPending', isPending);
+        return (
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%'}}>
+                <Skeleton width="100%" height="100%" />
+            </div>
+        )
+    }
+    
     const chartDataStatus = {
         labels: Object.keys(atividadesPorStatus).map(status => {
             const statusMap = {
@@ -543,8 +573,8 @@ function Dashboard() {
     return (
         <>
             <div style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', width: '100%', marginBottom: 12}}>
-                <button onClick={carregarDashboard} style={{background: 'none', border: 'none', cursor: 'pointer', padding: 8, borderRadius: 8, transition: 'background 0.2s'}} title="Recarregar dashboard" disabled={refreshing}>
-                    <FaSyncAlt size={22} color="#888" className={refreshing ? 'spin-refresh' : ''} />
+                <button onClick={carregarDashboard} style={{background: 'none', border: 'none', cursor: 'pointer', padding: 8, borderRadius: 8, transition: 'background 0.2s', opacity: isPending ? 0.6 : 1}} title="Recarregar dashboard" disabled={refreshing || isPending}>
+                    <FaSyncAlt size={22} color="#888" className={(refreshing || isPending) ? 'spin-refresh' : ''} />
                 </button>
             </div>
             {mostrarAtividades && (

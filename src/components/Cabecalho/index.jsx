@@ -10,7 +10,7 @@ import Menu from "@components/Menu";
 import { useState, useRef, useEffect } from "react";
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
 // import Notificacoes from '@components/Notificacoes';
-import { FaBuilding, FaBusAlt } from "react-icons/fa";
+import { FaBuilding, FaBusAlt, FaCalendarAlt } from "react-icons/fa";
 import { FaBars } from "react-icons/fa6";
 import { TbLayoutSidebarLeftCollapseFilled } from "react-icons/tb";
 import LanguageSelector from "../LanguageSelector";
@@ -19,6 +19,8 @@ import CustomImage from '@components/CustomImage';
 import { ArmazenadorToken } from '@utils';
 import BrandColors from '@utils/brandColors';
 import { FaUser } from 'react-icons/fa';
+import { useTheme } from '@contexts/ThemeContext';
+import { FaMoon, FaSun } from 'react-icons/fa';
 
 // MegaMenu Container
 const MegaMenuWrapper = styled.div`
@@ -60,7 +62,7 @@ const MegaMenuPanel = styled.div`
   position: absolute;
   top: 100%;
   left: 0;
-  background: white;
+  background: var(--bg-white);
   border: 1px solid var(--neutro-200);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -121,11 +123,12 @@ const HeaderEstilizado = styled.header`
   padding: 2vh 4vw 2vh 4vw;
   width: inherit;
   z-index: 8;
-  background-color: var(--white);
+  background-color: var(--bg-white);
   box-shadow: 0px 1px 5px 0px lightgrey;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 
   @-moz-document url-prefix() {
     width: -moz-available;
@@ -174,7 +177,7 @@ const RightItems = styled.nav`
 
 const ItemEmpresa = styled.button`
   font-family: var(--fonte-secundaria);
-  background-color: var(--white);
+  background-color: var(--bg-white);
   color: var(--black);
   padding: 11px;
   display: flex;
@@ -189,6 +192,12 @@ const ItemEmpresa = styled.button`
   text-align: center;
   min-width: 150px;
   justify-content: center;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--neutro-100);
+    border-color: var(--neutro-300);
+  }
 
   &:disabled {
     cursor: default;
@@ -273,6 +282,7 @@ const ItemUsuario = styled.div`
   font-weight: 700;
   line-height: 20px;
   cursor: pointer;
+  transition: color 0.2s ease;
   
   & .user {
     background-color: var(--neutro-100);
@@ -283,6 +293,7 @@ const ItemUsuario = styled.div`
     width: 40px;
     height: 40px;
     overflow: hidden;
+    transition: background-color 0.2s ease;
     
     img {
       width: 100%;
@@ -305,6 +316,30 @@ const ItemUsuario = styled.div`
   }
 `;
 
+const ThemeToggleButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--neutro-200);
+  border-radius: 8px;
+  background-color: var(--bg-white);
+  color: var(--black);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: var(--neutro-100);
+    border-color: var(--neutro-300);
+  }
+  
+  @media screen and (max-width: 768px) {
+    width: 32px;
+    height: 32px;
+  }
+`;
+
 const MarketplaceButton = styled(Frame)`
     @media screen and (max-width: 768px) {
         display: none;
@@ -318,11 +353,16 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
   const menuRef = useRef(null);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
   const { t } = useTranslation('common');
+  const { isDarkMode, toggleTheme } = useTheme();
 
   // Verificar se o usuário tem apenas um perfil
   const gruposValidos = ArmazenadorToken.UserGroups ? 
     ArmazenadorToken.UserGroups.filter(grupo => !grupo.startsWith('_')) : [];
   const temApenasUmPerfil = gruposValidos.length <= 1;
+
+  // Verificar se está em telas de processos/tarefas
+  const isInProcessesScreen = location.pathname.startsWith('/tarefas') || 
+                             location.pathname.startsWith('/atividades');
 
 
   useEffect(() => {
@@ -378,11 +418,32 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
     { "id": 25, "url": "atividades", "pageTitulo": t("activities") },
     { "id": 26, "url": "tabelas-de-sistema", "pageTitulo": t("system_tables") },
     { "id": 27, "url": "syync", "pageTitulo": "Syync" },
+    { "id": 28, "url": "estatisticas", "pageTitulo": t("performance") },
+    { "id": 29, "url": "auxiliar", "pageTitulo": t("holidays") },
   ];
 
-  const titulo = titulos.find(item => 
-    item.url === location.pathname.split("/")[1]
-  )?.pageTitulo || BrandColors.getBrandName();
+  // Lógica para determinar o título baseado na URL
+  const getTitulo = () => {
+    const pathSegments = location.pathname.split("/").filter(Boolean);
+    
+    // Caso especial para /tarefas/estatisticas
+    if (pathSegments[0] === 'tarefas' && pathSegments[1] === 'estatisticas') {
+      return t("performance");
+    }
+
+    if (pathSegments[0] === 'tarefas' && pathSegments[1] === 'syync') {
+      return t("Syync");
+    }
+    
+    // Lógica padrão para outras rotas
+    const titulo = titulos.find(item => 
+      item.url === pathSegments[0]
+    )?.pageTitulo || BrandColors.getBrandName();
+    
+    return titulo;
+  };
+
+  const titulo = getTitulo();
 
   function toggleMenu() {
     setMenuOpened(!menuOpened);
@@ -417,6 +478,13 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
           url: '/tabelas-de-sistema',
           icon: <RiTable2 size={18}/>
         },
+        ...(ArmazenadorToken.hasPermission('view_feriados') ? [
+          { 
+            label: t("holidays"), 
+            url: '/auxiliar',
+            icon: <FaCalendarAlt size={18}/>
+          }
+          ] : []),
         ...(import.meta.env.VITE_OPTIONS_LINHAS_TRANSPORTE === 'true' ? [
           { 
             label: 'Linhas de Transporte', 
@@ -452,7 +520,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
                   onMouseLeave={() => setMenuAberto(false)}
                 >
                   <MenuTrigger onClick={() => setMenuAberto(!menuAberto)}>
-                    <Texto weight="600" size={'14px'} color="black">
+                    <Texto weight="600" size={'14px'} color="var(--black)">
                       {t('options')}
                     </Texto>
                     <ChevronIcon $isOpen={menuAberto} size={16} />
@@ -486,7 +554,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
                               $isActive={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}
                             >
                               {item.icon}
-                              <Texto weight="500" size={'14px'} color="black">
+                              <Texto weight="500" size={'14px'} color="var(--black)">
                                 {item.label}
                               </Texto>
                             </MenuItem>
@@ -500,7 +568,13 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
             )}
           
           <div className={styles.divisor}>
-            {ArmazenadorToken.hasPermission('view_clienttenant') && (
+            {/* Botão de toggle do tema
+            <ThemeToggleButton onClick={toggleTheme} title={isDarkMode ? 'Modo claro' : 'Modo escuro'}>
+              {isDarkMode ? <FaSun fill="white" size={16} /> : <FaMoon size={16} />}
+            </ThemeToggleButton> */}
+            
+            {/* Só mostra a opção de trocar empresa se NÃO estiver em telas de processos/tarefas */}
+            {ArmazenadorToken.hasPermission('view_clienttenant') && !isInProcessesScreen && (
               <ItemEmpresa onClick={aoClicar}>
                 {simbolo && simbolo !== null && simbolo !== 'null' ? 
                   <>

@@ -489,6 +489,9 @@ function DataTableContratos({
             </div>
             <DataTable 
                 value={contratos} 
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} contratos"
                 emptyMessage="Não foram encontrados contratos" 
                 selection={selectedVaga} 
                 onSelectionChange={(e) => verDetalhes(e.value)} 
@@ -504,13 +507,6 @@ function DataTableContratos({
                 onSort={handleSort}
                 removableSort 
                 tableStyle={{ minWidth: '68vw' }}
-                footerColumnGroup={
-                    <ColumnGroup>
-                        <Row>
-                            <Column footer={totalContratosTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
-                        </Row>
-                    </ColumnGroup>
-                }
             >
                 <Column body={representativeNomeTemplate} header="Operadora" field="dados_operadora.nome" sortField="operadora" sortable style={{ width: `${largurasColunas[0]}%` }}></Column>
                 <Column field="observacao" sortable sortField="observacao" header="Observação" style={{ width: `${largurasColunas[1]}%` }}></Column>

@@ -518,6 +518,9 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
             <DataTable 
                 key={`${JSON.stringify(integracaoStates)}-${bulkIntegrationMode}`}
                 value={cargos} 
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} cargos"
                 emptyMessage="Não foram encontrados cargos" 
                 selection={bulkIntegrationMode ? selectedForIntegration : (selected ? selectedCargos : selectedCargo)} 
                 onSelectionChange={bulkIntegrationMode ? handleIntegrationSelectionChange : handleSelectChange} 

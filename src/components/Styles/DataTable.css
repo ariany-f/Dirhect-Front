@@ -172,6 +172,53 @@
     --primary-900:#222e55;
 }
 
+/* Modo Dark para DataTable */
+.dark-mode {
+    --surface-a: #2A2A2A;
+    --surface-b: #3A3A3A;
+    --surface-c: #4A4A4A;
+    --surface-d: #5A5A5A;
+    --surface-e: #2A2A2A;
+    --surface-f: #2A2A2A;
+    --text-color: #E5E5E5;
+    --text-color-secondary: #AAAAAA;
+    --primary-color: #5472d4;
+    --primary-color-text: #ffffff;
+    --surface-0: #2A2A2A;
+    --surface-50: #1A1A1A;
+    --surface-100: #2A2A2A;
+    --surface-200: #3A3A3A;
+    --surface-300: #4A4A4A;
+    --surface-400: #5A5A5A;
+    --surface-500: #6A6A6A;
+    --surface-600: #7A7A7A;
+    --surface-700: #8A8A8A;
+    --surface-800: #9A9A9A;
+    --surface-900: #AAAAAA;
+    --surface-950: #BABABA;
+    --gray-50: #1A1A1A;
+    --gray-100: #2A2A2A;
+    --gray-200: #3A3A3A;
+    --gray-300: #4A4A4A;
+    --gray-400: #5A5A5A;
+    --gray-500: #6A6A6A;
+    --gray-600: #7A7A7A;
+    --gray-700: #8A8A8A;
+    --gray-800: #9A9A9A;
+    --gray-900: #AAAAAA;
+    --surface-ground: #3A3A3A;
+    --surface-section: #2A2A2A;
+    --surface-card: #2A2A2A;
+    --surface-overlay: #2A2A2A;
+    --surface-border: #5A5A5A;
+    --surface-hover: #4A4A4A;
+    --focus-ring: 0 0 0 0.1rem rgba(84, 114, 212, 0.3);
+    --maskbg: rgba(0, 0, 0, 0.4);
+    --highlight-bg: #4A4A4A;
+    --highlight-text-color: #E5E5E5;
+    color-scheme: dark;
+}
+
 /* Estilos base do PrimeReact (comuns aos 3 arquivos) */
 @layer primereact {
     * {
@@ -375,8 +422,8 @@
 }
 
 .p-datatable .p-datatable-header {
-    background: #ffffff;
-    color: #6c6c6c;
+    background: var(--surface-a);
+    color: var(--text-color);
     border: none;
     border-width: 0 0 2px 0;
     padding: 1rem 1rem;
@@ -384,9 +431,9 @@
 }
 
 .p-datatable .p-datatable-footer {
-    background: #ffffff;
-    color: #6c6c6c;
-    border: 2px solid #f5f5f5;
+    background: var(--surface-a);
+    color: var(--text-color);
+    border: 2px solid var(--surface-b);
     border-width: 0 0 2px 0;
     padding: 1rem 1rem;
 }
@@ -396,8 +443,8 @@
     padding: 1rem 1rem;
     border: none;
     font-weight: 500;
-    color: #6c6c6c;
-    background: #ffffff;
+    color: var(--text-color);
+    background: var(--surface-a);
     transition: box-shadow 0.3s;
     font-size: 14px;
     line-height: 14px;
@@ -411,8 +458,8 @@
 }
 
 .p-datatable .p-datatable-tbody > tr {
-    background: #ffffff;
-    color: #6c6c6c;
+    background: var(--surface-a);
+    color: var(--text-color);
     transition: box-shadow 0.3s;
     display: flex;
     justify-content: flex-start;
@@ -447,7 +494,7 @@
 
 .p-datatable .p-datatable-tbody > tr > td {
     text-align: left;
-    border: 2px solid #f5f5f5;
+    border: 2px solid var(--surface-b);
     border-width: 0 0 2px 0;
     padding: 1rem 1rem;
     display: flex;
@@ -461,11 +508,11 @@
 .p-datatable .p-datatable-tfoot > tr > td {
     text-align: left;
     padding: 1rem 1rem;
-    border: 2px solid #f5f5f5;
+    border: 2px solid var(--surface-b);
     border-width: 0 0 2px 0;
     font-weight: 500;
-    color: #6c6c6c;
-    background: #ffffff;
+    color: var(--text-color);
+    background: var(--surface-a);
 }
 
 .p-datatable .p-datatable-tbody > tr > td .p-row-toggler,
@@ -474,7 +521,7 @@
 .p-datatable .p-datatable-tbody > tr > td .p-row-editor-cancel {
     width: 2rem;
     height: 2rem;
-    color: #898989;
+    color: var(--text-color-secondary);
     border: 0 none;
     background: transparent;
     border-radius: 50%;
@@ -485,9 +532,9 @@
 .p-datatable .p-datatable-tbody > tr > td .p-row-editor-init:enabled:hover,
 .p-datatable .p-datatable-tbody > tr > td .p-row-editor-save:enabled:hover,
 .p-datatable .p-datatable-tbody > tr > td .p-row-editor-cancel:enabled:hover {
-    color: #6c6c6c;
+    color: var(--text-color);
     border-color: transparent;
-    background: #edf0fA;
+    background: var(--surface-hover);
 }
 
 .p-datatable .p-datatable-tbody > tr > td .p-row-toggler:focus-visible,
@@ -502,11 +549,11 @@
 .p-datatable .p-datatable-tfoot > tr > td {
     text-align: left;
     padding: 1rem 1rem;
-    border: 2px solid #f5f5f5;
+    border: 2px solid var(--surface-b);
     border-width: 0 0 2px 0;
     font-weight: 500;
-    color: #6c6c6c;
-    background: #ffffff;
+    color: var(--text-color);
+    background: var(--surface-a);
 }
 
 .p-datatable .p-sortable-column {
@@ -515,7 +562,7 @@
 }
 
 .p-datatable .p-sortable-column .p-sortable-column-icon {
-    color: #898989;
+    color: var(--text-color-secondary);
     margin-left: 0.5rem;
 }
 
@@ -524,32 +571,32 @@
     height: 1.153rem;
     min-width: 1.153rem;
     line-height: 1.153rem;
-    color: #5472d4;
-    background: #ced6f1;
+    color: var(--primaria);
+    background: var(--highlight-bg);
     margin-left: 0.5rem;
 }
 
 .p-datatable .p-sortable-column:not(.p-highlight):hover {
-    background: #edf0fA;
-    color: #6c6c6c;
+    background: var(--surface-hover);
+    color: var(--text-color);
 }
 
 .p-datatable .p-sortable-column:not(.p-highlight):hover .p-sortable-column-icon {
-    color: #6c6c6c;
+    color: var(--text-color);
 }
 
 .p-datatable .p-sortable-column.p-highlight {
-    background: #ced6f1;
-    color: #585858;
+    background: var(--highlight-bg);
+    color: var(--highlight-text-color);
 }
 
 .p-datatable .p-sortable-column.p-highlight .p-sortable-column-icon {
-    color: #585858;
+    color: var(--highlight-text-color);
 }
 
 .p-datatable .p-datatable-scrollable-header,
 .p-datatable .p-datatable-scrollable-footer {
-    background: #edf0fA;
+    background: var(--surface-hover);
 }
 
 /* Garante que nunca haja rolagem horizontal */
@@ -652,11 +699,11 @@
 .p-datatable.p-datatable-scrollable > .p-datatable-wrapper > .p-datatable-table > .p-datatable-thead,
 .p-datatable.p-datatable-scrollable > .p-datatable-wrapper > .p-datatable-table > .p-datatable-tfoot, .p-datatable.p-datatable-scrollable > .p-datatable-wrapper > .p-virtualscroller > .p-datatable-table > .p-datatable-thead,
 .p-datatable.p-datatable-scrollable > .p-datatable-wrapper > .p-virtualscroller > .p-datatable-table > .p-datatable-tfoot {
-    background-color: #ffffff;
+    background-color: var(--surface-a);
 }
 
 .p-datatable .p-datatable-loading-overlay {
-    background-color: #ffffff;
+    background-color: var(--surface-a);
     opacity: 0.6;
 }
 
@@ -750,8 +797,8 @@
 
 /* Estilos completos da Paginação */
 .p-paginator {
-    background: #ffffff;
-    color: #898989;
+    background: var(--surface-a);
+    color: var(--text-color-secondary);
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 6px;
@@ -763,7 +810,7 @@
 .p-paginator .p-paginator-last {
     background-color: transparent;
     border: 0 none;
-    color: #898989;
+    color: var(--text-color-secondary);
     min-width: 2.857rem;
     height: 2.857rem;
     margin: 0.143rem;
@@ -794,9 +841,9 @@
 .p-paginator .p-dropdown {
     margin-left: 0.5rem;
     height: 2.857rem;
-    border: 1px solid #ebebeb;
+    border: 1px solid var(--surface-border);
     border-radius: 6px;
-    background: #ffffff;
+    background: var(--surface-a);
     transition: border-color 0.3s, box-shadow 0.3s;
     position: relative;
     display: flex;
@@ -820,7 +867,7 @@
 .p-paginator .p-dropdown .p-dropdown-label {
     padding: 0.5rem 0.75rem;
     padding-right: 2rem;
-    color: #6c6c6c;
+    color: var(--text-color);
     font-size: 14px;
     font-weight: 500;
     background: transparent;
@@ -847,7 +894,7 @@
 
 .p-paginator .p-dropdown .p-dropdown-trigger {
     background: transparent;
-    color: #898989;
+    color: var(--text-color-secondary);
     width: 2rem;
     height: 100%;
     border: none;
@@ -897,10 +944,18 @@
     display: none;
 }
 
+.p-dropdown-header {
+    background: var(--white) !important;
+}
+
+.p-dropdown-panel {
+    background: var(--white) !important;
+}
+
 /* Estilo do painel dropdown */
 .p-paginator .p-dropdown-panel {
-    background: #ffffff;
-    border: 1px solid #ebebeb;
+    background: var(--surface-a);
+    border: 1px solid var(--surface-border);
     border-radius: 6px;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     overflow: hidden;
@@ -924,7 +979,7 @@
     margin: 0;
     padding: 0.5rem 0.75rem;
     border: 0 none;
-    color: #6c6c6c;
+    color: var(--text-color);
     background: transparent;
     transition: background-color 0.3s, color 0.3s;
     border-radius: 0;
@@ -934,7 +989,7 @@
 
 .p-paginator .p-dropdown-panel .p-dropdown-item:hover {
     color: var(--primaria);
-    background: #edf0fA;
+    background: var(--surface-hover);
 }
 
 .p-paginator .p-dropdown-panel .p-dropdown-item.p-highlight {
@@ -981,7 +1036,7 @@
 .p-paginator .p-paginator-current {
     background-color: transparent;
     border: 0 none;
-    color: #898989;
+    color: var(--text-color-secondary);
     min-width: 2.857rem;
     height: 2.857rem;
     margin: 0.143rem;
@@ -991,7 +1046,7 @@
 .p-paginator .p-paginator-pages .p-paginator-page {
     background-color: transparent;
     border: 0 none;
-    color: #898989;
+    color: var(--text-color-secondary);
     min-width: 2.857rem;
     height: 2.857rem;
     margin: 0.143rem;
@@ -1001,14 +1056,14 @@
 
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
     background: var(--primaria);
-    color: var(--secundaria)!important;
+    color: var(--primary-color-text)!important;
     font-size: 12px;
     border-radius: 8px;
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight:hover {
-    background: var(--vermilion-400);
-    color: var(--secundaria)!important;
+    background: var(--primaria);
+    color: var(--primary-color-text)!important;
     font-size: 12px;
 }
 
@@ -1025,21 +1080,21 @@
 
 /* Customização das linhas alternadas (encontrada no DataTableAusencias) */
 .p-datatable-tbody > tr:nth-child(even) {
-    background-color: rgb(240, 240, 240); /* Cor de fundo para linhas pares */
+    background-color: var(--surface-b); /* Cor de fundo para linhas pares */
     border: none;
 }
 
 .p-datatable-tbody > tr:nth-child(odd) {
-    background-color: #ffffff; /* Cor de fundo para linhas ímpares */
+    background-color: var(--surface-a); /* Cor de fundo para linhas ímpares */
     border: none;
 }
 
 .p-datatable-tbody > tr:nth-child(even):hover {
-    background-color: #edf0fA; /* Cor de fundo para linhas pares ao passar o mouse */
+    background-color: var(--surface-hover); /* Cor de fundo para linhas pares ao passar o mouse */
 }
 
 .p-datatable-tbody > tr:nth-child(odd):hover {
-    background-color: #edf0fA; /* Cor de fundo para linhas ímpares ao passar o mouse */
+    background-color: var(--surface-hover); /* Cor de fundo para linhas ímpares ao passar o mouse */
 }
 
 /* Controla altura das linhas de forma mais flexível */
@@ -1078,14 +1133,14 @@
 
 /* Customização do toolbar do editor (encontrada no DataTableAusencias) */
 .p-editor-container .p-editor-toolbar {
-    background: rgb(240, 240, 240);
+    background: var(--surface-b);
     border-top-right-radius: 6px;
     border-top-left-radius: 6px;
 }
 
 /* Configurações do Skeleton */
 .p-skeleton {
-    background-color: #ebebeb;
+    background-color: var(--surface-border);
     border-radius: 6px;
 }
 
@@ -1095,8 +1150,8 @@
 
 /* Configurações do Tag */
 .p-tag {
-    background: #5472d4;
-    color: #ffffff;
+    background: var(--primary-color);
+    color: var(--primary-color-text);
     font-size: 0.75rem;
     font-weight: 700;
     padding: 0.25rem 0.4rem;
@@ -1137,19 +1192,24 @@
 .p-progressbar {
     border: 0 none;
     height: 1.5rem;
-    background: #ebebeb;
+    background: var(--surface-border);
     border-radius: 6px;
 }
 
 .p-progressbar .p-progressbar-value {
     border: 0 none;
     margin: 0;
-    background: #5472d4;
+    background: var(--primaria);
 }
 
 .p-progressbar .p-progressbar-label {
-    color: #ffffff;
+    color: var(--primary-color-text);
     line-height: 1.5rem;
+}
+
+.p-scrollpanel .p-scrollpanel-bar {
+    background: var(--neutro-600);
+    opacity: 0.5;
 }
 
 /* Responsividade Avançada */
@@ -1360,10 +1420,10 @@
     
     .p-datatable .p-datatable-tbody > tr {
         display: block !important;
-        border: 1px solid #e5e7eb !important;
+        border: 1px solid var(--surface-border) !important;
         border-radius: 8px !important;
         margin-bottom: 0.75rem !important;
-        background: #ffffff !important;
+        background: var(--white) !important;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
         padding: 0.5rem !important;
     }
@@ -1786,10 +1846,10 @@
 /* Modo card responsivo ativado por classe */
 .p-datatable.card-mode tbody tr {
     display: block;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--surface-border);
     border-radius: 8px;
     margin-bottom: 0.5rem;
-    background: #ffffff;
+    background: var(--surface-a);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -1803,7 +1863,7 @@
     align-items: center;
     padding: 0.5rem;
     border: none;
-    border-bottom: 1px solid #f1f3f4;
+    border-bottom: 1px solid var(--surface-b);
 }
 
 .p-datatable.card-mode tbody tr td:last-child {
@@ -1813,7 +1873,7 @@
 .p-datatable.card-mode tbody tr td::before {
     content: attr(data-label);
     font-weight: 600;
-    color: #374151;
+    color: var(--text-color);
     min-width: 100px;
 }
 
@@ -1825,10 +1885,10 @@
     
     .p-datatable.auto-card tbody tr {
         display: block;
-        border: 1px solid #e5e7eb;
+        border: 1px solid var(--surface-border);
         border-radius: 8px;
         margin-bottom: 0.5rem;
-        background: #ffffff;
+        background: var(--surface-a);
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
     
@@ -1842,7 +1902,7 @@
         align-items: center;
         padding: 0.5rem;
         border: none;
-        border-bottom: 1px solid #f1f3f4;
+        border-bottom: 1px solid var(--surface-b);
     }
     
     .p-datatable.auto-card tbody tr td:last-child {

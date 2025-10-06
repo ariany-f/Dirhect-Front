@@ -136,6 +136,76 @@ const EstilosGlobais = createGlobalStyle`
       --fonte-primaria: Plus Jakarta Sans;
       --fonte-secundaria: Poppins;
   }
+
+  /* Modo Dark */
+  .dark-mode {
+      --black: #E5E5E5;
+      --white: #2A2A2A;
+      --neutro-50: #1A1A1A;
+      --neutro-100: #2A2A2A;
+      --neutro-200: #3A3A3A;
+      --neutro-300: #4A4A4A;
+      --neutro-400: #5A5A5A;
+      --neutro-500: #6A6A6A;
+      --neutro-600: #7A7A7A;
+      --neutro-700: #8A8A8A;
+      --neutro-800: #9A9A9A;
+      --neutro-900: #AAAAAA;
+      --neutro-950: #BABABA;
+      --bg-white: #2A2A2A;
+      --bg-cinza: #1A1A1A;
+      --background-label: #3A3A3A;
+      
+      /* Ajustar cores de alerta para modo dark */
+      --alert-success-50: #0A2A15;
+      --alert-success-100: #0F3A1F;
+      --alert-success-200: #1A4A2A;
+      --alert-success-300: #1F5A3A;
+      --alert-success-400: #2A6A4A;
+      --alert-success-500: #2F7A5A;
+      --alert-success-600: #4A8A6A;
+      --alert-success-700: #6A9A7A;
+      --alert-success-800: #8AAA8A;
+      --alert-success-900: #AABA9A;
+      --alert-success-950: #BACA9A;
+      
+      --warning-50: #2A1A0A;
+      --warning-100: #3A2A0F;
+      --warning-200: #4A3A1A;
+      --warning-300: #5A4A1F;
+      --warning-400: #6A5A2A;
+      --warning-500: #7A6A2F;
+      --warning-600: #8A7A4A;
+      --warning-700: #9A8A6A;
+      --warning-800: #AA9A8A;
+      --warning-900: #BAAA9A;
+      --warning-950: #CABA9A;
+      
+      --info-50: #1A2A3A;
+      --info-100: #2A3A4A;
+      --info-200: #3A4A5A;
+      --info-300: #4A5A6A;
+      --info-400: #5A6A7A;
+      --info-500: #6A7A8A;
+      --info-600: #7A8A9A;
+      --info-700: #8A9AAA;
+      --info-800: #9AAA9A;
+      --info-900: #AABA9A;
+      --info-950: #BACA9A;
+      
+      --error-50: #2A1A1A;
+      --error-100: #3A2A2A;
+      --error-200: #4A3A3A;
+      --error-300: #5A4A4A;
+      --error-400: #6A5A5A;
+      --error-500: #7A6A6A;
+      --error-600: #8A7A7A;
+      --error-700: #9A8A8A;
+      --error-800: #AA9A9A;
+      --error-900: #BAAA9A;
+      --error-950: #CABA9A;
+  }
+
 html {
   line-height: 1.15; 
   -webkit-text-size-adjust: 100%;
@@ -144,6 +214,9 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
+  background-color: var(--bg-white);
+  color: var(--black);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 main {
   display: block;
@@ -514,6 +587,20 @@ template {
 .tag-generico {
   background-color: #666;
 }
+
+/* Estilos para dashboard cards */
+.dashboard-rh-card {
+    background-color: var(--bg-white);
+    border: 1px solid var(--neutro-200);
+    border-radius: 8px;
+    padding: 16px;
+    transition: all 0.3s ease;
+}
+
+.dark-mode .dashboard-rh-card {
+    background-color: var(--neutro-100);
+    border-color: var(--neutro-300);
+}
   
 .Toastify__toast {
   font-family: 'Plus Jakarta Sans', sans-serif;
@@ -522,12 +609,13 @@ template {
   min-width: 300px;
   max-width: 400px;
   padding: 18px 28px;
-  background: #fff !important;
+  background: var(--bg-white) !important;
   align-items: center;
   display: flex;
   gap: 16px;
   border: none !important;
   border-radius: 14px;
+  color: var(--black);
 }
 @media (min-width: 1024px) {
   .Toastify__toast {
@@ -538,13 +626,13 @@ template {
   }
 }
 .Toastify__toast--error {
-  background: #fff !important;
+  background: var(--bg-white) !important;
 }
 .Toastify__toast--success {
-  background: #fff !important;
+  background: var(--bg-white) !important;
 }
 .Toastify__close-button {
-  color: #222 !important;
+  color: var(--black) !important;
   opacity: 1 !important;
 }
 .Toastify__progress-bar {
@@ -560,7 +648,25 @@ template {
 [data-pc-section="sort"] svg, .p-column-filter-menu-button.p-link svg {
   margin-left: 2px !important;
 }
-`
 
+/* Estilos para cabeçalho no modo dark */
+.dark-mode header {
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Garantir que o sidebar nunca mude de cor */
+.sidebar, .barra-lateral, [class*="sidebar"], [class*="BarraLateral"] {
+    background-color: var(--primaria) !important;
+    color: var(--secundaria) !important;
+}
+
+.dark-mode .sidebar, 
+.dark-mode .barra-lateral, 
+.dark-mode [class*="sidebar"], 
+.dark-mode [class*="BarraLateral"] {
+    background-color: var(--primaria) !important;
+    color: var(--secundaria) !important;
+}
+`
 
 export default EstilosGlobais

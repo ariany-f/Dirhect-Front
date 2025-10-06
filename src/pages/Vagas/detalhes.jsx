@@ -390,6 +390,7 @@ function DetalhesVaga() {
     };
 
     const handleTransferirVaga = (vagaAtualizada, clienteId) => {
+       
         http.post(`vagas/${id}/transferir/`, {
             ...vagaAtualizada,
             tenant_destino: clienteId

@@ -127,7 +127,7 @@ function SelecionarEmpresa() {
                          };
                      } catch (erro) {
                          console.error("Erro ao buscar dados do cliente:", erro);
-                         return { ...cliente, tenant: {}, pessoaJuridica: {}, domain: null };
+                         return { ...cliente, tenant: {}, pessoaJuridica: {}, domain_url: null };
                      }
                  }));
 
@@ -146,22 +146,11 @@ function SelecionarEmpresa() {
 
         if(((!empresas) || empresas.length == 0) && tenants)
         {
-            http.get(`client_domain/?format=json`)
-            .then(domains => {
-                    // Cruzar os dados: adicionar domains correspondentes a cada tenant
-                const tenantsWithDomain = tenants.map(tenant => ({
-                    ...tenant,
-                    domain: domains.find(domain => domain.tenant === tenant.id_tenant.id)?.domain || null
-                }));
-                
-                setEmpresas(tenantsWithDomain)
-                setCompanies(tenantsWithDomain)
-                setSelected(tenantsWithDomain[0].id_tenant.id)
-                setLoading(false)
-            })
-            .catch(erro => {
-                setLoading(false)
-            })
+            // Como os tenants já têm domain, usar diretamente
+            setEmpresas(tenants)
+            setCompanies(tenants)
+            setSelected(tenants[0].id_tenant.id)
+            setLoading(false)
         }
         
         if(empresas && empresas.length > 0 && (!tenants))
@@ -184,13 +173,13 @@ function SelecionarEmpresa() {
            
             if(comp.length > 0 && comp[0].id_tenant.id)
             {
-                setCompanyDomain(comp[0].domain)
+                setCompanyDomain(comp[0].domain_url)
                 setCompanySymbol(comp[0].tenant?.simbolo || '')
                 setCompanyLogo(comp[0].tenant?.logo || '')
                 
                 ArmazenadorToken.definirCompany(
                     selected,
-                    comp[0].domain?.split('.')[0] || '',
+                    comp[0].domain_url?.split('.')[0] || '',
                     comp[0].tenant?.simbolo || '',
                     comp[0].tenant?.logo || ''
                 )

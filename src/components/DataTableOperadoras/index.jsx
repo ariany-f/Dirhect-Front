@@ -267,6 +267,9 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
             <DataTable 
                 value={operadoras} 
                 filters={filters} 
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} operadoras"
                 globalFilterFields={['nome']} 
                 emptyMessage="Não foram encontradas operadoras" 
                 paginator 

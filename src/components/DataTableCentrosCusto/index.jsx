@@ -517,6 +517,9 @@ function DataTableCentrosCusto({ centros_custo, showSearch = true, pagination = 
             <DataTable 
                 key={`${JSON.stringify(integracaoStates)}-${bulkIntegrationMode}`}
                 value={centros_custo} 
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} centros de custo"
                 emptyMessage="Não foram encontrados centros de custo" 
                 selection={bulkIntegrationMode ? selectedForIntegration : (selected ? selectedCentrosCusto : selectedCentroCusto)} 
                 onSelectionChange={bulkIntegrationMode ? handleIntegrationSelectionChange : handleSelectChange} 

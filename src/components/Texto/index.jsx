@@ -2,7 +2,7 @@ import { MdSignalCellularNull } from "react-icons/md";
 import {styled} from "styled-components";
 
 const Paragrafo = styled.p`
-    color: ${ props => props.$color ? props.$color : 'rgb(87, 87, 87)' };
+    color: ${ props => props.$color ? props.$color : 'var(--text-color)' };
     font-feature-settings: 'clig' off, 'liga' off;
     font-family: var(--font-secondaria);
     font-size: ${ props => props.$size ? props.$size : '14px' };
@@ -22,7 +22,7 @@ const Paragrafo = styled.p`
     }
 `
 
-function Texto({ children, weight = 400, color = 'rgb(87, 87, 87)', size = '14px', aoClicar = null, width = 'inherit', capitalize = false, uppercase = false}) {
+function Texto({ children, weight = 400, color = 'var(--text-color)', size = '14px', aoClicar = null, width = 'inherit', capitalize = false, uppercase = false}) {
     return (
         <Paragrafo $capitalize={capitalize} $uppercase={uppercase} onClick={aoClicar ? (evento) => aoClicar(evento) : null} $color={color} $width={width} $size={size} $weight={Number(weight)}>
             {children}
