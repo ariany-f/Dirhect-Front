@@ -2299,15 +2299,15 @@ const CandidatoRegistro = () => {
         if (!dadosCandidato.nacionalidade?.trim()) {
             camposObrigatorios.push('Nacionalidade');
         }
-        if (!dadosCandidato.genero?.trim()) {
-            camposObrigatorios.push('Gênero');
-        }
-        if (!dadosCandidato.cor_raca?.trim()) {
-            camposObrigatorios.push('Cor/Raça');
-        }
-        if (!dadosCandidato.estado_civil?.trim()) {
-            camposObrigatorios.push('Estado Civil');
-        }
+        // if (!dadosCandidato.genero?.trim()) {
+        //     camposObrigatorios.push('Gênero');
+        // }
+        // if (!dadosCandidato.cor_raca?.trim()) {
+        //     camposObrigatorios.push('Cor/Raça');
+        // }
+        // if (!dadosCandidato.estado_civil?.trim()) {
+        //     camposObrigatorios.push('Estado Civil');
+        // }
         
         // Validação de dados bancários obrigatórios
         if (!candidato.banco?.trim()) {
