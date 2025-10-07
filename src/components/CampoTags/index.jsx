@@ -164,7 +164,8 @@ function CampoTags({
     disabled = false,
     camposVazios = [],
     required = false,
-    maxTags = null
+    maxTags = null,
+    allowCustomTags = false
 }) {
     const [inputValue, setInputValue] = useState('')
     const [showSuggestions, setShowSuggestions] = useState(false)
@@ -209,6 +210,13 @@ function CampoTags({
             // Se há sugestões, seleciona a primeira
             if (filteredOptions.length > 0) {
                 addTag(filteredOptions[0])
+            } else if (allowCustomTags) {
+                // Cria uma nova tag com o texto digitado
+                const newTag = {
+                    name: inputValue.trim(),
+                    code: inputValue.trim().toLowerCase().replace(/\s+/g, '_')
+                }
+                addTag(newTag)
             }
         } else if (e.key === 'Backspace' && inputValue === '' && value.length > 0) {
             // Remove o último tag se o input estiver vazio

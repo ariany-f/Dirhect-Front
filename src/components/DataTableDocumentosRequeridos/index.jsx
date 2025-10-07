@@ -6,8 +6,26 @@ import { Tooltip } from 'primereact/tooltip';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import Texto from '@components/Texto';
 import { ArmazenadorToken } from '@utils';
+import { useEffect, useState } from 'react';
+import http from '@http';
 
 function DataTableDocumentosRequeridos({ documentos = [], onEdit, onDelete }) {
+    const [tagsMap, setTagsMap] = useState({});
+
+    useEffect(() => {
+        // Buscar todas as tags para criar um mapa de id -> nome
+        http.get('/documento_requerido_tag/')
+            .then(response => {
+                const map = {};
+                response.forEach(tag => {
+                    map[tag.id] = tag.nome;
+                });
+                setTagsMap(map);
+            })
+            .catch(error => {
+                console.error('Erro ao buscar tags:', error);
+            });
+    }, []);
 
     const extPermitidasTemplate = (rowData) => (
         <Texto width="100%" weight={500}>{rowData.ext_permitidas}</Texto>
@@ -28,6 +46,40 @@ function DataTableDocumentosRequeridos({ documentos = [], onEdit, onDelete }) {
     const nomeTemplate = (rowData) => (
         <Texto width="100%" weight={700}>{rowData.nome}</Texto>
     );
+
+    const tagsTemplate = (rowData) => {
+        if (!rowData.tags) return <Texto weight={500}>-</Texto>;
+        
+        try {
+            const tagsData = typeof rowData.tags === 'string' 
+                ? JSON.parse(rowData.tags) 
+                : rowData.tags;
+            
+            if (!Array.isArray(tagsData) || tagsData.length === 0) {
+                return <Texto weight={500}>-</Texto>;
+            }
+
+            return (
+                <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                    {tagsData.map((tagId, index) => (
+                        <Tag 
+                            key={index} 
+                            value={tagsMap[tagId] || `Tag ${tagId}`}
+                            style={{ 
+                                backgroundColor: 'var(--primaria)', 
+                                color: 'var(--secundaria)',
+                                fontSize: '11px',
+                                padding: '4px 8px'
+                            }}
+                        />
+                    ))}
+                </div>
+            );
+        } catch (error) {
+            console.error('Erro ao parsear tags:', error);
+            return <Texto weight={500}>-</Texto>;
+        }
+    };
 
     const actionTemplate = (rowData) => (
         <div style={{ display: 'flex', gap: '8px' }}>
@@ -77,21 +129,21 @@ function DataTableDocumentosRequeridos({ documentos = [], onEdit, onDelete }) {
             emptyMessage="Nenhum documento requerido encontrado."
             showGridlines
             stripedRows
-            tableStyle={{ minWidth: '68vw' }}
+            tableStyle={{ minWidth: '75vw' }}
         >
             <Column 
                 field="nome" 
                 header="Nome" 
                 body={nomeTemplate}
                 sortable 
-                style={{ width: '30%' }} 
+                style={{ width: '20%' }} 
             />
             <Column 
                 body={extPermitidasTemplate} 
                 field="ext_permitidas" 
                 header="Extensões Permitidas" 
                 sortable
-                style={{ width: '20%' }} 
+                style={{ width: '15%' }} 
             />
             <Column 
                 body={frenteVersoTemplate} 
@@ -101,11 +153,17 @@ function DataTableDocumentosRequeridos({ documentos = [], onEdit, onDelete }) {
                 style={{ width: '10%' }} 
             />
             <Column 
+                body={tagsTemplate} 
+                field="tags" 
+                header="Tags" 
+                style={{ width: '15%' }} 
+            />
+            <Column 
                 body={instrucaoTemplate} 
                 field="instrucao" 
                 header="Instrução" 
                 sortable
-                style={{ width: '30%' }} 
+                style={{ width: '25%' }} 
             />
             <Column 
                 body={actionTemplate} 

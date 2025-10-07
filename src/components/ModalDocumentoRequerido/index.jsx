@@ -39,6 +39,10 @@ const Col4 = styled.div`
     flex: 1 1 calc(33.333% - 11px);
 `
 
+const Col3 = styled.div`
+    flex: 1 1 calc(33.333% - 11px);
+`
+
 function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento = null }) {
     const [classError, setClassError] = useState([]);
     const [nome, setNome] = useState('');
@@ -51,6 +55,8 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
     const [obrigatorio, setObrigatorio] = useState(true);
     const [documentosRequeridos, setDocumentosRequeridos] = useState([]);
     const [documentoSelecionado, setDocumentoSelecionado] = useState(null);
+    const [tags, setTags] = useState([]);
+    const [tagsDisponiveis, setTagsDisponiveis] = useState([]);
 
     // Opções de extensões comuns
     const extensoesComuns = useMemo(() => [
@@ -109,12 +115,26 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
 
     useEffect(() => {
         if (opened) {
-            http.get('/documento_requerido/?format=json')
+            http.get('/documento_requerido/')
                 .then(response => {
                     setDocumentosRequeridos(response);
                 })
                 .catch(error => {
                     console.error('Erro ao buscar documentos requeridos:', error);
+                });
+            
+            // Buscar tags disponíveis
+            http.get('/documento_requerido_tag/')
+                .then(response => {
+                    const tagsFormatadas = response.map(tag => ({
+                        name: tag.nome,
+                        code: tag.id.toString(),
+                        id: tag.id
+                    }));
+                    setTagsDisponiveis(tagsFormatadas);
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar tags:', error);
                 });
         }
     }, [opened]);
@@ -148,12 +168,32 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
                     console.error('Erro ao parsear campos_requeridos:', error);
                 }
             }
+
+            // Converter tags para array
+            let tagsArray = [];
+            if (documento.tags) {
+                try {
+                    const tagsData = typeof documento.tags === 'string' 
+                        ? JSON.parse(documento.tags) 
+                        : documento.tags;
+                    
+                    if (Array.isArray(tagsData)) {
+                        tagsArray = tagsData.map(tagId => {
+                            const opcao = tagsDisponiveis.find(opt => opt.id === tagId);
+                            return opcao || { name: `Tag ${tagId}`, code: tagId.toString(), id: tagId };
+                        });
+                    }
+                } catch (error) {
+                    console.error('Erro ao parsear tags:', error);
+                }
+            }
             
             // Atualizar todos os estados de uma vez
             setNome(documento.nome || '');
             setExtPermitidas(documento.ext_permitidas || '');
             setExtTags(extTagsArray);
             setCamposRequeridosTags(camposTagsArray);
+            setTags(tagsArray);
             setFrenteVerso(!!documento.frente_verso);
             setInstrucao(documento.instrucao || '');
             setDescricao(documento.descricao || '');
@@ -165,6 +205,7 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
             setExtPermitidas('');
             setExtTags([]);
             setCamposRequeridosTags([]);
+            setTags([]);
             setFrenteVerso(false);
             setInstrucao('');
             setDescricao('');
@@ -172,7 +213,7 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
             setDocumentoSelecionado(null);
             setClassError([]);
         }
-    }, [documento, opened, extensoesComuns, camposRequeridos]);
+    }, [documento, opened, extensoesComuns, camposRequeridos, tagsDisponiveis]);
 
     const validarESalvar = () => {
         let errors = [];
@@ -194,10 +235,14 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
             camposRequeridosObj[campo.code] = camposRequeridosTags.some(tag => tag.code === campo.code);
         });
 
+        // Converter tags para array de IDs
+        const tagsIds = tags.map(tag => tag.id);
+
         aoSalvar({ 
             nome,
             ext_permitidas: extPermitidasString,
             campos_requeridos: camposRequeridosObj,
+            tags: tagsIds,
             frente_verso: frenteVerso,
             instrucao,
             descricao
@@ -212,11 +257,54 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
         setObrigatorio(value);
     };
 
+    const handleTagsChange = async (value) => {
+        // Se a última tag adicionada não existe nas opções (é nova)
+        if (value.length > tags.length) {
+            const novaTag = value[value.length - 1];
+            
+            // Verificar se a tag já existe nas opções disponíveis
+            const tagExiste = tagsDisponiveis.some(t => 
+                t.name.toLowerCase() === novaTag.name.toLowerCase()
+            );
+            
+            if (!tagExiste) {
+                try {
+                    // Criar nova tag na API
+                    const response = await http.post('/documento_requerido_tag/', {
+                        nome: novaTag.name
+                    });
+                    
+                    // Adicionar a nova tag às opções disponíveis
+                    const novaTagFormatada = {
+                        name: response.nome,
+                        code: response.id.toString(),
+                        id: response.id
+                    };
+                    
+                    setTagsDisponiveis(prev => [...prev, novaTagFormatada]);
+                    
+                    // Atualizar o valor com a tag formatada
+                    const novasTagsAtualizadas = [...value];
+                    novasTagsAtualizadas[value.length - 1] = novaTagFormatada;
+                    setTags(novasTagsAtualizadas);
+                } catch (error) {
+                    console.error('Erro ao criar nova tag:', error);
+                    // Em caso de erro, manter a tag como está
+                    setTags(value);
+                }
+            } else {
+                setTags(value);
+            }
+        } else {
+            setTags(value);
+        }
+    };
+
     return (
         <>
             {opened && (
                 <Overlay>
-                    <DialogEstilizado open={opened} $width="75vw">
+                    <DialogEstilizado open={opened} $width="90vw">
                         <Frame>
                             <Titulo>
                                 <button className="close" onClick={aoFechar}>
@@ -227,85 +315,97 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
                         </Frame>
                         
                         <Frame padding="12px 0px">
+                            {/* Primeira linha: Nome, Instrução e Descrição */}
                             <Col12>
-                                {/* Primeira linha: Nome, Instrução e Descrição */}
-                                <Col12>
-                                    <Col4>
-                                        <CampoTexto
-                                            camposVazios={classError.includes('nome') ? ['nome'] : []}
-                                            name="nome"
-                                            valor={nome}
-                                            setValor={setNome}
-                                            type="text"
-                                            label="Nome*"
-                                            placeholder="Digite o nome do documento"
-                                        />
-                                    </Col4>
-                                    <Col4>
-                                        <CampoTexto
-                                            camposVazios={classError.includes('instrucao') ? ['instrucao'] : []}
-                                            name="instrucao"
-                                            valor={instrucao}
-                                            setValor={setInstrucao}
-                                            type="text"
-                                            label="Instrução*"
-                                            placeholder="Digite a instrução"
-                                        />
-                                    </Col4>
-                                    <Col4>
-                                        <CampoTexto
-                                            name="descricao"
-                                            valor={descricao}
-                                            setValor={setDescricao}
-                                            type="text"
-                                            label="Descrição"
-                                            placeholder="Digite a descrição"
-                                        />
-                                    </Col4>
-                                </Col12>
-                                
-                                {/* Segunda linha: Extensões Permitidas e Campos Requeridos */}
-                                <Col12>
-                                    <Col6>
-                                        <CampoTags
-                                            camposVazios={classError.includes('ext_permitidas') ? ['ext_permitidas'] : []}
-                                            name="ext_permitidas"
-                                            value={extTags}
-                                            onChange={setExtTags}
-                                            options={extensoesComuns}
-                                            label="Extensões Permitidas"
-                                            placeholder="Digite para buscar extensões..."
-                                            required={true}
-                                        />
-                                        <small style={{ color: '#6c757d', marginTop: '4px', display: 'block' }}>
-                                            Selecione as extensões de arquivo permitidas para este documento.
-                                        </small>
-                                    </Col6>
-                                    <Col6>
-                                        <CampoTags
-                                            name="campos_requeridos"
-                                            value={camposRequeridosTags}
-                                            onChange={setCamposRequeridosTags}
-                                            options={camposRequeridos}
-                                            label="Campos Requeridos"
-                                            placeholder="Digite para buscar campos..."
-                                        />
-                                        <small style={{ color: '#6c757d', marginTop: '4px', display: 'block' }}>
-                                            Selecione os campos que devem ser preenchidos para este documento.
-                                        </small>
-                                    </Col6>
-                                </Col12>
-                                
-                                {/* Terceira linha: Frente e Verso */}
-                                <Col12>
-                                    <Col6Centered>
-                                        <label style={{ fontWeight: 600, marginRight: 8 }}>Frente e Verso</label>
-                                        <SwitchInput 
-                                            checked={frenteVerso} 
-                                            onChange={handleFrenteVersoChange}
-                                        />
-                                    </Col6Centered>
-                                </Col12>
+                                <Col3>
+                                    <CampoTexto
+                                        camposVazios={classError.includes('nome') ? ['nome'] : []}
+                                        name="nome"
+                                        valor={nome}
+                                        setValor={setNome}
+                                        type="text"
+                                        label="Nome*"
+                                        placeholder="Digite o nome do documento"
+                                    />
+                                </Col3>
+                                <Col3>
+                                    <CampoTexto
+                                        camposVazios={classError.includes('instrucao') ? ['instrucao'] : []}
+                                        name="instrucao"
+                                        valor={instrucao}
+                                        setValor={setInstrucao}
+                                        type="text"
+                                        label="Instrução*"
+                                        placeholder="Digite a instrução"
+                                    />
+                                </Col3>
+                                <Col3>
+                                    <CampoTexto
+                                        name="descricao"
+                                        valor={descricao}
+                                        setValor={setDescricao}
+                                        type="text"
+                                        label="Descrição"
+                                        placeholder="Digite a descrição"
+                                    />
+                                </Col3>
+                            </Col12>
+                            
+                            {/* Segunda linha: Extensões Permitidas, Campos Requeridos e Tags */}
+                            <Col12>
+                                <Col3>
+                                    <CampoTags
+                                        camposVazios={classError.includes('ext_permitidas') ? ['ext_permitidas'] : []}
+                                        name="ext_permitidas"
+                                        value={extTags}
+                                        onChange={setExtTags}
+                                        options={extensoesComuns}
+                                        label="Extensões Permitidas*"
+                                        placeholder="Digite para buscar extensões..."
+                                        required={true}
+                                    />
+                                    <small style={{ color: '#6c757d', marginTop: '4px', display: 'block' }}>
+                                        Selecione as extensões de arquivo permitidas.
+                                    </small>
+                                </Col3>
+                                <Col3>
+                                    <CampoTags
+                                        name="campos_requeridos"
+                                        value={camposRequeridosTags}
+                                        onChange={setCamposRequeridosTags}
+                                        options={camposRequeridos}
+                                        label="Campos Requeridos"
+                                        placeholder="Digite para buscar campos..."
+                                    />
+                                    <small style={{ color: '#6c757d', marginTop: '4px', display: 'block' }}>
+                                        Campos que devem ser preenchidos.
+                                    </small>
+                                </Col3>
+                                <Col3>
+                                    <CampoTags
+                                        name="tags"
+                                        value={tags}
+                                        onChange={handleTagsChange}
+                                        options={tagsDisponiveis}
+                                        label="Tags"
+                                        placeholder="Digite para buscar ou criar tags..."
+                                        allowCustomTags={true}
+                                    />
+                                    <small style={{ color: '#6c757d', marginTop: '4px', display: 'block' }}>
+                                        Tags ou crie novas (pressione Enter).
+                                    </small>
+                                </Col3>
+                            </Col12>
+                            
+                            {/* Terceira linha: Frente e Verso */}
+                            <Col12>
+                                <Col6Centered>
+                                    <label style={{ fontWeight: 600, marginRight: 8 }}>Frente e Verso</label>
+                                    <SwitchInput 
+                                        checked={frenteVerso} 
+                                        onChange={handleFrenteVersoChange}
+                                    />
+                                </Col6Centered>
                             </Col12>
                         </Frame>
                         
