@@ -55,6 +55,11 @@ const Vagas = () => {
                             <CiSettings size={16}/> <Link to={'/documentos/configuracoes'} className={styles.link}>Configurações de Documentos</Link>
                         </BotaoSemBorda>
                     }
+                    {ArmazenadorToken.hasPermission('view_vagas') &&
+                        <BotaoSemBorda color="var(--terciaria)">
+                            <CiSettings size={16}/> <Link to={'/templates-vaga'} className={styles.link}>Templates de Vaga</Link>
+                        </BotaoSemBorda>
+                    }
         
                 </BotaoGrupo>
             </BotaoGrupo>

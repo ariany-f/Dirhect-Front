@@ -64,6 +64,8 @@ const VagasRegistro = () => {
     const [periculosidade, setPericulosidade] = useState(null);
     const [insalubridade, setInsalubridade] = useState('');
     const [status, setStatus] = useState('Ativa');
+    const [tag, setTag] = useState(null);
+    const [tags, setTags] = useState([]);
     const toast = useRef(null)
     const [erroPeriInsa, setErroPeriInsa] = useState(false);
 
@@ -117,6 +119,18 @@ const VagasRegistro = () => {
         http.get('funcao/?format=json')
             .then(response => {
                 setFuncoes(response)
+            })
+
+        http.get('documento_requerido_tag/')
+            .then(response => {
+                const tagsFormatadas = response.map(tag => ({
+                    name: tag.nome,
+                    code: tag.id
+                }));
+                setTags(tagsFormatadas);
+            })
+            .catch(error => {
+                console.error('Erro ao buscar tags:', error);
             })
     }, [])
 
@@ -226,7 +240,8 @@ const VagasRegistro = () => {
                 cargo: cargo?.code || null,
                 horario: horario?.code || null,
                 funcao: funcao?.code || null,
-                sindicato: sindicato?.code || null
+                sindicato: sindicato?.code || null,
+                tag: tag?.code || null
             };
 
             http.post('/vagas/', novaVaga)
@@ -251,6 +266,7 @@ const VagasRegistro = () => {
                     setHorario(null);
                     setFuncao(null);
                     setSindicato(null);
+                    setTag(null);
 
                     toast.current.show({
                         severity: 'success',
@@ -330,6 +346,20 @@ const VagasRegistro = () => {
                             required={true}
                             label="Data de Encerramento" 
                             placeholder="Digite a data de encerramento" />
+                    </Col6>
+                </Col12>
+
+                <Col12>
+                    <Col6>
+                        <DropdownItens
+                            name="tag"
+                            valor={tag}
+                            setValor={setTag}
+                            options={tags}
+                            label="Tag"
+                            placeholder="Selecione uma tag"
+                            allowClear={true}
+                        />
                     </Col6>
                 </Col12>
 

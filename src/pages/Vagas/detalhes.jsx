@@ -26,6 +26,7 @@ import ModalVaga from '@components/ModalVaga'
 import ModalTransferirVaga from '@components/ModalTransferirVaga'
 import ModalAdicionarCandidato from '@components/ModalAdicionarCandidato';
 import ModalEditarCandidato from '@components/ModalEditarCandidato';
+import ModalTags from '@components/ModalTags';
 import { useTranslation } from 'react-i18next';
 
 const ConteudoFrame = styled.div`
@@ -112,6 +113,7 @@ function DetalhesVaga() {
     const [modalAdicionarCandidatoAberto, setModalAdicionarCandidatoAberto] = useState(false);
     const [modalEditarCandidatoAberto, setModalEditarCandidatoAberto] = useState(false);
     const [candidatoEditando, setCandidatoEditando] = useState(null);
+    const [modalTagsAberto, setModalTagsAberto] = useState(false);
     const { t } = useTranslation('common');
 
     const listaPericulosidades = [
@@ -512,6 +514,38 @@ function DetalhesVaga() {
             });
     };
 
+    const handleSalvarTag = (tagId) => {
+        http.put(`vagas/${id}/`, {
+            tag: tagId
+        })
+            .then(response => {
+                toast.current.show({ 
+                    severity: 'success', 
+                    summary: 'Sucesso', 
+                    detail: tagId ? 'Tag atualizada com sucesso!' : 'Tag removida com sucesso!', 
+                    life: 3000 
+                });
+                setModalTagsAberto(false);
+                // Recarrega os dados da vaga
+                http.get(`vagas/${id}/?format=json`)
+                    .then(response => {
+                        setVaga(response);
+                    })
+                    .catch(error => {
+                        console.error('Erro ao recarregar vaga:', error);
+                    });
+            })
+            .catch(error => {
+                console.error('Erro ao salvar tag:', error);
+                toast.current.show({ 
+                    severity: 'error', 
+                    summary: 'Erro', 
+                    detail: 'Erro ao salvar tag', 
+                    life: 3000 
+                });
+            });
+    };
+
     // Verifica se há candidato aprovado
     const temCandidatoAprovado = vaga?.candidatos_aprovados.length > 0;
     
@@ -685,9 +719,18 @@ function DetalhesVaga() {
                     onCandidatosUpdate={handleCandidatosUpdate}
                     onEditarCandidato={handleEditarCandidato}
                 />
-                <Titulo>
-                    <h5>Documentos Requeridos da Vaga</h5>
-                </Titulo>
+                <BotaoGrupo align="space-between">
+                    <Titulo>
+                        <h5>Documentos Requeridos da Vaga</h5>
+                    </Titulo>
+                    <Botao 
+                        size="small" 
+                        aoClicar={() => setModalTagsAberto(true)}
+                        estilo="neutro"
+                    >
+                        Tag
+                    </Botao>
+                </BotaoGrupo>
                 
                 <BotaoGrupo align="space-between">
                     <div></div>
@@ -745,6 +788,12 @@ function DetalhesVaga() {
                 }}
                 aoSalvar={handleSalvarEdicaoCandidato}
                 candidato={candidatoEditando}
+            />
+            <ModalTags
+                opened={modalTagsAberto}
+                aoFechar={() => setModalTagsAberto(false)}
+                aoSalvar={handleSalvarTag}
+                tagSelecionada={vaga?.tag || null}
             />
         </Container>
         </Frame>
