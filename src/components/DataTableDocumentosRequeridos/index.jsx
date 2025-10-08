@@ -59,20 +59,43 @@ function DataTableDocumentosRequeridos({ documentos = [], onEdit, onDelete }) {
                 return <Texto weight={500}>-</Texto>;
             }
 
+            // Se o tagsMap ainda não foi carregado, mostra loading
+            if (Object.keys(tagsMap).length === 0) {
+                return (
+                    <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                        {tagsData.map((tagId, index) => (
+                            <Tag 
+                                key={index} 
+                                value="..."
+                                style={{ 
+                                    backgroundColor: '#e2e8f0', 
+                                    color: '#64748b',
+                                    fontSize: '11px',
+                                    padding: '4px 8px'
+                                }}
+                            />
+                        ))}
+                    </div>
+                );
+            }
+
             return (
                 <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-                    {tagsData.map((tagId, index) => (
-                        <Tag 
-                            key={index} 
-                            value={tagsMap[tagId] || `Tag ${tagId}`}
-                            style={{ 
-                                backgroundColor: 'var(--primaria)', 
-                                color: 'var(--secundaria)',
-                                fontSize: '11px',
-                                padding: '4px 8px'
-                            }}
-                        />
-                    ))}
+                    {tagsData.map((tagId, index) => {
+                        const nomeTag = tagsMap[tagId];
+                        return (
+                            <Tag 
+                                key={index} 
+                                value={nomeTag || `ID: ${tagId}`}
+                                style={{ 
+                                    backgroundColor: nomeTag ? 'var(--primaria)' : '#f59e0b', 
+                                    color: 'var(--secundaria)',
+                                    fontSize: '11px',
+                                    padding: '4px 8px'
+                                }}
+                            />
+                        );
+                    })}
                 </div>
             );
         } catch (error) {
