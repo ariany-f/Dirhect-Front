@@ -27,7 +27,9 @@ import ModalTransferirVaga from '@components/ModalTransferirVaga'
 import ModalAdicionarCandidato from '@components/ModalAdicionarCandidato';
 import ModalEditarCandidato from '@components/ModalEditarCandidato';
 import ModalTags from '@components/ModalTags';
+import ModalTemplateVaga from '@components/ModalTemplateVaga';
 import { useTranslation } from 'react-i18next';
+import { FaInfoCircle } from 'react-icons/fa';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -114,6 +116,9 @@ function DetalhesVaga() {
     const [modalEditarCandidatoAberto, setModalEditarCandidatoAberto] = useState(false);
     const [candidatoEditando, setCandidatoEditando] = useState(null);
     const [modalTagsAberto, setModalTagsAberto] = useState(false);
+    const [modalTemplateVagaAberto, setModalTemplateVagaAberto] = useState(false);
+    const [mostrarInfoTemplate, setMostrarInfoTemplate] = useState(false);
+    const [tagNome, setTagNome] = useState(null);
     const { t } = useTranslation('common');
 
     const listaPericulosidades = [
@@ -222,6 +227,22 @@ function DetalhesVaga() {
         http.get(`vagas/${id}/?format=json`)
             .then(response => {
                 setVaga(response)
+                
+                // Buscar nome da tag se existir
+                if (response.tag) {
+                    http.get(`/documento_requerido_tag/`)
+                        .then(tagsResponse => {
+                            const tag = tagsResponse.find(t => t.id === response.tag);
+                            if (tag) {
+                                setTagNome(tag.nome);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erro ao buscar tag:', error);
+                        });
+                } else {
+                    setTagNome(null);
+                }
             })
             .catch(error => {
                 console.error('Erro ao carregar vaga:', error)
@@ -526,6 +547,23 @@ function DetalhesVaga() {
                     life: 3000 
                 });
                 setModalTagsAberto(false);
+                
+                // Atualizar nome da tag
+                if (tagId) {
+                    http.get(`/documento_requerido_tag/`)
+                        .then(tagsResponse => {
+                            const tag = tagsResponse.find(t => t.id === tagId);
+                            if (tag) {
+                                setTagNome(tag.nome);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erro ao buscar tag:', error);
+                        });
+                } else {
+                    setTagNome(null);
+                }
+                
                 // Recarrega os dados da vaga
                 http.get(`vagas/${id}/?format=json`)
                     .then(response => {
@@ -546,8 +584,80 @@ function DetalhesVaga() {
             });
     };
 
+    const handleSalvarTemplate = (templateId) => {
+        http.put(`vagas/${id}/`, {
+            template_admissao: templateId
+        })
+            .then(response => {
+                toast.current.show({ 
+                    severity: 'success', 
+                    summary: 'Sucesso', 
+                    detail: templateId ? 'Template de admissão vinculado com sucesso!' : 'Template de admissão removido com sucesso!', 
+                    life: 3000 
+                });
+                setModalTemplateVagaAberto(false);
+                // Recarrega os dados da vaga
+                http.get(`vagas/${id}/?format=json`)
+                    .then(response => {
+                        setVaga(response);
+                    })
+                    .catch(error => {
+                        console.error('Erro ao recarregar vaga:', error);
+                    });
+            })
+            .catch(error => {
+                console.error('Erro ao salvar template:', error);
+                toast.current.show({ 
+                    severity: 'error', 
+                    summary: 'Erro', 
+                    detail: 'Erro ao vincular template de admissão', 
+                    life: 3000 
+                });
+            });
+    };
+
     // Verifica se há candidato aprovado
-    const temCandidatoAprovado = vaga?.candidatos_aprovados.length > 0;
+    const temCandidatoAprovado = vaga?.candidatos_aprovados?.length > 0;
+    
+    // Verifica se ainda há vagas disponíveis para vincular template
+    const temVagasDisponiveis = () => {
+        if (!vaga || vaga.status !== 'A') return false;
+        const candidatosAprovados = vaga?.candidatos_aprovados?.length || 0;
+        const qtdVagas = vaga?.qtd_vaga || 0;
+        return candidatosAprovados < qtdVagas;
+    };
+
+    // Verifica se deve mostrar aviso sobre candidatos já aprovados
+    const deveAvisarCandidatosAprovados = () => {
+        return temCandidatoAprovado && temVagasDisponiveis();
+    };
+
+    // Função para mostrar aviso e abrir modal de documento
+    const abrirModalDocumento = () => {
+        if (deveAvisarCandidatosAprovados()) {
+            toast.current.show({
+                severity: 'warn',
+                summary: 'Atenção',
+                detail: 'Os candidatos já aprovados não terão este novo documento vinculado à sua admissão. Apenas novos candidatos aprovados terão este documento solicitado.',
+                life: 5000
+            });
+        }
+        setDocumentoEditando(null);
+        setModalDocumentoAberto(true);
+    };
+
+    // Função para mostrar aviso e abrir modal de tag
+    const abrirModalTag = () => {
+        if (deveAvisarCandidatosAprovados()) {
+            toast.current.show({
+                severity: 'warn',
+                summary: 'Atenção',
+                detail: 'Os candidatos já aprovados não terão os documentos desta nova tag vinculados à sua admissão. Apenas novos candidatos aprovados terão esses documentos solicitados.',
+                life: 5000
+            });
+        }
+        setModalTagsAberto(true);
+    };
     
     return (
         <>
@@ -706,9 +816,44 @@ function DetalhesVaga() {
                     </Col12>
                     
                 </div>
-                <Titulo>
-                    <h5>Candidatos</h5>
-                </Titulo>
+                <BotaoGrupo align="space-between">
+                    <Titulo>
+                        <h5>Candidatos</h5>
+                    </Titulo>
+                    <BotaoGrupo align="center">
+                        <Botao 
+                            size="small" 
+                            aoClicar={() => setModalTemplateVagaAberto(true)}
+                            estilo="neutro"
+                            disabled={!temVagasDisponiveis()}
+                            title={
+                                vaga?.status !== 'A' ? "A vaga precisa estar aberta para vincular template" :
+                                !temVagasDisponiveis() ? "Não há vagas disponíveis. Todas as posições já têm candidatos aprovados." : 
+                                "Vincular template de admissão para candidatos desta vaga"
+                            }
+                        >
+                            Vincular Template
+                        </Botao>
+                        <FaInfoCircle 
+                            size={18}
+                            style={{ 
+                                color: 'var(--primaria)', 
+                                cursor: 'pointer',
+                                marginLeft: '4px'
+                            }}
+                            onClick={() => {
+                                toast.current.show({
+                                    severity: 'info',
+                                    summary: 'Vincular Template de Admissão',
+                                    detail: 'Este recurso permite vincular um template de admissão que será aplicado automaticamente aos candidatos aprovados desta vaga. O template define configurações contratuais como tipo de admissão, regime trabalhista, FGTS, entre outros.',
+                                    life: 6000,
+                                    sticky: false
+                                });
+                            }}
+                            title="Clique para mais informações"
+                        />
+                    </BotaoGrupo>
+                </BotaoGrupo>
                 <DataTableCandidatos 
                     documentos={documentos} 
                     vagaId={vaga?.id} 
@@ -723,13 +868,39 @@ function DetalhesVaga() {
                     <Titulo>
                         <h5>Documentos Requeridos da Vaga</h5>
                     </Titulo>
-                    <Botao 
-                        size="small" 
-                        aoClicar={() => setModalTagsAberto(true)}
-                        estilo="neutro"
-                    >
-                        Tag
-                    </Botao>
+                    <BotaoGrupo align="center">
+                        <Botao 
+                            size="small" 
+                            aoClicar={abrirModalTag}
+                            estilo="neutro"
+                            disabled={vaga?.status === 'T' || (temCandidatoAprovado && !temVagasDisponiveis())}
+                            title={
+                                vaga?.status === 'T' ? "Não é possível editar tag em vagas transferidas" :
+                                (temCandidatoAprovado && !temVagasDisponiveis()) ? "Não é possível editar tag pois todas as vagas já têm candidatos aprovados" : 
+                                "Selecionar tag para preencher documentos automaticamente"
+                            }
+                        >
+                            {tagNome ? tagNome : <><GrAddCircle stroke="var(--secundaria)" /> Tag</>}
+                        </Botao>
+                        <FaInfoCircle 
+                            size={18}
+                            style={{ 
+                                color: 'var(--primaria)', 
+                                cursor: 'pointer',
+                                marginLeft: '4px'
+                            }}
+                            onClick={() => {
+                                toast.current.show({
+                                    severity: 'info',
+                                    summary: 'Tag de Documentos',
+                                    detail: 'Este recurso serve para preencher automaticamente os documentos requeridos dessa vaga com documentos que tenham a mesma tag cadastrada.',
+                                    life: 5000,
+                                    sticky: false
+                                });
+                            }}
+                            title="Clique para mais informações"
+                        />
+                    </BotaoGrupo>
                 </BotaoGrupo>
                 
                 <BotaoGrupo align="space-between">
@@ -737,11 +908,12 @@ function DetalhesVaga() {
                     <BotaoGrupo align="space-between">
                         <Botao 
                             size="small" 
-                            aoClicar={() => { setDocumentoEditando(null); setModalDocumentoAberto(true); }}
-                            disabled={vaga?.status === 'T' || temCandidatoAprovado}
+                            aoClicar={abrirModalDocumento}
+                            disabled={vaga?.status === 'T' || (temCandidatoAprovado && !temVagasDisponiveis())}
                             title={
                                 vaga?.status === 'T' ? "Não é possível adicionar documentos em vagas transferidas" :
-                                temCandidatoAprovado ? "Não é possível adicionar documentos pois já existe candidato aprovado" : ""
+                                (temCandidatoAprovado && !temVagasDisponiveis()) ? "Não é possível adicionar documentos pois todas as vagas já têm candidatos aprovados" : 
+                                "Adicionar documento requerido à vaga"
                             }
                         >
                             <GrAddCircle stroke="var(--secundaria)" /> Adicionar documento requerido
@@ -794,6 +966,12 @@ function DetalhesVaga() {
                 aoFechar={() => setModalTagsAberto(false)}
                 aoSalvar={handleSalvarTag}
                 tagSelecionada={vaga?.tag || null}
+            />
+            <ModalTemplateVaga
+                opened={modalTemplateVagaAberto}
+                aoFechar={() => setModalTemplateVagaAberto(false)}
+                aoSalvar={handleSalvarTemplate}
+                templateSelecionado={vaga?.template_admissao || null}
             />
         </Container>
         </Frame>
