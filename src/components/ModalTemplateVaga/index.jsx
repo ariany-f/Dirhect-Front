@@ -70,20 +70,35 @@ function ModalTemplateVaga({ opened = false, aoFechar, aoSalvar, templateSelecio
 
     // Selecionar template pré-selecionado após templates carregados
     useEffect(() => {
+        console.log('=== EFFECT SELECIONAR TEMPLATE ===');
+        console.log('templates.length:', templates.length);
+        console.log('opened:', opened);
+        console.log('templateSelecionado:', templateSelecionado);
+        console.log('templateAtual atual:', templateAtual);
+        
         if (templates.length > 0 && opened) {
             if (templateSelecionado) {
                 console.log('Buscando template selecionado:', templateSelecionado);
                 console.log('Templates disponíveis:', templates);
-                const templateEncontrado = templates.find(t => t.value === templateSelecionado);
+                const templateEncontrado = templates.find(t => {
+                    console.log(`Comparando: t.code (${t.code}) === templateSelecionado (${templateSelecionado})`);
+                    return t.code === templateSelecionado;
+                });
                 console.log('Template encontrado:', templateEncontrado);
                 if (templateEncontrado) {
+                    console.log('Setando templateAtual para:', templateEncontrado);
                     setTemplateAtual(templateEncontrado);
+                } else {
+                    console.log('Template NÃO encontrado, setando null');
+                    setTemplateAtual(null);
                 }
             } else {
                 // Se não há template selecionado, limpa
+                console.log('Sem templateSelecionado, limpando templateAtual');
                 setTemplateAtual(null);
             }
         }
+        console.log('=== FIM EFFECT ===');
     }, [templates, templateSelecionado, opened]);
 
 
@@ -100,16 +115,16 @@ function ModalTemplateVaga({ opened = false, aoFechar, aoSalvar, templateSelecio
             // Tentar buscar da API primeiro
             const response = await http.get('/admissao_template/?format=json');
             templatesFormatados = response.map(template => ({
-                label: template.nome,
-                value: template.id,
+                name: template.nome,  // ✅ Mudado de 'label' para 'name'
+                code: template.id,     // ✅ Mudado de 'value' para 'code'
                 descricao: template.descricao
             }));
         } catch (error) {
             console.warn('API não disponível, usando dados mockup:', error);
             // Fallback para mockup se API não estiver disponível
             templatesFormatados = templatesData.map(template => ({
-                label: template.nome,
-                value: template.id,
+                name: template.nome,  // ✅ Mudado de 'label' para 'name'
+                code: template.id,     // ✅ Mudado de 'value' para 'code'
                 descricao: template.descricao
             }));
             
@@ -133,8 +148,8 @@ function ModalTemplateVaga({ opened = false, aoFechar, aoSalvar, templateSelecio
 
     const handleSalvar = () => {
         console.log('handleSalvar - templateAtual:', templateAtual);
-        console.log('handleSalvar - enviando value:', templateAtual);
-        aoSalvar(templateAtual || null);
+        console.log('handleSalvar - enviando code:', templateAtual?.code);
+        aoSalvar(templateAtual?.code || null);
     };
 
     const templateTemplate = (option) => {
@@ -142,7 +157,7 @@ function ModalTemplateVaga({ opened = false, aoFechar, aoSalvar, templateSelecio
         
         return (
             <div>
-                <div style={{ fontWeight: 600 }}>{option.label}</div>
+                <div style={{ fontWeight: 600 }}>{option.name}</div>
                 {option.descricao && (
                     <div style={{ fontSize: '12px', color: '#6c757d' }}>{option.descricao}</div>
                 )}
@@ -178,9 +193,11 @@ function ModalTemplateVaga({ opened = false, aoFechar, aoSalvar, templateSelecio
                                         name="template_admissao"
                                         label="Template de Admissão"
                                         valor={templateAtual}
-                                        setValor={setTemplateAtual}
+                                        setValor={(novoValor) => {
+                                            console.log('DropdownItens onChange chamado com:', novoValor);
+                                            setTemplateAtual(novoValor);
+                                        }}
                                         options={templates}
-                                        optionLabel="label"
                                         optionTemplate={templateTemplate}
                                         placeholder={
                                             loading ? "Carregando templates..." : 
