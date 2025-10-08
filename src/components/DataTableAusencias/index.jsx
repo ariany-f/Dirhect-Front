@@ -18,7 +18,12 @@ function formatarDataBr(data) {
     return `${dia}/${mes}/${ano}`;
 }
 
-function DataTableAusencias({ ausencias, colaborador = null }) {
+function DataTableAusencias({ 
+    ausencias, 
+    colaborador = null,
+    paginator = true,
+    rows = 10
+}) {
     const [selectedFerias, setSelectedFerias] = useState(0);
     const [modalOpened, setModalOpened] = useState(false);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -78,6 +83,18 @@ function DataTableAusencias({ ausencias, colaborador = null }) {
     const representativeFimTemplate = (rowData) => {
         return <p style={{fontWeight: '400'}}>{new Date(rowData.dt_fim).toLocaleDateString("pt-BR")}</p>
     }
+
+    // Larguras dinâmicas das colunas baseado em colaborador
+    const columnWidths = !colaborador ? {
+        colaborador: '40%',
+        ausencia: '20%',
+        inicio: '20%',
+        fim: '20%'
+    } : {
+        ausencia: '35%',
+        inicio: '30%',
+        fim: '35%'
+    };
     
     return (
         <>
@@ -111,10 +128,10 @@ function DataTableAusencias({ ausencias, colaborador = null }) {
                 rows={rows}
                 tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}
             >
-                {!colaborador && <Column body={representativeColaboradorTemplate} field="funcionario" header="Colaborador" style={{ width: '30%' }}></Column>}
-                <Column body={representativSituacaoTemplate} field="ausencia_nome" header="Ausência" style={{ width: '15%' }}></Column>
-                <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '15%' }}></Column>
-                <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '15%' }}></Column>
+                {!colaborador && <Column body={representativeColaboradorTemplate} field="funcionario" header="Colaborador" style={{ width: columnWidths.colaborador }}></Column>}
+                <Column body={representativSituacaoTemplate} field="ausencia_nome" header="Ausência" style={{ width: columnWidths.ausencia }}></Column>
+                <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: columnWidths.inicio }}></Column>
+                <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: columnWidths.fim }}></Column>
             </DataTable>
             <ModalSelecionarColaborador opened={modalOpened} aoFechar={() => setModalOpened(false)} />
 
