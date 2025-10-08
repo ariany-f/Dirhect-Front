@@ -98,7 +98,7 @@ function TemplatesVaga() {
         <Frame gap="16px">
             <Toast ref={toast} />
             <ConfirmDialog />
-            <BotaoVoltar />
+            <BotaoVoltar linkFixo="/vagas" />
             <Container>
                 <Header>
                     <h3>Templates de Vaga</h3>
