@@ -114,6 +114,23 @@ function DataTableDependentes({
             </div>
         </div>
     }
+
+    const representativeMatriculaSituacaoTemplate = (rowData) => {
+        const matricula = rowData?.funcionario?.chapa || '---';
+        let situacao = rowData?.funcionario?.tipo_situacao_descricao;
+        let cor = rowData?.funcionario?.tipo_situacao_cor_tag;
+        
+        return (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <Texto weight={700}>{matricula}</Texto>
+                {!rowData?.funcionario?.tipo_situacao_descricao ? (
+                    <></>
+                ) : (
+                    <Tag severity={null} style={{backgroundColor: cor}} value={situacao}></Tag>
+                )}
+            </div>
+        );
+    }
     
     
     const representativeNomeTemplate = (rowData) => {
@@ -196,6 +213,21 @@ function DataTableDependentes({
         return 'Total de Dependentes: ' + (totalRecords ?? 0);
     };
 
+    // Larguras dinâmicas das colunas baseado em search
+    const columnWidths = search ? {
+        matricula: '10%',
+        funcionario: '25%',
+        nome: '25%',
+        parentesco: '15%',
+        nascimento: '15%',
+        idade: '10%'
+    } : {
+        nome: '35%',
+        parentesco: '25%',
+        nascimento: '20%',
+        idade: '20%'
+    };
+
     return (
         <>
             <Toast ref={toast} />
@@ -204,7 +236,7 @@ function DataTableDependentes({
                 <>
                     <div className="flex justify-content-end">
                         <span className="p-input-icon-left">
-                            <CampoTexto  width={'320px'} valor={searchValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar dependente" />
+                            <CampoTexto  width={'320px'} valor={searchValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar dependente ou funcionário" />
                         </span>
                     </div>
                     <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
@@ -252,11 +284,12 @@ function DataTableDependentes({
                 showGridlines
                 stripedRows
             >
-                {search &&  <Column body={representativeFuncNomeTemplate} sortField="id_funcionario_id" header="Funcionário" sortable field="funcionario_pessoa_fisica__nome" style={{ width: '30%' }}></Column>}
-                <Column body={representativeNomeTemplate} header="Nome Completo" sortable field="nome_depend" style={{ width: '30%' }}></Column>
-                <Column body={representativeParentescoTemplate} header="Grau de Parentesco" sortable field="grau_parentesco" style={{ width: '25%' }}></Column>
-                <Column body={representativeNascimentoTemplate} header="Nascimento" sortable field="dtnascimento" style={{ width: '15%' }}></Column>
-                <Column body={representativeIdadeTemplate} header="Idade" style={{ width: '25%' }}></Column>
+                {search &&  <Column body={representativeMatriculaSituacaoTemplate} header="Matrícula" field="funcionario_chapa" style={{ width: columnWidths.matricula }}></Column>}
+                {search &&  <Column body={representativeFuncNomeTemplate} sortField="id_funcionario_id" header="Funcionário" sortable field="funcionario_pessoa_fisica__nome" style={{ width: columnWidths.funcionario }}></Column>}
+                <Column body={representativeNomeTemplate} header="Nome Completo" sortable field="nome_depend" style={{ width: columnWidths.nome }}></Column>
+                <Column body={representativeParentescoTemplate} header="Grau de Parentesco" sortable field="grau_parentesco" style={{ width: columnWidths.parentesco }}></Column>
+                <Column body={representativeNascimentoTemplate} header="Nascimento" sortable field="dtnascimento" style={{ width: columnWidths.nascimento }}></Column>
+                <Column body={representativeIdadeTemplate} header="Idade" style={{ width: columnWidths.idade }}></Column>
             </DataTable>
             <DependenteProvider>
                 <ModalAdicionarDependente opened={modalOpened} aoFechar={() => setModalOpened(false)} />

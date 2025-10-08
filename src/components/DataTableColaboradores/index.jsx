@@ -55,7 +55,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     const exibeAcoes = usuario.tipo === 'cliente' || usuario.tipo === 'equipeFolhaPagamento';
     
     // Larguras base quando todas as colunas estão visíveis (incluindo ações)
-    const larguraBase = [8, 22, 8, 22, 8, 5, 12, 15]; // chapa, nome, filial, funcao, admissao, dep, situacao, acoes
+    const larguraBase = [10, 20, 8, 22, 8, 5, 12, 15]; // chapa, nome, filial, funcao, admissao, dep, situacao, acoes
     
     // Calcula larguras redistribuídas
     const calcularLarguras = () => {
@@ -140,7 +140,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         
         if (numDependentes === 0) {
             return (
-                <Texto weight={400} style={{ color: '#9ca3af', fontSize: '13px' }}>Nenhum</Texto>
+                <Texto weight={400} style={{ color: '#9ca3af', fontSize: '13px' }}>0</Texto>
             );
         }
         
