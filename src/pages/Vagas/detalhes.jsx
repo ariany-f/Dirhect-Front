@@ -698,9 +698,11 @@ function DetalhesVaga() {
                             <BotaoGrupo align="space-between">
                                 {vaga.status == 'A' && 
                                     <>
-                                        <BotaoSemBorda $color="var(--primaria)">
-                                            <FaTrash /><Link onClick={cancelarVaga}>Cancelar vaga</Link>
-                                        </BotaoSemBorda>
+                                        <div style={{ flexShrink: 0 }}>
+                                            <BotaoSemBorda $color="var(--primaria)">
+                                                <FaTrash /><Link onClick={cancelarVaga}>Cancelar vaga</Link>
+                                            </BotaoSemBorda>
+                                        </div>
                                         <Botao 
                                             aoClicar={() => setModalAdicionarCandidatoAberto(true)} 
                                             size="small"
@@ -717,9 +719,11 @@ function DetalhesVaga() {
                                 }
                                 {vaga.status == 'F' && 
                                     <>
-                                        <BotaoSemBorda $color="var(--primaria)">
-                                            <FaDoorOpen /><Link onClick={reabrirVaga}>Reabrir vaga</Link>
-                                        </BotaoSemBorda>
+                                        <div style={{ flexShrink: 0 }}>
+                                            <BotaoSemBorda $color="var(--primaria)">
+                                                <FaDoorOpen /><Link onClick={reabrirVaga}>Reabrir vaga</Link>
+                                            </BotaoSemBorda>
+                                        </div>
                                     </>
                                 }
                                 {vaga.status == 'T' && 
@@ -832,14 +836,15 @@ function DetalhesVaga() {
                                 "Vincular template de admissão para candidatos desta vaga"
                             }
                         >
-                            Vincular Template
+                            <GrAddCircle stroke="var(--secundaria)" /> Vincular Template
                         </Botao>
                         <FaInfoCircle 
-                            size={18}
+                            size={16}
                             style={{ 
                                 color: 'var(--primaria)', 
                                 cursor: 'pointer',
-                                marginLeft: '4px'
+                                marginLeft: '12px',
+                                flexShrink: 0
                             }}
                             onClick={() => {
                                 toast.current.show({
@@ -868,26 +873,29 @@ function DetalhesVaga() {
                     <Titulo>
                         <h5>Documentos Requeridos da Vaga</h5>
                     </Titulo>
-                    <BotaoGrupo align="center">
-                        <Botao 
-                            size="small" 
-                            aoClicar={abrirModalTag}
-                            estilo="neutro"
-                            disabled={vaga?.status === 'T' || (temCandidatoAprovado && !temVagasDisponiveis())}
-                            title={
-                                vaga?.status === 'T' ? "Não é possível editar tag em vagas transferidas" :
-                                (temCandidatoAprovado && !temVagasDisponiveis()) ? "Não é possível editar tag pois todas as vagas já têm candidatos aprovados" : 
-                                "Selecionar tag para preencher documentos automaticamente"
-                            }
-                        >
-                            {tagNome ? tagNome : <><GrAddCircle stroke="var(--secundaria)" /> Tag</>}
-                        </Botao>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: '400px' }}>
+                        <div style={{ flexShrink: 0 }}>
+                            <Botao 
+                                size="small" 
+                                aoClicar={abrirModalTag}
+                                estilo="vermilion"
+                                disabled={vaga?.status === 'T' || (temCandidatoAprovado && !temVagasDisponiveis())}
+                                title={
+                                    vaga?.status === 'T' ? "Não é possível editar tag em vagas transferidas" :
+                                    (temCandidatoAprovado && !temVagasDisponiveis()) ? "Não é possível editar tag pois todas as vagas já têm candidatos aprovados" : 
+                                    "Selecionar tag para preencher documentos automaticamente"
+                                }
+                            >
+                                {tagNome ? tagNome : <><GrAddCircle stroke="var(--secundaria)" /> Adicionar por Tag</>}
+                            </Botao>
+                        </div>
                         <FaInfoCircle 
-                            size={18}
+                            size={16}
                             style={{ 
                                 color: 'var(--primaria)', 
                                 cursor: 'pointer',
-                                marginLeft: '4px'
+                                marginLeft: '12px',
+                                flexShrink: 0
                             }}
                             onClick={() => {
                                 toast.current.show({
@@ -900,25 +908,22 @@ function DetalhesVaga() {
                             }}
                             title="Clique para mais informações"
                         />
-                    </BotaoGrupo>
-                </BotaoGrupo>
-                
-                <BotaoGrupo align="space-between">
-                    <div></div>
-                    <BotaoGrupo align="space-between">
-                        <Botao 
-                            size="small" 
-                            aoClicar={abrirModalDocumento}
-                            disabled={vaga?.status === 'T' || (temCandidatoAprovado && !temVagasDisponiveis())}
-                            title={
-                                vaga?.status === 'T' ? "Não é possível adicionar documentos em vagas transferidas" :
-                                (temCandidatoAprovado && !temVagasDisponiveis()) ? "Não é possível adicionar documentos pois todas as vagas já têm candidatos aprovados" : 
-                                "Adicionar documento requerido à vaga"
-                            }
-                        >
-                            <GrAddCircle stroke="var(--secundaria)" /> Adicionar documento requerido
-                        </Botao>
-                    </BotaoGrupo>
+                        <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+                            <Botao 
+                                size="small" 
+                                aoClicar={abrirModalDocumento}
+                                estilo="neutro"
+                                disabled={vaga?.status === 'T' || (temCandidatoAprovado && !temVagasDisponiveis())}
+                                title={
+                                    vaga?.status === 'T' ? "Não é possível adicionar documentos em vagas transferidas" :
+                                    (temCandidatoAprovado && !temVagasDisponiveis()) ? "Não é possível adicionar documentos pois todas as vagas já têm candidatos aprovados" : 
+                                    "Adicionar documento requerido à vaga"
+                                }
+                            >
+                                <GrAddCircle stroke="var(--secundaria)" /> Adicionar personalizado
+                            </Botao>
+                        </div>
+                    </div>
                 </BotaoGrupo>
                 <DataTableDocumentosVaga
                     documentos={documentos}

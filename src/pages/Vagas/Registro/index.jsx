@@ -4,7 +4,9 @@ import CampoTexto from '@components/CampoTexto'; // Importando o componente Camp
 import BotaoVoltar from '@components/BotaoVoltar'; // Importando o componente CampoTexto
 import Container from '@components/Container'; // Importando o componente Container
 import Botao from '@components/Botao'; // Importando o componente Container
+import BotaoGrupo from '@components/BotaoGrupo';
 import { useNavigate } from 'react-router-dom';
+import { FaSave } from 'react-icons/fa';
 import Frame from '@components/Frame';
 import DropdownItens from '@components/DropdownItens';
 import http from '@http';
@@ -562,8 +564,15 @@ const VagasRegistro = () => {
                         </Col6>
                     </Col12>
                 </div>
+                <BotaoGrupo align="end">
 
-                <Botao aoClicar={handleSubmit}>Registrar Vaga</Botao>
+                    <BotaoGrupo align="end" style={{ marginTop: '24px' }}>
+                        <Botao size="small" aoClicar={handleSubmit}>
+                            <FaSave fill="var(--secundaria)" /> Registrar Vaga
+                        </Botao>
+                    </BotaoGrupo>
+
+                </BotaoGrupo>
             </form>
         </Frame>
     );

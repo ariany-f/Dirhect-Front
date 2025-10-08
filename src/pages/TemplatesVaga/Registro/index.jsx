@@ -3,7 +3,9 @@ import CampoTexto from '@components/CampoTexto';
 import BotaoVoltar from '@components/BotaoVoltar';
 import Container from '@components/Container';
 import Botao from '@components/Botao';
+import BotaoGrupo from '@components/BotaoGrupo';
 import { useNavigate, useParams } from 'react-router-dom';
+import { FaSave } from 'react-icons/fa';
 import Frame from '@components/Frame';
 import DropdownItens from '@components/DropdownItens';
 import http from '@http';
@@ -347,7 +349,7 @@ const TemplatesVagaRegistro = () => {
                             valor={nome}
                             setValor={setNome}
                             type="text"
-                            label="Nome do Template*"
+                            label="Nome do Template"
                             placeholder="Digite o nome do template"
                             required={true}
                         />
@@ -379,7 +381,7 @@ const TemplatesVagaRegistro = () => {
                             camposVazios={classError}
                             name="tipo_admissao"
                             required={true}
-                            label="Tipo de Admissão*"
+                            label="Tipo de Admissão"
                             valor={tipoAdmissao}
                             setValor={setTipoAdmissao}
                             options={opcoesTipoAdmissao}
@@ -393,7 +395,7 @@ const TemplatesVagaRegistro = () => {
                             camposVazios={classError}
                             name="motivo_admissao"
                             required={true}
-                            label="Motivo da Admissão*"
+                            label="Motivo da Admissão"
                             valor={motivoAdmissao}
                             setValor={setMotivoAdmissao}
                             options={opcoesMotivoAdmissao}
@@ -404,7 +406,7 @@ const TemplatesVagaRegistro = () => {
                             camposVazios={classError}
                             name="tipo_situacao"
                             required={true}
-                            label="Situação*"
+                            label="Situação"
                             valor={tipoSituacao}
                             setValor={setTipoSituacao}
                             options={opcoesTipoSituacao}
@@ -428,7 +430,7 @@ const TemplatesVagaRegistro = () => {
                             camposVazios={classError}
                             name="tipo_funcionario"
                             required={true}
-                            label="Tipo de Funcionário*"
+                            label="Tipo de Funcionário"
                             valor={tipoFuncionario}
                             setValor={setTipoFuncionario}
                             options={opcoesTipoFuncionario}
@@ -452,7 +454,7 @@ const TemplatesVagaRegistro = () => {
                             camposVazios={classError}
                             name="tipo_recebimento"
                             required={true}
-                            label="Tipo de Recebimento*"
+                            label="Tipo de Recebimento"
                             valor={tipoRecebimento}
                             setValor={setTipoRecebimento}
                             options={opcoesTipoRecebimento}
@@ -475,7 +477,7 @@ const TemplatesVagaRegistro = () => {
                             camposVazios={classError}
                             name="jornada"
                             required={true}
-                            label="Jornada (HHH:MM)*"
+                            label="Jornada (HHH:MM)"
                             valor={jornada}
                             setValor={setJornada}
                             patternMask="999:99"
@@ -491,7 +493,7 @@ const TemplatesVagaRegistro = () => {
                             camposVazios={classError}
                             name="salario"
                             required={true}
-                            label="Salário*"
+                            label="Salário"
                             valor={salario}
                             setValor={setSalario}
                             patternMask="BRL"
@@ -503,7 +505,7 @@ const TemplatesVagaRegistro = () => {
                             camposVazios={classError}
                             name="codigo_situacao_fgts"
                             required={true}
-                            label="Situação FGTS*"
+                            label="Situação FGTS"
                             valor={codigoSituacaoFgts}
                             setValor={setCodigoSituacaoFgts}
                             options={opcoesSituacaoFgts}
@@ -570,7 +572,7 @@ const TemplatesVagaRegistro = () => {
                             camposVazios={classError}
                             name="codigo_categoria_esocial"
                             required={true}
-                            label="Código Categoria eSocial*"
+                            label="Código Categoria eSocial"
                             valor={codigoCategoriaEsocial}
                             setValor={setCodigoCategoriaEsocial}
                             options={opcoesCodigoCategoriaESocial}
@@ -585,7 +587,7 @@ const TemplatesVagaRegistro = () => {
                             camposVazios={classError}
                             name="natureza_atividade_esocial"
                             required={true}
-                            label="Natureza da Atividade eSocial*"
+                            label="Natureza da Atividade eSocial"
                             valor={naturezaAtividadeEsocial}
                             setValor={setNaturezaAtividadeEsocial}
                             options={opcoesNaturezaAtividadeESocial}
@@ -666,7 +668,7 @@ const TemplatesVagaRegistro = () => {
                                 camposVazios={classError}
                                 name="funcao_confianca"
                                 required={true}
-                                label="Função de Confiança/Cargo em Comissão*"
+                                label="Função de Confiança/Cargo em Comissão"
                                 valor={funcaoConfianca}
                                 setValor={setFuncaoConfianca}
                                 options={opcoesFuncaoConfianca}
@@ -674,10 +676,13 @@ const TemplatesVagaRegistro = () => {
                         </Col6>
                     </Col12>
                 )}
-
-                <Botao aoClicar={handleSubmit}>
-                    {id ? 'Atualizar Template' : 'Criar Template'}
-                </Botao>
+                <BotaoGrupo align="end">
+                    <BotaoGrupo align="end" style={{ marginTop: '24px' }}>
+                        <Botao size="small" aoClicar={handleSubmit}>
+                            <FaSave fill="var(--secundaria)" /> {id ? 'Atualizar Template' : 'Criar Template'}
+                        </Botao>
+                    </BotaoGrupo>
+                </BotaoGrupo>
             </form>
         </Frame>
     );
