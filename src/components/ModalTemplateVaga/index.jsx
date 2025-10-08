@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Dropdown } from 'primereact/dropdown';
+import DropdownItens from '@components/DropdownItens';
 import Botao from '@components/Botao';
 import Frame from "@components/Frame";
 import Titulo from "@components/Titulo";
@@ -7,6 +7,7 @@ import { RiCloseFill } from 'react-icons/ri';
 import styled from "styled-components";
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
 import templatesData from '@json/templates_vaga.json';
+import http from '@http';
 
 const Col12 = styled.div`
     display: flex;
@@ -57,30 +58,64 @@ const InfoBox = styled.div`
 function ModalTemplateVaga({ opened = false, aoFechar, aoSalvar, templateSelecionado = null }) {
     const [templates, setTemplates] = useState([]);
     const [templateAtual, setTemplateAtual] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [templatesCarregados, setTemplatesCarregados] = useState(false);
 
     useEffect(() => {
-        if (opened) {
-            // Buscar templates disponíveis do mockup
-            // TODO: Quando a API estiver pronta, substituir por:
-            // http.get('/template_vaga/')
-            const templatesFormatados = templatesData.map(template => ({
+        if (opened && !templatesCarregados) {
+            fetchTemplates();
+        }
+    }, [opened, templatesCarregados]);
+
+    useEffect(() => {
+        if (templateSelecionado && templates.length > 0) {
+            const templateEncontrado = templates.find(t => t.value === templateSelecionado);
+            setTemplateAtual(templateEncontrado || null);
+        }
+    }, [templateSelecionado, templates]);
+
+
+    const fetchTemplates = async (forceReload = false) => {
+        // Se já carregou e não é reload forçado, não busca novamente
+        if (templatesCarregados && !forceReload) {
+            return;
+        }
+
+        setLoading(true);
+        let templatesFormatados = [];
+        
+        try {
+            // Tentar buscar da API primeiro
+            const response = await http.get('/admissao_template/?format=json');
+            templatesFormatados = response.map(template => ({
                 label: template.nome,
                 value: template.id,
                 descricao: template.descricao
             }));
-            setTemplates(templatesFormatados);
+        } catch (error) {
+            console.warn('API não disponível, usando dados mockup:', error);
+            // Fallback para mockup se API não estiver disponível
+            templatesFormatados = templatesData.map(template => ({
+                label: template.nome,
+                value: template.id,
+                descricao: template.descricao
+            }));
             
-            // Se há um template já selecionado, define ele
-            if (templateSelecionado) {
-                const templateEncontrado = templatesFormatados.find(t => t.value === templateSelecionado);
-                setTemplateAtual(templateEncontrado || null);
+            // Selecionar automaticamente a primeira opção quando usar fallback
+            if (templatesFormatados.length > 0 && !templateSelecionado) {
+                setTemplateAtual(templatesFormatados[0]);
             }
         }
-    }, [opened, templateSelecionado]);
+        
+        setTemplates(templatesFormatados);
+        setTemplatesCarregados(true);
+        setLoading(false);
+    };
 
     useEffect(() => {
         if (!opened) {
             setTemplateAtual(null);
+            setLoading(false);
         }
     }, [opened]);
 
@@ -89,6 +124,8 @@ function ModalTemplateVaga({ opened = false, aoFechar, aoSalvar, templateSelecio
     };
 
     const templateTemplate = (option) => {
+        if (!option) return null;
+        
         return (
             <div>
                 <div style={{ fontWeight: 600 }}>{option.label}</div>
@@ -123,17 +160,21 @@ function ModalTemplateVaga({ opened = false, aoFechar, aoSalvar, templateSelecio
                                 </InfoBox>
                                 
                                 <DropdownContainer>
-                                    <Label>Template de Admissão</Label>
-                                    <Dropdown
-                                        value={templateAtual}
-                                        onChange={(e) => setTemplateAtual(e.value)}
+                                    <DropdownItens
+                                        name="template_admissao"
+                                        label="Template de Admissão"
+                                        valor={templateAtual}
+                                        setValor={setTemplateAtual}
                                         options={templates}
                                         optionLabel="label"
-                                        itemTemplate={templateTemplate}
-                                        placeholder="Selecione um template"
+                                        optionTemplate={templateTemplate}
+                                        placeholder={
+                                            loading ? "Carregando templates..." : 
+                                            templates.length === 0 ? "Nenhum template disponível" :
+                                            "Selecione um template"
+                                        }
                                         filter
-                                        showClear
-                                        style={{ width: '100%' }}
+                                        disabled={loading}
                                     />
                                     <small style={{ color: '#6c757d', marginTop: '4px', display: 'block' }}>
                                         Selecione o template que será aplicado aos candidatos aprovados desta vaga.

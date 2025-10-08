@@ -38,14 +38,13 @@ function TemplatesVaga() {
 
     const fetchTemplates = async () => {
         try {
-            // TODO: Quando a API estiver pronta, substituir por:
-            // const response = await http.get('/template_vaga/?format=json');
-            // setTemplates(response);
-            
-            // Por enquanto, usar mockup
-            setTemplates(templatesData);
+            // Tentar buscar da API primeiro
+            const response = await http.get('/admissao_template/?format=json');
+            setTemplates(response);
         } catch (error) {
-            console.error('Erro ao buscar templates:', error);
+            console.warn('API não disponível, usando dados mockup:', error);
+            // Fallback para mockup se API não estiver disponível
+            setTemplates(templatesData);
         }
     };
 
@@ -62,10 +61,14 @@ function TemplatesVaga() {
             rejectLabel: 'Cancelar',
             accept: async () => {
                 try {
-                    // TODO: Quando a API estiver pronta, substituir por:
-                    // await http.delete(`/template_vaga/${template.id}/`);
+                    // Tentar deletar via API primeiro
+                    try {
+                        await http.delete(`/admissao_template/${template.id}/`);
+                    } catch (apiError) {
+                        console.warn('API não disponível, simulando exclusão:', apiError);
+                    }
                     
-                    // Por enquanto, apenas simular exclusão
+                    // Atualizar lista local
                     setTemplates(prev => prev.filter(t => t.id !== template.id));
                     
                     toast.current.show({ 
