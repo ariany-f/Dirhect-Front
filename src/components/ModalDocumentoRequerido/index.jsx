@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { Dialog } from 'primereact/dialog';
 import CampoTexto from '@components/CampoTexto';
 import CampoTags from '@components/CampoTags';
@@ -57,6 +57,9 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
     const [documentoSelecionado, setDocumentoSelecionado] = useState(null);
     const [tags, setTags] = useState([]);
     const [tagsDisponiveis, setTagsDisponiveis] = useState([]);
+    const [loadingTag, setLoadingTag] = useState(false);
+    const processingTagRef = useRef(false);
+    const tempTagCodeRef = useRef(null); // Armazena o code da tag temporária
 
     // Opções de extensões comuns
     const extensoesComuns = useMemo(() => [
@@ -140,7 +143,12 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
     }, [opened]);
 
     useEffect(() => {
-        if (documento && opened) {
+        if (documento && opened && tagsDisponiveis.length > 0) {
+            // Só atualiza se o documento mudou (não quando tagsDisponiveis muda)
+            if (documentoSelecionado?.id === documento.id) {
+                return; // Já carregou esse documento
+            }
+            
             // Converter string de extensões para array de tags
             let extTagsArray = [];
             if (documento.ext_permitidas) {
@@ -258,44 +266,116 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
     };
 
     const handleTagsChange = async (value) => {
+        console.log('handleTagsChange chamado com:', value);
+        console.log('tags atuais:', tags);
+        
         // Se a última tag adicionada não existe nas opções (é nova)
         if (value.length > tags.length) {
             const novaTag = value[value.length - 1];
             
             // Verificar se a tag já existe nas opções disponíveis
             const tagExiste = tagsDisponiveis.some(t => 
-                t.name.toLowerCase() === novaTag.name.toLowerCase()
+                t.name.toLowerCase() === novaTag.name.toLowerCase() ||
+                (t.id && novaTag.id && t.id === novaTag.id)
             );
             
-            if (!tagExiste) {
+            if (!tagExiste && (!novaTag.id || novaTag.id === novaTag.name)) {
+                // Verificar se já está processando para evitar duplicação
+                if (processingTagRef.current) {
+                    console.log('Já está processando uma tag, ignorando...');
+                    return;
+                }
+                
+                // É uma tag nova que precisa ser criada na API
+                processingTagRef.current = true;
+                
+                // 🚀 OPTIMISTIC UPDATE: Adiciona a tag temporária IMEDIATAMENTE
+                const tempCode = `temp_${Date.now()}`;
+                tempTagCodeRef.current = tempCode; // Salva referência
+                
+                const tagTemporaria = {
+                    name: novaTag.name,
+                    code: tempCode,
+                    id: tempCode,
+                    _isLoading: true // Flag para indicar que está carregando
+                };
+                
+                console.log('Tag temporária criada:', tagTemporaria);
+                console.log('Tags antes de adicionar temporária:', tags);
+                
+                const tagsComTemporaria = [...tags, tagTemporaria];
+                console.log('Tags com temporária:', tagsComTemporaria);
+                
+                setTags(tagsComTemporaria);
+                setLoadingTag(true);
+                
                 try {
+                    console.log('Criando nova tag:', novaTag.name);
+                    
                     // Criar nova tag na API
                     const response = await http.post('/documento_requerido_tag/', {
                         nome: novaTag.name
                     });
                     
-                    // Adicionar a nova tag às opções disponíveis
+                    console.log('Tag criada com sucesso:', response);
+                    
+                    // Criar tag formatada com dados da API
                     const novaTagFormatada = {
                         name: response.nome,
                         code: response.id.toString(),
                         id: response.id
                     };
                     
+                    // Adicionar a nova tag às opções disponíveis
                     setTagsDisponiveis(prev => [...prev, novaTagFormatada]);
                     
-                    // Atualizar o valor com a tag formatada
-                    const novasTagsAtualizadas = [...value];
-                    novasTagsAtualizadas[value.length - 1] = novaTagFormatada;
-                    setTags(novasTagsAtualizadas);
+                    // 🎯 Substituir a tag temporária pela tag real
+                    // Usar o estado atual de tags (que inclui a temporária)
+                    const tempCodeToReplace = tempTagCodeRef.current;
+                    
+                    setTags(currentTags => {
+                        console.log('=== SUBSTITUINDO TAG TEMPORÁRIA ===');
+                        console.log('Tags atuais no momento da atualização:', currentTags);
+                        console.log('Nova tag formatada:', novaTagFormatada);
+                        console.log('Código temporário a substituir:', tempCodeToReplace);
+                        
+                        // Substituir a tag temporária pela tag formatada usando o code
+                        const tagsAtualizadas = currentTags.map(t => {
+                            const ehTemporaria = t.code === tempCodeToReplace;
+                            console.log(`Tag "${t.name}" (code: ${t.code}): ehTemporaria=${ehTemporaria}`);
+                            return ehTemporaria ? novaTagFormatada : t;
+                        });
+                        
+                        console.log('Tags após substituição:', tagsAtualizadas);
+                        console.log('=== FIM SUBSTITUIÇÃO ===');
+                        
+                        // Limpa a referência
+                        tempTagCodeRef.current = null;
+                        
+                        return tagsAtualizadas;
+                    });
+                    
                 } catch (error) {
                     console.error('Erro ao criar nova tag:', error);
-                    // Em caso de erro, manter a tag como está
-                    setTags(value);
+                    
+                    // ❌ ROLLBACK: Remove a tag temporária em caso de erro
+                    setTags(currentTags => {
+                        const tagsSemTemporaria = currentTags.filter(t => !t._isLoading);
+                        console.log('Rollback - removendo tags temporárias:', tagsSemTemporaria);
+                        return tagsSemTemporaria;
+                    });
+                } finally {
+                    setLoadingTag(false);
+                    processingTagRef.current = false; // Libera o lock
                 }
             } else {
+                // Tag já existe ou foi selecionada das opções
+                console.log('Tag já existe, atualizando estado com:', value);
                 setTags(value);
             }
         } else {
+            // Tag foi removida
+            console.log('Tag removida, atualizando estado com:', value);
             setTags(value);
         }
     };
@@ -388,11 +468,12 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
                                         onChange={handleTagsChange}
                                         options={tagsDisponiveis}
                                         label="Tags"
-                                        placeholder="Digite para buscar ou criar tags..."
+                                        placeholder={loadingTag ? "Criando tag..." : "Digite para buscar ou criar tags..."}
                                         allowCustomTags={true}
+                                        disabled={loadingTag}
                                     />
-                                    <small style={{ color: '#6c757d', marginTop: '4px', display: 'block' }}>
-                                        Tags ou crie novas (pressione Enter).
+                                    <small style={{ color: loadingTag ? '#0ea5e9' : '#6c757d', marginTop: '4px', display: 'block', fontWeight: loadingTag ? 600 : 400 }}>
+                                        {loadingTag ? '⏳ Criando tag na API...' : 'Tags ou crie novas (pressione Enter).'}
                                     </small>
                                 </Col3>
                             </Col12>
