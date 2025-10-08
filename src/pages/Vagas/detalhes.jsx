@@ -585,10 +585,18 @@ function DetalhesVaga() {
     };
 
     const handleSalvarTemplate = (templateId) => {
-        http.put(`vagas/${id}/`, {
+        console.log('handleSalvarTemplate recebeu:', templateId);
+        console.log('Tipo:', typeof templateId);
+        
+        const payload = {
             template_admissao: templateId
-        })
+        };
+        
+        console.log('Payload do PUT:', payload);
+        
+        http.put(`vagas/${id}/`, payload)
             .then(response => {
+                console.log('Resposta do PUT:', response);
                 toast.current.show({ 
                     severity: 'success', 
                     summary: 'Sucesso', 
@@ -607,6 +615,7 @@ function DetalhesVaga() {
             })
             .catch(error => {
                 console.error('Erro ao salvar template:', error);
+                console.error('Detalhes do erro:', error.response?.data);
                 toast.current.show({ 
                     severity: 'error', 
                     summary: 'Erro', 
@@ -833,10 +842,10 @@ function DetalhesVaga() {
                             title={
                                 vaga?.status !== 'A' ? "A vaga precisa estar aberta para vincular template" :
                                 !temVagasDisponiveis() ? "Não há vagas disponíveis. Todas as posições já têm candidatos aprovados." : 
-                                "Vincular template de admissão para candidatos desta vaga"
+                                vaga?.template_admissao ? "Alterar template de admissão vinculado" : "Vincular template de admissão para candidatos desta vaga"
                             }
                         >
-                            <GrAddCircle stroke="var(--secundaria)" /> Vincular Template
+                            <GrAddCircle stroke="var(--secundaria)" /> {vaga?.template_admissao ? 'Alterar Template' : 'Vincular Template'}
                         </Botao>
                         <FaInfoCircle 
                             size={16}

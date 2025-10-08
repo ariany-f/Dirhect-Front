@@ -61,18 +61,30 @@ function ModalTemplateVaga({ opened = false, aoFechar, aoSalvar, templateSelecio
     const [loading, setLoading] = useState(false);
     const [templatesCarregados, setTemplatesCarregados] = useState(false);
 
+    // Carregar templates quando o modal abre
     useEffect(() => {
         if (opened && !templatesCarregados) {
             fetchTemplates();
         }
     }, [opened, templatesCarregados]);
 
+    // Selecionar template pré-selecionado após templates carregados
     useEffect(() => {
-        if (templateSelecionado && templates.length > 0) {
-            const templateEncontrado = templates.find(t => t.value === templateSelecionado);
-            setTemplateAtual(templateEncontrado || null);
+        if (templates.length > 0 && opened) {
+            if (templateSelecionado) {
+                console.log('Buscando template selecionado:', templateSelecionado);
+                console.log('Templates disponíveis:', templates);
+                const templateEncontrado = templates.find(t => t.value === templateSelecionado);
+                console.log('Template encontrado:', templateEncontrado);
+                if (templateEncontrado) {
+                    setTemplateAtual(templateEncontrado);
+                }
+            } else {
+                // Se não há template selecionado, limpa
+                setTemplateAtual(null);
+            }
         }
-    }, [templateSelecionado, templates]);
+    }, [templates, templateSelecionado, opened]);
 
 
     const fetchTemplates = async (forceReload = false) => {
@@ -120,7 +132,9 @@ function ModalTemplateVaga({ opened = false, aoFechar, aoSalvar, templateSelecio
     }, [opened]);
 
     const handleSalvar = () => {
-        aoSalvar(templateAtual?.value || null);
+        console.log('handleSalvar - templateAtual:', templateAtual);
+        console.log('handleSalvar - enviando value:', templateAtual);
+        aoSalvar(templateAtual || null);
     };
 
     const templateTemplate = (option) => {
