@@ -47,6 +47,7 @@ const TemplatesVagaRegistro = () => {
     const [funcoes_confianca, setFuncoesConfianca] = useState([]);
     const [opcoesDominio, setOpcoesDominio] = useState({});
     const [availableDominioTables, setAvailableDominioTables] = useState([]);
+    const [carregandoDados, setCarregandoDados] = useState(true);
     
     // Estados dos campos de seleção
     const [indicativoAdmissao, setIndicativoAdmissao] = useState(null);
@@ -78,7 +79,7 @@ const TemplatesVagaRegistro = () => {
         carregarDados();
     }, []);
 
-    // Carregar template quando as opções de domínio estiverem prontas
+    // Carregar template quando as opções de domínio estiverem prontas (se estiver editando)
     useEffect(() => {
         if (id && Object.keys(opcoesDominio).length > 0) {
             carregarTemplate(id);
@@ -86,6 +87,7 @@ const TemplatesVagaRegistro = () => {
     }, [id, opcoesDominio]);
 
     const carregarDados = async () => {
+        setCarregandoDados(true);
         try {
             // Carregar funções de confiança
             const funcoesResp = await http.get('funcao/?format=json&confianca=true');
@@ -109,108 +111,127 @@ const TemplatesVagaRegistro = () => {
 
                 const resultados = await Promise.all(promisesDominio);
                 const novasOpcoes = resultados.reduce((acc, curr) => ({ ...acc, ...curr }), {});
+                console.log('Opções de domínio carregadas:', novasOpcoes);
                 setOpcoesDominio(novasOpcoes);
             }
         } catch (error) {
             console.error('Erro ao carregar dados:', error);
+            toast.current?.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Erro ao carregar dados das tabelas de domínio',
+                life: 3000
+            });
+        } finally {
+            setCarregandoDados(false);
         }
     };
 
-    const carregarTemplate = (templateId) => {
-        // Buscar do mockup
-        const template = templatesData.find(t => t.id === parseInt(templateId));
-        
-        if (template) {
-            setNome(template.nome || '');
-            setDescricao(template.descricao || '');
-            setJornada(template.jornada || '');
-            setSalario(template.salario || '');
-            setConfianca(template.confianca || false);
-            setCalculaInss(template.calcula_inss ?? true);
-            setCalculaIrrf(template.calcula_irrf ?? true);
-            setFuncaoEmpregoCargoAcumulavel(template.funcao_emprego_cargoacumulavel || false);
-            setPercAdiantamento(template.perc_adiantamento || '');
-            setAjudaCusto(template.ajuda_custo || '');
-            setArredondamento(template.arredondamento || '');
-            setMediaSalMaternidade(template.media_sal_maternidade || '');
+    const carregarTemplate = async (templateId) => {
+        try {
+            // Buscar da API
+            const template = await http.get(`/admissao_template/${templateId}/`);
             
-            // Carregar os valores dos dropdowns
-            if (template.indicativo_admissao) {
-                const opcao = opcoesIndicativoAdmissao.find(o => o.code === template.indicativo_admissao);
-                if (opcao) setIndicativoAdmissao(opcao);
+            if (template) {
+                setNome(template.nome || '');
+                setDescricao(template.descricao || '');
+                setJornada(template.jornada || '');
+                setSalario(template.salario || '');
+                setConfianca(template.confianca || false);
+                setCalculaInss(template.calcula_inss ?? true);
+                setCalculaIrrf(template.calcula_irrf ?? true);
+                setFuncaoEmpregoCargoAcumulavel(template.funcao_emprego_cargoacumulavel || false);
+                setPercAdiantamento(template.perc_adiantamento || '');
+                setAjudaCusto(template.ajuda_custo || '');
+                setArredondamento(template.arredondamento || '');
+                setMediaSalMaternidade(template.media_sal_maternidade || '');
+                
+                // Carregar os valores dos dropdowns de choices
+                if (template.indicativo_admissao) {
+                    const opcao = opcoesIndicativoAdmissao.find(o => o.code === template.indicativo_admissao);
+                    if (opcao) setIndicativoAdmissao(opcao);
+                }
+                if (template.tipo_regime_trabalhista) {
+                    const opcao = opcoesTipoRegimeTrabalhista.find(o => o.code === template.tipo_regime_trabalhista);
+                    if (opcao) setTipoRegimeTrabalhista(opcao);
+                }
+                if (template.tipo_regime_previdenciario) {
+                    const opcao = opcoesTipoRegimePrevidenciario.find(o => o.code === template.tipo_regime_previdenciario);
+                    if (opcao) setTipoRegimePrevidenciario(opcao);
+                }
+                if (template.tipo_regime_jornada) {
+                    const opcao = opcoesTipoRegimeJornada.find(o => o.code === template.tipo_regime_jornada);
+                    if (opcao) setTipoRegimeJornada(opcao);
+                }
+                if (template.contrato_tempo_parcial) {
+                    const opcao = opcoesContratoTempoParcial.find(o => o.code === template.contrato_tempo_parcial);
+                    if (opcao) setContratoTempoParcial(opcao);
+                }
+                if (template.tipo_contrato_prazo_determinado) {
+                    const opcao = opcoesTipoContratoPrazoDeterminado.find(o => o.code === template.tipo_contrato_prazo_determinado);
+                    if (opcao) setTipoContratoPrazoDeterminado(opcao);
+                }
+                if (template.tipo_contrato_trabalho) {
+                    const opcao = opcoesTipoContratoTrabalho.find(o => o.code === template.tipo_contrato_trabalho);
+                    if (opcao) setTipoContratoTrabalho(opcao);
+                }
+                if (template.natureza_atividade_esocial) {
+                    const opcao = opcoesNaturezaAtividadeESocial.find(o => o.code === template.natureza_atividade_esocial);
+                    if (opcao) setNaturezaAtividadeEsocial(opcao);
+                }
+                
+                // Carregar valores dos dropdowns de domínio (podem precisar de um delay para garantir que as opções foram formatadas)
+                setTimeout(() => {
+                    if (template.tipo_admissao && opcoesTipoAdmissao.length > 0) {
+                        const opcao = opcoesTipoAdmissao.find(o => o.id === template.tipo_admissao);
+                        if (opcao) setTipoAdmissao(opcao);
+                    }
+                    if (template.motivo_admissao && opcoesMotivoAdmissao.length > 0) {
+                        const opcao = opcoesMotivoAdmissao.find(o => o.id === template.motivo_admissao);
+                        if (opcao) setMotivoAdmissao(opcao);
+                    }
+                    if (template.tipo_situacao && opcoesTipoSituacao.length > 0) {
+                        const opcao = opcoesTipoSituacao.find(o => o.id === template.tipo_situacao);
+                        if (opcao) setTipoSituacao(opcao);
+                    }
+                    if (template.tipo_funcionario && opcoesTipoFuncionario.length > 0) {
+                        const opcao = opcoesTipoFuncionario.find(o => o.id === template.tipo_funcionario);
+                        if (opcao) setTipoFuncionario(opcao);
+                    }
+                    if (template.tipo_recebimento && opcoesTipoRecebimento.length > 0) {
+                        const opcao = opcoesTipoRecebimento.find(o => o.id === template.tipo_recebimento);
+                        if (opcao) setTipoRecebimento(opcao);
+                    }
+                    if (template.codigo_situacao_fgts && opcoesSituacaoFgts.length > 0) {
+                        const opcao = opcoesSituacaoFgts.find(o => o.id === template.codigo_situacao_fgts);
+                        if (opcao) setCodigoSituacaoFgts(opcao);
+                    }
+                    if (template.codigo_ocorrencia_sefip && opcoesCodigoOcorrenciaSefip.length > 0) {
+                        const opcao = opcoesCodigoOcorrenciaSefip.find(o => o.id === template.codigo_ocorrencia_sefip);
+                        if (opcao) setCodigoOcorrenciaSefip(opcao);
+                    }
+                    if (template.codigo_categoria_sefip && opcoesCodigoCategoriaSefip.length > 0) {
+                        const opcao = opcoesCodigoCategoriaSefip.find(o => o.id === template.codigo_categoria_sefip);
+                        if (opcao) setCodigoCategoriaSefip(opcao);
+                    }
+                    if (template.codigo_categoria_esocial && opcoesCodigoCategoriaESocial.length > 0) {
+                        const opcao = opcoesCodigoCategoriaESocial.find(o => o.id === template.codigo_categoria_esocial);
+                        if (opcao) setCodigoCategoriaEsocial(opcao);
+                    }
+                    if (template.funcao_confianca && opcoesFuncaoConfianca.length > 0) {
+                        const opcao = opcoesFuncaoConfianca.find(o => o.code === template.funcao_confianca);
+                        if (opcao) setFuncaoConfianca(opcao);
+                    }
+                }, 500);
             }
-            if (template.tipo_regime_trabalhista) {
-                const opcao = opcoesTipoRegimeTrabalhista.find(o => o.code === template.tipo_regime_trabalhista);
-                if (opcao) setTipoRegimeTrabalhista(opcao);
-            }
-            if (template.tipo_regime_previdenciario) {
-                const opcao = opcoesTipoRegimePrevidenciario.find(o => o.code === template.tipo_regime_previdenciario);
-                if (opcao) setTipoRegimePrevidenciario(opcao);
-            }
-            if (template.tipo_regime_jornada) {
-                const opcao = opcoesTipoRegimeJornada.find(o => o.code === template.tipo_regime_jornada);
-                if (opcao) setTipoRegimeJornada(opcao);
-            }
-            if (template.contrato_tempo_parcial) {
-                const opcao = opcoesContratoTempoParcial.find(o => o.code === template.contrato_tempo_parcial);
-                if (opcao) setContratoTempoParcial(opcao);
-            }
-            if (template.tipo_contrato_prazo_determinado) {
-                const opcao = opcoesTipoContratoPrazoDeterminado.find(o => o.code === template.tipo_contrato_prazo_determinado);
-                if (opcao) setTipoContratoPrazoDeterminado(opcao);
-            }
-            if (template.tipo_contrato_trabalho) {
-                const opcao = opcoesTipoContratoTrabalho.find(o => o.code === template.tipo_contrato_trabalho);
-                if (opcao) setTipoContratoTrabalho(opcao);
-            }
-            if (template.natureza_atividade_esocial) {
-                const opcao = opcoesNaturezaAtividadeESocial.find(o => o.code === template.natureza_atividade_esocial);
-                if (opcao) setNaturezaAtividadeEsocial(opcao);
-            }
-            
-            // Carregar valores dos dropdowns de domínio
-            setTimeout(() => {
-                if (template.tipo_admissao && opcoesTipoAdmissao.length > 0) {
-                    const opcao = opcoesTipoAdmissao.find(o => o.id === template.tipo_admissao);
-                    if (opcao) setTipoAdmissao(opcao);
-                }
-                if (template.motivo_admissao && opcoesMotivoAdmissao.length > 0) {
-                    const opcao = opcoesMotivoAdmissao.find(o => o.id === template.motivo_admissao);
-                    if (opcao) setMotivoAdmissao(opcao);
-                }
-                if (template.tipo_situacao && opcoesTipoSituacao.length > 0) {
-                    const opcao = opcoesTipoSituacao.find(o => o.id === template.tipo_situacao);
-                    if (opcao) setTipoSituacao(opcao);
-                }
-                if (template.tipo_funcionario && opcoesTipoFuncionario.length > 0) {
-                    const opcao = opcoesTipoFuncionario.find(o => o.id === template.tipo_funcionario);
-                    if (opcao) setTipoFuncionario(opcao);
-                }
-                if (template.tipo_recebimento && opcoesTipoRecebimento.length > 0) {
-                    const opcao = opcoesTipoRecebimento.find(o => o.id === template.tipo_recebimento);
-                    if (opcao) setTipoRecebimento(opcao);
-                }
-                if (template.codigo_situacao_fgts && opcoesSituacaoFgts.length > 0) {
-                    const opcao = opcoesSituacaoFgts.find(o => o.id === template.codigo_situacao_fgts);
-                    if (opcao) setCodigoSituacaoFgts(opcao);
-                }
-                if (template.codigo_ocorrencia_sefip && opcoesCodigoOcorrenciaSefip.length > 0) {
-                    const opcao = opcoesCodigoOcorrenciaSefip.find(o => o.id === template.codigo_ocorrencia_sefip);
-                    if (opcao) setCodigoOcorrenciaSefip(opcao);
-                }
-                if (template.codigo_categoria_sefip && opcoesCodigoCategoriaSefip.length > 0) {
-                    const opcao = opcoesCodigoCategoriaSefip.find(o => o.id === template.codigo_categoria_sefip);
-                    if (opcao) setCodigoCategoriaSefip(opcao);
-                }
-                if (template.codigo_categoria_esocial && opcoesCodigoCategoriaESocial.length > 0) {
-                    const opcao = opcoesCodigoCategoriaESocial.find(o => o.id === template.codigo_categoria_esocial);
-                    if (opcao) setCodigoCategoriaEsocial(opcao);
-                }
-                if (template.funcao_confianca && opcoesFuncaoConfianca.length > 0) {
-                    const opcao = opcoesFuncaoConfianca.find(o => o.code === template.funcao_confianca);
-                    if (opcao) setFuncaoConfianca(opcao);
-                }
-            }, 500);
+        } catch (error) {
+            console.error('Erro ao carregar template:', error);
+            toast.current?.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Erro ao carregar template',
+                life: 3000
+            });
         }
     };
 
@@ -233,7 +254,12 @@ const TemplatesVagaRegistro = () => {
     };
 
     // Opções formatadas
-    const opcoesTipoAdmissao = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_admissao), [opcoesDominio.tipo_admissao]);
+    const opcoesTipoAdmissao = useMemo(() => {
+        const opcoes = formatarOpcoesDominio(opcoesDominio.tipo_admissao);
+        console.log('opcoesTipoAdmissao:', opcoes.length);
+        return opcoes;
+    }, [opcoesDominio.tipo_admissao]);
+    
     const opcoesMotivoAdmissao = useMemo(() => formatarOpcoesDominio(opcoesDominio.motivo_admissao), [opcoesDominio.motivo_admissao]);
     const opcoesSituacaoFgts = useMemo(() => formatarOpcoesDominio(opcoesDominio.codigo_situacao_fgts), [opcoesDominio.codigo_situacao_fgts]);
     const opcoesTipoFuncionario = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_funcionario), [opcoesDominio.tipo_funcionario]);
@@ -301,7 +327,7 @@ const TemplatesVagaRegistro = () => {
         "2": "Trabalho Rural"
     }), []);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Validação básica
@@ -309,6 +335,14 @@ const TemplatesVagaRegistro = () => {
         if (!nome.trim()) camposObrigatorios.push('Nome');
         if (!jornada.trim()) camposObrigatorios.push('Jornada');
         if (!salario.trim()) camposObrigatorios.push('Salário');
+        if (!tipoAdmissao) camposObrigatorios.push('Tipo de Admissão');
+        if (!motivoAdmissao) camposObrigatorios.push('Motivo da Admissão');
+        if (!tipoSituacao) camposObrigatorios.push('Situação');
+        if (!tipoFuncionario) camposObrigatorios.push('Tipo de Funcionário');
+        if (!tipoRecebimento) camposObrigatorios.push('Tipo de Recebimento');
+        if (!codigoSituacaoFgts) camposObrigatorios.push('Situação FGTS');
+        if (!codigoCategoriaEsocial) camposObrigatorios.push('Código Categoria eSocial');
+        if (!naturezaAtividadeEsocial) camposObrigatorios.push('Natureza da Atividade eSocial');
 
         if (camposObrigatorios.length > 0) {
             toast.current.show({
@@ -320,17 +354,84 @@ const TemplatesVagaRegistro = () => {
             return;
         }
 
-        // Simulação de salvamento (quando a API estiver pronta, trocar por http.post/put)
-        toast.current.show({
-            severity: 'success',
-            summary: id ? 'Template atualizado' : 'Template criado',
-            detail: id ? 'Template atualizado com sucesso!' : 'Template criado com sucesso!',
-            life: 3000
-        });
+        // Função para limpar formatação de moeda
+        const limparFormatacaoMonetaria = (valor) => {
+            if (!valor) return '0.00';
+            // Remove R$, espaços, pontos de milhar e substitui vírgula por ponto
+            return valor.toString()
+                .replace('R$', '')
+                .replace(/\s/g, '')
+                .replace(/\./g, '')
+                .replace(',', '.');
+        };
 
-        setTimeout(() => {
-            navegar('/templates-vaga');
-        }, 1000);
+        // Montar payload para a API
+        const payload = {
+            nome,
+            descricao,
+            jornada,
+            salario: limparFormatacaoMonetaria(salario),
+            confianca,
+            funcao_confianca: funcaoConfianca?.code || null,
+            calcula_inss: calculaInss,
+            calcula_irrf: calculaIrrf,
+            funcao_emprego_cargoacumulavel: funcaoEmpregoCargoAcumulavel,
+            perc_adiantamento: limparFormatacaoMonetaria(percAdiantamento),
+            ajuda_custo: limparFormatacaoMonetaria(ajudaCusto),
+            arredondamento: limparFormatacaoMonetaria(arredondamento),
+            media_sal_maternidade: limparFormatacaoMonetaria(mediaSalMaternidade),
+            indicativo_admissao: indicativoAdmissao?.code || null,
+            tipo_admissao: tipoAdmissao?.id,
+            motivo_admissao: motivoAdmissao?.id,
+            tipo_situacao: tipoSituacao?.id,
+            tipo_funcionario: tipoFuncionario?.id,
+            tipo_regime_trabalhista: tipoRegimeTrabalhista?.code || null,
+            tipo_regime_previdenciario: tipoRegimePrevidenciario?.code || null,
+            tipo_recebimento: tipoRecebimento?.id,
+            tipo_regime_jornada: tipoRegimeJornada?.code || null,
+            codigo_situacao_fgts: codigoSituacaoFgts?.id,
+            codigo_ocorrencia_sefip: codigoOcorrenciaSefip?.id || null,
+            codigo_categoria_sefip: codigoCategoriaSefip?.id || null,
+            contrato_tempo_parcial: contratoTempoParcial?.code || '0',
+            tipo_contrato_prazo_determinado: tipoContratoPrazoDeterminado?.code || null,
+            tipo_contrato_trabalho: tipoContratoTrabalho?.code || null,
+            codigo_categoria_esocial: codigoCategoriaEsocial?.id,
+            natureza_atividade_esocial: naturezaAtividadeEsocial?.code
+        };
+
+        try {
+            if (id) {
+                // Atualizar template existente
+                await http.put(`/admissao_template/${id}/`, payload);
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: 'Template atualizado com sucesso!',
+                    life: 3000
+                });
+            } else {
+                // Criar novo template
+                await http.post('/admissao_template/', payload);
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: 'Template criado com sucesso!',
+                    life: 3000
+                });
+            }
+
+            setTimeout(() => {
+                navegar('/templates-vaga');
+            }, 1000);
+        } catch (error) {
+            console.error('Erro ao salvar template:', error);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: error.response?.data?.detail || 'Erro ao salvar template. Verifique os dados e tente novamente.',
+                life: 5000
+            });
+        }
     };
 
     return (
@@ -374,6 +475,8 @@ const TemplatesVagaRegistro = () => {
                             valor={indicativoAdmissao}
                             setValor={setIndicativoAdmissao}
                             options={opcoesIndicativoAdmissao}
+                            disabled={carregandoDados}
+                            placeholder={carregandoDados ? "Carregando..." : "Selecione"}
                         />
                     </Col6>
                     <Col6>
@@ -385,6 +488,8 @@ const TemplatesVagaRegistro = () => {
                             valor={tipoAdmissao}
                             setValor={setTipoAdmissao}
                             options={opcoesTipoAdmissao}
+                            disabled={carregandoDados}
+                            placeholder={carregandoDados ? "Carregando..." : "Selecione"}
                         />
                     </Col6>
                 </Col12>
@@ -399,6 +504,8 @@ const TemplatesVagaRegistro = () => {
                             valor={motivoAdmissao}
                             setValor={setMotivoAdmissao}
                             options={opcoesMotivoAdmissao}
+                            disabled={carregandoDados}
+                            placeholder={carregandoDados ? "Carregando..." : "Selecione"}
                         />
                     </Col6>
                     <Col6>
@@ -411,6 +518,8 @@ const TemplatesVagaRegistro = () => {
                             setValor={setTipoSituacao}
                             options={opcoesTipoSituacao}
                             filter
+                            disabled={carregandoDados}
+                            placeholder={carregandoDados ? "Carregando..." : "Selecione"}
                         />
                     </Col6>
                 </Col12>
@@ -423,6 +532,8 @@ const TemplatesVagaRegistro = () => {
                             valor={tipoRegimeTrabalhista}
                             setValor={setTipoRegimeTrabalhista}
                             options={opcoesTipoRegimeTrabalhista}
+                            disabled={carregandoDados}
+                            placeholder={carregandoDados ? "Carregando..." : "Selecione"}
                         />
                     </Col6>
                     <Col6>
@@ -435,6 +546,8 @@ const TemplatesVagaRegistro = () => {
                             setValor={setTipoFuncionario}
                             options={opcoesTipoFuncionario}
                             filter
+                            disabled={carregandoDados}
+                            placeholder={carregandoDados ? "Carregando..." : "Selecione"}
                         />
                     </Col6>
                 </Col12>
@@ -447,6 +560,8 @@ const TemplatesVagaRegistro = () => {
                             valor={tipoRegimePrevidenciario}
                             setValor={setTipoRegimePrevidenciario}
                             options={opcoesTipoRegimePrevidenciario}
+                            disabled={carregandoDados}
+                            placeholder={carregandoDados ? "Carregando..." : "Selecione"}
                         />
                     </Col6>
                     <Col6>
@@ -458,6 +573,8 @@ const TemplatesVagaRegistro = () => {
                             valor={tipoRecebimento}
                             setValor={setTipoRecebimento}
                             options={opcoesTipoRecebimento}
+                            disabled={carregandoDados}
+                            placeholder={carregandoDados ? "Carregando..." : "Selecione"}
                         />
                     </Col6>
                 </Col12>
@@ -470,6 +587,8 @@ const TemplatesVagaRegistro = () => {
                             valor={tipoRegimeJornada}
                             setValor={setTipoRegimeJornada}
                             options={opcoesTipoRegimeJornada}
+                            disabled={carregandoDados}
+                            placeholder={carregandoDados ? "Carregando..." : "Selecione"}
                         />
                     </Col6>
                     <Col6>
@@ -509,6 +628,8 @@ const TemplatesVagaRegistro = () => {
                             valor={codigoSituacaoFgts}
                             setValor={setCodigoSituacaoFgts}
                             options={opcoesSituacaoFgts}
+                            disabled={carregandoDados}
+                            placeholder={carregandoDados ? "Carregando..." : "Selecione"}
                         />
                     </Col6>
                 </Col12>
@@ -522,6 +643,8 @@ const TemplatesVagaRegistro = () => {
                             setValor={setCodigoOcorrenciaSefip}
                             options={opcoesCodigoOcorrenciaSefip}
                             filter
+                            disabled={carregandoDados}
+                            placeholder={carregandoDados ? "Carregando..." : "Selecione"}
                         />
                     </Col6>
                     <Col6>
@@ -532,6 +655,8 @@ const TemplatesVagaRegistro = () => {
                             setValor={setCodigoCategoriaSefip}
                             options={opcoesCodigoCategoriaSefip}
                             filter
+                            disabled={carregandoDados}
+                            placeholder={carregandoDados ? "Carregando..." : "Selecione"}
                         />
                     </Col6>
                 </Col12>
@@ -544,6 +669,8 @@ const TemplatesVagaRegistro = () => {
                             valor={contratoTempoParcial}
                             setValor={setContratoTempoParcial}
                             options={opcoesContratoTempoParcial}
+                            disabled={carregandoDados}
+                            placeholder={carregandoDados ? "Carregando..." : "Selecione"}
                         />
                     </Col6>
                     <Col6>
@@ -553,6 +680,8 @@ const TemplatesVagaRegistro = () => {
                             valor={tipoContratoPrazoDeterminado}
                             setValor={setTipoContratoPrazoDeterminado}
                             options={opcoesTipoContratoPrazoDeterminado}
+                            disabled={carregandoDados}
+                            placeholder={carregandoDados ? "Carregando..." : "Selecione"}
                         />
                     </Col6>
                 </Col12>
@@ -565,6 +694,8 @@ const TemplatesVagaRegistro = () => {
                             valor={tipoContratoTrabalho}
                             setValor={setTipoContratoTrabalho}
                             options={opcoesTipoContratoTrabalho}
+                            disabled={carregandoDados}
+                            placeholder={carregandoDados ? "Carregando..." : "Selecione"}
                         />
                     </Col6>
                     <Col6>
@@ -577,6 +708,8 @@ const TemplatesVagaRegistro = () => {
                             setValor={setCodigoCategoriaEsocial}
                             options={opcoesCodigoCategoriaESocial}
                             filter
+                            disabled={carregandoDados}
+                            placeholder={carregandoDados ? "Carregando..." : "Selecione"}
                         />
                     </Col6>
                 </Col12>
@@ -591,6 +724,8 @@ const TemplatesVagaRegistro = () => {
                             valor={naturezaAtividadeEsocial}
                             setValor={setNaturezaAtividadeEsocial}
                             options={opcoesNaturezaAtividadeESocial}
+                            disabled={carregandoDados}
+                            placeholder={carregandoDados ? "Carregando..." : "Selecione"}
                         />
                     </Col6>
                     <Col6>
@@ -672,6 +807,8 @@ const TemplatesVagaRegistro = () => {
                                 valor={funcaoConfianca}
                                 setValor={setFuncaoConfianca}
                                 options={opcoesFuncaoConfianca}
+                                disabled={carregandoDados}
+                                placeholder={carregandoDados ? "Carregando..." : "Selecione"}
                             />
                         </Col6>
                     </Col12>
