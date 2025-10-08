@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog } from 'primereact/dialog';
-import { Dropdown } from 'primereact/dropdown';
+import DropdownItens from '@components/DropdownItens';
 import Botao from '@components/Botao';
 import http from '@http';
 import Frame from "@components/Frame";
@@ -36,26 +35,32 @@ const Label = styled.label`
 function ModalTags({ opened = false, aoFechar, aoSalvar, tagSelecionada = null }) {
     const [tags, setTags] = useState([]);
     const [tagAtual, setTagAtual] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (opened) {
+            setLoading(true);
             // Buscar tags disponíveis
             http.get('/documento_requerido_tag/')
                 .then(response => {
                     const tagsFormatadas = response.map(tag => ({
-                        label: tag.nome,
-                        value: tag.id
+                        name: tag.nome,
+                        code: tag.id
                     }));
                     setTags(tagsFormatadas);
                     
                     // Se há uma tag já selecionada, define ela
                     if (tagSelecionada) {
-                        const tagEncontrada = tagsFormatadas.find(t => t.value === tagSelecionada);
+                        const tagEncontrada = tagsFormatadas.find(t => t.code === tagSelecionada);
+                        console.log('Tag pré-selecionada encontrada:', tagEncontrada);
                         setTagAtual(tagEncontrada || null);
                     }
                 })
                 .catch(error => {
                     console.error('Erro ao buscar tags:', error);
+                })
+                .finally(() => {
+                    setLoading(false);
                 });
         }
     }, [opened, tagSelecionada]);
@@ -67,7 +72,7 @@ function ModalTags({ opened = false, aoFechar, aoSalvar, tagSelecionada = null }
     }, [opened]);
 
     const handleSalvar = () => {
-        aoSalvar(tagAtual?.value || null);
+        aoSalvar(tagAtual?.code || null);
     };
 
     return (
@@ -87,19 +92,18 @@ function ModalTags({ opened = false, aoFechar, aoSalvar, tagSelecionada = null }
                         <Frame padding="12px 0px">
                             <Col12>
                                 <DropdownContainer>
-                                    <Label>Tag</Label>
-                                    <Dropdown
-                                        value={tagAtual}
-                                        onChange={(e) => setTagAtual(e.value)}
+                                    <DropdownItens
+                                        name="tag"
+                                        label="Tag"
+                                        valor={tagAtual}
+                                        setValor={setTagAtual}
                                         options={tags}
-                                        optionLabel="label"
-                                        placeholder="Selecione uma tag"
+                                        placeholder={loading ? "Carregando tags..." : "Selecione uma tag"}
                                         filter
-                                        showClear
-                                        style={{ width: '100%' }}
+                                        disabled={loading}
                                     />
                                     <small style={{ color: '#6c757d', marginTop: '4px', display: 'block' }}>
-                                        Selecione uma tag para categorizar esta vaga.
+                                        Selecione uma tag para preencher automaticamente os documentos requeridos da vaga.
                                     </small>
                                 </DropdownContainer>
                             </Col12>

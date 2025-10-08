@@ -892,10 +892,18 @@ function DetalhesVaga() {
                                 title={
                                     vaga?.status === 'T' ? "Não é possível editar tag em vagas transferidas" :
                                     (temCandidatoAprovado && !temVagasDisponiveis()) ? "Não é possível editar tag pois todas as vagas já têm candidatos aprovados" : 
-                                    "Selecionar tag para preencher documentos automaticamente"
+                                    tagNome ? "Alterar tag da vaga" : "Selecionar tag para preencher documentos automaticamente"
                                 }
                             >
-                                {tagNome ? tagNome : <><GrAddCircle stroke="var(--secundaria)" /> Adicionar por Tag</>}
+                                {tagNome ? (
+                                    <>
+                                        <FaPen size={12} fill="var(--secundaria)" /> {tagNome}
+                                    </>
+                                ) : (
+                                    <>
+                                        <GrAddCircle stroke="var(--secundaria)" /> Adicionar por Tag
+                                    </>
+                                )}
                             </Botao>
                         </div>
                         <FaInfoCircle 
@@ -909,8 +917,10 @@ function DetalhesVaga() {
                             onClick={() => {
                                 toast.current.show({
                                     severity: 'info',
-                                    summary: 'Tag de Documentos',
-                                    detail: 'Este recurso serve para preencher automaticamente os documentos requeridos dessa vaga com documentos que tenham a mesma tag cadastrada.',
+                                    summary: tagNome ? 'Alterar Tag da Vaga' : 'Tag de Documentos',
+                                    detail: tagNome 
+                                        ? 'Ao alterar a tag, os documentos da nova tag serão adicionados. Documentos anteriores não serão removidos automaticamente.'
+                                        : 'Selecione uma tag para preencher automaticamente os documentos requeridos dessa vaga com documentos que tenham a mesma tag.',
                                     life: 5000,
                                     sticky: false
                                 });
