@@ -8,6 +8,7 @@ const DivFrame = styled.div`
     align-items: ${ props => props.$alinhamento ? props.$alinhamento : 'flex-start' };
     padding: ${ props => props.$padding ? props.$padding : '0' };
     gap: ${ props => props.$gap ? props.$gap : '0' };
+    height: ${ props => props.$height ? props.$height : 'auto' };
     overflow-y: ${ props => props.$overflowY ? props.$overflowY : 'visible' };
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
@@ -37,12 +38,12 @@ const DivFrame = styled.div`
     `}
 `
 
-function Frame({ children, overflowY = "visible", estilo = "", alinhamento, padding, gap="0", alinhamentoLabel="center"}) {
+function Frame({ children, overflowY = "visible", estilo = "", alinhamento, padding, gap="0", alinhamentoLabel="center", height = "auto" }) {
 
     const estiloAplicado = 'frame' + ' ' + estilo;
     
     return (
-        <DivFrame $gap={gap} $overflowY={overflowY} $alinhamento={alinhamento} $padding={padding} $alinhamentoLabel={alinhamentoLabel} className={estiloAplicado}>
+        <DivFrame $gap={gap} $height={height} $overflowY={overflowY} $alinhamento={alinhamento} $padding={padding} $alinhamentoLabel={alinhamentoLabel} className={estiloAplicado}>
             {children}
         </DivFrame>
     )

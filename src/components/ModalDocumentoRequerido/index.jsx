@@ -5,6 +5,7 @@ import CampoTags from '@components/CampoTags';
 import { Dropdown } from 'primereact/dropdown';
 import SwitchInput from '@components/SwitchInput';
 import Botao from '@components/Botao';
+import BotaoGrupo from '@components/BotaoGrupo';
 import { FaSave } from 'react-icons/fa';
 import http from '@http';
 import Frame from "@components/Frame"
@@ -12,7 +13,7 @@ import Titulo from "@components/Titulo"
 import { RiCloseFill } from 'react-icons/ri'
 import styled from "styled-components"
 import styles from './ModalDocumentoRequerido.module.css'
-import { Overlay, DialogEstilizado } from '@components/Modal/styles'
+import { OverlayRight, DialogEstilizadoRight } from '@components/Modal/styles'
 
 const Col12 = styled.div`
     display: flex;
@@ -41,6 +42,57 @@ const Col4 = styled.div`
 
 const Col3 = styled.div`
     flex: 1 1 calc(33.333% - 11px);
+`
+
+const BotaoFechar = styled.button`
+    background: none;
+    border: none;
+    color: #757575;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0 8px;
+    transition: color 0.2s;
+    &:hover {
+        color: #f44336;
+    }
+`;
+
+const CabecalhoFlex = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 24px;
+`;
+
+const ConteudoContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    max-height: calc(90vh - 150px);
+    overflow-y: auto;
+    padding-right: 8px;
+    flex: 1;
+    
+    /* Estilização da scrollbar */
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
 `
 
 function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento = null }) {
@@ -381,23 +433,20 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
     };
 
     return (
-        <>
-            {opened && (
-                <Overlay>
-                    <DialogEstilizado open={opened} $width="90vw">
-                        <Frame>
-                            <Titulo>
-                                <button className="close" onClick={aoFechar}>
-                                    <RiCloseFill size={20} className="fechar" />  
-                                </button>
-                                <h6>{documento ? 'Editar Documento' : 'Novo Documento'}</h6>
-                            </Titulo>
-                        </Frame>
+        <OverlayRight $opened={opened} onClick={aoFechar}>
+            <DialogEstilizadoRight $width={'70vw'} $align="flex-end" open={opened} $opened={opened} onClick={e => e.stopPropagation()}>
+                <Frame height={'100%'} style={{ padding: '24px 32px', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
+                    <CabecalhoFlex>
+                        <h4 style={{ margin: 0 }}>{documento ? 'Editar Documento' : 'Novo Documento'}</h4>
+                        <BotaoFechar onClick={aoFechar}>
+                            <RiCloseFill size={22} className="fechar" />
+                        </BotaoFechar>
+                    </CabecalhoFlex>
                         
-                        <Frame padding="12px 0px">
-                            {/* Primeira linha: Nome, Instrução e Descrição */}
+                    <ConteudoContainer>
+                            {/* Primeira linha: Nome e Instrução */}
                             <Col12>
-                                <Col3>
+                                <Col6>
                                     <CampoTexto
                                         camposVazios={classError.includes('nome') ? ['nome'] : []}
                                         name="nome"
@@ -407,8 +456,8 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
                                         label="Nome*"
                                         placeholder="Digite o nome do documento"
                                     />
-                                </Col3>
-                                <Col3>
+                                </Col6>
+                                <Col6>
                                     <CampoTexto
                                         camposVazios={classError.includes('instrucao') ? ['instrucao'] : []}
                                         name="instrucao"
@@ -418,8 +467,12 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
                                         label="Instrução*"
                                         placeholder="Digite a instrução"
                                     />
-                                </Col3>
-                                <Col3>
+                                </Col6>
+                            </Col12>
+                            
+                            {/* Segunda linha: Descrição e Extensões Permitidas */}
+                            <Col12>
+                                <Col6>
                                     <CampoTexto
                                         name="descricao"
                                         valor={descricao}
@@ -427,13 +480,11 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
                                         type="text"
                                         label="Descrição"
                                         placeholder="Digite a descrição"
+                                        rows={3}
+                                        width="100%"
                                     />
-                                </Col3>
-                            </Col12>
-                            
-                            {/* Segunda linha: Extensões Permitidas, Campos Requeridos e Tags */}
-                            <Col12>
-                                <Col3>
+                                </Col6>
+                                <Col6>
                                     <CampoTags
                                         camposVazios={classError.includes('ext_permitidas') ? ['ext_permitidas'] : []}
                                         name="ext_permitidas"
@@ -447,8 +498,12 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
                                     <small style={{ color: '#6c757d', marginTop: '4px', display: 'block' }}>
                                         Selecione as extensões de arquivo permitidas.
                                     </small>
-                                </Col3>
-                                <Col3>
+                                </Col6>
+                            </Col12>
+                            
+                            {/* Terceira linha: Campos Requeridos e Tags */}
+                            <Col12>
+                                <Col6>
                                     <CampoTags
                                         name="campos_requeridos"
                                         value={camposRequeridosTags}
@@ -460,8 +515,8 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
                                     <small style={{ color: '#6c757d', marginTop: '4px', display: 'block' }}>
                                         Campos que devem ser preenchidos.
                                     </small>
-                                </Col3>
-                                <Col3>
+                                </Col6>
+                                <Col6>
                                     <CampoTags
                                         name="tags"
                                         value={tags}
@@ -475,22 +530,29 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
                                     <small style={{ color: loadingTag ? '#0ea5e9' : '#6c757d', marginTop: '4px', display: 'block', fontWeight: loadingTag ? 600 : 400 }}>
                                         {loadingTag ? '⏳ Criando tag na API...' : 'Tags ou crie novas (pressione Enter).'}
                                     </small>
-                                </Col3>
+                                </Col6>
                             </Col12>
                             
-                            {/* Terceira linha: Frente e Verso */}
-                            <Col12>
-                                <Col6Centered>
-                                    <label style={{ fontWeight: 600, marginRight: 8 }}>Frente e Verso</label>
-                                    <SwitchInput 
-                                        checked={frenteVerso} 
-                                        onChange={handleFrenteVersoChange}
-                                    />
-                                </Col6Centered>
-                            </Col12>
-                        </Frame>
+                    </ConteudoContainer>
                         
-                        <div className={styles.containerBottom}>
+                    <div style={{ 
+                        padding: '16px 0', 
+                        display: 'flex', 
+                        justifyContent: 'space-between', 
+                        alignItems: 'center',
+                        width: '98%',
+                        gap: '12px',
+                        borderTop: '1px solid #e9ecef',
+                        marginTop: 'auto'
+                    }}>
+                        <div style={{ display: 'flex', marginLeft: '18px', alignItems: 'center', gap: '12px' }}>
+                            <label style={{ fontWeight: 600, marginRight: 8 }}>Frente e Verso</label>
+                            <SwitchInput 
+                                checked={frenteVerso} 
+                                onChange={handleFrenteVersoChange}
+                            />
+                        </div>
+                        <div style={{ display: 'flex', gap: '12px' }}>
                             <Botao 
                                 aoClicar={validarESalvar} 
                                 estilo="vermilion" 
@@ -500,10 +562,10 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
                                 {documento ? 'Atualizar' : 'Confirmar'}
                             </Botao>
                         </div>
-                    </DialogEstilizado>
-                </Overlay>
-            )}
-        </>
+                    </div>
+                </Frame>
+            </DialogEstilizadoRight>
+        </OverlayRight>
     );
 }
 
