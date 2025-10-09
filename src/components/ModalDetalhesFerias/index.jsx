@@ -1053,7 +1053,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
         }
         
         try {
-            await http.post(`/funcionario/${eventoCompletado.colab.id}/solicita_ferias/`, {
+            await http.post(`/funcionario/${eventoCompletado.colab.id}/solicita_ferias_novo/`, {
                 data_inicio: dataInicio,
                 data_fim: dataFim,
                 adiantar_13: adiantarDecimoTerceiro,
