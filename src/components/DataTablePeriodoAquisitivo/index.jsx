@@ -392,73 +392,61 @@ function DataTablePeriodoAquisitivo({
         const diaFimStr = String(dia).padStart(2, '0');
         const mesFimStr = String(mes).padStart(2, '0');
         const anoFimStr = ano;
+        
+        return (
+            <p style={{
+                fontWeight: '400', 
+                fontSize: '12px',
+                whiteSpace: 'nowrap',
+                textAlign: 'left',
+                margin: 0
+            }}>
+                {`${diaFimStr}/${mesFimStr}/${anoFimStr}`}
+            </p>
+        );
+    }
 
-        // Lógica dos ícones de período
+    const representativeSituacaoPeriodoTemplate = (rowData) => {
         const isPeriodoAberto = rowData?.periodo_aberto === true;
         const isPeriodoPerdido = rowData?.periodo_perdido === true;
+        
+        let statusText = 'Fechado';
+        let statusColor = '#F59E0B';
+        let icon = <FaLock size={14} />;
+        
+        if (isPeriodoPerdido) {
+            statusText = 'Perdido';
+            statusColor = '#EF4444';
+            icon = <FaExclamationTriangle size={14} />;
+        } else if (isPeriodoAberto) {
+            statusText = 'Aberto';
+            statusColor = '#10B981';
+            icon = <FaLockOpen size={14} />;
+        }
         
         return (
             <div style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
-                width: '100%'
+                gap: '8px',
+                width: '100%',
+                justifyContent: 'flex-start'
             }}>
-                <p style={{
-                    fontWeight: '400', 
-                    fontSize: '12px',
-                    whiteSpace: 'nowrap',
-                    textAlign: 'left',
-                    margin: 0
-                }}>
-                    {`${diaFimStr}/${mesFimStr}/${anoFimStr}`}
-                </p>
                 <div style={{
                     display: 'flex',
-                    flexDirection: 'row',
-                    gap: '4px',
-                    alignItems: 'center'
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '4px 10px',
+                    borderRadius: '6px',
+                    background: `${statusColor}15`,
+                    border: `1px solid ${statusColor}40`,
+                    color: statusColor,
+                    fontWeight: '500',
+                    fontSize: '12px',
+                    whiteSpace: 'nowrap'
                 }}>
-                    <Tooltip target=".periodo-aberto-icon" />
-                    {isPeriodoAberto ? (
-                        <FaLockOpen 
-                            className="periodo-aberto-icon"
-                            data-pr-tooltip="Período Aberto"
-                            size={12} 
-                            color="#10B981" 
-                            fill="#10B981"
-                            style={{
-                                filter: 'drop-shadow(0 0 2px rgba(16, 185, 129, 0.3))',
-                                cursor: 'help'
-                            }}
-                        />
-                    ) : (
-                        <FaLock 
-                            className="periodo-aberto-icon"
-                            data-pr-tooltip="Período Fechado"
-                            size={12} 
-                            color="#F59E0B" 
-                            fill="#F59E0B"
-                            style={{
-                                filter: 'drop-shadow(0 0 2px rgba(245, 158, 11, 0.3))',
-                                cursor: 'help'
-                            }}
-                        />
-                    )}
-                    <Tooltip target=".periodo-perdido-icon" />
-                    {isPeriodoPerdido ? (
-                        <FaExclamationTriangle 
-                            className="periodo-perdido-icon"
-                            data-pr-tooltip="Período Perdido"
-                            size={12} 
-                            color="#EF4444" 
-                            fill="#EF4444"
-                            style={{
-                                filter: 'drop-shadow(0 0 2px rgba(239, 68, 68, 0.3))',
-                                cursor: 'help'
-                            }}
-                        />
-                    ) : null}
+                    {icon}
+                    {statusText}
                 </div>
             </div>
         );
@@ -601,8 +589,15 @@ function DataTablePeriodoAquisitivo({
         const newPage = event.page + 1;
         const newPageSize = event.rows;
         
-        setCurrentPage(newPage);
-        setPageSize(newPageSize);
+        // Se tem callback do componente pai, usar ele (server-side)
+        if (setCurrentPage && setPageSize) {
+            setCurrentPage(newPage);
+            setPageSize(newPageSize);
+        } else {
+            // Fallback para paginação local (client-side)
+            setCurrentPage(newPage);
+            setPageSize(newPageSize);
+        }
     };
 
     // Função para lidar com ordenação
@@ -657,38 +652,43 @@ function DataTablePeriodoAquisitivo({
     const getColumnWidths = useMemo(() => {
         // Definir as proporções originais (quando todas as colunas estão presentes)
         const originalProportions = {
-            colaborador: 25,
-            chapa: 12,
-            inicio: 12,
-            fim: 12,
-            saldo: 15,
-            situacao: 24
+            colaborador: 23,
+            chapa: 11,
+            inicio: 11,
+            fim: 11,
+            situacaoPeriodo: 13,
+            saldo: 13,
+            situacao: 18
         };
         
-        // Determinar quais colunas estão presentes
+        // Determinar quais colunas estão presentes e suas proporções
         const availableColumns = [];
+        const availableProportions = {};
         
         if (!colaborador) {
+            // Quando não há colaborador (lista geral), incluir colunas de colaborador e chapa
             availableColumns.push('colaborador', 'chapa');
+            availableProportions['colaborador'] = originalProportions['colaborador'];
+            availableProportions['chapa'] = originalProportions['chapa'];
         }
-        availableColumns.push('inicio', 'fim', 'saldo', 'situacao');
         
-        // Calcular a soma das proporções das colunas disponíveis
-        const totalProportion = availableColumns.reduce((sum, col) => sum + originalProportions[col], 0);
+        // Sempre incluir estas colunas
+        availableColumns.push('inicio', 'fim', 'situacaoPeriodo', 'saldo', 'situacao');
+        availableProportions['inicio'] = originalProportions['inicio'];
+        availableProportions['fim'] = originalProportions['fim'];
+        availableProportions['situacaoPeriodo'] = originalProportions['situacaoPeriodo'];
+        availableProportions['saldo'] = originalProportions['saldo'];
+        availableProportions['situacao'] = originalProportions['situacao'];
         
         // Calcular as larguras percentuais ajustadas
         const widths = {};
-        let totalCalculated = 0;
+        
+        // Distribuir proporcionalmente entre as colunas disponíveis
+        const totalProportion = availableColumns.reduce((sum, col) => sum + availableProportions[col], 0);
         
         availableColumns.forEach((col, index) => {
-            if (index === availableColumns.length - 1) {
-                // Para a última coluna, usar o que falta para completar 100%
-                widths[col] = `${(100 - totalCalculated).toFixed(1)}%`;
-            } else {
-                const width = (originalProportions[col] / totalProportion * 100);
-                widths[col] = `${width.toFixed(1)}%`;
-                totalCalculated += parseFloat(width.toFixed(1));
-            }
+            const proportion = availableProportions[col] / totalProportion;
+            widths[col] = `${(proportion * 100).toFixed(1)}%`;
         });
         
         return widths;
@@ -797,6 +797,14 @@ function DataTablePeriodoAquisitivo({
                     header="Fim" 
                     style={{ width: getColumnWidths.fim }} 
                     className="col-fim-aquisicao"
+                    headerStyle={{ fontSize: '11px' }}
+                ></Column>
+                <Column 
+                    body={representativeSituacaoPeriodoTemplate} 
+                    field="periodo_aberto" 
+                    header="Situação do Período" 
+                    style={{ width: getColumnWidths.situacaoPeriodo }} 
+                    className="col-situacao-periodo"
                     headerStyle={{ fontSize: '11px' }}
                 ></Column>
                 <Column 

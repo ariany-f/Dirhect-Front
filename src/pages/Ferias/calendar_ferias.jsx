@@ -350,18 +350,17 @@ const ViewToggleOption = styled.button`
 const CurrentMonthButton = styled.button`
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     background: #ffffff;
     color: #374151;
     border: 2px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 10px 16px;
-    font-size: 14px;
-    font-weight: 600;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    min-width: 140px;
+    min-width: 90px;
     justify-content: center;
     position: relative;
     overflow: hidden;
@@ -381,7 +380,6 @@ const CurrentMonthButton = styled.button`
         border-color: var(--primaria);
         background: #f8fafc;
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         
         &::before {
             left: 100%;
@@ -400,7 +398,7 @@ const CurrentMonthButton = styled.button`
     }
     
     svg {
-        font-size: 16px;
+        font-size: 14px;
         color: var(--primaria);
         transition: transform 0.2s ease;
     }
@@ -536,7 +534,7 @@ const DAYS_BATCH = 30; // Carrega mais 1 mês por vez
 const INITIAL_COLABS = 3;
 const COLABS_BATCH = 2;
 
-const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadingMore, isRendering, situacoesUnicas = [], onFilterChange, secaoFiltroAtual }) => {
+const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadingMore, isRendering, situacoesUnicas = [], onFilterChange, secaoFiltroAtual, situacaoFiltroAtual, onSituacaoChange }) => {
     const [visualizacao, setVisualizacao] = useState('trimestral'); // 'mensal', 'trimestral', 'semestral' ou 'anual'
     const [modalEvento, setModalEvento] = useState(null); // {colab, evento, tipo}
     const [isDragging, setIsDragging] = useState(false);
@@ -556,10 +554,18 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
     const [loadingSecoes, setLoadingSecoes] = useState(false);
     const [filtroSecao, setFiltroSecao] = useState('');
 
+    // Estados para filtro de situação
+    const [situacaoSelecionada, setSituacaoSelecionada] = useState(situacaoFiltroAtual || null);
+
     // Sincroniza o estado local com o filtro atual do componente pai
     useEffect(() => {
         setSecaoSelecionada(secaoFiltroAtual);
     }, [secaoFiltroAtual]);
+
+    // Sincroniza o estado local de situação com o filtro atual do componente pai
+    useEffect(() => {
+        setSituacaoSelecionada(situacaoFiltroAtual);
+    }, [situacaoFiltroAtual]);
 
     // Buscar seções da API
     useEffect(() => {
@@ -599,6 +605,17 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
             onFilterChange({ secao_codigo: novaSecao || null });
         }
     }, [onFilterChange]);
+
+    // Função para lidar com mudança de situação
+    const handleSituacaoChange = useCallback((event) => {
+        const novaSituacao = event.value;
+        setSituacaoSelecionada(novaSituacao);
+        
+        // Chama callback para atualizar filtros no componente pai
+        if (onSituacaoChange) {
+            onSituacaoChange(novaSituacao || '');
+        }
+    }, [onSituacaoChange]);
 
 
     // Sistema de preservação de scroll simplificado
@@ -1109,7 +1126,8 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
             background: var(--white) !important;
             border: 1px solid var(--surface-border) !important;
             border-radius: 4px !important;
-            min-width: 300px !important;
+            min-width: 200px !important;
+            max-width: 220px !important;
         }
 
         .p-dropdown-filter-icon {
@@ -1126,9 +1144,9 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
         }
         
         .p-dropdown-label {
-            padding: 10px 16px !important;
-            padding-right: 60px !important;
-            font-size: 14px !important;
+            padding: 8px 12px !important;
+            padding-right: 50px !important;
+            font-size: 13px !important;
             font-weight: 500 !important;
             color: var(--text-color) !important;
             overflow: hidden !important;
@@ -1220,6 +1238,16 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                 filterBy="label"
                                 showClear={!!secaoSelecionada}
                                 disabled={loadingSecoes}
+                                className="custom-dropdown"
+                            />
+                        </CustomDropdownStyles>
+                        <CustomDropdownStyles>
+                            <Dropdown
+                                value={situacaoSelecionada}
+                                options={situacoesUnicas}
+                                onChange={handleSituacaoChange}
+                                placeholder="Filtrar por situação"
+                                showClear={!!situacaoSelecionada}
                                 className="custom-dropdown"
                             />
                         </CustomDropdownStyles>

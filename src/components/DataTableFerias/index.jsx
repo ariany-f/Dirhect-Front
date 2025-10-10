@@ -276,7 +276,8 @@ function DataTableFerias({
     situacoesUnicas = [], // nova prop para situações disponíveis
     onExportExcel, // nova prop para exportar Excel
     exportingExcel = false, // nova prop para estado de exportação
-    onSecaoFilterChange // nova prop para filtro de seção
+    onSecaoFilterChange, // nova prop para filtro de seção
+    secaoFiltroAtual = '' // nova prop para valor atual da seção
 }) {
 
     const [colaboradores, setColaboradores] = useState(null)
@@ -294,9 +295,14 @@ function DataTableFerias({
 
     // Estados para filtro de seção
     const [secoes, setSecoes] = useState([]);
-    const [secaoSelecionada, setSecaoSelecionada] = useState('');
+    const [secaoSelecionada, setSecaoSelecionada] = useState(secaoFiltroAtual || '');
     const [loadingSecoes, setLoadingSecoes] = useState(false);
     const [filtroSecao, setFiltroSecao] = useState('');
+
+    // Sincronizar estado local com prop
+    useEffect(() => {
+        setSecaoSelecionada(secaoFiltroAtual || '');
+    }, [secaoFiltroAtual]);
 
     // Buscar seções da API
     useEffect(() => {
@@ -880,8 +886,15 @@ function DataTableFerias({
         const newPage = event.page + 1;
         const newPageSize = event.rows;
         
-        setCurrentPage(newPage);
-        setPageSize(newPageSize);
+        // Se tem callback do componente pai, usar ele (server-side)
+        if (setCurrentPage && setPageSize) {
+            setCurrentPage(newPage);
+            setPageSize(newPageSize);
+        } else {
+            // Fallback para paginação local (client-side)
+            setCurrentPage(newPage);
+            setPageSize(newPageSize);
+        }
     };
 
     // Função para lidar com ordenação
@@ -1135,34 +1148,45 @@ function DataTableFerias({
             situacao: 14   // ✅ Reduzido de 15 para 14 para compensar o aumento da aquisição
         };
         
-        // Determinar quais colunas estão presentes
+        // Determinar quais colunas estão presentes e suas proporções
         const availableColumns = [];
+        const availableProportions = {};
         
         if (!colaborador) {
+            // Quando não há colaborador (lista geral), incluir colunas de colaborador e chapa
             availableColumns.push('colaborador', 'chapa');
+            availableProportions['colaborador'] = originalProportions['colaborador'];
+            availableProportions['chapa'] = originalProportions['chapa'];
         }
+        
+        // Sempre incluir estas colunas
         availableColumns.push('aquisicao', 'ferias', 'pagamento');
+        availableProportions['aquisicao'] = originalProportions['aquisicao'];
+        availableProportions['ferias'] = originalProportions['ferias'];
+        availableProportions['pagamento'] = originalProportions['pagamento'];
+        
         if (!colaborador) {
             availableColumns.push('aviso');
+            availableProportions['aviso'] = originalProportions['aviso'];
         }
-        availableColumns.push('dias', 'abono', 'decimo', 'coletiva', 'situacao');
         
-        // Calcular a soma das proporções das colunas disponíveis
-        const totalProportion = availableColumns.reduce((sum, col) => sum + originalProportions[col], 0);
+        // Sempre incluir estas colunas
+        availableColumns.push('dias', 'abono', 'decimo', 'coletiva', 'situacao');
+        availableProportions['dias'] = originalProportions['dias'];
+        availableProportions['abono'] = originalProportions['abono'];
+        availableProportions['decimo'] = originalProportions['decimo'];
+        availableProportions['coletiva'] = originalProportions['coletiva'];
+        availableProportions['situacao'] = originalProportions['situacao'];
         
         // Calcular as larguras percentuais ajustadas
         const widths = {};
-        let totalCalculated = 0;
+        
+        // Distribuir proporcionalmente entre as colunas disponíveis
+        const totalProportion = availableColumns.reduce((sum, col) => sum + availableProportions[col], 0);
         
         availableColumns.forEach((col, index) => {
-            if (index === availableColumns.length - 1) {
-                // Para a última coluna, usar o que falta para completar 100%
-                widths[col] = `${(100 - totalCalculated).toFixed(1)}%`;
-            } else {
-                const width = (originalProportions[col] / totalProportion * 100);
-                widths[col] = `${width.toFixed(1)}%`;
-                totalCalculated += parseFloat(width.toFixed(1));
-            }
+            const proportion = availableProportions[col] / totalProportion;
+            widths[col] = `${(proportion * 100).toFixed(1)}%`;
         });
         
         return widths;
@@ -1233,9 +1257,6 @@ function DataTableFerias({
                             width: '100%',
                             padding: '8px 0'
                         }}>
-                            <span style={{ fontSize: '18px', fontWeight: '600', color: '#374151' }}>
-                                Férias
-                            </span>
                             {!colaborador && (
                                 <CustomDropdownStyles>
                                     <Dropdown
