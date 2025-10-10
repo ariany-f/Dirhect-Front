@@ -471,7 +471,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
     { "id": 28, "url": "estatisticas", "pageTitulo": t("performance") },
     { "id": 29, "url": "calendarios", "pageTitulo": t("calendars") },
     { "id": 30, "url": "bancos", "pageTitulo": t("banks") },
-    { "id": 31, "url": "transporte", "pageTitulo": "Dados de Transporte" },
+    { "id": 31, "url": "trajeto", "pageTitulo": "Dados de Trajeto" },
   ];
 
   // Lógica para determinar o título baseado na URL
@@ -553,8 +553,8 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
         ] : []),
         ...(import.meta.env.VITE_OPTIONS_LINHAS_TRANSPORTE === 'true' ? [
           { 
-            label: 'Dados de Transporte', 
-            url: '/transporte',
+            label: 'Dados de Trajeto', 
+            url: '/trajeto',
             icon: <FaRoute size={16} />
           }
         ] : [])

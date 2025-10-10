@@ -449,7 +449,7 @@ function AppRouter() {
               <Route path="templates-vaga/registro" element={<TemplatesVagaRegistro />} />
               <Route path="templates-vaga/detalhes/:id" element={<TemplatesVagaRegistro />} />
 
-              <Route path="transporte" element={<Transporte />}>
+              <Route path="trajeto" element={<Transporte />}>
                 <Route index element={<TransporteListagem />} />
               </Route>
 
