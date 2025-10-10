@@ -208,6 +208,8 @@ import BancosListagem from './pages/Bancos/lista'
 import DetalhesBancos from './pages/Bancos/detalhes'
 import TemplatesVaga from './pages/TemplatesVaga'
 import TemplatesVagaRegistro from './pages/TemplatesVaga/Registro'
+import Transporte from './pages/Transporte'
+import TransporteListagem from './pages/Transporte/lista'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
@@ -446,6 +448,10 @@ function AppRouter() {
               <Route path="templates-vaga" element={<TemplatesVaga />} />
               <Route path="templates-vaga/registro" element={<TemplatesVagaRegistro />} />
               <Route path="templates-vaga/detalhes/:id" element={<TemplatesVagaRegistro />} />
+
+              <Route path="trajeto" element={<Transporte />}>
+                <Route index element={<TransporteListagem />} />
+              </Route>
 
               <Route path="documentos" element={<Documentos />}>
                 <Route path="configuracoes" element={<DocumentosConfiguracoes />} />
