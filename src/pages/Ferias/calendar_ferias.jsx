@@ -7,8 +7,6 @@ import { Tooltip } from 'primereact/tooltip';
 import { Toast } from 'primereact/toast';
 import { Dropdown } from 'primereact/dropdown';
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
-import DropdownItens from '@components/DropdownItens'
-import CampoTexto from '@components/CampoTexto';
 import http from '@http';
 
 const GRADIENT = 'linear-gradient(to left, var(--black), var(--gradient-secundaria))';

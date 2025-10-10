@@ -398,7 +398,7 @@ function FeriasListagem() {
             }
         }
         
-        let url = `ferias/`;
+        let url = `feriasperiodoaquisitivo/`;
         
         // Adiciona termo de busca se houver
         if (searchTerm.trim()) {
@@ -503,6 +503,8 @@ function FeriasListagem() {
 
     // Função para carregar dados
     const loadData = useCallback(async (isLoadMore = false, lightLoad = false) => {
+        console.log('🔄 loadData chamado:', { isLoadMore, lightLoad, tab, ferias: ferias?.length });
+        
         // Cancela requisição anterior se existir
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
@@ -519,12 +521,20 @@ function FeriasListagem() {
         
         try {
             const url = buildApiUrl(isLoadMore);
+            console.log('🌐 URL construída:', url);
             const response = await http.get(url, { 
                 signal: abortControllerRef.current.signal 
             });
             
             if (!abortControllerRef.current.signal.aborted) {
                 const newData = response.results || response;
+                console.log('📊 Dados recebidos:', { 
+                    tab, 
+                    newDataLength: newData?.length, 
+                    responseKeys: Object.keys(response || {}),
+                    hasResults: !!response.results,
+                    hasNext: !!response.next
+                });
                 
                 if (tab === 'calendario') {
                     // Para calendário com cursor pagination
@@ -608,7 +618,7 @@ function FeriasListagem() {
         }
         
         loadData(false);
-    }, [tab, anoSelecionado, searchTerm, periodoAberto, currentPage, pageSize, forceUpdate, filters, secaoCalendario, secaoLista]);
+    }, [tab, anoSelecionado, searchTerm, periodoAberto, currentPage, pageSize, forceUpdate, filters, secaoCalendario, secaoLista, loadData]);
 
     // Effect separado para ordenação (não reseta loading completo)
     useEffect(() => {
@@ -637,6 +647,7 @@ function FeriasListagem() {
 
     // Função para lidar com mudança de aba
     const handleTabChange = useCallback((newTab) => {
+        console.log('🔄 Mudando aba para:', newTab, 'de:', tab);
         setTab(newTab);
         
         if (newTab === 'lista') {
@@ -669,6 +680,11 @@ function FeriasListagem() {
             setSecaoCalendario(''); // Reset filtro de seção do calendário
             setSecaoLista(''); // Reset filtro de seção da lista
             setFiltroSemResultados(false); // Reset estado de sem resultados
+            
+            // Força uma atualização para garantir que os dados sejam carregados
+            setTimeout(() => {
+                setForceUpdate(prev => prev + 1);
+            }, 100);
         }
     }, []);
 
@@ -689,7 +705,7 @@ function FeriasListagem() {
         
         try {
             // Constrói URL com o novo valor de situação
-            let url = `ferias/`;
+            let url = `feriasperiodoaquisitivo/`;
             
             if (searchTerm.trim()) {
                 url += `?funcionario_nome=${encodeURIComponent(searchTerm.trim())}`;
@@ -762,7 +778,7 @@ function FeriasListagem() {
         }
 
         try {
-            const feriasColaborador = await http.get(`ferias/?format=json&funcionario=${colaborador.id}`);
+            const feriasColaborador = await http.get(`feriasperiodoaquisitivo/?format=json&funcionario=${colaborador.id}`);
             const feria = feriasColaborador[0];
 
             if (!feria) {

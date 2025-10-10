@@ -70,7 +70,7 @@ function ColabroadorFerias() {
         setLoading(true)
         const periodoAberto = tab === 'abertas' ? true : false
         const incluirFinalizadas = (periodoAberto ? false : true)
-        http.get(`ferias/?format=json&funcionario=${id}&periodo_aberto=${periodoAberto}&incluir_finalizadas=${incluirFinalizadas}`)
+        http.get(`feriasperiodoaquisitivo/?format=json&funcionario=${id}&periodo_aberto=${periodoAberto}&incluir_finalizadas=${incluirFinalizadas}`)
         .then(response => {
             setFerias(response)
             setLoading(false)

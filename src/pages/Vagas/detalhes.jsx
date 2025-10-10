@@ -708,9 +708,9 @@ function DetalhesVaga() {
                                 {vaga.status == 'A' && 
                                     <>
                                         <div style={{ flexShrink: 0 }}>
-                                            <BotaoSemBorda $color="var(--primaria)">
-                                                <FaTrash /><Link onClick={cancelarVaga}>Cancelar vaga</Link>
-                                            </BotaoSemBorda>
+                                        <BotaoSemBorda $color="var(--primaria)">
+                                            <FaTrash /><Link onClick={cancelarVaga}>Cancelar vaga</Link>
+                                        </BotaoSemBorda>
                                         </div>
                                         <Botao 
                                             aoClicar={() => setModalAdicionarCandidatoAberto(true)} 
@@ -729,9 +729,9 @@ function DetalhesVaga() {
                                 {vaga.status == 'F' && 
                                     <>
                                         <div style={{ flexShrink: 0 }}>
-                                            <BotaoSemBorda $color="var(--primaria)">
-                                                <FaDoorOpen /><Link onClick={reabrirVaga}>Reabrir vaga</Link>
-                                            </BotaoSemBorda>
+                                        <BotaoSemBorda $color="var(--primaria)">
+                                            <FaDoorOpen /><Link onClick={reabrirVaga}>Reabrir vaga</Link>
+                                        </BotaoSemBorda>
                                         </div>
                                     </>
                                 }
@@ -830,9 +830,9 @@ function DetalhesVaga() {
                     
                 </div>
                 <BotaoGrupo align="space-between">
-                    <Titulo>
-                        <h5>Candidatos</h5>
-                    </Titulo>
+                <Titulo>
+                    <h5>Candidatos</h5>
+                </Titulo>
                     <BotaoGrupo align="center">
                         <Botao 
                             size="small" 
@@ -879,13 +879,13 @@ function DetalhesVaga() {
                     onEditarCandidato={handleEditarCandidato}
                 />
                 <BotaoGrupo align="space-between">
-                    <Titulo>
-                        <h5>Documentos Requeridos da Vaga</h5>
-                    </Titulo>
+                <Titulo>
+                    <h5>Documentos Requeridos da Vaga</h5>
+                </Titulo>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: '400px' }}>
                         <div style={{ flexShrink: 0 }}>
-                            <Botao 
-                                size="small" 
+                        <Botao 
+                            size="small" 
                                 aoClicar={abrirModalTag}
                                 estilo="vermilion"
                                 disabled={vaga?.status === 'T' || (temCandidatoAprovado && !temVagasDisponiveis())}
@@ -933,14 +933,14 @@ function DetalhesVaga() {
                                 aoClicar={abrirModalDocumento}
                                 estilo="neutro"
                                 disabled={vaga?.status === 'T' || (temCandidatoAprovado && !temVagasDisponiveis())}
-                                title={
-                                    vaga?.status === 'T' ? "Não é possível adicionar documentos em vagas transferidas" :
+                            title={
+                                vaga?.status === 'T' ? "Não é possível adicionar documentos em vagas transferidas" :
                                     (temCandidatoAprovado && !temVagasDisponiveis()) ? "Não é possível adicionar documentos pois todas as vagas já têm candidatos aprovados" : 
                                     "Adicionar documento requerido à vaga"
-                                }
-                            >
+                            }
+                        >
                                 <GrAddCircle stroke="var(--secundaria)" /> Adicionar personalizado
-                            </Botao>
+                        </Botao>
                         </div>
                     </div>
                 </BotaoGrupo>
