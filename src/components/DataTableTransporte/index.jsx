@@ -248,7 +248,7 @@ function DataTableTransporte({ colaboradores, showActions = true }) {
 
     // Configuração de larguras das colunas
     // Larguras base: expand, colaborador, filial, distancia, valor, tempo, carbono, risco, mapa, acoes
-    const larguraBase = [5, 20, 15, 10, 12, 8, 8, 8, 8, 6];
+    const larguraBase = [4, 14, 10, 10, 12, 10, 10, 10, 8, 7];
     
     // Calcula larguras redistribuídas
     const calcularLarguras = () => {
