@@ -1241,8 +1241,8 @@ function DataTableFerias({
                     )
                 }
             >
-                {!colaborador && <Column body={representativeColaboradorTemplate} sortable field="funcionario_nome" sortField="funcionario" header="Colaborador" style={{ width: getColumnWidths.colaborador }} className="col-colaborador"></Column>}
-                {!colaborador && <Column body={representativeChapaTemplate} sortable field="funcionario_chapa" header="Chapa" style={{ width: getColumnWidths.chapa }} className="col-chapa"></Column>}
+                {!colaborador && <Column body={representativeColaboradorTemplate} sortable field="funcionario_nome" sortField="funcionario" header="Nome" style={{ width: getColumnWidths.colaborador }} className="col-colaborador"></Column>}
+                {!colaborador && <Column body={representativeChapaTemplate} sortable field="funcionario_chapa" header="Matrícula" style={{ width: getColumnWidths.chapa }} className="col-chapa"></Column>}
                 <Column body={representativeAquisicaoTemplate} field="fimperaquis" header="Aquisição" style={{ width: getColumnWidths.aquisicao }} className="col-aquisicao"></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Férias" style={{ width: getColumnWidths.ferias }} className="col-ferias"></Column>
                 <Column 
