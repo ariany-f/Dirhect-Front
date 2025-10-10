@@ -281,12 +281,6 @@ const MapInfoItem = styled.div`
     }
 `
 
-const MapIframe = styled.iframe`
-    flex: 1;
-    width: 100%;
-    border: none;
-    border-radius: 0 0 8px 8px;
-`
 
 const CloseButton = styled.button`
     background: #f8f9fa;
@@ -727,10 +721,11 @@ function DataTableTransporte({ colaboradores, showActions = true }) {
             3: 'Rua Augusta, 456 - Consolação - São Paulo/SP'
         }
         
-        const origem = encodeURIComponent(colaborador.endereco_residencial)
-        const destino = encodeURIComponent(enderecosFilial[colaborador.filial_id] || 'São Paulo, SP')
+        const origem = colaborador.endereco_residencial
+        const destino = enderecosFilial[colaborador.filial_id] || 'São Paulo, SP'
         
-        return `https://www.google.com/maps/dir/${origem}/${destino}/@-23.5505,-46.6333,12z/data=!3m1!4b1!4m2!4m1!3e3`
+        // URL simples do Google Maps para direções
+        return `https://www.google.com/maps/dir/${encodeURIComponent(origem)}/${encodeURIComponent(destino)}/@-23.5505,-46.6333,12z`
     }
 
     return (
@@ -866,11 +861,66 @@ function DataTableTransporte({ colaboradores, showActions = true }) {
                                 </MapInfoItem>
                             </MapInfo>
                             
-                            <MapIframe 
-                                src={gerarUrlMapa(selectedColaborador)}
-                                title="Trajeto no Google Maps"
-                                allowFullScreen
-                            />
+                            <div style={{ 
+                                padding: '40px', 
+                                textAlign: 'center', 
+                                background: '#f8f9fa',
+                                border: '2px dashed #dee2e6',
+                                borderRadius: '8px',
+                                margin: '20px'
+                            }}>
+                                <div style={{
+                                    fontSize: '48px',
+                                    color: '#6c757d',
+                                    marginBottom: '16px'
+                                }}>
+                                    🗺️
+                                </div>
+                                <h4 style={{
+                                    margin: '0 0 8px 0',
+                                    color: '#495057',
+                                    fontSize: '16px',
+                                    fontWeight: '600'
+                                }}>
+                                    Visualizar Trajeto no Google Maps
+                                </h4>
+                                <p style={{
+                                    margin: '0 0 20px 0',
+                                    color: '#6c757d',
+                                    fontSize: '14px'
+                                }}>
+                                    Clique no botão abaixo para abrir as direções completas
+                                </p>
+                                <a 
+                                    href={gerarUrlMapa(selectedColaborador)} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    style={{
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                        padding: '12px 24px',
+                                        background: 'var(--primaria)',
+                                        color: 'white',
+                                        textDecoration: 'none',
+                                        borderRadius: '6px',
+                                        fontSize: '14px',
+                                        fontWeight: '600',
+                                        transition: 'all 0.2s ease'
+                                    }}
+                                    onMouseOver={(e) => {
+                                        e.target.style.background = 'var(--primaria-hover)'
+                                        e.target.style.transform = 'translateY(-1px)'
+                                    }}
+                                    onMouseOut={(e) => {
+                                        e.target.style.background = 'var(--primaria)'
+                                        e.target.style.transform = 'translateY(0)'
+                                    }}
+                                >
+                                    <FaRoute size={14} />
+                                    Abrir no Google Maps
+                                </a>
+                            </div>
                         </MapContent>
                     )}
                 </MapModalContainer>
