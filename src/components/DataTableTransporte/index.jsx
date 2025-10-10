@@ -282,30 +282,6 @@ const MapInfoItem = styled.div`
 `
 
 
-const CloseButton = styled.button`
-    background: #f8f9fa;
-    border: 1px solid #dee2e6;
-    color: #6c757d;
-    border-radius: 6px;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    
-    &:hover {
-        background: #e9ecef;
-        border-color: #adb5bd;
-        color: #495057;
-    }
-    
-    &:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(var(--primaria-rgb), 0.2);
-    }
-`
 
 function DataTableTransporte({ colaboradores, showActions = true }) {
     const [globalFilter, setGlobalFilter] = useState('')
@@ -837,9 +813,6 @@ function DataTableTransporte({ colaboradores, showActions = true }) {
                                 </p>
                             </div>
                         </MapHeaderInfo>
-                        <CloseButton onClick={() => setMapModalVisible(false)}>
-                            <FaTimes size={14} />
-                        </CloseButton>
                     </MapHeader>
                 }
             >
