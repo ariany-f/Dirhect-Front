@@ -1,12 +1,9 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { ColumnGroup } from 'primereact/columngroup';
-import { Row } from 'primereact/row';
 import { Tooltip } from 'primereact/tooltip';
 import { Dropdown } from 'primereact/dropdown';
 import Texto from '@components/Texto';
-import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import Botao from '@components/Botao';
 import { FaUmbrellaBeach, FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaCalendarAlt, FaTimesCircle, FaClock, FaExclamationTriangle, FaLock, FaLockOpen, FaMoneyCheck, FaFileExcel } from 'react-icons/fa';
@@ -116,52 +113,6 @@ function formatarDataBr(data) {
     return `${dia}/${mes}/${ano}`;
 }
 
-const ModernDropdown = styled.div`
-    position: relative;
-    min-width: 200px;
-    
-    select {
-        appearance: none;
-        background: #ffffff;
-        border: 1px solid #d1d5db;
-        border-radius: 4px;
-        padding: 10px 16px;
-        padding-right: 40px;
-        font-size: 14px;
-        font-weight: 500;
-        color: #374151;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        min-width: 100%;
-        
-        &:hover {
-            border-color: #9ca3af;
-            background: #f9fafb;
-        }
-        
-        &:focus {
-            outline: none;
-            border-color: var(--primaria);
-        }
-    }
-    
-    &::after {
-        content: '▼';
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #6b7280;
-        font-size: 12px;
-        pointer-events: none;
-        transition: transform 0.2s ease;
-    }
-    
-    &:hover::after {
-        color: #374151;
-    }
-`;
-
 // Custom styles for PrimeReact Dropdown to match the select design
 const CustomDropdownStyles = styled.div`
     /* Estilos mais diretos para sobrescrever o PrimeReact */
@@ -259,7 +210,7 @@ const CustomDropdownStyles = styled.div`
     }
 `;
 
-function DataTableFerias({ 
+function DataTablePeriodoAquisitivo({ 
     ferias, 
     colaborador = null,
     totalRecords = 0,
@@ -393,43 +344,8 @@ function DataTableFerias({
         return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
     
-    const representativeInicioTemplate = (rowData) => {
-        return (
-            <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '6px',
-                width: '100%'
-            }}>
-                <p style={{
-                    fontWeight: '400', 
-                    fontSize: '12px',
-                    whiteSpace: 'nowrap',
-                    width: '100%',
-                    textAlign: 'left',
-                    margin: 0
-                }}>
-                    {formatarDataBr(rowData.dt_inicio)}
-                </p>
-                <p style={{
-                    fontWeight: '400', 
-                    fontSize: '12px',
-                    whiteSpace: 'nowrap',
-                    width: '100%',
-                    textAlign: 'left',
-                    margin: 0
-                }}>
-                    {formatarDataBr(rowData.dt_fim)}
-                </p>
-            </div>
-        );
-    }
-    
-    const representativeAquisicaoTemplate = (rowData) => {
-        // Tenta usar periodo_aquisitivo_detalhes primeiro, depois fimperaquis
-        const fimperaquis = rowData.periodo_aquisitivo_detalhes?.fimperaquis || rowData.fimperaquis;
-        
-        if (!fimperaquis) return <p style={{
+    const representativeInicioAquisicaoTemplate = (rowData) => {
+        if (!rowData.fimperaquis) return <p style={{
             fontWeight: '400', 
             fontSize: '12px',
             whiteSpace: 'nowrap',
@@ -437,7 +353,7 @@ function DataTableFerias({
             textAlign: 'left'
         }}>-</p>;
         
-        const [ano, mes, dia] = fimperaquis.split('T')[0].split('-').map(Number);
+        const [ano, mes, dia] = rowData.fimperaquis.split('T')[0].split('-').map(Number);
         // Subtrai 1 ano para início
         let dataInicio = new Date(ano - 1, mes - 1, dia);
         // Soma 1 dia
@@ -447,110 +363,102 @@ function DataTableFerias({
         const mesInicioStr = String(dataInicio.getMonth() + 1).padStart(2, '0');
         const anoInicioStr = dataInicio.getFullYear();
         
+        return (
+            <p style={{
+                fontWeight: '400', 
+                fontSize: '12px',
+                whiteSpace: 'nowrap',
+                width: '100%',
+                textAlign: 'left',
+                margin: 0
+            }}>
+                {`${diaInicioStr}/${mesInicioStr}/${anoInicioStr}`}
+            </p>
+        );
+    }
+
+    const representativeFimAquisicaoTemplate = (rowData) => {
+        if (!rowData.fimperaquis) return <p style={{
+            fontWeight: '400', 
+            fontSize: '12px',
+            whiteSpace: 'nowrap',
+            width: '100%',
+            textAlign: 'left'
+        }}>-</p>;
+        
+        const [ano, mes, dia] = rowData.fimperaquis.split('T')[0].split('-').map(Number);
+        
         // Formata fim da aquisição
         const diaFimStr = String(dia).padStart(2, '0');
         const mesFimStr = String(mes).padStart(2, '0');
         const anoFimStr = ano;
 
         // Lógica dos ícones de período
-        const isPeriodoAberto = rowData?.periodo_aquisitivo_detalhes?.periodo_aberto === true;
-        const isPeriodoPerdido = rowData?.periodo_aquisitivo_detalhes?.periodo_perdido === true;
+        const isPeriodoAberto = rowData?.periodo_aberto === true;
+        const isPeriodoPerdido = rowData?.periodo_perdido === true;
         
         return (
             <div style={{
                 display: 'flex',
-                flexDirection: 'column',
-                gap: '4px',
+                alignItems: 'center',
+                gap: '6px',
                 width: '100%'
             }}>
+                <p style={{
+                    fontWeight: '400', 
+                    fontSize: '12px',
+                    whiteSpace: 'nowrap',
+                    textAlign: 'left',
+                    margin: 0
+                }}>
+                    {`${diaFimStr}/${mesFimStr}/${anoFimStr}`}
+                </p>
                 <div style={{
                     display: 'flex',
-                    alignItems: 'center',
+                    flexDirection: 'row',
                     gap: '4px',
-                    width: '100%'
+                    alignItems: 'center'
                 }}>
-                    <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '2px',
-                        flex: 1,
-                        minWidth: 0
-                    }}>
-                        <p style={{
-                            fontWeight: '500', 
-                            fontSize: '11px',
-                            whiteSpace: 'nowrap',
-                            width: '100%',
-                            textAlign: 'left',
-                            margin: 0,
-                            color: '#374151',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis'
-                        }}>
-                            {`${diaInicioStr}/${mesInicioStr}/${anoInicioStr}`}
-                        </p>
-                        <p style={{
-                            fontWeight: '500', 
-                            fontSize: '11px',
-                            whiteSpace: 'nowrap',
-                            width: '100%',
-                            textAlign: 'left',
-                            margin: 0,
-                            color: '#374151',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis'
-                        }}>
-                            {`${diaFimStr}/${mesFimStr}/${anoFimStr}`}
-                        </p>
-                    </div>
-                    <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '2px',
-                        alignItems: 'center',
-                        flexShrink: 0
-                    }}>
-                        <Tooltip target=".periodo-aberto-icon" />
-                        {isPeriodoAberto ? (
-                            <FaLockOpen 
-                                className="periodo-aberto-icon"
-                                data-pr-tooltip="Período Aberto"
-                                size={10} 
-                                color="#10B981" 
-                                fill="#10B981"
-                                style={{
-                                    filter: 'drop-shadow(0 0 2px rgba(16, 185, 129, 0.3))',
-                                    cursor: 'help'
-                                }}
-                            />
-                        ) : (
-                            <FaLock 
-                                className="periodo-aberto-icon"
-                                data-pr-tooltip="Período Fechado"
-                                size={10} 
-                                color="#F59E0B" 
-                                fill="#F59E0B"
-                                style={{
-                                    filter: 'drop-shadow(0 0 2px rgba(245, 158, 11, 0.3))',
-                                    cursor: 'help'
-                                }}
-                            />
-                        )}
-                        <Tooltip target=".periodo-perdido-icon" />
-                        {isPeriodoPerdido ? (
-                            <FaExclamationTriangle 
-                                className="periodo-perdido-icon"
-                                data-pr-tooltip="Período Perdido"
-                                size={10} 
-                                color="#EF4444" 
-                                fill="#EF4444"
-                                style={{
-                                    filter: 'drop-shadow(0 0 2px rgba(239, 68, 68, 0.3))',
-                                    cursor: 'help'
-                                }}
-                            />
-                        ) : null}
-                    </div>
+                    <Tooltip target=".periodo-aberto-icon" />
+                    {isPeriodoAberto ? (
+                        <FaLockOpen 
+                            className="periodo-aberto-icon"
+                            data-pr-tooltip="Período Aberto"
+                            size={12} 
+                            color="#10B981" 
+                            fill="#10B981"
+                            style={{
+                                filter: 'drop-shadow(0 0 2px rgba(16, 185, 129, 0.3))',
+                                cursor: 'help'
+                            }}
+                        />
+                    ) : (
+                        <FaLock 
+                            className="periodo-aberto-icon"
+                            data-pr-tooltip="Período Fechado"
+                            size={12} 
+                            color="#F59E0B" 
+                            fill="#F59E0B"
+                            style={{
+                                filter: 'drop-shadow(0 0 2px rgba(245, 158, 11, 0.3))',
+                                cursor: 'help'
+                            }}
+                        />
+                    )}
+                    <Tooltip target=".periodo-perdido-icon" />
+                    {isPeriodoPerdido ? (
+                        <FaExclamationTriangle 
+                            className="periodo-perdido-icon"
+                            data-pr-tooltip="Período Perdido"
+                            size={12} 
+                            color="#EF4444" 
+                            fill="#EF4444"
+                            style={{
+                                filter: 'drop-shadow(0 0 2px rgba(239, 68, 68, 0.3))',
+                                cursor: 'help'
+                            }}
+                        />
+                    ) : null}
                 </div>
             </div>
         );
@@ -580,84 +488,6 @@ function DataTableFerias({
             }
         }
     };
-
-    const representativePagamentoTemplate = (rowData) => {
-        return <p style={{
-            fontWeight: '400', 
-            fontSize: '12px',
-            whiteSpace: 'nowrap',
-            width: '100%',
-            textAlign: 'left'
-        }}>{rowData.datapagamento ? formatarDataBr(rowData.datapagamento) : '-------'}</p>;
-    }
-    
-    const representativeAvisoFeriasTemplate = (rowData) => {
-        return <p style={{
-            fontWeight: '400', 
-            fontSize: '12px',
-            whiteSpace: 'nowrap',
-            width: '100%',
-            textAlign: 'left'
-        }}>{rowData.aviso_ferias ? formatarDataBr(rowData.aviso_ferias) : '-------'}</p>;
-    }
-    
-    const representativeAbonoPecuniarioTemplate = (rowData) => {
-        let tag = rowData?.abono_pecuniario;
-        let tooltipText = '';
-        
-        switch(rowData?.abono_pecuniario)
-        {
-            case true:
-                tag = <Tag severity="success" value="Sim"></Tag>;
-                tooltipText = 'Abono Pecuniário: Sim';
-                break;
-            case false:
-                tag = <Tag severity="danger" value="Não"></Tag>;
-                tooltipText = 'Abono Pecuniário: Não';
-                break;
-            default:
-                tag = '-';
-                tooltipText = 'Abono Pecuniário: Não informado';
-                break;
-        }
-        return (
-            <div style={{ cursor: 'help', textAlign: 'left', width: '100%' }}>
-                <Tooltip target=".abono-pecuniario-tag" />
-                <div className="abono-pecuniario-tag" data-pr-tooltip={tooltipText}>
-                    <b>{tag}</b>
-                </div>
-            </div>
-        )
-    }
-    
-    const representativeFeriasColetivasTemplate = (rowData) => {
-        let tag = rowData?.ferias_coletivas;
-        let tooltipText = '';
-        
-        switch(rowData?.ferias_coletivas)
-        {
-            case true:
-                tag = <Tag severity="success" value="Sim"></Tag>;
-                tooltipText = 'Férias Coletivas: Sim';
-                break;
-            case false:
-                tag = <Tag severity="danger" value="Não"></Tag>;
-                tooltipText = 'Férias Coletivas: Não';
-                break;
-            default:
-                tag = '-';
-                tooltipText = 'Férias Coletivas: Não informado';
-                break;
-        }
-        return (
-            <div style={{ cursor: 'help', textAlign: 'left', width: '100%' }}>
-                <Tooltip target=".ferias-coletivas-tag" />
-                <div className="ferias-coletivas-tag" data-pr-tooltip={tooltipText}>
-                    <b>{tag}</b>
-                </div>
-            </div>
-        )
-    }
 
     const representativeSituacaoTemplate = (rowData) => {
         // Busca o id da situação "Demitido" na lista de tipoSituacao
@@ -725,72 +555,6 @@ function DataTableFerias({
             }
         }
 
-        // Verificar se é status "em análise" e se tem permissão para aprovar
-        const isStatusPendente = rowData.situacaoferias === 'E';
-        const temTarefaPendenteAprovarFerias = rowData.tarefas?.some(
-            t => t.status === 'pendente' && t.tipo_codigo === 'aprovar_ferias'
-        );
-        
-        // Perfis que podem aprovar férias
-        const userPerfil = ArmazenadorToken.UserProfile;
-        const perfisQueAprovam = ['analista', 'supervisor', 'gestor'];
-        
-        // Verificar se analista_tenant pode aprovar (mesma lógica do modal)
-        const podeAnalistaTenantAprovar = ArmazenadorToken.UserProfile === 'analista_tenant' && 
-            ArmazenadorToken.UserCompanyPublicId === null; // Só se não for tenant específico
-        
-        if (podeAnalistaTenantAprovar) {
-            perfisQueAprovam.push('analista_tenant');
-        }
-        
-        const temPermissaoParaAprovar = perfisQueAprovam.includes(userPerfil);
-        const podeAprovar = isStatusPendente && temPermissaoParaAprovar && temTarefaPendenteAprovarFerias;
-
-        // Função para aprovar férias diretamente do DataTable
-        const aprovarFerias = async (event) => {
-            event.stopPropagation(); // Evitar que abra o modal
-            
-            const tarefaPendente = rowData.tarefas?.find(
-                t => t.status === 'pendente' && t.tipo_codigo === 'aprovar_ferias'
-            );
-
-            if (!tarefaPendente) {
-                toast.current?.show({
-                    severity: 'error',
-                    summary: 'Erro',
-                    detail: 'Nenhuma tarefa pendente encontrada para aprovação.',
-                    life: 3000
-                });
-                return;
-            }
-
-            try {
-                await http.post(`/tarefas/${tarefaPendente.id}/aprovar/`);
-                toast.current?.show({
-                    severity: 'success',
-                    summary: 'Sucesso',
-                    detail: 'Férias aprovadas com sucesso!',
-                    life: 3000
-                });
-                
-                // Atualizar dados se callback disponível
-                if (onUpdate) {
-                    setTimeout(() => {
-                        onUpdate();
-                    }, 2000);
-                }
-            } catch (error) {
-                console.error("Erro ao aprovar tarefa de férias", error);
-                const errorMessage = error.response?.data?.detail || 'Não foi possível aprovar a solicitação.';
-                toast.current?.show({
-                    severity: 'error',
-                    summary: 'Erro',
-                    detail: errorMessage,
-                    life: 3000
-                });
-            }
-        };
-
         return (
             <div style={{
                 display: 'flex', 
@@ -802,19 +566,6 @@ function DataTableFerias({
                 <StatusTag $type={statusType}>
                     {statusIcons[statusType]} {statusText}
                 </StatusTag>
-                
-                {/* Botão de aprovar para status "em análise" */}
-                {podeAprovar && (
-                    <Botao 
-                        aoClicar={aprovarFerias}
-                        estilo="vermilion" 
-                        size="small" 
-                        tab
-                        style={{ marginTop: '4px' }}
-                    >
-                        <FaCheckCircle fill="var(--secundaria)" size={12} /> Aprovar
-                    </Botao>
-                )}
             </div>
         );
     }
@@ -843,36 +594,6 @@ function DataTableFerias({
                 {rowData.funcionario_chapa || '-'}
             </Texto>
         </div>
-    }
-
-    
-    const representativ13Template = (rowData) => {
-        let tag = rowData?.adiantar_13;
-        let tooltipText = '';
-        
-        switch(rowData?.adiantar_13)
-        {
-            case true:
-                tag = <Tag severity="success" value="Sim"></Tag>;
-                tooltipText = 'Adiantamento: Sim';
-                break;
-            case false:
-                tag = <Tag severity="danger" value="Não"></Tag>;
-                tooltipText = 'Adiantamento: Não';
-                break;
-            default:
-                tag = '-';
-                tooltipText = 'Adiantamento: Não informado';
-                break;
-        }
-        return (
-            <div style={{ cursor: 'help', textAlign: 'left', width: '100%' }}>
-                <Tooltip target=".decimo-tag" />
-                <div className="decimo-tag" data-pr-tooltip={tooltipText}>
-                    <b>{tag}</b>
-                </div>
-            </div>
-        )
     }
 
     // Função para lidar com mudanças de página
@@ -905,7 +626,7 @@ function DataTableFerias({
     };
 
     const totalFeriasTemplate = () => {
-        return 'Total de Férias: ' + (totalRecords ?? 0);
+        return 'Total de Períodos Aquisitivos: ' + (totalRecords ?? 0);
     };
 
     // Memoizar configuração do DataTable para evitar re-renders
@@ -914,7 +635,7 @@ function DataTableFerias({
         filters: filtersProp,
         onFilter: onFilter,
         globalFilterFields: ['colaborador_id'],
-        emptyMessage: "Não foram encontrados férias registradas",
+        emptyMessage: "Não foram encontrados períodos aquisitivos registrados",
         selection: selectedFerias,
         selectionMode: "single",
         paginator: true,
@@ -932,207 +653,16 @@ function DataTableFerias({
         }
     }), [filtersProp, selectedFerias, pageSize, totalRecords, currentPage, colaborador, onFilter]);
 
-    // Templates para botões de filtro (igual ao DataTableColaboradores)
-    const filterClearTemplate = (options) => {
-        return (
-            <button 
-                type="button" 
-                onClick={options.filterClearCallback} 
-                style={{
-                    width: '2.5rem', 
-                    height: '2.5rem', 
-                    color: 'var(--white)',
-                    backgroundColor: 'var(--surface-600)',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                }}
-            >
-                <i className="pi pi-filter-slash" />
-            </button>
-        );
-    };
-
-    const filterApplyTemplate = (options) => {
-        return (
-            <button 
-                type="button" 
-                onClick={options.filterApplyCallback} 
-                style={{
-                    width: '2.5rem', 
-                    height: '2.5rem', 
-                    color: 'var(--white)',
-                    backgroundColor: 'var(--green-500)',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                }}
-            >
-                <i className="pi pi-check" />
-            </button>
-        );
-    };
-
-    // Template para filtro de situação (COPIA EXATA do DataTableColaboradores)
-    const SituacaoFilterContent = ({ options, situacoesUnicas }) => {
-        const [filtroSituacao, setFiltroSituacao] = useState('');
-        const [selectedSituacoes, setSelectedSituacoes] = useState([]);
-
-        // Inicializar com o valor atual do filtro
-        useEffect(() => {
-            if (options.value) {
-                setSelectedSituacoes(Array.isArray(options.value) ? options.value : [options.value]);
-            } else {
-                setSelectedSituacoes([]);
-            }
-        }, [options.value]);
-
-        const onSituacaoChange = (situacaoValue, checked) => {
-            let newSelectedSituacoes;
-            
-            if (checked) {
-                // Adicionar à seleção
-                newSelectedSituacoes = [...selectedSituacoes, situacaoValue];
-            } else {
-                // Remover da seleção
-                newSelectedSituacoes = selectedSituacoes.filter(val => val !== situacaoValue);
-            }
-            
-            setSelectedSituacoes(newSelectedSituacoes);
-            
-            // Chamar o callback com o array de valores selecionados
-            if (newSelectedSituacoes.length === 0) {
-                options.filterCallback(null);
-            } else {
-                options.filterCallback(newSelectedSituacoes);
-            }
-        };
-
-        const situacoesOrdenadas = [...(situacoesUnicas || [])].sort((a, b) => a.label.localeCompare(b.label));
-
-        const situacoesFiltradas = situacoesOrdenadas.filter(situacao => 
-            situacao.label.toLowerCase().includes(filtroSituacao.toLowerCase())
-        );
-
-        // Função para selecionar/deselecionar todos
-        const onSelecionarTodos = (checked) => {
-            let newSelectedSituacoes;
-            
-            if (checked) {
-                // Selecionar todas as situações filtradas
-                newSelectedSituacoes = situacoesFiltradas.map(situacao => situacao.value);
-            } else {
-                // Deselecionar todas
-                newSelectedSituacoes = [];
-            }
-            
-            setSelectedSituacoes(newSelectedSituacoes);
-            
-            // Chamar o callback
-            if (newSelectedSituacoes.length === 0) {
-                options.filterCallback(null);
-            } else {
-                options.filterCallback(newSelectedSituacoes);
-            }
-        };
-
-        // Verificar se todas as situações filtradas estão selecionadas
-        const todasSelecionadas = situacoesFiltradas.length > 0 && 
-            situacoesFiltradas.every(situacao => selectedSituacoes.includes(situacao.value));
-        
-        // Verificar se algumas estão selecionadas (para estado indeterminado)
-        const algumasSelecionadas = situacoesFiltradas.some(situacao => selectedSituacoes.includes(situacao.value));
-
-        return (
-            <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <CampoTexto
-                    valor={filtroSituacao}
-                    setValor={setFiltroSituacao}
-                    placeholder="Buscar situação..."
-                    width="100%"
-                />
-                
-                {/* Opção Selecionar Todos */}
-                {situacoesFiltradas.length > 0 && (
-                    <div style={{ 
-                        borderBottom: '1px solid #e5e7eb', 
-                        paddingBottom: '0.75rem', 
-                        marginBottom: '0.5rem' 
-                    }}>
-                        <div className="flex align-items-center">
-                            <input
-                                type="checkbox"
-                                id="selecionar-todos-ferias"
-                                checked={todasSelecionadas}
-                                ref={(input) => {
-                                    if (input) input.indeterminate = algumasSelecionadas && !todasSelecionadas;
-                                }}
-                                onChange={(e) => onSelecionarTodos(e.target.checked)}
-                                style={{ marginRight: '8px' }}
-                            />
-                            <label 
-                                htmlFor="selecionar-todos-ferias" 
-                                style={{ 
-                                    cursor: 'pointer', 
-                                    flex: 1, 
-                                    fontWeight: '600', 
-                                    color: '#374151' 
-                                }}
-                            >
-                                Selecionar Todos
-                            </label>
-                        </div>
-                    </div>
-                )}
-                
-                <div style={{ maxHeight: '250px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.75rem', paddingRight: '10px' }}>
-                    {situacoesFiltradas.map(situacao => (
-                        <div key={situacao.value} className="flex align-items-center">
-                            <input
-                                type="checkbox"
-                                id={`situacao-${situacao.value}`}
-                                checked={selectedSituacoes.includes(situacao.value)}
-                                onChange={(e) => onSituacaoChange(situacao.value, e.target.checked)}
-                                style={{ marginRight: '8px' }}
-                            />
-                            <label 
-                                htmlFor={`situacao-${situacao.value}`} 
-                                style={{ cursor: 'pointer', flex: 1 }}
-                            >
-                                {situacao.label}
-                            </label>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
-    };
-
-    const situacaoFilterTemplate = (options) => {
-        return <SituacaoFilterContent options={options} situacoesUnicas={situacoesUnicas} />;
-    };
-
     // Função para calcular larguras das colunas dinamicamente
     const getColumnWidths = useMemo(() => {
         // Definir as proporções originais (quando todas as colunas estão presentes)
         const originalProportions = {
-            colaborador: 20,
+            colaborador: 25,
             chapa: 12,
-            aquisicao: 16,  // ✅ Aumentado de 12 para 16 para acomodar melhor o período aquisitivo
-            ferias: 10,
-            pagamento: 13,
-            aviso: 8,
-            dias: 8,
-            abono: 10,
-            decimo: 8,
-            coletiva: 11,
-            situacao: 14   // ✅ Reduzido de 15 para 14 para compensar o aumento da aquisição
+            inicio: 12,
+            fim: 12,
+            saldo: 15,
+            situacao: 24
         };
         
         // Determinar quais colunas estão presentes
@@ -1141,11 +671,7 @@ function DataTableFerias({
         if (!colaborador) {
             availableColumns.push('colaborador', 'chapa');
         }
-        availableColumns.push('aquisicao', 'ferias', 'pagamento');
-        if (!colaborador) {
-            availableColumns.push('aviso');
-        }
-        availableColumns.push('dias', 'abono', 'decimo', 'coletiva', 'situacao');
+        availableColumns.push('inicio', 'fim', 'saldo', 'situacao');
         
         // Calcular a soma das proporções das colunas disponíveis
         const totalProportion = availableColumns.reduce((sum, col) => sum + originalProportions[col], 0);
@@ -1234,7 +760,7 @@ function DataTableFerias({
                             padding: '8px 0'
                         }}>
                             <span style={{ fontSize: '18px', fontWeight: '600', color: '#374151' }}>
-                                Férias
+                                Períodos Aquisitivos
                             </span>
                             {!colaborador && (
                                 <CustomDropdownStyles>
@@ -1257,68 +783,38 @@ function DataTableFerias({
             >
                 {!colaborador && <Column body={representativeColaboradorTemplate} sortable field="funcionario_nome" sortField="funcionario" header="Nome" style={{ width: getColumnWidths.colaborador }} className="col-colaborador"></Column>}
                 {!colaborador && <Column body={representativeChapaTemplate} sortable field="funcionario_chapa" header="Matrícula" style={{ width: getColumnWidths.chapa }} className="col-chapa"></Column>}
-                <Column body={representativeAquisicaoTemplate} field="fimperaquis" header="Aquisição" style={{ width: getColumnWidths.aquisicao }} className="col-aquisicao"></Column>
-                <Column body={representativeInicioTemplate} field="dt_inicio" header="Férias" style={{ width: getColumnWidths.ferias }} className="col-ferias"></Column>
                 <Column 
-                    body={representativePagamentoTemplate} 
-                    sortable 
-                    field="datapagamento" 
-                    header="Pagamento" 
-                    style={{ width: getColumnWidths.pagamento }} 
-                    className="col-pagamento"
-                    headerStyle={{ fontSize: '11px' }}
-                ></Column>
-                {!colaborador && ( 
-                    <>
-                        <Column body={representativeAvisoFeriasTemplate} sortable field="aviso_ferias" header="Aviso" style={{ width: getColumnWidths.aviso }} className="hide-mobile col-aviso"></Column>
-                    </>
-                )}
-                <Column 
-                    body={(rowData) => rowData.nrodiasferias} 
-                    sortable 
-                    field="nrodiasferias" 
-                    header="Dias" 
-                    style={{ width: getColumnWidths.dias }} 
-                    className="col-dias"
+                    body={representativeInicioAquisicaoTemplate} 
+                    field="fimperaquis" 
+                    header="Início" 
+                    style={{ width: getColumnWidths.inicio }} 
+                    className="col-inicio-aquisicao"
                     headerStyle={{ fontSize: '11px' }}
                 ></Column>
                 <Column 
-                    body={(rowData) => rowData.nrodiasabono} 
-                    sortable 
-                    field="nrodiasabono" 
-                    header="Abono" 
-                    style={{ width: getColumnWidths.abono }} 
-                    className="hide-mobile col-abono"
-                    headerStyle={{ fontSize: '11px' }}
-                ></Column>
-                <Column body={representativ13Template} sortable field="adiantar_13" header="13º" style={{ width: getColumnWidths.decimo }} className="hide-mobile col-decimo"></Column>
-                <Column 
-                    body={representativeFeriasColetivasTemplate} 
-                    sortable 
-                    field="ferias_coletivas" 
-                    header="Coletiva" 
-                    style={{ width: getColumnWidths.coletiva }} 
-                    className="hide-mobile col-coletiva"
+                    body={representativeFimAquisicaoTemplate} 
+                    field="fimperaquis" 
+                    header="Fim" 
+                    style={{ width: getColumnWidths.fim }} 
+                    className="col-fim-aquisicao"
                     headerStyle={{ fontSize: '11px' }}
                 ></Column>
                 <Column 
+                    body={(rowData) => `${rowData.saldo || rowData.nrodiasferias || 30} dias`} 
                     sortable 
+                    field="saldo" 
+                    header="Saldo Disponível" 
+                    style={{ width: getColumnWidths.saldo }} 
+                    className="col-saldo"
+                    headerStyle={{ fontSize: '11px' }}
+                ></Column>
+                <Column 
                     body={representativeSituacaoTemplate}
                     field="situacaoferias" 
-                    header="Situação" 
+                    header="Ações" 
                     style={{ width: getColumnWidths.situacao }}
                     className="col-situacao"
                     headerStyle={{ fontSize: '11px' }}
-                    filter
-                    filterField="situacaoferias"
-                    showFilterMenu={true}
-                    filterElement={situacaoFilterTemplate}
-                    filterMatchMode="custom"
-                    showFilterMatchModes={false}
-                    showFilterOperator={false}
-                    showAddButton={false}
-                    filterClear={filterClearTemplate}
-                    filterApply={filterApplyTemplate}
                 ></Column>
             </DataTable>
             <ModalDetalhesFerias opened={modalDetalhesFeriasOpened} evento={eventoSelecionado} aoFechar={fecharModal} isDemitido={eventoSelecionado?.colab?.funcionario_situacao_padrao === true} />
@@ -1326,4 +822,4 @@ function DataTableFerias({
     )
 }
 
-export default DataTableFerias;
+export default DataTablePeriodoAquisitivo;

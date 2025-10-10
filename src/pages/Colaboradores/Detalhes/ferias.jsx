@@ -10,6 +10,7 @@ import http from '@http'
 import Loading from '@components/Loading'
 import styles from './Detalhes.module.css'
 import DataTableFerias from '@components/DataTableFerias'
+import DataTablePeriodoAquisitivo from '@components/DataTablePeriodoAquisitivo'
 import { useSessaoUsuarioContext } from '../../../contexts/SessaoUsuario'
 import { GrAddCircle } from 'react-icons/gr'
 import { ArmazenadorToken } from '@utils'
@@ -55,7 +56,8 @@ function ColabroadorFerias() {
     const colaboradorDoContexto = useOutletContext();
     const [loading, setLoading] = useState(false)
     const [ferias, setFerias] = useState(null)
-    const [tab, setTab] = useState('abertas') // 'abertas' ou 'fechadas'
+    const [periodosAquisitivos, setPeriodosAquisitivos] = useState(null)
+    const [tab, setTab] = useState('ferias_gozadas') // 'periodo_aquisitivo' ou 'ferias_gozadas'
     const [forceUpdate, setForceUpdate] = useState(0)
     const {usuario} = useSessaoUsuarioContext()
     
@@ -66,19 +68,44 @@ function ColabroadorFerias() {
         ...colaboradorDoContexto
     } : null;
 
+    // Buscar períodos aquisitivos (para verificar se pode solicitar férias)
     useEffect(() => {
-        setLoading(true)
-        const periodoAberto = tab === 'abertas' ? true : false
-        const incluirFinalizadas = (periodoAberto ? false : true)
-        http.get(`feriasperiodoaquisitivo/?format=json&funcionario=${id}&periodo_aberto=${periodoAberto}&incluir_finalizadas=${incluirFinalizadas}`)
+        http.get(`feriasperiodoaquisitivo/?format=json&funcionario=${id}&periodo_aberto=true`)
         .then(response => {
-            setFerias(response)
-            setLoading(false)
+            setPeriodosAquisitivos(response)
         })
         .catch(erro => {
             console.log(erro)
-            setLoading(false)
         })
+    }, [id, forceUpdate])
+
+    // Buscar dados baseado na aba ativa
+    useEffect(() => {
+        setLoading(true)
+        
+        if (tab === 'periodo_aquisitivo') {
+            // Busca períodos aquisitivos
+            http.get(`feriasperiodoaquisitivo/?format=json&funcionario=${id}`)
+            .then(response => {
+                setFerias(response)
+                setLoading(false)
+            })
+            .catch(erro => {
+                console.log(erro)
+                setLoading(false)
+            })
+        } else {
+            // Busca férias gozadas
+            http.get(`feriasperiodogozo/?format=json&funcionario=${id}`)
+            .then(response => {
+                setFerias(response)
+                setLoading(false)
+            })
+            .catch(erro => {
+                console.log(erro)
+                setLoading(false)
+            })
+        }
     }, [id, tab, forceUpdate])
 
 
@@ -122,19 +149,29 @@ function ColabroadorFerias() {
                 </Titulo>
             </BotaoGrupo>
             <TabPanel>
-                <TabButton active={tab === 'abertas'} onClick={() => handleTabChange('abertas')}>
-                    <Texto color={tab === 'abertas' ? 'white' : '#000'}>Abertas</Texto>
+                <TabButton active={tab === 'ferias_gozadas'} onClick={() => handleTabChange('ferias_gozadas')}>
+                    <Texto color={tab === 'ferias_gozadas' ? 'white' : '#000'}>Lista</Texto>
                 </TabButton>
-                <TabButton active={tab === 'fechadas'} onClick={() => handleTabChange('fechadas')}>
-                    <Texto color={tab === 'fechadas' ? 'white' : '#000'}>Fechadas</Texto>
+                <TabButton active={tab === 'periodo_aquisitivo'} onClick={() => handleTabChange('periodo_aquisitivo')}>
+                    <Texto color={tab === 'periodo_aquisitivo' ? 'white' : '#000'}>Período Aquisitivo</Texto>
                 </TabButton>
             </TabPanel>
-            <DataTableFerias 
-                colaborador={id} 
-                ferias={ferias}
-                situacoesUnicas={situacoesFerias}
-                onUpdate={() => setForceUpdate(prev => prev + 1)}
-            />
+            
+            {tab === 'periodo_aquisitivo' ? (
+                <DataTablePeriodoAquisitivo 
+                    colaborador={id} 
+                    ferias={ferias}
+                    situacoesUnicas={situacoesFerias}
+                    onUpdate={() => setForceUpdate(prev => prev + 1)}
+                />
+            ) : (
+                <DataTableFerias 
+                    colaborador={id} 
+                    ferias={ferias}
+                    situacoesUnicas={situacoesFerias}
+                    onUpdate={() => setForceUpdate(prev => prev + 1)}
+                />
+            )}
         </>
     )
 }

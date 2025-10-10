@@ -4,6 +4,7 @@ import Loading from '@components/Loading'
 import styled from "styled-components"
 import { useOutletContext } from "react-router-dom"
 import DataTableFerias from '@components/DataTableFerias'
+import DataTablePeriodoAquisitivo from '@components/DataTablePeriodoAquisitivo'
 import ModalSelecionarColaborador from '@components/ModalSelecionarColaborador'
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias'
 import { momentLocalizer } from 'react-big-calendar';
@@ -62,9 +63,8 @@ const HeaderRow = styled.div`
 
 const TabPanel = styled.div`
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 0;
-    padding-top: 2px;
 `
 
 const TabButton = styled.button`
@@ -124,7 +124,7 @@ const FiltersContainer = styled.div`
 
 const ModernDropdown = styled.div`
     position: relative;
-    min-width: 140px;
+    min-width: 100px;
     
     select {
         appearance: none;
@@ -133,7 +133,7 @@ const ModernDropdown = styled.div`
         border-radius: 4px;
         padding: 10px 16px;
         padding-right: 40px;
-        font-size: 14px;
+        font-size: 12px;
         font-weight: 500;
         color: #374151;
         cursor: pointer;
@@ -313,14 +313,15 @@ function FeriasListagem() {
             try {
                 const response = await http.get('ferias/situacoes/');
                 // A resposta já vem no formato correto: [{value, label}, ...]
-                setSituacoesFerias(response || []);
-                setSituacoesDisponiveis(response || []);
+                // Filtra as opções "E" (Em Análise) e "S" se vierem da API
+                const situacoesFiltradas = (response || []).filter(situacao => situacao.value !== 'E' && situacao.value !== 'S');
+                setSituacoesFerias(situacoesFiltradas);
+                setSituacoesDisponiveis(situacoesFiltradas);
             } catch (error) {
                 console.error('Erro ao buscar situações de férias:', error);
-                // Fallback para as situações básicas se a API falhar
+                // Fallback para as situações básicas se a API falhar (sem a opção "E")
                 const situacoesFallback = [
                     { value: 'I', label: 'Iniciada Solicitação' },
-                    { value: 'E', label: 'Em Análise' },
                     { value: 'A', label: 'Aprovado' },
                     { value: 'F', label: 'Finalizada' },
                     { value: 'M', label: 'Marcada' },
@@ -348,9 +349,9 @@ function FeriasListagem() {
 
     // Opções do filtro de período aberto
     const opcoesPeriodoAberto = [
-        { name: 'Apenas Abertos', value: true },
-        { name: 'Apenas Fechados', value: false },
-        { name: 'Todos os Períodos', value: null }
+        { name: 'Apenas Aberto', value: true },
+        { name: 'Apenas Fechado', value: false },
+        { name: 'Todos', value: null }
     ];
 
     // Função para construir parâmetro de ordenação
@@ -398,7 +399,7 @@ function FeriasListagem() {
             }
         }
         
-        let url = `feriasperiodoaquisitivo/`;
+        let url = tab === 'calendario' ? `feriasperiodogozo/` : `feriasperiodoaquisitivo/`;
         
         // Adiciona termo de busca se houver
         if (searchTerm.trim()) {
@@ -705,7 +706,7 @@ function FeriasListagem() {
         
         try {
             // Constrói URL com o novo valor de situação
-            let url = `feriasperiodoaquisitivo/`;
+            let url = `feriasperiodogozo/`;
             
             if (searchTerm.trim()) {
                 url += `?funcionario_nome=${encodeURIComponent(searchTerm.trim())}`;
@@ -804,7 +805,7 @@ function FeriasListagem() {
                 evento: {
                     periodo_aquisitivo_inicio: dataInicioRow,
                     periodo_aquisitivo_fim: feria.fimperaquis,
-                    saldo_dias: feria.nrodiasferias,
+                    saldo_dias: feria.saldo || feria.saldo_dias || feria.nrodiasferias,
                     limite: feria.fimperaquis,
                     aviso_ferias: feria.aviso_ferias || null,
                     abono_pecuniario: feria.abono_pecuniario || false,
@@ -813,7 +814,8 @@ function FeriasListagem() {
                     data_minima_solicitacao_formatada: feria.data_minima_solicitacao_formatada || null,
                     dias_antecedencia_necessarios: feria.dias_antecedencia_necessarios || 0,
                     funcionario_situacao_padrao: feria.funcionario_situacao_padrao || false,
-                    tarefas: feria.tarefas
+                    tarefas: feria.tarefas,
+                    marcacoes: feria.marcacoes || []
                 },
                 tipo: 'aSolicitar'
             };
@@ -934,7 +936,7 @@ function FeriasListagem() {
                     </TabButton>
                     <TabButton $active={tab === 'lista'} onClick={() => handleTabChange('lista')}>
                         <FaListUl fill={tab === 'lista' ? 'white' : '#000'} />
-                        <Texto color={tab === 'lista' ? 'white' : '#000'}>Lista</Texto>
+                        <Texto color={tab === 'lista' ? 'white' : '#000'}>Período Aquisitivo</Texto>
                     </TabButton>
                 </TabPanel>
                 
@@ -981,18 +983,20 @@ function FeriasListagem() {
                             </select>
                         </ModernDropdown>
                     )}
-                    <ModernDropdown>
-                        <select 
-                            value={periodoAberto === null ? '' : periodoAberto} 
-                            onChange={(e) => setPeriodoAberto(e.target.value === '' ? null : e.target.value === 'true')}
-                        >
-                            {opcoesPeriodoAberto.map((opcao) => (
-                                <option key={opcao.value} value={opcao.value === null ? '' : opcao.value}>
-                                    {opcao.name}
-                                </option>
-                            ))}
-                        </select>
-                    </ModernDropdown>
+                    {tab === 'calendario' && (
+                        <ModernDropdown>
+                            <select 
+                                value={periodoAberto === null ? '' : periodoAberto} 
+                                onChange={(e) => setPeriodoAberto(e.target.value === '' ? null : e.target.value === 'true')}
+                            >
+                                {opcoesPeriodoAberto.map((opcao) => (
+                                    <option key={opcao.value} value={opcao.value === null ? '' : opcao.value}>
+                                        {opcao.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </ModernDropdown>
+                    )}
                     <SearchContainer>
                         <BsSearch className="search-icon" />
                         <input
@@ -1113,7 +1117,7 @@ function FeriasListagem() {
                             </div>
                         )}
                         {tab === 'lista' && (
-                            <DataTableFerias 
+                            <DataTablePeriodoAquisitivo 
                                 ferias={ferias || []} 
                                 totalRecords={totalRecords}
                                 currentPage={currentPage}

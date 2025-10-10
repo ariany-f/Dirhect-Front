@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { OverlayRight, DialogEstilizadoRight } from '@components/Modal/styles';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -15,6 +15,8 @@ import http from '@http';
 import SwitchInput from '@components/SwitchInput';
 import { ArmazenadorToken } from '@utils';
 import { Tooltip } from 'primereact/tooltip';
+import { Toast } from 'primereact/toast';
+import CampoTexto from '@components/CampoTexto';
 
 // Helper function to parse dates and avoid timezone issues
 function parseDateAsLocal(dateString) {
@@ -410,10 +412,12 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
     const [mostrarErroAbono, setMostrarErroAbono] = useState(false);
     const [mostrarErroSaldoTotal, setMostrarErroSaldoTotal] = useState(false);
     const [mostrarErroAdiantamento13, setMostrarErroAdiantamento13] = useState(false);
+    const [mostrarErroPeriodoOcupado, setMostrarErroPeriodoOcupado] = useState(false);
     const [botaoEnviarDesabilitado, setBotaoEnviarDesabilitado] = useState(false);
     const [parametrosFerias, setParametrosFerias] = useState({});
     const [podeAnalistaTenantAprovar, setPodeAnalistaTenantAprovar] = useState(false); // Default false - sem acesso até confirmar
 
+    const toast = useRef(null);
     const userPerfil = ArmazenadorToken.UserProfile;
     const perfisEspeciais = ['analista', 'supervisor', 'gestor'];
     const isAnalistaTenant = userPerfil === 'analista_tenant';
@@ -462,6 +466,50 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
         }
     };
 
+    // Função para verificar se o período solicitado conflita com marcações existentes
+    const verificarConflitoPeriodo = (dataInicio, dataFim) => {
+        if (!dataInicio || !dataFim || !evento?.evento?.marcacoes) {
+            setMostrarErroPeriodoOcupado(false);
+            return false;
+        }
+
+        const inicioSolicitado = parseDateAsLocal(dataInicio);
+        const fimSolicitado = parseDateAsLocal(dataFim);
+        
+        // Verifica se há conflito com alguma marcação existente
+        const temConflito = evento.evento.marcacoes.some(marcacao => {
+            const inicioMarcacao = parseDateAsLocal(marcacao.dt_inicio);
+            const fimMarcacao = parseDateAsLocal(marcacao.dt_fim);
+            
+            // Verifica se há sobreposição de períodos
+            // Conflito ocorre quando:
+            // 1. O início solicitado está dentro do período da marcação
+            // 2. O fim solicitado está dentro do período da marcação  
+            // 3. O período solicitado engloba completamente a marcação
+            const conflito = (
+                (inicioSolicitado >= inicioMarcacao && inicioSolicitado <= fimMarcacao) ||
+                (fimSolicitado >= inicioMarcacao && fimSolicitado <= fimMarcacao) ||
+                (inicioSolicitado <= inicioMarcacao && fimSolicitado >= fimMarcacao)
+            );
+            
+            if (conflito) {
+                console.log('Conflito detectado:', {
+                    solicitado: { inicio: dataInicio, fim: dataFim },
+                    marcacao: { 
+                        inicio: marcacao.dt_inicio, 
+                        fim: marcacao.dt_fim,
+                        situacao: marcacao.situacaoferias_display
+                    }
+                });
+            }
+            
+            return conflito;
+        });
+
+        setMostrarErroPeriodoOcupado(temConflito);
+        return temConflito;
+    };
+
     const validarDatas = (inicio, fim, diasFerias = null) => {
         if (!inicio || !fim) return;
 
@@ -471,6 +519,9 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
         // Validar ordem das datas
         const datasInvalidas = dataInicio > dataFim;
         setMostrarErroDatas(datasInvalidas);
+
+        // Verificar conflito com marcações existentes
+        const temConflitoPeriodo = verificarConflitoPeriodo(inicio, fim);
 
         // Validar quantidade mínima de dias usando o parâmetro diasFerias ou numeroDiasFerias
         const diasSolicitados = diasFerias !== null ? parseInt(diasFerias) || 0 : parseInt(numeroDiasFerias) || 0;
@@ -515,6 +566,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
             abonoExcede10 ||
             excedeSaldoTotal ||
             adiantamentoInvalido ||
+            temConflitoPeriodo ||
             (erroAntecedencia && !isPerfilEspecial)
         );
     };
@@ -564,16 +616,137 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
         return dataAviso.toISOString().split('T')[0];
     };
 
+    // Função para gerar array de datas bloqueadas baseado nas marcações
+    const getDatasBloqueadas = React.useMemo(() => {
+        if (!evento?.evento?.marcacoes || evento.evento.marcacoes.length === 0) {
+            return [];
+        }
+
+        const datasBloqueadas = [];
+        
+        evento.evento.marcacoes.forEach(marcacao => {
+            const inicioMarcacao = parseDateAsLocal(marcacao.dt_inicio);
+            const fimMarcacao = parseDateAsLocal(marcacao.dt_fim);
+            
+            // Adiciona todas as datas entre início e fim da marcação
+            let dataAtual = new Date(inicioMarcacao);
+            while (dataAtual <= fimMarcacao) {
+                datasBloqueadas.push(new Date(dataAtual));
+                dataAtual.setDate(dataAtual.getDate() + 1);
+            }
+        });
+        
+        return datasBloqueadas;
+    }, [evento?.evento?.marcacoes]);
+
+    // Função para verificar se uma data está dentro de alguma marcação
+    const isDataBloqueada = (dataStr) => {
+        if (!dataStr || !evento?.evento?.marcacoes || evento.evento.marcacoes.length === 0) {
+            return false;
+        }
+
+        const dataVerificar = parseDateAsLocal(dataStr);
+        
+        return evento.evento.marcacoes.some(marcacao => {
+            const inicioMarcacao = parseDateAsLocal(marcacao.dt_inicio);
+            const fimMarcacao = parseDateAsLocal(marcacao.dt_fim);
+            
+            // Verifica se a data está dentro do período da marcação
+            return dataVerificar >= inicioMarcacao && dataVerificar <= fimMarcacao;
+        });
+    };
+
+    // Função para calcular quantos dias consecutivos estão disponíveis a partir de uma data
+    const calcularDiasDisponiveisConsecutivos = (dataInicioStr) => {
+        if (!dataInicioStr) return 0;
+        
+        const dataInicio = parseDateAsLocal(dataInicioStr);
+        const saldoMaximo = evento?.evento?.saldo_dias || 30;
+        let diasDisponiveis = 0;
+        let dataAtual = new Date(dataInicio);
+        
+        // Conta dias consecutivos até encontrar uma data bloqueada ou atingir o saldo máximo
+        while (diasDisponiveis < saldoMaximo) {
+            // Verifica se a data atual está bloqueada
+            const estaBloqueada = isDataBloqueada(dataAtual.toISOString().split('T')[0]);
+            
+            if (estaBloqueada) {
+                break; // Para quando encontra uma data bloqueada
+            }
+            
+            diasDisponiveis++;
+            dataAtual.setDate(dataAtual.getDate() + 1);
+        }
+        
+        return diasDisponiveis;
+    };
+
     const handleDataInicioChange = (e) => {
         const novaData = e.target.value;
+        
+        // Verifica se a data está bloqueada
+        if (isDataBloqueada(novaData)) {
+            toast.current?.show({
+                severity: 'warn',
+                summary: 'Data Indisponível',
+                detail: 'Esta data já está ocupada por uma marcação existente. Escolha outra data.',
+                life: 3000
+            });
+            setDataInicio('');
+            return;
+        }
+        
         setDataInicio(novaData);
         verificarDiasAntecedencia(novaData);
         
+        // Calcula quantos dias consecutivos estão disponíveis a partir desta data
+        const diasDisponiveisConsecutivos = calcularDiasDisponiveisConsecutivos(novaData);
+        const diasSolicitados = parseInt(numeroDiasFerias) || 0;
+        const saldoTotal = evento?.evento?.saldo_dias || 30;
+        
+        console.log('Debug handleDataInicioChange:', {
+            novaData,
+            diasDisponiveisConsecutivos,
+            diasSolicitados,
+            saldoTotal
+        });
+        
         // Auto-preenche a data de fim baseada no número de dias de férias
         if (novaData && numeroDiasFerias) {
-            const dataFimCalculada = calcularDataFim(novaData, parseInt(numeroDiasFerias));
+            let diasAjustados = diasSolicitados;
+            
+            // Verifica se há pelo menos 5 dias consecutivos disponíveis
+            if (diasDisponiveisConsecutivos < 5) {
+                toast.current?.show({
+                    severity: 'error',
+                    summary: 'Período Insuficiente',
+                    detail: `Não há dias consecutivos suficientes disponíveis a partir desta data. São necessários no mínimo 5 dias consecutivos, mas apenas ${diasDisponiveisConsecutivos} dia${diasDisponiveisConsecutivos > 1 ? 's estão' : ' está'} disponível${diasDisponiveisConsecutivos > 1 ? '' : ''}. Escolha outra data de início.`,
+                    life: 6000
+                });
+                setDataInicio('');
+                setDataFim('');
+                return;
+            }
+            
+            // Se os dias solicitados excedem os dias disponíveis consecutivos, ajusta
+            if (diasSolicitados > diasDisponiveisConsecutivos) {
+                diasAjustados = diasDisponiveisConsecutivos; // Ajusta para o máximo disponível
+                
+                // Atualiza o número de dias
+                setNumeroDiasFerias(diasAjustados.toString());
+                
+                // Mostra aviso ao usuário
+                toast.current?.show({
+                    severity: 'info',
+                    summary: 'Período Ajustado',
+                    detail: `O período foi ajustado para ${diasAjustados} dias devido a marcações existentes. Apenas ${diasDisponiveisConsecutivos} dias consecutivos estão disponíveis a partir desta data.`,
+                    life: 5000
+                });
+            }
+            
+            const dataFimCalculada = calcularDataFim(novaData, diasAjustados);
             setDataFim(dataFimCalculada);
-            validarDatas(novaData, dataFimCalculada);
+            validarDatas(novaData, dataFimCalculada, diasAjustados.toString());
         } else {
             setDataFim('');
             validarDatas('', dataFim);
@@ -625,6 +798,22 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
         } else {
             validarDatas(dataInicio, novaData, numeroDiasFerias);
         }
+        
+        // Recalcula data de pagamento como 2 dias úteis antes do início (se tiver data de início)
+        if (dataInicio) {
+            const dataPagamentoSugerida = calcularDataPagamento(dataInicio);
+            setDataPagamento(dataPagamentoSugerida);
+        } else {
+            setDataPagamento('');
+        }
+        
+        // Recalcula data de aviso de férias como 30 dias corridos antes do início (se tiver data de início)
+        if (dataInicio) {
+            const dataAvisoSugerida = calcularDataAvisoFerias(dataInicio);
+            setAvisoFerias(dataAvisoSugerida);
+        } else {
+            setAvisoFerias('');
+        }
     };
 
     const handleNumeroDiasFeriasChange = (e) => {
@@ -674,11 +863,18 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
                     erroAntecedencia = diffDays < (diasMinimosAntecedencia + 1);
                 }
                 
+                // Verificar conflito se tiver data de fim também
+                let temConflito = false;
+                if (dataInicio && dataFim) {
+                    temConflito = verificarConflitoPeriodo(dataInicio, dataFim);
+                }
+                
                 // Atualizar estado do botão
                 setBotaoEnviarDesabilitado(
                     diasInsuficientes || 
                     excedeSaldo || 
                     excedeSaldoTotal ||
+                    temConflito ||
                     (erroAntecedencia && !isPerfilEspecial)
                 );
             } else {
@@ -737,12 +933,19 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
             erroAntecedencia = diffDays < (diasMinimosAntecedencia + 1);
         }
         
+        // Verificar conflito se tiver datas
+        let temConflito = false;
+        if (dataInicio && dataFim) {
+            temConflito = verificarConflitoPeriodo(dataInicio, dataFim);
+        }
+        
         setBotaoEnviarDesabilitado(
             mostrarErroDatas || 
             mostrarErroDiasMinimos || 
             mostrarErroSaldoDias || 
             abonoExcede10 ||
             excedeSaldoTotal ||
+            temConflito ||
             (erroAntecedencia && !isPerfilEspecial)
         );
     };
@@ -824,6 +1027,12 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
                 erroAntecedencia = diffDays < (diasMinimosAntecedencia + 1);
             }
             
+            // Verificar conflito se tiver datas
+            let temConflito = false;
+            if (dataInicio && dataFim) {
+                temConflito = verificarConflitoPeriodo(dataInicio, dataFim);
+            }
+            
             // Atualizar estado do botão
             setBotaoEnviarDesabilitado(
                 mostrarErroDatas || 
@@ -831,6 +1040,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
                 mostrarErroSaldoDias || 
                 abonoExcede10 ||
                 excedeSaldoTotal ||
+                temConflito ||
                 (erroAntecedencia && !isPerfilEspecial)
             );
         }
@@ -915,6 +1125,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
         setMostrarErroAbono(false);
         setMostrarErroSaldoTotal(false);
         setMostrarErroAdiantamento13(false);
+        setMostrarErroPeriodoOcupado(false);
         setBotaoEnviarDesabilitado(false);
     };
 
@@ -996,6 +1207,12 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
             return;
         }
 
+        // Verificar conflito com marcações existentes
+        if (verificarConflitoPeriodo(dataInicio, dataFim)) {
+            fecharComLimpeza({ aviso: true, mensagem: 'O período selecionado conflita com férias já marcadas. Escolha outro período.' });
+            return;
+        }
+
         const diasSolicitados = parseInt(numeroDiasFerias);
         const saldoDisponivel = eventoCompletado.evento.saldo_dias;
         const abonoDias = parseInt(numeroDiasAbono) || 0;
@@ -1053,7 +1270,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
         }
         
         try {
-            await http.post(`/funcionario/${eventoCompletado.colab.id}/solicita_ferias/`, {
+            await http.post(`/funcionario/${eventoCompletado.colab.id}/solicita_ferias_novo/`, {
                 data_inicio: dataInicio,
                 data_fim: dataFim,
                 adiantar_13: adiantarDecimoTerceiro,
@@ -1096,6 +1313,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
 
     return (
         <OverlayRight $opened={opened} onClick={() => fecharComLimpeza()}>
+            <Toast ref={toast} />
             <DialogEstilizadoRight $width={'80vw'} $align="flex-end" open={opened} $opened={opened} onClick={e => e.stopPropagation()}>
                 <Frame style={{padding: '24px 32px', maxHeight: '90vh', display: 'flex', flexDirection: 'column'}}>
                     <CabecalhoFlex>
@@ -1166,7 +1384,8 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
                                 
                                 {/* Infobox de alerta movido para cá */}
                                 {alerta}
-                                {/* Infoboxes de avisos */}
+                                
+                                {/* Infoboxes de avisos - movidos para antes dos períodos de gozo */}
                                 {mostrarErroDatas && (
                                     <AlertaErro>
                                         <FaExclamationCircle size={20} style={{ color: '#dc2626', flexShrink: 0 }}/>
@@ -1182,6 +1401,39 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
                                             O período de férias deve ter no mínimo 5 dias.
                                         </span>
                                     </AlertaErro>
+                                )}
+                                
+                                {/* Mostrar marcações existentes se houver */}
+                                {evento?.evento?.marcacoes && evento.evento.marcacoes.length > 0 && (
+                                    <div style={{ marginTop: '16px' }}>
+                                        <DetalhesTitulo style={{ marginTop: 0, marginBottom: '12px' }}>Períodos de Gozo de Férias</DetalhesTitulo>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                            {evento.evento.marcacoes.map((marcacao, index) => (
+                                                <div key={index} style={{
+                                                    padding: '12px',
+                                                    background: '#f8f9fa',
+                                                    border: '1px solid #dee2e6',
+                                                    borderRadius: '6px',
+                                                    display: 'flex',
+                                                    justifyContent: 'space-between',
+                                                    alignItems: 'center',
+                                                    width: '100%'
+                                                }}>
+                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 }}>
+                                                        <span style={{ fontSize: '14px', fontWeight: '600', color: '#495057' }}>
+                                                            {format(parseDateAsLocal(marcacao.dt_inicio), 'dd/MM/yyyy')} - {format(parseDateAsLocal(marcacao.dt_fim), 'dd/MM/yyyy')}
+                                                        </span>
+                                                        <span style={{ fontSize: '12px', color: '#6c757d' }}>
+                                                            {marcacao.nrodiasferias} dias • {marcacao.situacaoferias_display}
+                                                        </span>
+                                                    </div>
+                                                    <StatusTag $type={marcacao.situacaoferias === 'M' ? 'marcada' : 'aprovada'}>
+                                                        {marcacao.situacaoferias_display}
+                                                    </StatusTag>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
                                 )}
                                 {mostrarErroSaldoDias && (
                                     <AlertaErro>
@@ -1233,6 +1485,14 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
                                             </span>
                                         </AlertaAviso>
                                     )
+                                )}
+                                {mostrarErroPeriodoOcupado && (
+                                    <AlertaErro>
+                                        <FaExclamationCircle size={20} style={{ color: '#dc2626', flexShrink: 0 }}/>
+                                        <span>
+                                            O período selecionado conflita com férias já marcadas. Verifique as marcações existentes e escolha outro período disponível.
+                                        </span>
+                                    </AlertaErro>
                                 )}
                             </DetalhesCard>
                         </DetalhesContainer>
@@ -1381,23 +1641,27 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
                                     <div style={{display: 'flex', flexDirection: 'column', gap: '24px', marginTop: '12px', width: '100%'}}>
                                         <div style={{display: 'flex', gap: 16}}>
                                             <Linha style={{flex: 2}}>
-                                                <Label>Data de Início</Label>
-                                                <DataInput 
-                                                    type="date" 
-                                                    value={dataInicio} 
-                                                    onChange={handleDataInicioChange}
-                                                    min={(() => {
-                                                        
+                                                <CampoTexto
+                                                    label="Data de Início"
+                                                    type="date"
+                                                    name="dataInicio"
+                                                    valor={dataInicio}
+                                                    setValor={(valor) => {
+                                                        const evento = { target: { value: valor, name: 'dataInicio' } };
+                                                        handleDataInicioChange(evento);
+                                                    }}
+                                                    disabledDates={getDatasBloqueadas}
+                                                    minDate={(() => {
                                                         const raw = evento?.evento?.data_minima_solicitacao;
                                                         if (raw) {
-                                                            // Se já está no formato yyyy-MM-dd, retorna direto
-                                                            if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
-                                                            // Se vier em outro formato, tenta converter
+                                                            if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return parseDateAsLocal(raw);
                                                             const d = new Date(raw);
-                                                            if (!isNaN(d)) return d.toISOString().split('T')[0];
+                                                            if (!isNaN(d)) return d;
                                                         }
-                                                        return new Date().toISOString().split('T')[0];
+                                                        return new Date();
                                                     })()}
+                                                    width="100%"
+                                                    validateError={false}
                                                 />
                                             </Linha>
                                             <Linha style={{flex: 1}}>
@@ -1418,12 +1682,19 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemiti
                                                 />
                                             </Linha>
                                             <Linha style={{flex: 2}}>
-                                                <Label>Data de Fim</Label>
-                                                <DataInput 
-                                                    type="date" 
-                                                    value={dataFim} 
-                                                    onChange={handleDataFimChange}
-                                                    min={dataInicio || new Date().toISOString().split('T')[0]}
+                                                <CampoTexto
+                                                    label="Data de Fim"
+                                                    type="date"
+                                                    name="dataFim"
+                                                    valor={dataFim}
+                                                    setValor={(valor) => {
+                                                        const evento = { target: { value: valor, name: 'dataFim' } };
+                                                        handleDataFimChange(evento);
+                                                    }}
+                                                    disabledDates={getDatasBloqueadas}
+                                                    minDate={dataInicio ? parseDateAsLocal(dataInicio) : new Date()}
+                                                    width="100%"
+                                                    validateError={false}
                                                 />
                                             </Linha>
                                         </div>

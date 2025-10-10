@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components';
 import { format, addMonths, startOfMonth, endOfMonth, addDays, isMonday, getMonth, getYear, differenceInCalendarDays, isAfter, isBefore, isWithinInterval, format as formatDateFns } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaThLarge, FaThList, FaCalendarAlt, FaTh, FaExpandArrowsAlt } from 'react-icons/fa';
+import { FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaThLarge, FaThList, FaCalendarAlt, FaTh, FaExpandArrowsAlt, FaHome, FaArrowRight } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import { Toast } from 'primereact/toast';
 import { Dropdown } from 'primereact/dropdown';
@@ -187,8 +187,8 @@ const EmployeeCell = styled.div`
     padding-left: 12px;
     background: #f5f5f5;
     border: 1px solid #eee;
-    min-height: 44px;
-    height: 44px;
+    min-height: 100px;
+    height: 100px;
     position: sticky;
     left: 0;
     z-index: 3;
@@ -214,7 +214,7 @@ const EmployeeRow = styled.div`
     display: grid;
     grid-template-columns: 280px 1fr;
     align-items: center;
-    min-height: 44px;
+    min-height: 100px;
     margin: 0;
     padding: 0;
     border-bottom: none;
@@ -233,15 +233,15 @@ const EventBar = styled.div`
     position: absolute;
     left: ${({ $startPercent }) => $startPercent}%;
     width: ${({ $widthPercent }) => $widthPercent}%;
-    top: 8px;
+    top: ${({ $row }) => Math.max(2, Math.min(4 + ($row || 0) * 8, 76))}px;
     height: 24px;
     display: flex;
     align-items: center;
     box-shadow: 0 2px 8px rgba(44, 0, 80, 0.13);
     border-radius: 4px;
     font-weight: 400;
-    font-size: 14px;
-    padding: 0 20px 0 12px;
+    font-size: 12px;
+    padding: 0 16px 0 8px;
     z-index: 2;
     overflow: hidden;
     white-space: nowrap;
@@ -344,6 +344,38 @@ const ViewToggleOption = styled.button`
     &:last-child {
         border-top-right-radius: 8px;
         border-bottom-right-radius: 8px;
+    }
+`;
+
+const CurrentMonthButton = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--primaria) 0%, var(--primaria) 100%);
+    color: var(--secundaria);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
+    min-width: 120px;
+    justify-content: center;
+    
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(30, 64, 175, 0.3);
+    }
+    
+    &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
+    }
+    
+    svg {
+        font-size: 14px;
     }
 `;
 
@@ -489,7 +521,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
 
     // Estados para filtro de seção
     const [secoes, setSecoes] = useState([]);
-    const [secaoSelecionada, setSecaoSelecionada] = useState(null);
+    const [secaoSelecionada, setSecaoSelecionada] = useState(secaoFiltroAtual || null);
     const [loadingSecoes, setLoadingSecoes] = useState(false);
     const [filtroSecao, setFiltroSecao] = useState('');
 
@@ -531,10 +563,12 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
         setSecaoSelecionada(novaSecao);
         
         // Chama callback para atualizar filtros no componente pai
+        // Passa null quando o filtro é limpo para resetar
         if (onFilterChange) {
-            onFilterChange({ secao_codigo: novaSecao });
+            onFilterChange({ secao_codigo: novaSecao || null });
         }
     }, [onFilterChange]);
+
 
     // Sistema de preservação de scroll simplificado
 
@@ -766,6 +800,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                     id: item.id,
                     fimperaquis: item.fimperaquis,
                     nrodiasferias: item.nrodiasferias || 30,
+                    saldo: item.saldo || item.nrodiasferias || 30,
                     periodo_perdido: item.periodo_perdido || false,
                     periodo_aquisitivo_inicio: inicioPeriodo,
                     periodo_aquisitivo_fim: fimPeriodo,
@@ -782,7 +817,8 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                     dias_antecedencia_necessarios: item.dias_antecedencia_necessarios || 0,
                     funcionario_tipo_situacao_id: item.funcionario_tipo_situacao_id || null,
                     funcionario_situacao_padrao: item.funcionario_situacao_padrao || false,
-                    tarefas: item.tarefas || [] // Tarefas agora vêm diretamente do item
+                    tarefas: item.tarefas || [],
+                    marcacoes: item.marcacoes || [] // Tarefas agora vêm diretamente do item
                 });
             }
         });
@@ -841,6 +877,24 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
             return Math.max(3, Math.floor(containerWidth / 380)); // ano completo (365 dias) visível
         }
     }, [visualizacao, containerWidth]);
+
+    // Função para rolar para o mês atual
+    const scrollToCurrentMonth = useCallback(() => {
+        if (scrollRef.current) {
+            const hoje = new Date();
+            const inicioMesAtual = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+            
+            // Calcula a posição horizontal para o mês atual
+            const diasDesdeInicio = differenceInCalendarDays(inicioMesAtual, startDate);
+            const scrollPosition = diasDesdeInicio * dayWidth;
+            
+            // Faz scroll suave para a posição do mês atual
+            scrollRef.current.scrollTo({
+                left: Math.max(0, scrollPosition - 200), // 200px de margem
+                behavior: 'smooth'
+            });
+        }
+    }, [startDate, dayWidth]);
 
     // Drag-to-scroll horizontal
     const handleMouseDown = useCallback((e) => {
@@ -1121,6 +1175,9 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
             <FixedHeader>
                 <ViewToggleBar>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <CurrentMonthButton onClick={scrollToCurrentMonth} title="Rolar para o mês atual">
+                            <FaArrowRight fill='var(--secundaria)' /> Ir para o mês atual
+                        </CurrentMonthButton>
                         <CustomDropdownStyles>
                             <Dropdown
                                 value={secaoSelecionada}
@@ -1371,6 +1428,9 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                             return 0;
                                         });
 
+                                    // Contador para índice de linha (empilhamento)
+                                    let rowIndex = 0;
+                                    
                                     return registrosOrdenados.map((aus, i) => {
                                         
                                         // Se não tem dt_inicio e dt_fim, mas tem fimperaquis, verifica se pode solicitar ou se está perdido
@@ -1394,6 +1454,9 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                             
                                             const { startPercent, widthPercent } = getBarPosition(inicioBarra, limiteSolicitacao, startDate, totalDays);
                                             
+                                            const currentRow = rowIndex;
+                                            rowIndex++;
+                                            
                                             if (isPerdido) {
                                                 // Período perdido - não pode mais solicitar
                                                 const tooltip = `Período Aquisitivo: ${format(inicioPeriodo, 'dd/MM/yyyy')} até ${format(fimPeriodo, 'dd/MM/yyyy')}\nData mínima para solicitar: ${format(inicioBarra, 'dd/MM/yyyy')}\nPERÍODO PERDIDO - Não é mais possível solicitar férias`;
@@ -1402,6 +1465,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                                         key={`perdido-${i}`}
                                                         $startPercent={startPercent}
                                                         $widthPercent={widthPercent}
+                                                        $row={currentRow}
                                                         $type="perdido"
                                                         className="event-bar"
                                                         onClick={() => {
@@ -1430,13 +1494,14 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                                         key={`requisitar-${i}`}
                                                         $startPercent={startPercent}
                                                         $widthPercent={widthPercent}
+                                                        $row={currentRow}
                                                         $type="aSolicitar"
                                                         className="event-bar"
                                                         onClick={() => handleEventClick(colab, {
                                                             periodo_aquisitivo_inicio: inicioPeriodo,
                                                             periodo_aquisitivo_fim: fimPeriodo,
                                                             limite: limiteSolicitacao,
-                                                            saldo_dias: aus.nrodiasferias || 30,
+                                                            saldo_dias: aus.saldo || aus.nrodiasferias || 30,
                                                             data_minima_solicitacao: aus.data_minima_solicitacao || null,
                                                             data_minima_solicitacao_formatada: aus.data_minima_solicitacao_formatada || null,
                                                             dias_antecedencia_necessarios: aus.dias_antecedencia_necessarios || 0,
@@ -1445,14 +1510,15 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                                             aviso_ferias: aus.aviso_ferias || null,
                                                             abono_pecuniario: aus.abono_pecuniario || false,
                                                             ferias_coletivas: aus.ferias_coletivas || false,
-                                                            tarefas: aus.tarefas
+                                                            tarefas: aus.tarefas,
+                                                            marcacoes: aus.marcacoes || []
                                                         }, 'aSolicitar')}
                                                         style={{ cursor: 'pointer', position: 'relative', zIndex: 1 }}
                                                         data-pr-tooltip={tooltip}
                                                     >
                                                         <IconWrapper $fill='white'>{statusIcons['aSolicitar']}</IconWrapper>
                                                         A solicitar até {format(limiteSolicitacao, 'dd/MM/yyyy')}
-                                                        <span style={{marginLeft:8, color:'#fff', fontWeight:400, fontSize:13}}>({aus.nrodiasferias || 30} dias)</span>
+                                                        <span style={{marginLeft:8, color:'#fff', fontWeight:400, fontSize:13}}>({aus.saldo || aus.nrodiasferias || 30} dias)</span>
                                                     </EventBar>
                                                 );
                                             }
@@ -1508,11 +1574,15 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                             tarefas: aus.tarefas
                                         };
                                         
+                                        const currentRow = rowIndex;
+                                        rowIndex++;
+                                        
                                         return (
                                             <EventBar
                                                 key={i}
                                                 $startPercent={startPercent}
                                                 $widthPercent={widthPercent}
+                                                $row={currentRow}
                                                 $type={type}
                                                 className="event-bar"
                                                 onClick={() => handleEventClick(colab, eventoComPeriodo, type)}
