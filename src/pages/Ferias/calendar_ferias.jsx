@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components';
 import { format, addMonths, startOfMonth, endOfMonth, addDays, isMonday, getMonth, getYear, differenceInCalendarDays, isAfter, isBefore, isWithinInterval, format as formatDateFns } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaThLarge, FaThList, FaCalendarAlt, FaTh, FaExpandArrowsAlt, FaHome, FaArrowRight } from 'react-icons/fa';
+import { FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaThLarge, FaThList, FaCalendarAlt, FaTh, FaExpandArrowsAlt, FaHome, FaArrowRight, FaCalendarDay } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import { Toast } from 'primereact/toast';
 import { Dropdown } from 'primereact/dropdown';
@@ -351,31 +351,62 @@ const CurrentMonthButton = styled.button`
     display: flex;
     align-items: center;
     gap: 8px;
-    background: linear-gradient(135deg, var(--primaria) 0%, var(--primaria) 100%);
-    color: var(--secundaria);
-    border: none;
+    background: #ffffff;
+    color: #374151;
+    border: 2px solid #e5e7eb;
     border-radius: 8px;
-    padding: 8px 16px;
+    padding: 10px 16px;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
-    min-width: 120px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    min-width: 140px;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        transition: left 0.5s;
+    }
     
     &:hover {
+        border-color: var(--primaria);
+        background: #f8fafc;
         transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(30, 64, 175, 0.3);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        
+        &::before {
+            left: 100%;
+        }
     }
     
     &:active {
         transform: translateY(0);
-        box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    &:focus {
+        outline: none;
+        border-color: var(--primaria);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
     
     svg {
-        font-size: 14px;
+        font-size: 16px;
+        color: var(--primaria);
+        transition: transform 0.2s ease;
+    }
+    
+    &:hover svg {
+        transform: scale(1.1);
     }
 `;
 
@@ -1175,8 +1206,9 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
             <FixedHeader>
                 <ViewToggleBar>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <CurrentMonthButton onClick={scrollToCurrentMonth} title="Rolar para o mês atual">
-                            <FaArrowRight fill='var(--secundaria)' /> Ir para o mês atual
+                        <CurrentMonthButton onClick={scrollToCurrentMonth} title="Ir para o mês atual">
+                            <FaCalendarDay />
+                            Hoje
                         </CurrentMonthButton>
                         <CustomDropdownStyles>
                             <Dropdown
@@ -1294,7 +1326,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                     position: 'sticky',
                                     left: 0,
                                     zIndex: 4,
-                                    boxShadow: '2px 0 4px rgba(0, 0, 0, 0.1)'
+                                    boxShadow: 'none'
                                 }}></div>
                                 {daysArray.map((date, idx) => (
                                     <WeekDayNameCell key={idx}>
@@ -1311,7 +1343,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                     position: 'sticky',
                                     left: 0,
                                     zIndex: 4,
-                                    boxShadow: '2px 0 4px rgba(0, 0, 0, 0.1)'
+                                    boxShadow: 'none'
                                 }}></div>
                                 {daysArray.map((date, idx) => (
                                     isMonday(date) ? (
@@ -1329,7 +1361,7 @@ const CalendarFerias = ({ colaboradores, onUpdate, onLoadMore, hasMore, isLoadin
                                     position: 'sticky',
                                     left: 0,
                                     zIndex: 4,
-                                    boxShadow: '2px 0 4px rgba(0, 0, 0, 0.1)'
+                                    boxShadow: 'none'
                                 }}></div>
                                 {daysArray.map((date, idx) => (
                                     <WeekDay

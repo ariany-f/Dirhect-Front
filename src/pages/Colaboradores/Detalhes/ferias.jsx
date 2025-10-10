@@ -5,7 +5,7 @@ import Botao from '@components/Botao'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 import styled from 'styled-components'
 import { useParams, useOutletContext } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import http from '@http'
 import Loading from '@components/Loading'
 import styles from './Detalhes.module.css'
@@ -61,12 +61,49 @@ function ColabroadorFerias() {
     const [forceUpdate, setForceUpdate] = useState(0)
     const {usuario} = useSessaoUsuarioContext()
     
+    // Estados para paginação server-side
+    const [currentPage, setCurrentPage] = useState(1)
+    const [pageSize, setPageSize] = useState(10)
+    const [totalRecords, setTotalRecords] = useState(0)
+    const [sortField, setSortField] = useState('')
+    const [sortOrder, setSortOrder] = useState('')
+    const [filters, setFilters] = useState({})
+    
     // Situações dinâmicas para filtro (busca da API)
     const [situacoesFerias, setSituacoesFerias] = useState([]);
 
     const colaborador = colaboradorDoContexto ? {
         ...colaboradorDoContexto
     } : null;
+
+    // Função para construir URL da API com parâmetros de paginação
+    const buildApiUrl = useCallback((endpoint, additionalParams = {}) => {
+        const params = new URLSearchParams({
+            format: 'json',
+            funcionario: id,
+            page: currentPage.toString(),
+            page_size: pageSize.toString(),
+            ...additionalParams
+        });
+
+        // Adicionar ordenação se existir
+        if (sortField && sortOrder) {
+            params.append('ordering', sortOrder === 'desc' ? `-${sortField}` : sortField);
+        }
+
+        // Adicionar filtros se existirem
+        Object.entries(filters).forEach(([key, value]) => {
+            if (value !== null && value !== undefined && value !== '') {
+                if (Array.isArray(value)) {
+                    value.forEach(v => params.append(key, v));
+                } else {
+                    params.append(key, value);
+                }
+            }
+        });
+
+        return `${endpoint}?${params.toString()}`;
+    }, [id, currentPage, pageSize, sortField, sortOrder, filters]);
 
     // Buscar períodos aquisitivos (para verificar se pode solicitar férias)
     useEffect(() => {
@@ -79,34 +116,32 @@ function ColabroadorFerias() {
         })
     }, [id, forceUpdate])
 
-    // Buscar dados baseado na aba ativa
+    // Buscar dados baseado na aba ativa com paginação server-side
     useEffect(() => {
         setLoading(true)
         
-        if (tab === 'periodo_aquisitivo') {
-            // Busca períodos aquisitivos
-            http.get(`feriasperiodoaquisitivo/?format=json&funcionario=${id}`)
-            .then(response => {
+        const endpoint = tab === 'periodo_aquisitivo' ? 'feriasperiodoaquisitivo/' : 'feriasperiodogozo/';
+        const url = buildApiUrl(endpoint);
+        
+        http.get(url)
+        .then(response => {
+            // Verificar se a resposta tem estrutura paginada
+            if (response.results !== undefined) {
+                // Resposta paginada
+                setFerias(response.results)
+                setTotalRecords(response.count || 0)
+            } else {
+                // Resposta não paginada (fallback)
                 setFerias(response)
-                setLoading(false)
-            })
-            .catch(erro => {
-                console.log(erro)
-                setLoading(false)
-            })
-        } else {
-            // Busca férias gozadas
-            http.get(`feriasperiodogozo/?format=json&funcionario=${id}`)
-            .then(response => {
-                setFerias(response)
-                setLoading(false)
-            })
-            .catch(erro => {
-                console.log(erro)
-                setLoading(false)
-            })
-        }
-    }, [id, tab, forceUpdate])
+                setTotalRecords(response.length || 0)
+            }
+            setLoading(false)
+        })
+        .catch(erro => {
+            console.log(erro)
+            setLoading(false)
+        })
+    }, [id, tab, forceUpdate, buildApiUrl])
 
 
     // Buscar situações disponíveis da API
@@ -136,7 +171,37 @@ function ColabroadorFerias() {
 
     const handleTabChange = (newTab) => {
         setTab(newTab)
+        // Reset paginação ao trocar de aba
+        setCurrentPage(1)
+        setSortField('')
+        setSortOrder('')
+        setFilters({})
     }
+
+    // Função para lidar com mudanças de paginação
+    const handlePageChange = useCallback((page, size) => {
+        setCurrentPage(page)
+        setPageSize(size)
+    }, [])
+
+    // Função para lidar com mudanças de ordenação
+    const handleSortChange = useCallback((field, order) => {
+        setSortField(field)
+        setSortOrder(order)
+        setCurrentPage(1) // Reset para primeira página ao ordenar
+    }, [])
+
+    // Função para lidar com mudanças de filtros
+    const handleFilterChange = useCallback((newFilters) => {
+        setFilters(newFilters)
+        setCurrentPage(1) // Reset para primeira página ao filtrar
+    }, [])
+
+    // Função para resetar filtros
+    const handleResetFilters = useCallback(() => {
+        setFilters({})
+        setCurrentPage(1)
+    }, [])
 
     return (
         <>
@@ -163,6 +228,18 @@ function ColabroadorFerias() {
                     ferias={ferias}
                     situacoesUnicas={situacoesFerias}
                     onUpdate={() => setForceUpdate(prev => prev + 1)}
+                    // Props para paginação server-side
+                    totalRecords={totalRecords}
+                    currentPage={currentPage}
+                    setCurrentPage={(page) => handlePageChange(page, pageSize)}
+                    pageSize={pageSize}
+                    setPageSize={(size) => handlePageChange(currentPage, size)}
+                    sortField={sortField}
+                    sortOrder={sortOrder}
+                    onSort={handleSortChange}
+                    filtersProp={filters}
+                    onFilter={handleFilterChange}
+                    onSecaoFilterChange={(secao) => handleFilterChange({ ...filters, secao_codigo: secao })}
                 />
             ) : (
                 <DataTableFerias 
@@ -170,6 +247,18 @@ function ColabroadorFerias() {
                     ferias={ferias}
                     situacoesUnicas={situacoesFerias}
                     onUpdate={() => setForceUpdate(prev => prev + 1)}
+                    // Props para paginação server-side
+                    totalRecords={totalRecords}
+                    currentPage={currentPage}
+                    setCurrentPage={(page) => handlePageChange(page, pageSize)}
+                    pageSize={pageSize}
+                    setPageSize={(size) => handlePageChange(currentPage, size)}
+                    sortField={sortField}
+                    sortOrder={sortOrder}
+                    onSort={handleSortChange}
+                    filtersProp={filters}
+                    onFilter={handleFilterChange}
+                    onSecaoFilterChange={(secao) => handleFilterChange({ ...filters, secao_codigo: secao })}
                 />
             )}
         </>
