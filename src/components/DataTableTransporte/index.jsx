@@ -184,11 +184,20 @@ const MapModalContainer = styled.div`
         width: 90vw !important;
         max-width: 1200px !important;
         height: 80vh !important;
+        border-radius: 8px !important;
+    }
+    
+    .p-dialog-header {
+        background: #fff !important;
+        border-bottom: 1px solid #dee2e6 !important;
+        padding: 16px 20px !important;
+        border-radius: 8px 8px 0 0 !important;
     }
     
     .p-dialog-content {
         padding: 0 !important;
         height: calc(80vh - 60px) !important;
+        border-radius: 0 0 8px 8px !important;
     }
 `
 
@@ -196,10 +205,41 @@ const MapHeader = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
-    background: linear-gradient(to right, var(--primaria), var(--secundaria));
+    width: 100%;
+`
+
+const MapHeaderInfo = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    
+    h3 {
+        margin: 0;
+        color: #495057;
+        font-size: 16px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    p {
+        margin: 4px 0 0 0;
+        color: #6c757d;
+        font-size: 13px;
+    }
+`
+
+const MapHeaderIcon = styled.div`
+    width: 32px;
+    height: 32px;
+    background: var(--primaria);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: white;
-    border-radius: 8px 8px 0 0;
+    font-size: 14px;
 `
 
 const MapContent = styled.div`
@@ -209,9 +249,36 @@ const MapContent = styled.div`
 `
 
 const MapInfo = styled.div`
-    padding: 16px;
+    padding: 16px 20px;
     background: #f8f9fa;
     border-bottom: 1px solid #dee2e6;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+`
+
+const MapInfoItem = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    
+    strong {
+        color: #495057;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    span {
+        color: #6c757d;
+        font-size: 14px;
+    }
 `
 
 const MapIframe = styled.iframe`
@@ -222,10 +289,10 @@ const MapIframe = styled.iframe`
 `
 
 const CloseButton = styled.button`
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white;
-    border-radius: 50%;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    color: #6c757d;
+    border-radius: 6px;
     width: 32px;
     height: 32px;
     display: flex;
@@ -235,8 +302,14 @@ const CloseButton = styled.button`
     transition: all 0.2s ease;
     
     &:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: scale(1.05);
+        background: #e9ecef;
+        border-color: #adb5bd;
+        color: #495057;
+    }
+    
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(var(--primaria-rgb), 0.2);
     }
 `
 
@@ -754,37 +827,43 @@ function DataTableTransporte({ colaboradores, showActions = true }) {
                 modal
                 style={{ width: '90vw', maxWidth: '1200px' }}
                 contentStyle={{ padding: 0, height: '80vh' }}
+                header={
+                    <MapHeader>
+                        <MapHeaderInfo>
+                            <MapHeaderIcon>
+                                <FaRoute size={14} />
+                            </MapHeaderIcon>
+                            <div>
+                                <h3>
+                                    Trajeto: {selectedColaborador?.nome}
+                                </h3>
+                                <p>
+                                    {selectedColaborador?.distancia_km.toFixed(1)} km • {selectedColaborador?.tempo_deslocamento} min • {selectedColaborador?.tipo_transporte}
+                                </p>
+                            </div>
+                        </MapHeaderInfo>
+                        <CloseButton onClick={() => setMapModalVisible(false)}>
+                            <FaTimes size={14} />
+                        </CloseButton>
+                    </MapHeader>
+                }
             >
                 <MapModalContainer>
                     {selectedColaborador && (
                         <MapContent>
-                            <MapHeader>
-                                <div>
-                                    <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <FaRoute />
-                                        Trajeto: {selectedColaborador.nome}
-                                    </h3>
-                                    <p style={{ margin: '8px 0 0 0', opacity: 0.9, fontSize: '14px' }}>
-                                        {selectedColaborador.distancia_km.toFixed(1)} km • {selectedColaborador.tempo_deslocamento} min • {selectedColaborador.tipo_transporte}
-                                    </p>
-                                </div>
-                                <CloseButton onClick={() => setMapModalVisible(false)}>
-                                    <FaTimes size={14} />
-                                </CloseButton>
-                            </MapHeader>
-                            
                             <MapInfo>
-                                <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                                    <div>
-                                        <strong>Origem:</strong> {selectedColaborador.endereco_residencial}
-                                    </div>
-                                    <div>
-                                        <strong>Destino:</strong> {selectedColaborador.filial}
-                                    </div>
-                                    <div>
-                                        <strong>Linhas:</strong> {selectedColaborador.linhas_transporte || 'Não informado'}
-                                    </div>
-                                </div>
+                                <MapInfoItem>
+                                    <strong>Origem</strong>
+                                    <span>{selectedColaborador.endereco_residencial}</span>
+                                </MapInfoItem>
+                                <MapInfoItem>
+                                    <strong>Destino</strong>
+                                    <span>{selectedColaborador.filial}</span>
+                                </MapInfoItem>
+                                <MapInfoItem>
+                                    <strong>Linhas de Transporte</strong>
+                                    <span>{selectedColaborador.linhas_transporte || 'Não informado'}</span>
+                                </MapInfoItem>
                             </MapInfo>
                             
                             <MapIframe 
