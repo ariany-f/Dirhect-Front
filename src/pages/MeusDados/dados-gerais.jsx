@@ -376,9 +376,9 @@ function MeusDadosDadosGerais() {
         try {
             const payload = {
                 old_password: senhaAtual,
-                new_password: novaSenha,
+                new_password: novaSenha
             };
-            await http.post(`usuario/${ArmazenadorToken.UserPublicId}/`	, payload);
+            await http.post(`usuario/${ArmazenadorToken.UserPublicId}/change_password/`	, payload);
 
             toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Senha alterada com sucesso!', life: 3000 });
             setSenhaAtual('');
@@ -1082,9 +1082,24 @@ function MeusDadosDadosGerais() {
 
             {mostrarCamposSenha && (
                 <PasswordWrapper>
-                    <CampoTexto label="Senha Atual" tipo="password" valor={senhaAtual} setValor={setSenhaAtual} />
-                    <CampoTexto label="Nova Senha" tipo="password" valor={novaSenha} setValor={setNovaSenha} />
-                    <CampoTexto label="Confirmar Nova Senha" tipo="password" valor={confirmarSenha} setValor={setConfirmarSenha} />
+                    <CampoTexto 
+                        label="Senha Atual" 
+                        type="password" 
+                        valor={senhaAtual} 
+                        setValor={setSenhaAtual} 
+                    />
+                    <CampoTexto 
+                        label="Nova Senha" 
+                        type="password" 
+                        valor={novaSenha} 
+                        setValor={setNovaSenha} 
+                    />
+                    <CampoTexto 
+                        label="Confirmar Nova Senha" 
+                        type="password" 
+                        valor={confirmarSenha} 
+                        setValor={setConfirmarSenha} 
+                    />
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
                         <Botao estilo="neutro" size="medium" aoClicar={() => setMostrarCamposSenha(false)}>Cancelar</Botao>
                         <Botao estilo="vermilion" size="medium" aoClicar={handleAlterarSenha} disabled={alterandoSenha}>

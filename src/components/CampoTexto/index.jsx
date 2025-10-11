@@ -130,7 +130,7 @@ const CampoArea = styled(InputTextarea)`
     }
 `
 
-function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = true, label, disabled = false, readonly = false, type='text',  setFocus, placeholder, valor = '', setValor, name, width = 'inherit', camposVazios = [], camposInvalidos = [], patternMask = [], reference=null, required = false, numeroCaracteres = null, onEnter = null, padding = null, rows = null, maskReverse = false }) {
+function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = true, label, disabled = false, readonly = false, type='text',  setFocus, placeholder, valor = '', setValor, name, width = 'inherit', camposVazios = [], camposInvalidos = [], patternMask = [], reference=null, required = false, numeroCaracteres = null, onEnter = null, padding = null, rows = null, maskReverse = false, disabledDates = [], minDate = null, maxDate = null }) {
 
     const classeCampoVazio = camposVazios.filter((val) => {
         return val === name
@@ -538,6 +538,9 @@ function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = tr
                         placeholder={placeholder}
                         autoComplete="on"
                         maxLength={maxCaracteres}
+                        disabledDates={disabledDates}
+                        minDate={minDate}
+                        maxDate={maxDate}
                     />
                 ) : (
                     <Campo 

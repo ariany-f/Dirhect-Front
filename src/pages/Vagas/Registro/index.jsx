@@ -66,8 +66,8 @@ const VagasRegistro = () => {
     const [periculosidade, setPericulosidade] = useState(null);
     const [insalubridade, setInsalubridade] = useState('');
     const [status, setStatus] = useState('Ativa');
-    const [tag, setTag] = useState(null);
-    const [tags, setTags] = useState([]);
+    const [letra, setLetra] = useState(null);
+    const [opcoesLetraHorario, setOpcoesLetraHorario] = useState([]);
     const toast = useRef(null)
     const [erroPeriInsa, setErroPeriInsa] = useState(false);
 
@@ -80,6 +80,25 @@ const VagasRegistro = () => {
         if (!data) return null;
         const [dia, mes, ano] = data.split('/');
         return `${ano}-${mes}-${dia}`;
+    };
+
+    const carregarOpcoesLetraHorario = async (horarioId) => {
+        if (!horarioId) {
+            setOpcoesLetraHorario([]);
+            return;
+        }
+        
+        try {
+            const detalhesHorario = await http.get(`horario_indice/?id_horario=${horarioId}`);
+            const opcoes = (detalhesHorario || []).map(item => ({
+                code: item.id,
+                name: item.descricao_letra ? `${item.indice} - ${item.descricao_letra}` : `${item.indice}`
+            }));
+            setOpcoesLetraHorario(opcoes);
+        } catch (err) {
+            setOpcoesLetraHorario([]);
+            console.error('Erro ao buscar detalhes do horário:', err);
+        }
     };
 
     useEffect(() => {
@@ -122,19 +141,17 @@ const VagasRegistro = () => {
             .then(response => {
                 setFuncoes(response)
             })
-
-        http.get('documento_requerido_tag/')
-            .then(response => {
-                const tagsFormatadas = response.map(tag => ({
-                    name: tag.nome,
-                    code: tag.id
-                }));
-                setTags(tagsFormatadas);
-            })
-            .catch(error => {
-                console.error('Erro ao buscar tags:', error);
-            })
     }, [])
+
+    // Carregar opções de letra quando o horário mudar
+    useEffect(() => {
+        const horarioId = horario?.code;
+        if (horarioId) {
+            carregarOpcoesLetraHorario(horarioId);
+        } else {
+            setOpcoesLetraHorario([]);
+        }
+    }, [horario]);
 
     
   const [listaPericulosidades, setListaPericulosidades] = useState([
@@ -167,18 +184,17 @@ const VagasRegistro = () => {
 
         // Validação dos campos obrigatórios
         const camposObrigatorios = [
-            { campo: titulo, nome: 'Titulo' },
-            { campo: descricao, nome: 'Descricao' },
+            { campo: titulo, nome: 'titulo' },
             { campo: dataAbertura, nome: 'dt_abertura' },
             { campo: dataEncerramento, nome: 'dt_encerramento' },
-            { campo: salario, nome: 'salario' },
             { campo: qtdVagas, nome: 'qtd_vaga' },
-            { campo: filial, nome: 'Filial', obrigatorio: isCampoObrigatorio(filiais) },
-            { campo: centroCusto, nome: 'Centro de Custo', obrigatorio: isCampoObrigatorio(centros_custo) },
-            { campo: secao, nome: 'Seção', obrigatorio: isCampoObrigatorio(secoes) },
-            { campo: funcao, nome: 'Função', obrigatorio: isCampoObrigatorio(funcoes) },
-            { campo: sindicato, nome: 'Sindicato', obrigatorio: isCampoObrigatorio(sindicatos) },
-            { campo: horario, nome: 'horario', obrigatorio: isCampoObrigatorio(horarios) }
+            { campo: filial, nome: 'filial', obrigatorio: isCampoObrigatorio(filiais) },
+            { campo: centroCusto, nome: 'centro_custo', obrigatorio: isCampoObrigatorio(centros_custo) },
+            { campo: secao, nome: 'secao', obrigatorio: isCampoObrigatorio(secoes) },
+            { campo: funcao, nome: 'funcao', obrigatorio: isCampoObrigatorio(funcoes) },
+            { campo: sindicato, nome: 'sindicato', obrigatorio: isCampoObrigatorio(sindicatos) },
+            { campo: horario, nome: 'horario', obrigatorio: isCampoObrigatorio(horarios) },
+            { campo: letra, nome: 'letra' }
         ];
 
         const camposVazios = camposObrigatorios.filter(campo => {
@@ -188,11 +204,23 @@ const VagasRegistro = () => {
         });
         
         if (camposVazios.length > 0) {
-            setClassError(camposVazios.map(campo => campo.nome.toLowerCase().replace(/\s+/g, '_')));
+            setClassError(camposVazios.map(campo => campo.nome));
+            
+            // Verificar dependências entre campos
+            const secaoVazia = camposVazios.find(c => c.nome === 'secao');
+            const letraVazia = camposVazios.find(c => c.nome === 'letra');
+            let detalheMensagem = `Por favor, preencha os seguintes campos: ${camposVazios.map(campo => campo.nome).join(', ')}`;
+            
+            if (secaoVazia && !filial) {
+                detalheMensagem = 'Selecione a filial primeiro para poder selecionar a seção.';
+            } else if (letraVazia && !horario) {
+                detalheMensagem = 'Selecione o horário primeiro para poder selecionar a letra.';
+            }
+            
             toast.current.show({
                 severity: 'error',
                 summary: 'Campos obrigatórios não preenchidos',
-                detail: `Por favor, preencha os seguintes campos: ${camposVazios.map(campo => campo.nome).join(', ')}`,
+                detail: detalheMensagem,
                 life: 5000
             });
             return;
@@ -240,10 +268,10 @@ const VagasRegistro = () => {
                 departamento: departamento?.code || null,
                 secao: secao?.code || null,
                 cargo: cargo?.code || null,
+                letra: letra?.code || null,
                 horario: horario?.code || null,
                 funcao: funcao?.code || null,
-                sindicato: sindicato?.code || null,
-                tag: tag?.code || null
+                sindicato: sindicato?.code || null
             };
 
             http.post('/vagas/', novaVaga)
@@ -266,9 +294,10 @@ const VagasRegistro = () => {
                     setSecao(null);
                     setCargo(null);
                     setHorario(null);
+                    setLetra(null);
+                    setOpcoesLetraHorario([]);
                     setFuncao(null);
                     setSindicato(null);
-                    setTag(null);
 
                     toast.current.show({
                         severity: 'success',
@@ -354,20 +383,6 @@ const VagasRegistro = () => {
                 <Col12>
                     <Col6>
                         <DropdownItens
-                            name="tag"
-                            valor={tag}
-                            setValor={setTag}
-                            options={tags}
-                            label="Tag"
-                            placeholder="Selecione uma tag"
-                            allowClear={true}
-                        />
-                    </Col6>
-                </Col12>
-
-                <Col12>
-                    <Col6>
-                        <DropdownItens
                             name="periculosidade"
                             valor={periculosidade}
                             setValor={valor => { 
@@ -419,6 +434,7 @@ const VagasRegistro = () => {
                         <CampoTexto
                             camposVazios={classError}
                             patternMask={['999']}
+                            required={true}
                             name="qtd_vaga" 
                             valor={qtdVagas} 
                             setValor={setQtdVagas} 
@@ -484,7 +500,7 @@ const VagasRegistro = () => {
                                 }))} 
                                 filter
                                 label="Seção"
-                                placeholder="Seção"
+                                placeholder={!filial ? "Selecione a filial primeiro" : "Seção"}
                                 required={isCampoObrigatorio(secoes)}
                                 allowClear={true}
                                 disabled={!filial}
@@ -514,7 +530,10 @@ const VagasRegistro = () => {
                                 camposVazios={classError}
                                 name="horario" 
                                 valor={horario}
-                                setValor={setHorario} 
+                                setValor={(valor) => {
+                                    setHorario(valor);
+                                    setLetra(null); // Limpa a letra quando muda o horário
+                                }} 
                                 options={horarios.map(horario => ({
                                     name: horario.id_origem 
                                     ? `${horario.id_origem} - ${horario.descricao || horario.nome}` 
@@ -530,6 +549,19 @@ const VagasRegistro = () => {
                     </Col12>
 
                     <Col12>
+                        <Col6>
+                            <DropdownItens 
+                                camposVazios={classError}
+                                name="letra"
+                                required={true}
+                                label="Letra"
+                                valor={letra}
+                                setValor={setLetra}
+                                options={opcoesLetraHorario}
+                                disabled={opcoesLetraHorario.length === 0}
+                                placeholder={opcoesLetraHorario.length === 0 ? "Selecione um horário primeiro" : "Selecione a letra"}
+                            />
+                        </Col6>
                         <Col6>
                             <DropdownItens 
                                 camposVazios={classError}

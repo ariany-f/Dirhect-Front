@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import CampoTexto from '@components/CampoTexto';
+import CampoTags from '@components/CampoTags';
 import BotaoVoltar from '@components/BotaoVoltar';
 import Container from '@components/Container';
 import Botao from '@components/Botao';
@@ -73,6 +74,13 @@ const TemplatesVagaRegistro = () => {
     const [ajudaCusto, setAjudaCusto] = useState('');
     const [arredondamento, setArredondamento] = useState('');
     const [mediaSalMaternidade, setMediaSalMaternidade] = useState('');
+    
+    // Estados para tags
+    const [tags, setTags] = useState([]);
+    const [tagsDisponiveis, setTagsDisponiveis] = useState([]);
+    const [loadingTag, setLoadingTag] = useState(false);
+    const processingTagRef = useRef(false);
+    const tempTagCodeRef = useRef(null);
 
     // Carregar dados ao montar
     useEffect(() => {
@@ -92,6 +100,19 @@ const TemplatesVagaRegistro = () => {
             // Carregar funções de confiança
             const funcoesResp = await http.get('funcao/?format=json&confianca=true');
             setFuncoesConfianca(funcoesResp);
+            
+            // Carregar tags disponíveis
+            try {
+                const tagsResp = await http.get('/documento_requerido_tag/');
+                const tagsFormatadas = tagsResp.map(tag => ({
+                    name: tag.nome,
+                    code: tag.id.toString(),
+                    id: tag.id
+                }));
+                setTagsDisponiveis(tagsFormatadas);
+            } catch (error) {
+                console.error('Erro ao buscar tags:', error);
+            }
             
             // Carregar tabelas de domínio
             const response = await http.get('tabela_dominio/');
@@ -222,6 +243,15 @@ const TemplatesVagaRegistro = () => {
                         const opcao = opcoesFuncaoConfianca.find(o => o.code === template.funcao_confianca);
                         if (opcao) setFuncaoConfianca(opcao);
                     }
+                    
+                    // Carregar tags se existirem
+                    if (template.tags && Array.isArray(template.tags) && tagsDisponiveis.length > 0) {
+                        const tagsArray = template.tags.map(tagId => {
+                            const opcao = tagsDisponiveis.find(opt => opt.id === tagId);
+                            return opcao || { name: `Tag ${tagId}`, code: tagId.toString(), id: tagId };
+                        });
+                        setTags(tagsArray);
+                    }
                 }, 500);
             }
         } catch (error) {
@@ -327,6 +357,111 @@ const TemplatesVagaRegistro = () => {
         "2": "Trabalho Rural"
     }), []);
 
+    const handleTagsChange = async (value) => {
+        console.log('handleTagsChange chamado com:', value);
+        console.log('tags atuais:', tags);
+        
+        // Se a última tag adicionada não existe nas opções (é nova)
+        if (value.length > tags.length) {
+            const novaTag = value[value.length - 1];
+            
+            // Verificar se a tag já existe nas opções disponíveis
+            const tagExiste = tagsDisponiveis.some(t => 
+                t.name.toLowerCase() === novaTag.name.toLowerCase() ||
+                (t.id && novaTag.id && t.id === novaTag.id)
+            );
+            
+            if (!tagExiste && (!novaTag.id || novaTag.id === novaTag.name)) {
+                // Verificar se já está processando para evitar duplicação
+                if (processingTagRef.current) {
+                    console.log('Já está processando uma tag, ignorando...');
+                    return;
+                }
+                
+                // É uma tag nova que precisa ser criada na API
+                processingTagRef.current = true;
+                
+                // 🚀 OPTIMISTIC UPDATE: Adiciona a tag temporária IMEDIATAMENTE
+                const tempCode = `temp_${Date.now()}`;
+                tempTagCodeRef.current = tempCode; // Salva referência
+                
+                const tagTemporaria = {
+                    name: novaTag.name,
+                    code: tempCode,
+                    id: tempCode,
+                    _isLoading: true // Flag para indicar que está carregando
+                };
+                
+                console.log('Tag temporária criada:', tagTemporaria);
+                
+                const tagsComTemporaria = [...tags, tagTemporaria];
+                setTags(tagsComTemporaria);
+                setLoadingTag(true);
+                
+                try {
+                    console.log('Criando nova tag:', novaTag.name);
+                    
+                    // Criar nova tag na API
+                    const response = await http.post('/documento_requerido_tag/', {
+                        nome: novaTag.name
+                    });
+                    
+                    console.log('Tag criada com sucesso:', response);
+                    
+                    // Criar tag formatada com dados da API
+                    const novaTagFormatada = {
+                        name: response.nome,
+                        code: response.id.toString(),
+                        id: response.id
+                    };
+                    
+                    // Adicionar a nova tag às opções disponíveis
+                    setTagsDisponiveis(prev => [...prev, novaTagFormatada]);
+                    
+                    // 🎯 Substituir a tag temporária pela tag real
+                    const tempCodeToReplace = tempTagCodeRef.current;
+                    
+                    setTags(currentTags => {
+                        const tagsAtualizadas = currentTags.map(t => {
+                            const ehTemporaria = t.code === tempCodeToReplace;
+                            return ehTemporaria ? novaTagFormatada : t;
+                        });
+                        
+                        tempTagCodeRef.current = null;
+                        return tagsAtualizadas;
+                    });
+                    
+                } catch (error) {
+                    console.error('Erro ao criar nova tag:', error);
+                    
+                    // ❌ ROLLBACK: Remove a tag temporária em caso de erro
+                    setTags(currentTags => {
+                        const tagsSemTemporaria = currentTags.filter(t => !t._isLoading);
+                        return tagsSemTemporaria;
+                    });
+                    
+                    toast.current?.show({
+                        severity: 'error',
+                        summary: 'Erro',
+                        detail: 'Erro ao criar nova tag',
+                        life: 3000
+                    });
+                } finally {
+                    setLoadingTag(false);
+                    processingTagRef.current = false;
+                }
+            } else {
+                // Tag já existe ou foi selecionada das opções
+                console.log('Tag já existe, atualizando estado com:', value);
+                setTags(value);
+            }
+        } else {
+            // Tag foi removida
+            console.log('Tag removida, atualizando estado com:', value);
+            setTags(value);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -334,7 +469,6 @@ const TemplatesVagaRegistro = () => {
         const camposObrigatorios = [];
         if (!nome.trim()) camposObrigatorios.push('Nome');
         if (!jornada.trim()) camposObrigatorios.push('Jornada');
-        if (!salario.trim()) camposObrigatorios.push('Salário');
         if (!tipoAdmissao) camposObrigatorios.push('Tipo de Admissão');
         if (!motivoAdmissao) camposObrigatorios.push('Motivo da Admissão');
         if (!tipoSituacao) camposObrigatorios.push('Situação');
@@ -365,18 +499,31 @@ const TemplatesVagaRegistro = () => {
                 .replace(',', '.');
         };
 
+        // Função para limpar formatação de percentual
+        const limparFormatacaoPercentual = (valor) => {
+            if (!valor) return '0.00';
+            // Remove %, espaços e substitui vírgula por ponto
+            return valor.toString()
+                .replace('%', '')
+                .replace(/\s/g, '')
+                .replace(',', '.');
+        };
+
+        // Converter tags para array de IDs
+        const tagsIds = tags.map(tag => tag.id);
+
         // Montar payload para a API
         const payload = {
             nome,
             descricao,
             jornada,
-            salario: limparFormatacaoMonetaria(salario),
+            salario: limparFormatacaoMonetaria(salario || '0.00'),
             confianca,
             funcao_confianca: funcaoConfianca?.code || null,
             calcula_inss: calculaInss,
             calcula_irrf: calculaIrrf,
             funcao_emprego_cargoacumulavel: funcaoEmpregoCargoAcumulavel,
-            perc_adiantamento: limparFormatacaoMonetaria(percAdiantamento),
+            perc_adiantamento: limparFormatacaoPercentual(percAdiantamento),
             ajuda_custo: limparFormatacaoMonetaria(ajudaCusto),
             arredondamento: limparFormatacaoMonetaria(arredondamento),
             media_sal_maternidade: limparFormatacaoMonetaria(mediaSalMaternidade),
@@ -396,7 +543,8 @@ const TemplatesVagaRegistro = () => {
             tipo_contrato_prazo_determinado: tipoContratoPrazoDeterminado?.code || null,
             tipo_contrato_trabalho: tipoContratoTrabalho?.code || null,
             codigo_categoria_esocial: codigoCategoriaEsocial?.id,
-            natureza_atividade_esocial: naturezaAtividadeEsocial?.code
+            natureza_atividade_esocial: naturezaAtividadeEsocial?.code,
+            tags: tagsIds
         };
 
         try {
@@ -464,6 +612,24 @@ const TemplatesVagaRegistro = () => {
                             label="Descrição"
                             placeholder="Digite uma descrição"
                         />
+                    </Col6>
+                </Col12>
+
+                <Col12>
+                    <Col6>
+                        <CampoTags
+                            name="tags"
+                            value={tags}
+                            onChange={handleTagsChange}
+                            options={tagsDisponiveis}
+                            label="Tags"
+                            placeholder={loadingTag ? "Criando tag..." : "Digite para buscar ou criar tags..."}
+                            allowCustomTags={true}
+                            disabled={loadingTag}
+                        />
+                        <small style={{ color: loadingTag ? '#0ea5e9' : '#6c757d', marginTop: '4px', display: 'block', fontWeight: loadingTag ? 600 : 400 }}>
+                            {loadingTag ? '⏳ Criando tag na API...' : 'Selecione tags ou crie novas (pressione Enter).'}
+                        </small>
                     </Col6>
                 </Col12>
 
@@ -611,7 +777,6 @@ const TemplatesVagaRegistro = () => {
                         <CampoTexto
                             camposVazios={classError}
                             name="salario"
-                            required={true}
                             label="Salário"
                             valor={salario}
                             setValor={setSalario}

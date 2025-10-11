@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import DropdownItens from '@components/DropdownItens';
+import React, { useEffect, useState, useRef } from 'react';
+import CampoTags from '@components/CampoTags';
 import Botao from '@components/Botao';
 import http from '@http';
 import Frame from "@components/Frame";
@@ -7,6 +7,7 @@ import Titulo from "@components/Titulo";
 import { RiCloseFill } from 'react-icons/ri';
 import styled from "styled-components";
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
+import { Toast } from 'primereact/toast';
 
 const Col12 = styled.div`
     display: flex;
@@ -32,10 +33,14 @@ const Label = styled.label`
     display: block;
 `;
 
-function ModalTags({ opened = false, aoFechar, aoSalvar, tagSelecionada = null }) {
-    const [tags, setTags] = useState([]);
-    const [tagAtual, setTagAtual] = useState(null);
+function ModalTags({ opened = false, aoFechar, aoSalvar, tagsSelecionadas = [] }) {
+    const [tagsDisponiveis, setTagsDisponiveis] = useState([]);
+    const [tagsSelecionadasAtual, setTagsSelecionadasAtual] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [loadingTag, setLoadingTag] = useState(false);
+    const toast = useRef(null);
+    const processingTagRef = useRef(false);
+    const tempTagCodeRef = useRef(null);
 
     useEffect(() => {
         if (opened) {
@@ -45,15 +50,19 @@ function ModalTags({ opened = false, aoFechar, aoSalvar, tagSelecionada = null }
                 .then(response => {
                     const tagsFormatadas = response.map(tag => ({
                         name: tag.nome,
-                        code: tag.id
+                        code: tag.id.toString(),
+                        id: tag.id
                     }));
-                    setTags(tagsFormatadas);
+                    setTagsDisponiveis(tagsFormatadas);
                     
-                    // Se há uma tag já selecionada, define ela
-                    if (tagSelecionada) {
-                        const tagEncontrada = tagsFormatadas.find(t => t.code === tagSelecionada);
-                        console.log('Tag pré-selecionada encontrada:', tagEncontrada);
-                        setTagAtual(tagEncontrada || null);
+                    // Se há tags já selecionadas, define elas
+                    if (tagsSelecionadas && tagsSelecionadas.length > 0) {
+                        const tagsEncontradas = tagsSelecionadas.map(tagId => {
+                            const tagEncontrada = tagsFormatadas.find(t => t.id === tagId);
+                            return tagEncontrada;
+                        }).filter(t => t !== undefined);
+                        console.log('Tags pré-selecionadas encontradas:', tagsEncontradas);
+                        setTagsSelecionadasAtual(tagsEncontradas);
                     }
                 })
                 .catch(error => {
@@ -63,47 +72,140 @@ function ModalTags({ opened = false, aoFechar, aoSalvar, tagSelecionada = null }
                     setLoading(false);
                 });
         }
-    }, [opened, tagSelecionada]);
+    }, [opened, tagsSelecionadas]);
 
     useEffect(() => {
         if (!opened) {
-            setTagAtual(null);
+            setTagsSelecionadasAtual([]);
         }
     }, [opened]);
 
+    const handleTagsChange = async (value) => {
+        // Se a última tag adicionada não existe nas opções (é nova)
+        if (value.length > tagsSelecionadasAtual.length) {
+            const novaTag = value[value.length - 1];
+            
+            // Verificar se a tag já existe nas opções disponíveis
+            const tagExiste = tagsDisponiveis.some(t => 
+                t.name.toLowerCase() === novaTag.name.toLowerCase() ||
+                (t.id && novaTag.id && t.id === novaTag.id)
+            );
+            
+            if (!tagExiste && (!novaTag.id || novaTag.id === novaTag.name)) {
+                // Verificar se já está processando para evitar duplicação
+                if (processingTagRef.current) {
+                    return;
+                }
+                
+                // É uma tag nova que precisa ser criada na API
+                processingTagRef.current = true;
+                
+                // OPTIMISTIC UPDATE
+                const tempCode = `temp_${Date.now()}`;
+                tempTagCodeRef.current = tempCode;
+                
+                const tagTemporaria = {
+                    name: novaTag.name,
+                    code: tempCode,
+                    id: tempCode,
+                    _isLoading: true
+                };
+                
+                const tagsComTemporaria = [...tagsSelecionadasAtual, tagTemporaria];
+                setTagsSelecionadasAtual(tagsComTemporaria);
+                setLoadingTag(true);
+                
+                try {
+                    // Criar nova tag na API
+                    const response = await http.post('/documento_requerido_tag/', {
+                        nome: novaTag.name
+                    });
+                    
+                    // Criar tag formatada com dados da API
+                    const novaTagFormatada = {
+                        name: response.nome,
+                        code: response.id.toString(),
+                        id: response.id
+                    };
+                    
+                    // Adicionar a nova tag às opções disponíveis
+                    setTagsDisponiveis(prev => [...prev, novaTagFormatada]);
+                    
+                    // Substituir a tag temporária pela tag real
+                    const tempCodeToReplace = tempTagCodeRef.current;
+                    
+                    setTagsSelecionadasAtual(currentTags => {
+                        const tagsAtualizadas = currentTags.map(t => {
+                            const ehTemporaria = t.code === tempCodeToReplace;
+                            return ehTemporaria ? novaTagFormatada : t;
+                        });
+                        
+                        tempTagCodeRef.current = null;
+                        return tagsAtualizadas;
+                    });
+                    
+                } catch (error) {
+                    console.error('Erro ao criar nova tag:', error);
+                    
+                    // ROLLBACK
+                    setTagsSelecionadasAtual(currentTags => {
+                        const tagsSemTemporaria = currentTags.filter(t => !t._isLoading);
+                        return tagsSemTemporaria;
+                    });
+                    
+                    toast.current?.show({
+                        severity: 'error',
+                        summary: 'Erro',
+                        detail: 'Erro ao criar nova tag',
+                        life: 3000
+                    });
+                } finally {
+                    setLoadingTag(false);
+                    processingTagRef.current = false;
+                }
+            } else {
+                setTagsSelecionadasAtual(value);
+            }
+        } else {
+            setTagsSelecionadasAtual(value);
+        }
+    };
+
     const handleSalvar = () => {
-        aoSalvar(tagAtual?.code || null);
+        const tagsIds = tagsSelecionadasAtual.map(tag => tag.id);
+        aoSalvar(tagsIds);
     };
 
     return (
         <>
+            <Toast ref={toast} />
             {opened && (
                 <Overlay>
-                    <DialogEstilizado open={opened} $width="500px">
+                    <DialogEstilizado open={opened} $width="600px">
                         <Frame>
                             <Titulo>
                                 <button className="close" onClick={aoFechar}>
                                     <RiCloseFill size={20} className="fechar" />  
                                 </button>
-                                <h6>Selecionar Tag</h6>
+                                <h6>Selecionar Tags</h6>
                             </Titulo>
                         </Frame>
                         
                         <Frame padding="12px 0px">
                             <Col12>
                                 <DropdownContainer>
-                                    <DropdownItens
-                                        name="tag"
-                                        label="Tag"
-                                        valor={tagAtual}
-                                        setValor={setTagAtual}
-                                        options={tags}
-                                        placeholder={loading ? "Carregando tags..." : "Selecione uma tag"}
-                                        filter
-                                        disabled={loading}
+                                    <CampoTags
+                                        name="tags"
+                                        value={tagsSelecionadasAtual}
+                                        onChange={handleTagsChange}
+                                        options={tagsDisponiveis}
+                                        label="Tags"
+                                        placeholder={loadingTag ? "Criando tag..." : loading ? "Carregando tags..." : "Digite para buscar ou criar tags..."}
+                                        allowCustomTags={true}
+                                        disabled={loading || loadingTag}
                                     />
-                                    <small style={{ color: '#6c757d', marginTop: '4px', display: 'block' }}>
-                                        Selecione uma tag para preencher automaticamente os documentos requeridos da vaga.
+                                    <small style={{ color: loadingTag ? '#0ea5e9' : '#6c757d', marginTop: '4px', display: 'block', fontWeight: loadingTag ? 600 : 400 }}>
+                                        {loadingTag ? '⏳ Criando tag na API...' : 'Selecione tags para preencher automaticamente os documentos requeridos da vaga.'}
                                     </small>
                                 </DropdownContainer>
                             </Col12>
@@ -122,6 +224,7 @@ function ModalTags({ opened = false, aoFechar, aoSalvar, tagSelecionada = null }
                                 estilo="vermilion" 
                                 size="medium" 
                                 filled
+                                disabled={loadingTag}
                             >
                                 Confirmar
                             </Botao>
