@@ -398,7 +398,7 @@ function FeriasListagem() {
             }
         }
         
-        let url = `ferias/`;
+        let url = `feriasperiodoaquisitivo/`;
         
         // Adiciona termo de busca se houver
         if (searchTerm.trim()) {

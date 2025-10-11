@@ -27,4 +27,5 @@ package-lock.json
 tsconfig.json
 src/http/index copy.js
 vite.config.js
-.env
+.env*
+
