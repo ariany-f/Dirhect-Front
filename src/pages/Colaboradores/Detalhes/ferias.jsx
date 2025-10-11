@@ -107,7 +107,7 @@ function ColabroadorFerias() {
 
     // Buscar períodos aquisitivos (para verificar se pode solicitar férias)
     useEffect(() => {
-        http.get(`feriasperiodoaquisitivo/?format=json&funcionario=${id}&periodo_aberto=true`)
+        http.get(`feriasperiodoaquisitivo/?format=json&ordering=fimperaquis&funcionario=${id}&periodo_aberto=true`)
         .then(response => {
             setPeriodosAquisitivos(response)
         })

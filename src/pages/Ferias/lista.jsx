@@ -824,7 +824,7 @@ function FeriasListagem() {
         }
 
         try {
-            const feriasColaborador = await http.get(`feriasperiodoaquisitivo/?format=json&funcionario=${colaborador.id}`);
+            const feriasColaborador = await http.get(`feriasperiodoaquisitivo/?format=json&ordering=fimperaquis&funcionario=${colaborador.id}`);
             const feria = feriasColaborador[0];
 
             if (!feria) {

@@ -10,12 +10,9 @@ import http from '@http'
 import { toast } from 'react-toastify'
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import Loading from "@components/Loading"
-import Input from "@components/Input"
 import { useForm } from "react-hook-form"
 import styled from "styled-components"
-
-
-
+import { FaEye, FaEyeSlash } from 'react-icons/fa'
 
 const WrapperOut = styled.div`
     display: flex;
@@ -33,12 +30,54 @@ const WrapperOut = styled.div`
         padding: 0 4vw;
     }
 `;
+
+const PasswordInputContainer = styled.div`
+    position: relative;
+    width: 100%;
+    
+    input {
+        width: 100%;
+        padding: 12px;
+        padding-right: 45px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        fontSize: 14px;
+        font-family: inherit;
+        
+        &:focus {
+            outline: none;
+            border-color: var(--primaria);
+        }
+    }
+    
+    button {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #6b7280;
+        padding: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        &:hover {
+            color: #374151;
+        }
+    }
+`;
+
 function RedefinirSenha() {
     
     const {uid, token} = useParams()
     const [ready, setReady] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
+    const [mostrarSenha, setMostrarSenha] = useState(false)
+    const [mostrarConfirmSenha, setMostrarConfirmSenha] = useState(false)
 
     const {
         recuperacaoSenha,
@@ -50,7 +89,14 @@ function RedefinirSenha() {
     } = useSessaoUsuarioContext()
     
     const navegar = useNavigate()
-    const { control, handleSubmit, formState: { errors }, watch } = useForm();
+    const { control, handleSubmit, formState: { errors }, watch } = useForm({
+        mode: 'onSubmit',
+        reValidateMode: 'onSubmit',
+        defaultValues: {
+            password: '',
+            confirm_password: ''
+        }
+    });
     
     // Observa o valor da senha em tempo real para o componente RegrasCriacaoSenha
     const watchedPassword = watch('password', '');
@@ -111,24 +157,27 @@ function RedefinirSenha() {
             return
         }
 
-        // Atualiza o contexto com os valores do formulário
-        setRecuperacaoPassword(data.password)
-        setRecuperacaoConfirmPassword(data.confirm_password)
-
-        redefinirSenha()
-            .then((response) => {
-                if(response.detail && response.detail != "Senha redefinida com sucesso")
-                {
-                    toast.error(response.detail)
-                }
-                else if(response !== undefined || response.data !== undefined)
-                {
-                    navegar('/esqueci-a-senha/sucesso')
-                }
-            })
-            .catch(erro => {
-                console.error(erro)
-            })
+        // Faz a requisição diretamente com os valores do formulário
+        const obj = {
+            uid: uid,
+            token: token,
+            new_password: data.password
+        }
+        
+        try {
+            const response = await http.post(`password/reset/confirm/`, obj)
+            if(response.detail && response.detail != "Senha redefinida com sucesso")
+            {
+                toast.error(response.detail)
+            }
+            else if(response !== undefined || response.data !== undefined)
+            {
+                navegar('/esqueci-a-senha/sucesso')
+            }
+        } catch (erro) {
+            console.error(erro)
+            toast.error(erro?.response?.data?.detail || 'Erro ao redefinir senha')
+        }
     }
 
     return (
@@ -158,45 +207,63 @@ function RedefinirSenha() {
                     </Frame>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Frame gap="16px">
-                            <Input
-                                control={control}
-                                type="password"
-                                id="password"
-                                name="password"
-                                label="Senha"
-                                icon="pi pi-lock"
-                                toggleMask={true}
-                                showPasswordFeedback={false}
-                                required
-                                rules={{
-                                    required: 'Senha é obrigatória',
-                                    minLength: {
-                                        value: 8,
-                                        message: 'A senha deve ter pelo menos 8 caracteres'
-                                    },
-                                    pattern: {
-                                        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/,
-                                        message: 'A senha deve conter pelo menos 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial'
-                                    }
-                                }}
-                            />
-                            <Input
-                                control={control}
-                                type="password"
-                                id="confirm_password"
-                                name="confirm_password"
-                                label="Confirmar Senha"
-                                icon="pi pi-lock"
-                                toggleMask={true}
-                                showPasswordFeedback={false}
-                                required
-                                rules={{
-                                    required: 'Confirmação de senha é obrigatória',
-                                    validate: (value, formValues) => {
-                                        return value === formValues.password || 'As senhas devem coincidir'
-                                    }
-                                }}
-                            />
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+                                <label htmlFor="password" style={{ fontWeight: '500', fontSize: '14px' }}>Senha</label>
+                                <PasswordInputContainer>
+                                    <input
+                                        {...control.register('password', {
+                                            required: 'Senha é obrigatória',
+                                            minLength: {
+                                                value: 8,
+                                                message: 'A senha deve ter pelo menos 8 caracteres'
+                                            },
+                                            pattern: {
+                                                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/,
+                                                message: 'A senha deve conter pelo menos 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial'
+                                            }
+                                        })}
+                                        type={mostrarSenha ? "text" : "password"}
+                                        id="password"
+                                        placeholder="Digite sua senha"
+                                    />
+                                    <button 
+                                        type="button" 
+                                        onClick={() => setMostrarSenha(!mostrarSenha)}
+                                        title={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
+                                    >
+                                        {mostrarSenha ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                                    </button>
+                                </PasswordInputContainer>
+                                {errors.password && (
+                                    <span style={{ color: 'red', fontSize: '12px' }}>{errors.password.message}</span>
+                                )}
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+                                <label htmlFor="confirm_password" style={{ fontWeight: '500', fontSize: '14px' }}>Confirmar Senha</label>
+                                <PasswordInputContainer>
+                                    <input
+                                        {...control.register('confirm_password', {
+                                            required: 'Confirmação de senha é obrigatória',
+                                            validate: (value, formValues) => {
+                                                return value === formValues.password || 'As senhas devem coincidir'
+                                            }
+                                        })}
+                                        type={mostrarConfirmSenha ? "text" : "password"}
+                                        id="confirm_password"
+                                        placeholder="Confirme sua senha"
+                                    />
+                                    <button 
+                                        type="button" 
+                                        onClick={() => setMostrarConfirmSenha(!mostrarConfirmSenha)}
+                                        title={mostrarConfirmSenha ? "Ocultar senha" : "Mostrar senha"}
+                                    >
+                                        {mostrarConfirmSenha ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                                    </button>
+                                </PasswordInputContainer>
+                                {errors.confirm_password && (
+                                    <span style={{ color: 'red', fontSize: '12px' }}>{errors.confirm_password.message}</span>
+                                )}
+                            </div>
                             <RegrasCriacaoSenha senha={watchedPassword || ""} />
                         </Frame>
                         <br />

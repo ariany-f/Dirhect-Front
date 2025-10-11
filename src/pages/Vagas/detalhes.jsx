@@ -118,7 +118,7 @@ function DetalhesVaga() {
     const [modalTagsAberto, setModalTagsAberto] = useState(false);
     const [modalTemplateVagaAberto, setModalTemplateVagaAberto] = useState(false);
     const [mostrarInfoTemplate, setMostrarInfoTemplate] = useState(false);
-    const [tagNome, setTagNome] = useState(null);
+    const [tagsNomes, setTagsNomes] = useState([]);
     const { t } = useTranslation('common');
 
     const listaPericulosidades = [
@@ -228,20 +228,24 @@ function DetalhesVaga() {
             .then(response => {
                 setVaga(response)
                 
-                // Buscar nome da tag se existir
-                if (response.tag) {
+                // Buscar nomes das tags se existirem
+                if (response.tags_nomes && Array.isArray(response.tags_nomes)) {
+                    setTagsNomes(response.tags_nomes);
+                } else if (response.tags && Array.isArray(response.tags) && response.tags.length > 0) {
+                    // Se não vier tags_nomes, buscar da API
                     http.get(`/documento_requerido_tag/`)
                         .then(tagsResponse => {
-                            const tag = tagsResponse.find(t => t.id === response.tag);
-                            if (tag) {
-                                setTagNome(tag.nome);
-                            }
+                            const nomesEncontrados = response.tags.map(tagId => {
+                                const tag = tagsResponse.find(t => t.id === tagId);
+                                return tag ? tag.nome : null;
+                            }).filter(nome => nome !== null);
+                            setTagsNomes(nomesEncontrados);
                         })
                         .catch(error => {
-                            console.error('Erro ao buscar tag:', error);
+                            console.error('Erro ao buscar tags:', error);
                         });
                 } else {
-                    setTagNome(null);
+                    setTagsNomes([]);
                 }
             })
             .catch(error => {
@@ -535,33 +539,34 @@ function DetalhesVaga() {
             });
     };
 
-    const handleSalvarTag = (tagId) => {
+    const handleSalvarTag = (tagsIds) => {
         http.put(`vagas/${id}/`, {
-            tag: tagId
+            tags: tagsIds
         })
             .then(response => {
                 toast.current.show({ 
                     severity: 'success', 
                     summary: 'Sucesso', 
-                    detail: tagId ? 'Tag atualizada com sucesso!' : 'Tag removida com sucesso!', 
+                    detail: tagsIds && tagsIds.length > 0 ? 'Tags atualizadas com sucesso!' : 'Tags removidas com sucesso!', 
                     life: 3000 
                 });
                 setModalTagsAberto(false);
                 
-                // Atualizar nome da tag
-                if (tagId) {
+                // Atualizar nomes das tags
+                if (tagsIds && tagsIds.length > 0) {
                     http.get(`/documento_requerido_tag/`)
                         .then(tagsResponse => {
-                            const tag = tagsResponse.find(t => t.id === tagId);
-                            if (tag) {
-                                setTagNome(tag.nome);
-                            }
+                            const nomesEncontrados = tagsIds.map(tagId => {
+                                const tag = tagsResponse.find(t => t.id === tagId);
+                                return tag ? tag.nome : null;
+                            }).filter(nome => nome !== null);
+                            setTagsNomes(nomesEncontrados);
                         })
                         .catch(error => {
-                            console.error('Erro ao buscar tag:', error);
+                            console.error('Erro ao buscar tags:', error);
                         });
                 } else {
-                    setTagNome(null);
+                    setTagsNomes([]);
                 }
                 
                 // Recarrega os dados da vaga
@@ -574,11 +579,11 @@ function DetalhesVaga() {
                     });
             })
             .catch(error => {
-                console.error('Erro ao salvar tag:', error);
+                console.error('Erro ao salvar tags:', error);
                 toast.current.show({ 
                     severity: 'error', 
                     summary: 'Erro', 
-                    detail: 'Erro ao salvar tag', 
+                    detail: 'Erro ao salvar tags', 
                     life: 3000 
                 });
             });
@@ -787,6 +792,11 @@ function DetalhesVaga() {
                                 <Texto weight="800">{vaga?.horario_nome}</Texto>
                                 : vaga ? '----' : <Skeleton variant="rectangular" width={200} height={25} />
                             }
+                            <Texto>Letra</Texto>
+                            {vaga?.letra ?
+                                <Texto weight="800">{vaga?.letra_nome || vaga?.letra}</Texto>
+                                : vaga ? '----' : <Skeleton variant="rectangular" width={200} height={25} />
+                            }
                             <Texto>Funcao</Texto>
                             {vaga?.funcao_id ?
                                 <Texto weight="800">{vaga?.funcao_nome}</Texto>
@@ -890,14 +900,14 @@ function DetalhesVaga() {
                                 estilo="vermilion"
                                 disabled={vaga?.status === 'T' || (temCandidatoAprovado && !temVagasDisponiveis())}
                                 title={
-                                    vaga?.status === 'T' ? "Não é possível editar tag em vagas transferidas" :
-                                    (temCandidatoAprovado && !temVagasDisponiveis()) ? "Não é possível editar tag pois todas as vagas já têm candidatos aprovados" : 
-                                    tagNome ? "Alterar tag da vaga" : "Selecionar tag para preencher documentos automaticamente"
+                                    vaga?.status === 'T' ? "Não é possível editar tags em vagas transferidas" :
+                                    (temCandidatoAprovado && !temVagasDisponiveis()) ? "Não é possível editar tags pois todas as vagas já têm candidatos aprovados" : 
+                                    tagsNomes.length > 0 ? "Alterar tags da vaga" : "Selecionar tags para preencher documentos automaticamente"
                                 }
                             >
-                                {tagNome ? (
+                                {tagsNomes.length > 0 ? (
                                     <>
-                                        <FaPen size={12} fill="var(--secundaria)" /> {tagNome}
+                                        <FaPen size={12} fill="var(--secundaria)" /> {tagsNomes.join(', ')}
                                     </>
                                 ) : (
                                     <>
@@ -917,10 +927,10 @@ function DetalhesVaga() {
                             onClick={() => {
                                 toast.current.show({
                                     severity: 'info',
-                                    summary: tagNome ? 'Alterar Tag da Vaga' : 'Tag de Documentos',
-                                    detail: tagNome 
-                                        ? 'Ao alterar a tag, os documentos da nova tag serão adicionados. Documentos anteriores não serão removidos automaticamente.'
-                                        : 'Selecione uma tag para preencher automaticamente os documentos requeridos dessa vaga com documentos que tenham a mesma tag.',
+                                    summary: tagsNomes.length > 0 ? 'Alterar Tags da Vaga' : 'Tags de Documentos',
+                                    detail: tagsNomes.length > 0 
+                                        ? 'Ao alterar as tags, os documentos das novas tags serão adicionados. Documentos anteriores não serão removidos automaticamente.'
+                                        : 'Selecione tags para preencher automaticamente os documentos requeridos dessa vaga com documentos que tenham as mesmas tags.',
                                     life: 5000,
                                     sticky: false
                                 });
@@ -989,7 +999,7 @@ function DetalhesVaga() {
                 opened={modalTagsAberto}
                 aoFechar={() => setModalTagsAberto(false)}
                 aoSalvar={handleSalvarTag}
-                tagSelecionada={vaga?.tag || null}
+                tagsSelecionadas={vaga?.tags || []}
             />
             <ModalTemplateVaga
                 opened={modalTemplateVagaAberto}
